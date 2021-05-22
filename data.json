@@ -1,0 +1,54 @@
+{
+  "game": [
+    {
+      "name": "Dragonshard",
+      "id": "221",
+      "platform": "GOG",
+      "system": "DRM Free",
+      "path": {
+        "exe": "D:\\games\\GOG Galaxy\\Games\\Dragonshard\\Dragonshard.exe",
+        "GOG": "D:\\games\\GOG Galaxy\\Games\\Dragonshard\\Dragonshard.exe"
+      }
+    },
+    {
+      "name": "Kingdom Hearts",
+      "id": "4008",
+      "platform": "Epic",
+      "system": "Epic",
+      "path": {
+        "exe": "D:\\games\\Epic Games\\KH_1.5_2.5\\KINGDOM HEARTS FINAL MIX.exe",
+        "Epic": "com.epicgames.launcher://apps/68c214c58f694ae88c2dab6f209b43e4?action=launch&silent=true"
+      }
+    },
+    {
+      "name": "Kingdom Hearts 358 2 Days",
+      "id": "4010",
+      "platform": "Epic",
+      "system": "Epic",
+      "path": {
+        "exe": "D:\\games\\Epic Games\\KH_1.5_2.5\\KINGDOM HEARTS HD 1.5+2.5 Launcher.exe",
+        "Epic": "com.epicgames.launcher://apps/68c214c58f694ae88c2dab6f209b43e4?action=launch&silent=true"
+      }
+    },
+    {
+      "name": "Kingdom Hearts 2",
+      "id": "4011",
+      "platform": "Epic",
+      "system": "Epic",
+      "path": {
+        "exe": "D:\\games\\Epic Games\\KH_1.5_2.5\\KINGDOM HEARTS II FINAL MIX.exe",
+        "Epic": "com.epicgames.launcher://apps/68c214c58f694ae88c2dab6f209b43e4?action=launch&silent=true"
+      }
+    },
+    {
+      "name": "Kingdom Hearts Chain of Memories",
+      "id": "4009",
+      "platform": "Epic",
+      "system": "Epic",
+      "path": {
+        "exe": "D:\\games\\Epic Games\\KH_1.5_2.5\\KINGDOM HEARTS Re_Chain of Memories.exe",
+        "Epic": "com.epicgames.launcher://apps/68c214c58f694ae88c2dab6f209b43e4?action=launch&silent=true"
+      }
+    }
+  ]
+}
