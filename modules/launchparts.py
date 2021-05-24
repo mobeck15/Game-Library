@@ -21,7 +21,7 @@ def print_game_data(p,launcher='exe'):
 
 def write_log_data(logfilename,logtype,logtime,name,appid,platform,notes="",rating="",status=""):
     file1 = open(logfilename, "a")  # append mode
-    startline = compose_log_record(logtype,logtime,name,appid,platform,notes="",rating="",status="")
+    startline = compose_log_record(logtype,logtime,name,appid,platform,notes,rating,status)
     file1.write(startline)
     file1.close()
 

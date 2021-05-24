@@ -1,3 +1,4 @@
 #passwords and other private info
 secrets.py
 **/__pycache__
+log*.csv
