@@ -138,6 +138,8 @@ def getstatus():
 
 def saverecord(appdata,elapsedmin,datatype,notes,status,rating):
     #curl --data "datarow[1][update]=on&datarow[1][ProductID]=%gameid%&datarow[1][Title]=%gamename%&currenttime=on&datarow[1][hours]=%min%.%min2%&datarow[1][System]=%system%&datarow[1][Data]=%datatype%&datarow[1][notes]=%notes%&datarow[1][source]=Game%%20Library%%206%%20cmd&datarow[1][minutes]=on&Submit=Save&datarow[1][achievements]=&datarow[1][status]=%status%&datarow[1][review]=%rating%&timestamp=" Http://isaacguerrero:TCSPws73SUMCcU@games.stuffiknowabout.com/gl6/addhistory.php
+    import requests
+    from modules.secrets import secrets
 
     url = 'http://games.stuffiknowabout.com/gl6/addhistory.php'
     PostArgs = {
@@ -159,12 +161,14 @@ def saverecord(appdata,elapsedmin,datatype,notes,status,rating):
         'datarow[1][status]': status,
         'datarow[1][review]': rating
     }
+    
+    upload_data=input("Save data online? (blank or 'yes' will upload) ")
+    if upload_data.lower() in  ('y', 'ye', 'yes'):
+        x = requests.post(url, data = PostArgs, auth = (secrets['username'], secrets['password']))
+        search=x.text.find('Record updated successfully')
+    else:
+        search=0
 
-    import requests
-    from modules.secrets import secrets
-    x = requests.post(url, data = PostArgs, auth = (secrets['username'], secrets['password']))
-
-    search=x.text.find('Record updated successfully')
     if search > 0:
         output= 'Record updated successfully'
     else:
