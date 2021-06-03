@@ -34,14 +34,14 @@ class TestDataFile(unittest.TestCase):
 class TestGetGameDataMethods(unittest.TestCase):
     #game = None
     def setUp(self):
-        from modules.launchparts import get_game_data
+        from modules.launchparts import get_app_data
         import os, json
         self.testfilename= os.path.dirname(__file__) + r'\testdata.csv'
 
         data = {}
         data['game'] = []
         data['game'].append({
-            'name': 'Name of the Game',
+            'name': 'Name of the App',
             'id': '123',
             'platform': 'TestPlatform',
             'system': 'TestSystem',
@@ -54,13 +54,13 @@ class TestGetGameDataMethods(unittest.TestCase):
         with open(self.testfilename, 'w') as outfile:
             json.dump(data, outfile)
 
-        self.game=get_game_data(123,filepath=self.testfilename)
+        self.game=get_app_data(123,filepath=self.testfilename)
 
     def test_game_name(self):
         """
         Test that the game name is returned
         """
-        self.assertEqual(self.game['name'], 'Name of the Game')
+        self.assertEqual(self.game['name'], 'Name of the App')
 
     def test_game_id(self):
         """
@@ -84,14 +84,14 @@ class TestGetGameDataMethods(unittest.TestCase):
         """
         Test if the game is not found graceful failure
         """
-        from modules.launchparts import get_game_data
-        self.game=get_game_data(120,filepath=self.testfilename)
+        from modules.launchparts import get_app_data
+        self.game=get_app_data(120,filepath=self.testfilename)
 
 class TestPrintMethods(unittest.TestCase):
     def test_print_game(self):
-        from modules.launchparts import print_game_data
+        from modules.launchparts import print_app_data
         game = {
-            'name': 'Name of the Game',
+            'name': 'Name of the App',
             'id': '123',
             'platform': 'TestPlatform',
             'system': 'TestSystem',
@@ -101,7 +101,7 @@ class TestPrintMethods(unittest.TestCase):
             }
         }
  
-        output=print_game_data(game)
+        output=print_app_data(game)
         match = 'Name: ' + game['name'] +"\n"
         match = match + 'ID: ' + game['id'] +"\n"
         match = match + 'Platform: ' + game['platform'] +"\n"

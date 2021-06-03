@@ -1,14 +1,14 @@
-def get_game_data(gameid,launcher="exe",filepath=r'D:\games\shortcuts\Code\data.txt'):
+def get_app_data(appid,launcher="exe",filepath=r'D:\games\shortcuts\Code\data.txt'):
     import json
-    game=None
+    appdata=None
     with open(filepath) as json_file:
         data = json.load(json_file)
         for p in data['game']:
-            if str(p['id'])==str(gameid):
-                game=p
-    return game
+            if str(p['id'])==str(appid):
+                appdata=p
+    return appdata
 
-def print_game_data(p,launcher='exe'):
+def print_app_data(p,launcher='exe'):
     #print(p)
     output='Name: ' + p['name'] + "\n"
     output = output + 'ID: ' + p['id'] + "\n"
@@ -38,18 +38,18 @@ def compose_log_record(logtype,logtime,name,id,platform,notes="",rating="",statu
     startline = startline + "\n"
     return startline
 
-def launchgame(game,argv,verbose=True):
+def launchapp(appdata,argv,verbose=True):
     import subprocess, os
     if len(argv) < 3 or argv[2]=='exe':
-        os.chdir(os.path.dirname(game['path']['exe']))
+        os.chdir(os.path.dirname(appdata['path']['exe']))
         if verbose:
             print('Working Directory: ', os.getcwd())
-            print('executing ', game['path']['exe'])
-        subprocess.call(game['path']['exe'])
+            print('executing ', appdata['path']['exe'])
+        subprocess.call(appdata['path']['exe'])
     else:
         if verbose:
-            print('executing ', game['path'][argv[2]])
-        os.startfile(game['path'][argv[2]])
+            print('executing ', appdata['path'][argv[2]])
+        os.startfile(appdata['path'][argv[2]])
         
         #subprocess.call(['C:\\windows\\system32\\Notepad.exe', 'D:\\test.txt'])
         #os.startfile('com.epicgames.launcher://apps/68c214c58f694ae88c2dab6f209b43e4?action=launch&silent=true')
@@ -136,8 +136,10 @@ def getstatus():
             break
     return status
 
-def saverecord(game,elapsedmin,datatype,notes,status,rating):
+def saverecord(appdata,elapsedmin,datatype,notes,status,rating):
     #curl --data "datarow[1][update]=on&datarow[1][ProductID]=%gameid%&datarow[1][Title]=%gamename%&currenttime=on&datarow[1][hours]=%min%.%min2%&datarow[1][System]=%system%&datarow[1][Data]=%datatype%&datarow[1][notes]=%notes%&datarow[1][source]=Game%%20Library%%206%%20cmd&datarow[1][minutes]=on&Submit=Save&datarow[1][achievements]=&datarow[1][status]=%status%&datarow[1][review]=%rating%&timestamp=" Http://isaacguerrero:TCSPws73SUMCcU@games.stuffiknowabout.com/gl6/addhistory.php
+    import requests
+    from modules.secrets import secrets
 
     url = 'http://games.stuffiknowabout.com/gl6/addhistory.php'
     PostArgs = {
@@ -149,22 +151,24 @@ def saverecord(game,elapsedmin,datatype,notes,status,rating):
         'datarow[1][minutes]': 'on',
         'datarow[1][achievements]': '',
 
-        'datarow[1][ProductID]': game['id'],
-        'datarow[1][Title]': game['name'],
+        'datarow[1][ProductID]': appdata['id'],
+        'datarow[1][Title]': appdata['name'],
         'datarow[1][hours]': elapsedmin,
-        'datarow[1][System]': game['system'],
+        'datarow[1][System]': appdata['system'],
         'datarow[1][Data]': datatype,
 
         'datarow[1][notes]': notes,
         'datarow[1][status]': status,
         'datarow[1][review]': rating
     }
+    
+    upload_data=input("Save data online? (blank or 'yes' will upload) ")
+    if upload_data.lower() in  ('y', 'ye', 'yes'):
+        x = requests.post(url, data = PostArgs, auth = (secrets['username'], secrets['password']))
+        search=x.text.find('Record updated successfully')
+    else:
+        search=0
 
-    import requests
-    from modules.secrets import secrets
-    x = requests.post(url, data = PostArgs, auth = (secrets['username'], secrets['password']))
-
-    search=x.text.find('Record updated successfully')
     if search > 0:
         output= 'Record updated successfully'
     else:
