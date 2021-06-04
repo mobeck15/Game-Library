@@ -163,7 +163,7 @@ def saverecord(appdata,elapsedmin,datatype,notes,status,rating):
     }
     
     upload_data=input("Save data online? (blank or 'yes' will upload) ")
-    if upload_data.lower() in  ('y', 'ye', 'yes'):
+    if upload_data.lower() in  ('yes') or upload_data.lower() == '':
         x = requests.post(url, data = PostArgs, auth = (secrets['username'], secrets['password']))
         search=x.text.find('Record updated successfully')
     else:
