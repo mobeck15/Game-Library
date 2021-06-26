@@ -88,6 +88,9 @@ class TestGetGameDataMethods(unittest.TestCase):
 
 class TestPrintMethods(unittest.TestCase):
     def test_print_game(self):
+        """
+        Test that print_app_data outputs text as expected
+        """
         from modules.launchparts import print_app_data
         game = {
             'name': 'Name of the App',
@@ -112,6 +115,9 @@ class TestPrintMethods(unittest.TestCase):
 
 class TestLogFile(unittest.TestCase):
     def test_compose_fullrecord(self):
+        """
+        Test that a full log record is created
+        """
         from modules.launchparts import compose_log_record
         #import time
         #print(time.time())
@@ -122,6 +128,9 @@ class TestLogFile(unittest.TestCase):
         self.assertEqual(match, record) 
 
     def test_compose_startrecord(self):
+        """
+        Test that a log record is create for -start-
+        """
         from modules.launchparts import compose_log_record
         record=compose_log_record("Start",1620537964.210104,"game Name",123,"testPlatform")
         match=("Start,2021-05-08,22:26:04,game Name,123,testPlatform,,,\n")
@@ -134,6 +143,9 @@ class TestElapsedTime(unittest.TestCase):
         self.elapsed=end-start
 
     def test_printelapses(self):
+        """
+        Test that elapsed time is printed for all time formats
+        """
         from modules.launchparts import printelapses
 
         output=printelapses(self.elapsed,seconds=True,minutes=True,elapsed=True)
@@ -143,6 +155,9 @@ class TestElapsedTime(unittest.TestCase):
         self.assertEqual(match, output) 
 
     def test_printelapses_seconds(self):
+        """
+        Test that elapsed time is printed as Seconds
+        """
         from modules.launchparts import printelapses
 
         output=printelapses(self.elapsed,seconds=True,elapsed=False)
@@ -150,6 +165,9 @@ class TestElapsedTime(unittest.TestCase):
         self.assertEqual(match, output) 
 
     def test_printelapses_minutes(self):
+        """
+        Test that elapsed time is printed as minutes
+        """
         from modules.launchparts import printelapses
 
         output=printelapses(self.elapsed,minutes=True,elapsed=False)
@@ -157,6 +175,9 @@ class TestElapsedTime(unittest.TestCase):
         self.assertEqual(match, output) 
 
     def test_printelapses_elapsed(self):
+        """
+        Test that elapsed time is printed as duration
+        """
         from modules.launchparts import printelapses
 
         output=printelapses(self.elapsed,elapsed=True)
@@ -168,6 +189,10 @@ class TestRecaptureTime(unittest.TestCase):
 
     @patch('builtins.input', return_value="n")
     def test_recapture(self,mmock_input):
+        """
+        Test that the prmpt to recapture time is working
+        """
+        #TODO: this may not actually be testing what it says
         from modules.launchparts import captureendtime
         import time
         
