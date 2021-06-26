@@ -19,9 +19,8 @@ class TestDataFile(unittest.TestCase):
         """
         import json
 
-        file = open(r"D:\games\shortcuts\code\data.json")
-        line = file.read().replace("\n", " ")
-        file.close()
+        with open(parent_dir+r"\data.json") as file:
+            line = file.read().replace("\n", " ")
         
         result= True
         try:

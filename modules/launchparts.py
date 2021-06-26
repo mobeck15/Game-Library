@@ -7,7 +7,7 @@ def get_app_data(appid,launcher="exe",filepath=r'D:\games\shortcuts\Code\data.tx
             if str(p['id'])==str(appid):
                 appdata=p
     return appdata
-
+ 
 def print_app_data(p,launcher='exe'):
     #print(p)
     output='Name: ' + p['name'] + "\n"
@@ -20,10 +20,11 @@ def print_app_data(p,launcher='exe'):
     return output
 
 def write_log_data(logfilename,logtype,logtime,name,appid,platform,notes="",rating="",status=""):
-    file1 = open(logfilename, "a")  # append mode
-    startline = compose_log_record(logtype,logtime,name,appid,platform,notes,rating,status)
-    file1.write(startline)
-    file1.close()
+    #file1 = open(logfilename, "a")  # append mode
+    with open(logfilename, "a") as file1:
+        startline = compose_log_record(logtype,logtime,name,appid,platform,notes,rating,status)
+        file1.write(startline)
+        #file1.close()
 
 def compose_log_record(logtype,logtime,name,id,platform,notes="",rating="",status=""):
     import time
