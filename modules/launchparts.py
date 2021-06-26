@@ -73,11 +73,9 @@ def printelapses(elapsedtime,seconds=False,minutes=False,elapsed=True):
     if minutes:
         #print('Elapsed Minutes', round(elapsedmin, 4))
         output += 'Elapsed Minutes ' + f"{round(elapsedtime/60, 4):,.4f}" + "\n"
-
     if elapsed:
         #print('Elapsed time', datetime.timedelta(seconds=elapsed))
         output += 'Elapsed Time ' + str(datetime.timedelta(seconds=elapsedtime)) + "\n"
-
     return output
 
 def captureendtime(start,mintime=120,verbose=True):
