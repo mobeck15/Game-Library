@@ -1,14 +1,10 @@
 import sys, unittest, os
-#sys.path.append(r'D:\games\shortcuts\code\modules')
-#sys.path.append(r'D:\games\shortcuts\code')
 
 current_dir=os.path.dirname(__file__)
 parent_dir=os.path.abspath(os.path.join(current_dir, os.pardir))
 sys.path.append(parent_dir)
 
-
 #from launchparts import get_game_data,write_log_data,print_game_data,compose_log_record,write_log_data
-
 #Launch Command: python test\launchtests.py -v   
 
 class TestDataFile(unittest.TestCase):
@@ -114,14 +110,35 @@ class TestPrintMethods(unittest.TestCase):
         #print(match)
         self.assertEqual(match, output) 
 
-"""
-Test that write_log_data saves log data to the specified new log file when the log file does not exist
-"""
-"""
-Test that write_log_data saves log data to the specidied existing log file and appedns without altering existing data
-"""
 
 class TestLogFile(unittest.TestCase):
+    def test_write_new_logfile(self):
+        """
+        Test that write_log_data saves log data to the specified new log file when the log file does not exist
+        """
+        from modules.launchparts import write_log_data
+        logfilename= os.path.dirname(__file__) + r'\logtest_new.csv'
+        write_log_data(logfilename,"Start",1620537964.210104,"game Name",123,"testPlatform")
+        with open(logfilename,'r') as f:
+            lines = f.readlines()
+        os.remove(logfilename)
+        self.assertEqual(len(lines), 1) 
+        self.assertEqual(lines[0], "Start,2021-05-08,22:26:04,game Name,123,testPlatform,,,\n") 
+
+    def test_append_logfile(self):
+        """
+        Test that write_log_data saves log data to the specidied existing log file and appedns without altering existing data
+        """
+        from modules.launchparts import write_log_data
+        logfilename= os.path.dirname(__file__) + r'\logtest_new.csv'
+        write_log_data(logfilename,"Start",1620537964.210104,"game Name",123,"testPlatform")
+        write_log_data(logfilename,"Stop ",1620537964.210104,"game Name",123,"testPlatform","some test notes?",2,"Active")
+        with open(logfilename,'r') as f:
+            lines = f.readlines()
+        os.remove(logfilename)
+        self.assertEqual(len(lines), 2) 
+        self.assertEqual(lines[1], "Stop ,2021-05-08,22:26:04,game Name,123,testPlatform,some test notes?,2,Active\n") 
+
     def test_compose_startrecord(self):
         """
         Test that compose_log_record creates a valid record for -start-
