@@ -137,6 +137,7 @@ class TestLogFile(unittest.TestCase):
             lines = f.readlines()
         os.remove(logfilename)
         self.assertEqual(len(lines), 2) 
+        self.assertEqual(lines[0], "Start,2021-05-08,22:26:04,game Name,123,testPlatform,,,\n") 
         self.assertEqual(lines[1], "Stop ,2021-05-08,22:26:04,game Name,123,testPlatform,some test notes?,2,Active\n") 
 
     def test_compose_startrecord(self):
@@ -161,24 +162,30 @@ class TestLogFile(unittest.TestCase):
         match=("Stop ,2021-05-08,22:26:04,game Name,123,testPlatform,some test notes?,2,Active\n")
         self.assertEqual(match, record) 
 
-"""
-launchapp
-	Test that launchapp launches app using -exe- option
-	Test that launchapp launches app using alternate launch option
-	Test that launchapp launches app using the default launch option when unspecified
-	Test that launchapp launches app using the exe launch option if appdata does not have a default
-	Test launchapp for an app that requires admin privelages
-	Test launchapp with a bad exe path
-	*Use launchapp to start a Steam game
-	*Use launchapp to start an Epic game
-	*Use launchapp to start an Origin game
-	*Use launchapp to start an amazon game
-	*Use launchapp to start an exe using startfile
-"""
+class TestprintTime(unittest.TestCase):
+    def test_printelapses(self):
+        """
+        Test printtime returns time in expected format
+        """
+        from modules.launchparts import printtime
+        output=printtime(1620537964.210104)
+        match= "2021-05-08 22:26:04"
+        self.assertEqual(match, output) 
 
-"""
-Test printtime returns time in expected format
-"""
+    def test_printtimelabel(self):
+        """
+        Test printtime returns time with provided label
+        """
+        from modules.launchparts import printtime
+        match= "LABEL 1234"
+        output=printtime(1620537964.210104,match)
+        self.assertEqual(match, output[:10]) 
+
+
+        """
+        *Test printtime returns time with provided label and padded spaces
+        """
+
 
 class TestElapsedTime(unittest.TestCase):
     def setUp(self):
@@ -248,6 +255,7 @@ class TestRecaptureTime(unittest.TestCase):
         end=captureendtime(start,mintime=120,verbose=False)
 
         self.assertGreater(end,start)
+        
         """
         Test that captureendtime prompts to recapture time when below minimum
         Test that captureendtime prompts to recapture time when below minimum even after prompting once
@@ -287,6 +295,21 @@ saverecord
 	Test that saverecord returns -Record updated successfully- on success
 	Test that saverecord returns -Record not saved- on error
 	Test that saverecord returns -Record not saved- decline prompt
+"""
+
+"""
+launchapp
+	Test that launchapp launches app using -exe- option
+	Test that launchapp launches app using alternate launch option
+	Test that launchapp launches app using the default launch option when unspecified
+	Test that launchapp launches app using the exe launch option if appdata does not have a default
+	Test launchapp for an app that requires admin privelages
+	Test launchapp with a bad exe path
+	*Use launchapp to start a Steam game
+	*Use launchapp to start an Epic game
+	*Use launchapp to start an Origin game
+	*Use launchapp to start an amazon game
+	*Use launchapp to start an exe using startfile
 """
 
 if __name__ == '__main__':
