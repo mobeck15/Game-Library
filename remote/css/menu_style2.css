@@ -1,0 +1,69 @@
+#main_nav {
+  top: 0; /* Position the navbar at the top of the page */
+  left:0;
+  width: 100%; /* Full width */
+  position: fixed; /* Set the navbar to fixed position */
+  z-index: 100;
+}
+
+/* Main content */
+.main {
+  margin-top: 55px; /* Add a top margin to avoid content overlay */
+}
+
+/* Set the parent <li>’s CSS position property to ‘relative’. */
+.top-nav ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  background: #2c3e50;
+}
+
+.top-nav ul li {
+  display: block;
+  position: relative;
+  float: left;
+  background: #2c3e50;
+}
+
+/* The CSS to hide the sub menus. */
+.top-nav li ul { display: none; }
+
+.top-nav ul li a {
+  display: block;
+  padding: 1em;
+  text-decoration: none;
+  white-space: nowrap;
+  color: #fff;
+}
+
+.top-nav ul li a:hover { background: #1bc2a2; }
+
+/* Displays the dropdown menu on hover. */
+.top-nav li:hover > ul {
+  display: block;
+  position: absolute;
+}
+
+.top-nav li:hover li { float: none; }
+
+.top-nav li:hover a { background: #2c3e50; }
+
+.top-nav li:hover li a:hover { background: #1bc2a2; }
+
+.main-navigation li ul li { border-top: 0; }
+
+/* Displays second level dropdown menus to the right of the first level dropdown menu. */
+.top-nav ul ul ul {
+  left: 100%;
+  top: 0;
+}
+
+/* Simple clearfix. */
+.top-nav ul:before,
+.top-nav ul:after {
+  content: " "; /* 1 */
+  display: table; /* 2 */
+}
+
+.top-nav ul:after { clear: both; }
