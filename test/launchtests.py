@@ -242,11 +242,10 @@ class TestRecaptureTime(unittest.TestCase):
     from unittest.mock import patch
 
     @patch('builtins.input', return_value="n")
-    def test_recapture(self,mmock_input):
+    def test_capturetime(self,mmock_input):
         """
         Test that captureendtime records an end time that is larger than start time
         """
-        #TODO: this may not actually be testing what it says
         from modules.launchparts import captureendtime
         import time
         
@@ -255,10 +254,29 @@ class TestRecaptureTime(unittest.TestCase):
         end=captureendtime(start,mintime=120,verbose=False)
 
         self.assertGreater(end,start)
-        
+
+    #@patch('builtins.input', return_value="n")
+    def test_recapture(self):
         """
-        Test that captureendtime prompts to recapture time when below minimum
+        Test that captureendtime records an end time that is larger than start time
+        """
+        from modules.launchparts import captureendtime
+        import time
+        
+        with unittest.mock.patch('builtins.input', return_value="n"):
+            start=time.time() #-30
+            time.sleep(0.01)
+            end=captureendtime(start,mintime=120,verbose=False)
+
+            self.assertGreater(end,start)
+
+    #def test_recapture2(self,mmock_input):
+        """
         Test that captureendtime prompts to recapture time when below minimum even after prompting once
+        """
+
+    #def test_no_recapture(self,mmock_input):
+        """
         Test that captureendtime does not prompt to recapture time when above minimum
         """
     
