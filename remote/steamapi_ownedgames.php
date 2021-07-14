@@ -1,13 +1,13 @@
 <?php
-include $_SERVER['DOCUMENT_ROOT']."/gl6/inc/php.ini.inc.php";
-include $_SERVER['DOCUMENT_ROOT']."/gl6/inc/functions.inc.php";
+include "inc/php.ini.inc.php";
+include "inc/functions.inc.php";
 
 $title="Steam API All Games";
 echo Get_Header($title);
 
 $conn=get_db_connection();
 
-include "inc/auth.inc.php";
+//include "inc/auth.inc.php";
 
 $hitory=getHistoryCalculations("",$conn);
 $games=getCalculations("",$conn);

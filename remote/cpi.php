@@ -1,13 +1,13 @@
 <?php
 $time_start = microtime(true);
 $path = $_SERVER['DOCUMENT_ROOT'];
-include $path."/gl6/inc/php.ini.inc.php";
+include $path."inc/php.ini.inc.php";
 
 include 'inc/functions.inc.php';
 $title="CPI";
 echo Get_Header($title);
 
-include "inc/auth.inc.php";
+//include "inc/auth.inc.php";
 //$conn = new mysqli($servername, $username, $password, $dbname);
 $conn=get_db_connection();
 

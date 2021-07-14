@@ -48,12 +48,12 @@ function Get_Header($title="",$WIP=""){
 	<HEAD>
 	<title>$title</title>
 	<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">
-	<link rel=\"shortcut icon\" href=\"/gl6/img/favicon.ico\"/>";
-	$Template_Header .= "\n	<link rel=\"stylesheet\" type=\"text/css\" href=\"/gl6/css/style.css\">";
+	<link rel=\"shortcut icon\" href=\"img/favicon.ico\"/>";
+	$Template_Header .= "\n	<link rel=\"stylesheet\" type=\"text/css\" href=\"css/style.css\">";
 	
 	//Needed to support the dynamic navigation menu. 
 	//There is a conflict with something in style.css that makes it act weird if style.css is loaded after this one.
-	$Template_Header .= "\n	<link rel=\"stylesheet\" type=\"text/css\" href=\"/gl6/css/menu_style2.css\">";
+	$Template_Header .= "\n	<link rel=\"stylesheet\" type=\"text/css\" href=\"css/menu_style2.css\">";
 
 	//Needed to support dynamic lookups
 	$Template_Header .= "\n	<link rel=\"stylesheet\" href=\"http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.1/themes/base/minified/jquery-ui.min.css\" type=\"text/css\" /> ";
@@ -121,76 +121,76 @@ function get_navmenu($dropbar=true){
 	}
 		$navmenu .= "\t<ul class='main-navigation'>\r\n";
 //CONTROL
-		$navmenu .= "\t\t<li><a href=\"/gl6/gl6.php\"><img src=\"/gl6/img/favicon.ico\" height=15 />Control</a>\r\n";
+		$navmenu .= "\t\t<li><a href=\"gl6.php\"><img src=\"img/favicon.ico\" height=15 />Control</a>\r\n";
 		$navmenu .= "\t<ul>\r\n";
-			$navmenu .= "\t\t<li><a href='/gl5/gl5.php' target='_blank'>GL5 Index<img src='/gl6/img/new_window-512.png' height=15 /></a></li>\r\n";
-			//$navmenu .= "\t\t<li><a href=\"http://www.uniformserver.com/\" target=\"_blank\">Uniform Server<img src=\"/gl6/img/new_window-512.png\" height=15 /></a></li>\r\n";
-			$navmenu .= "\t\t<li><a href=\"/phpinfo.php\" target='_blank'>PHP Info<img src='/gl6/img/new_window-512.png' height=15 /></a></li>\r\n";
-			$navmenu .= "\t\t<li><a href=\"/gl6/prototype\"><img src=\"/gl6/img/favicon.ico\" height=15 />Prototypes</a></li>\r\n";
-			$navmenu .= "\t\t<li><a href=\"/gl6/settings.php\"><img src=\"/gl6/img/favicon.ico\" height=15 />Settings</a></li>\r\n";
+			$navmenu .= "\t\t<li><a href='/gl5/gl5.php' target='_blank'>GL5 Index<img src='img/new_window-512.png' height=15 /></a></li>\r\n";
+			//$navmenu .= "\t\t<li><a href=\"http://www.uniformserver.com/\" target=\"_blank\">Uniform Server<img src=\"img/new_window-512.png\" height=15 /></a></li>\r\n";
+			$navmenu .= "\t\t<li><a href=\"/phpinfo.php\" target='_blank'>PHP Info<img src='img/new_window-512.png' height=15 /></a></li>\r\n";
+			$navmenu .= "\t\t<li><a href=\"prototype\"><img src=\"img/favicon.ico\" height=15 />Prototypes</a></li>\r\n";
+			$navmenu .= "\t\t<li><a href=\"settings.php\"><img src=\"img/favicon.ico\" height=15 />Settings</a></li>\r\n";
 		$navmenu .= "\t</ul></li>\r\n";
 //MANAGE DATABASE
 		$navmenu .= "\t<li><a>Manage Database</a>\r\n";
 		$navmenu .= "\t<ul>\r\n";
 			if($_SERVER['SERVER_NAME']=="localhost"){
-				$navmenu .= "\t\t<li><a href=\"/us_opt1/\" target=\"_blank\">uniserver phpMyAdmin<img src=\"/gl6/img/new_window-512.png\" height=15 /></a></li>\r\n";
+				$navmenu .= "\t\t<li><a href=\"/us_opt1/\" target=\"_blank\">uniserver phpMyAdmin<img src=\"img/new_window-512.png\" height=15 /></a></li>\r\n";
 			} else {
 				//https://west1-phpmyadmin.dreamhost.com/index.php
-				$navmenu .= "\t\t<li><a href=\"http://data.stuffiknowabout.com\" target=\"_blank\">dreamhost phpMyAdmin<img src=\"/gl6/img/new_window-512.png\" height=15 /></a></li>\r\n";
+				$navmenu .= "\t\t<li><a href=\"http://data.stuffiknowabout.com\" target=\"_blank\">dreamhost phpMyAdmin<img src=\"img/new_window-512.png\" height=15 /></a></li>\r\n";
 			}
-			$navmenu .= "\t\t<li><a href=\"https://www.dropbox.com/home/web/uniserverz/www/gl6\" target=\"_blank\">Dropbox<img src=\"/gl6/img/new_window-512.png\" height=15 /><img src=\"/gl6/img/caret-right.png\" height=15 /></a>\r\n";
-				$navmenu .= "\t\t\t<ul><li><a href=\"https://www.dropbox.com/home/web/uniserverz/etc/phpmyadmin\" target=\"_blank\">Database Backups<img src=\"/gl6/img/new_window-512.png\" height=15 /></a></li></ul>\r\n";
+			$navmenu .= "\t\t<li><a href=\"https://www.dropbox.com/home/web/uniserverz/www/gl6\" target=\"_blank\">Dropbox<img src=\"img/new_window-512.png\" height=15 /><img src=\"img/caret-right.png\" height=15 /></a>\r\n";
+				$navmenu .= "\t\t\t<ul><li><a href=\"https://www.dropbox.com/home/web/uniserverz/etc/phpmyadmin\" target=\"_blank\">Database Backups<img src=\"img/new_window-512.png\" height=15 /></a></li></ul>\r\n";
 			$navmenu .= "\t\t</li>\r\n";
-			$navmenu .= "\t\t<li><a >Add<img src=\"/gl6/img/caret-right.png\" height=15 /></a>\r\n";
+			$navmenu .= "\t\t<li><a >Add<img src=\"img/caret-right.png\" height=15 /></a>\r\n";
 			$navmenu .= "\t\t<ul>\r\n";
-				$navmenu .= "\t\t\t<li><a href=\"/gl6/addtransaction.php\"><img src=\"/gl6/img/favicon.ico\" height=15 />Add New Transaction (Bundle)</a></li>\r\n";
-				$navmenu .= "\t\t\t<li><a href=\"/gl6/addproduct.php\"><img src=\"/gl6/img/favicon.ico\" height=15 />Add New Product (Game)</a></li>\r\n";
-				$navmenu .= "\t\t\t<li><a href=\"/gl6/additem.php\"><img src=\"/gl6/img/favicon.ico\" height=15 />Add New Item</a></li>\r\n";
+				$navmenu .= "\t\t\t<li><a href=\"addtransaction.php\"><img src=\"img/favicon.ico\" height=15 />Add New Transaction (Bundle)</a></li>\r\n";
+				$navmenu .= "\t\t\t<li><a href=\"addproduct.php\"><img src=\"img/favicon.ico\" height=15 />Add New Product (Game)</a></li>\r\n";
+				$navmenu .= "\t\t\t<li><a href=\"additem.php\"><img src=\"img/favicon.ico\" height=15 />Add New Item</a></li>\r\n";
 			$navmenu .= "\t\t</ul></li>\r\n";
-			$navmenu .= "\t\t<li><a >View/Edit<img src=\"/gl6/img/caret-right.png\" height=15 /></a>\r\n";
+			$navmenu .= "\t\t<li><a >View/Edit<img src=\"img/caret-right.png\" height=15 /></a>\r\n";
 			$navmenu .= "\t\t<ul>\r\n";
-				$navmenu .= "\t\t\t<li><a href=\"/gl6/viewbundle.php\"><img src=\"/gl6/img/favicon.ico\" height=15 />View/Edit Bundle</a></li>\r\n";
-				$navmenu .= "\t\t\t<li><a href=\"/gl6/viewgame.php\"><img src=\"/gl6/img/favicon.ico\" height=15 />View/Edit Game</a></li>\r\n";
-				$navmenu .= "\t\t\t<li><a href=\"/gl6/viewitem.php\"><img src=\"/gl6/img/favicon.ico\" height=15 />View/Edit Item</a></li>\r\n";
+				$navmenu .= "\t\t\t<li><a href=\"viewbundle.php\"><img src=\"img/favicon.ico\" height=15 />View/Edit Bundle</a></li>\r\n";
+				$navmenu .= "\t\t\t<li><a href=\"viewgame.php\"><img src=\"img/favicon.ico\" height=15 />View/Edit Game</a></li>\r\n";
+				$navmenu .= "\t\t\t<li><a href=\"viewitem.php\"><img src=\"img/favicon.ico\" height=15 />View/Edit Item</a></li>\r\n";
 			$navmenu .= "\t\t</ul></li>\r\n";
-			$navmenu .= "\t\t<li><a href=\"/gl6/datacheck.php\"><img src=\"/gl6/img/favicon.ico\" height=15 />Data Check</a></li>\r\n";
-			$navmenu .= "\t\t<li><a href=\"/gl6/steamapi_ownedgames.php\"><img src=\"/gl6/img/favicon.ico\" height=15 />All Steam Games</a></li>\r\n";
-			$navmenu .= "\t\t<li><a href=\"/gl6/cpi.php\"><img src=\"/gl6/img/favicon.ico\" height=15 />CPI<img src=\"/gl6/img/caret-right.png\" height=15 /></a>\r\n";
+			$navmenu .= "\t\t<li><a href=\"datacheck.php\"><img src=\"img/favicon.ico\" height=15 />Data Check</a></li>\r\n";
+			$navmenu .= "\t\t<li><a href=\"steamapi_ownedgames.php\"><img src=\"img/favicon.ico\" height=15 />All Steam Games</a></li>\r\n";
+			$navmenu .= "\t\t<li><a href=\"cpi.php\"><img src=\"img/favicon.ico\" height=15 />CPI<img src=\"img/caret-right.png\" height=15 /></a>\r\n";
 			$navmenu .= "\t\t<ul>\r\n";
-				$navmenu .= "\t\t\t<li><a href='http://www.usinflationcalculator.com/inflation/consumer-price-index-and-annual-percent-changes-from-1913-to-2008/' target='_blank'>CPI Table<img src=\"/gl6/img/new_window-512.png\" height=15 /></a></li>\r\n";
+				$navmenu .= "\t\t\t<li><a href='http://www.usinflationcalculator.com/inflation/consumer-price-index-and-annual-percent-changes-from-1913-to-2008/' target='_blank'>CPI Table<img src=\"img/new_window-512.png\" height=15 /></a></li>\r\n";
 			$navmenu .= "\t\t</ul></li>\r\n";
-			$navmenu .= "\t\t<li><a href=\"/gl6/export.php\"><img src=\"/gl6/img/favicon.ico\" height=15 />Export Database</a></li>\r\n";
+			$navmenu .= "\t\t<li><a href=\"export.php\"><img src=\"img/favicon.ico\" height=15 />Export Database</a></li>\r\n";
 		$navmenu .= "\t</ul></li>\r\n";
 //HISTORY
 		$navmenu .= "\t<li><a>History</a>\r\n";
 		$navmenu .= "\t<ul>\r\n";
-			$navmenu .= "\t\t<li><a href=\"/gl6/addhistory.php\"><img src=\"/gl6/img/favicon.ico\" height=15 />Add History (Manual)</a></li>\r\n";
-			$navmenu .= "\t\t<li><a href=\"/gl6/addhistory.php?mode=steam\"><img src=\"/gl6/img/favicon.ico\" height=15 />Add History (Steam API)</a></li>\r\n";
-			$navmenu .= "\t\t<li><a href=\"/gl6/viewallhistory.php\"><img src=\"/gl6/img/favicon.ico\" height=15 />View All History</a></li>\r\n";
-			$navmenu .= "\t\t\t<li><a href=\"/gl6/activity.php\"><img src=\"/gl6/img/favicon.ico\" height=15 />All Activity</a></li>\r\n";
+			$navmenu .= "\t\t<li><a href=\"addhistory.php\"><img src=\"img/favicon.ico\" height=15 />Add History (Manual)</a></li>\r\n";
+			$navmenu .= "\t\t<li><a href=\"addhistory.php?mode=steam\"><img src=\"img/favicon.ico\" height=15 />Add History (Steam API)</a></li>\r\n";
+			$navmenu .= "\t\t<li><a href=\"viewallhistory.php\"><img src=\"img/favicon.ico\" height=15 />View All History</a></li>\r\n";
+			$navmenu .= "\t\t\t<li><a href=\"activity.php\"><img src=\"img/favicon.ico\" height=15 />All Activity</a></li>\r\n";
 		$navmenu .= "\t</ul></li>\r\n";
 //REPORTS
 		$navmenu .= "\t<li><a>Reports</a>\r\n";
 		$navmenu .= "\t<ul>\r\n";
-			$navmenu .= "\t\t<li><a href=\"/gl6/calculations.php\"><img src=\"/gl6/img/favicon.ico\" height=15 />Calculations</a></li>\r\n";
-			$navmenu .= "\t\t<li><a href=\"/gl6/toplists.php\"><img src=\"/gl6/img/favicon.ico\" height=15 />Top Lists</a></li>\r\n";
-			$navmenu .= "\t\t<li><a href=\"/gl6/toplevel.php\"><img src=\"/gl6/img/favicon.ico\" height=15 />Group by ___</a></li>\r\n";
-			$navmenu .= "\t\t<li><a href=\"/gl6/chartdata.php\"><img src=\"/gl6/img/favicon.ico\" height=15 />Chart Data (Calendar)</a></li>\r\n";
-			$navmenu .= "\t\t<li><a href=\"/gl6/totals.php\"><img src=\"/gl6/img/favicon.ico\" height=15 />Total Stats</a></li>\r\n";
-			$navmenu .= "\t\t<li><a href=\"/gl6/historicchartdata.php\"><img src=\"/gl6/img/favicon.ico\" height=15 />Historic Charts</a></li>\r\n";
-			$navmenu .= "\t\t<li><a href=\"/gl6/ratings.php\"><img src=\"/gl6/img/favicon.ico\" height=15 />Ratings</a></li>\r\n";
-			$navmenu .= "\t\t<li><a href=\"/gl6/waste.php\"><img src=\"/gl6/img/favicon.ico\" height=15 />Waste</a></li>\r\n";
-			$navmenu .= "\t\t<li><a href=\"/gl6/playnext.php\"><img src=\"/gl6/img/favicon.ico\" height=15 />Play Next</a></li>\r\n";
-			$navmenu .= "\t\t<li><a href=\"/gl6/gamestatuschart.php\"><img src=\"/gl6/img/favicon.ico\" height=15 />Status Charts</a></li>\r\n";
-			$navmenu .= "\t\t<li><a href=\"/gl6/goty.php\"><img src=\"/gl6/img/favicon.ico\" height=15 />GOTY</a></li>\r\n";
+			$navmenu .= "\t\t<li><a href=\"calculations.php\"><img src=\"img/favicon.ico\" height=15 />Calculations</a></li>\r\n";
+			$navmenu .= "\t\t<li><a href=\"toplists.php\"><img src=\"img/favicon.ico\" height=15 />Top Lists</a></li>\r\n";
+			$navmenu .= "\t\t<li><a href=\"toplevel.php\"><img src=\"img/favicon.ico\" height=15 />Group by ___</a></li>\r\n";
+			$navmenu .= "\t\t<li><a href=\"chartdata.php\"><img src=\"img/favicon.ico\" height=15 />Chart Data (Calendar)</a></li>\r\n";
+			$navmenu .= "\t\t<li><a href=\"totals.php\"><img src=\"img/favicon.ico\" height=15 />Total Stats</a></li>\r\n";
+			$navmenu .= "\t\t<li><a href=\"historicchartdata.php\"><img src=\"img/favicon.ico\" height=15 />Historic Charts</a></li>\r\n";
+			$navmenu .= "\t\t<li><a href=\"ratings.php\"><img src=\"img/favicon.ico\" height=15 />Ratings</a></li>\r\n";
+			$navmenu .= "\t\t<li><a href=\"waste.php\"><img src=\"img/favicon.ico\" height=15 />Waste</a></li>\r\n";
+			$navmenu .= "\t\t<li><a href=\"playnext.php\"><img src=\"img/favicon.ico\" height=15 />Play Next</a></li>\r\n";
+			$navmenu .= "\t\t<li><a href=\"gamestatuschart.php\"><img src=\"img/favicon.ico\" height=15 />Status Charts</a></li>\r\n";
+			$navmenu .= "\t\t<li><a href=\"goty.php\"><img src=\"img/favicon.ico\" height=15 />GOTY</a></li>\r\n";
 		$navmenu .= "\t</ul></li>\r\n";
 //REFERENCE
 		$navmenu .= "\t<li><a>Reference</a>\r\n";
 		$navmenu .= "\t<ul>\r\n";
-			$navmenu .= "\t\t<li><a href='https://partner.steamgames.com/doc/api' target='_blank'>Steam Web API<img src=\"/gl6/img/new_window-512.png\" height=15 /></a></li>\r\n";
-			$navmenu .= "\t\t<li><a href='https://steamcommunity.com/dev' target='_blank'>Steam Web API<img src=\"/gl6/img/new_window-512.png\" height=15 /></a></li>\r\n";
-			$navmenu .= "\t\t<li><a href='https://wiki.teamfortress.com/wiki/User:RJackson/StorefrontAPI' target='_blank'>Steam Storefront API<img src=\"/gl6/img/new_window-512.png\" height=15 /></a></li>\r\n";
-			$navmenu .= "\t\t<li><a href='https://github.com/SteamRE/SteamKit' target='_blank'>SteamKit (GitHub)<img src=\"/gl6/img/new_window-512.png\" height=15 /></a></li>\r\n";
+			$navmenu .= "\t\t<li><a href='https://partner.steamgames.com/doc/api' target='_blank'>Steam Web API<img src=\"img/new_window-512.png\" height=15 /></a></li>\r\n";
+			$navmenu .= "\t\t<li><a href='https://steamcommunity.com/dev' target='_blank'>Steam Web API<img src=\"img/new_window-512.png\" height=15 /></a></li>\r\n";
+			$navmenu .= "\t\t<li><a href='https://wiki.teamfortress.com/wiki/User:RJackson/StorefrontAPI' target='_blank'>Steam Storefront API<img src=\"img/new_window-512.png\" height=15 /></a></li>\r\n";
+			$navmenu .= "\t\t<li><a href='https://github.com/SteamRE/SteamKit' target='_blank'>SteamKit (GitHub)<img src=\"img/new_window-512.png\" height=15 /></a></li>\r\n";
 		$navmenu .= "\t</ul></li>\r\n";
 		$navmenu .= "\t</ul>\r\n";
 	$navmenu .= "</div>";

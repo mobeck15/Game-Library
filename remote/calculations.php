@@ -1,6 +1,6 @@
 <?php
-include $_SERVER['DOCUMENT_ROOT']."/gl6/inc/php.ini.inc.php";
-include $_SERVER['DOCUMENT_ROOT']."/gl6/inc/functions.inc.php";
+include "inc/php.ini.inc.php";
+include "inc/functions.inc.php";
 $title="Calculations";
 echo Get_Header($title);
 //DONE: Floating divs don't float in gl6, fix the header stuff.

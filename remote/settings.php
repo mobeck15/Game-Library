@@ -1,7 +1,7 @@
 <?php
 $time_start = microtime(true);
 $path = $_SERVER['DOCUMENT_ROOT'];
-include $path."/gl6/inc/php.ini.inc.php";
+include $path."inc/php.ini.inc.php";
 
 include 'inc/functions.inc.php';
 $title="Settings";

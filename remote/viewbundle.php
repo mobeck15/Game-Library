@@ -1,7 +1,7 @@
 <?php
 $time_start = microtime(true);
-include $_SERVER['DOCUMENT_ROOT']."/gl6/inc/php.ini.inc.php";
-include $_SERVER['DOCUMENT_ROOT']."/gl6/inc/functions.inc.php";
+include "inc/php.ini.inc.php";
+include "inc/functions.inc.php";
 
 $title="View Bundle";
 echo Get_Header($title);

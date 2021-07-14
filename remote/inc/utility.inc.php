@@ -100,7 +100,8 @@ $conn=get_db_connection();
 
 function get_db_connection(){
 	//trigger_error("Memory Used: ".read_memory_usage(), E_USER_NOTICE);
-	include $_SERVER['DOCUMENT_ROOT']."/gl6/inc/auth.inc.php";
+	include "inc/auth.inc.php";
+	//echo"<p>Connection:"; var_dump(debug_backtrace());
 	//trigger_error("Memory Used: ".read_memory_usage(), E_USER_NOTICE);
 	
 	$conn = new mysqli($servername, $username, $password, $dbname);
