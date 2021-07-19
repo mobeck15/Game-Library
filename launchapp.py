@@ -5,7 +5,7 @@ import time, subprocess, os, datetime, sys
 from modules.launchparts import get_app_data, write_log_data, print_app_data, launchapp, saverecord
 from modules.launchparts import printtime, printelapses, captureendtime, getrating, getstatus
 
-datafile=os.path.dirname(__file__) + r"\data.json"
+datafile=os.path.dirname(__file__) + r"\data\data.json"
 
 appdata=get_app_data(sys.argv[1],filepath=datafile)
 
@@ -16,7 +16,7 @@ datatype='Add Time'
 start = time.time()
 print(printtime(start,'Starting at '))
 
-logfilename= os.path.dirname(__file__) + r'\log' + time.strftime("%Y", time.localtime(start)) + '-' + time.strftime("%m", time.localtime(start)) + '.csv'
+logfilename= os.path.dirname(__file__) + r'\logs\log' + time.strftime("%Y", time.localtime(start)) + '-' + time.strftime("%m", time.localtime(start)) + '.csv'
 print(logfilename)
 
 write_log_data(logfilename,"Start",start,appdata['name'],appdata['id'],appdata['platform'])

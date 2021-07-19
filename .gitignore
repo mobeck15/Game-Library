@@ -3,3 +3,5 @@ secrets.py
 **/__pycache__
 log*.csv
 auth*.php
+*.lnk
+data.json
