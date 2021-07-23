@@ -5,3 +5,4 @@ log*.csv
 auth*.php
 *.lnk
 data.json
+config.ini

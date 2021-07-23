@@ -25,6 +25,47 @@ class TestDataFile(unittest.TestCase):
 
         self.assertEqual(result, True)
 
+    def test_unique(self):
+        """
+        Test that the data file has all unique IDs and names
+        """
+        import json
+        with open(parent_dir+r"\data\data.json") as file:
+            data = json.load(file)
+            datacount=0
+            uniqueidcount=0
+            uniquenamecount=0
+            ids=[]
+            names=[]
+            for p in data['game']:
+                datacount+=1
+                if(p['id'] not in ids):
+                    ids.append(p['id'])
+                    uniqueidcount+=1
+                else:
+                    for q in data['game']:
+                        if(q['id']==p['id']):
+                            print("Duplicate ID: ",q['id']," ", q['name'])
+                
+                if(p['name'] not in names):
+                    names.append(p['name'])
+                    uniquenamecount+=1
+                else:
+                    for q in data['game']:
+                        if(q['name']==p['name']):
+                            print("Duplicate Name: ",q['id']," ", q['name'])
+        self.assertEqual(datacount, uniqueidcount)
+        self.assertEqual(datacount, uniquenamecount)
+
+    def test_inifile(self):
+        """
+        Ini File exists
+        """
+        from modules.launchparts import get_config
+        config=get_config(configpath=parent_dir+r"\config.ini")
+        self.assertGreater(len(config['DEFAULT']), 0)
+
+
 class TestGetAppDataMethods(unittest.TestCase):
     def setUp(self):
         """
@@ -110,7 +151,6 @@ class TestPrintMethods(unittest.TestCase):
         #print(match)
         self.assertEqual(match, output) 
 
-
 class TestLogFile(unittest.TestCase):
     def test_write_new_logfile(self):
         """
@@ -186,7 +226,6 @@ class TestprintTime(unittest.TestCase):
         *Test printtime returns time with provided label and padded spaces
         """
 
-
 class TestElapsedTime(unittest.TestCase):
     def setUp(self):
         """
@@ -258,7 +297,7 @@ class TestRecaptureTime(unittest.TestCase):
     #@patch('builtins.input', return_value="n")
     def test_recapture(self):
         """
-        Test that captureendtime records an end time that is larger than start time
+        Test that captureendtime prompts to recapture time when below minimum even after prompting once
         """
         from modules.launchparts import captureendtime
         import time
@@ -269,11 +308,6 @@ class TestRecaptureTime(unittest.TestCase):
             end=captureendtime(start,mintime=120,verbose=False)
 
             self.assertGreater(end,start)
-
-    #def test_recapture2(self,mmock_input):
-        """
-        Test that captureendtime prompts to recapture time when below minimum even after prompting once
-        """
 
     #def test_no_recapture(self,mmock_input):
         """

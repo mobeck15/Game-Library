@@ -1,3 +1,21 @@
+def get_config(configpath=""):
+    #code from stackoverflow
+    #https://stackoverflow.com/questions/8884188/how-to-read-and-write-ini-file-with-python3
+    
+    import os, configparser
+    if configpath=="":
+        configpath=os.path.dirname(__file__) + r"\config.ini"
+    
+    config = configparser.ConfigParser()
+    config.read(configpath)
+    if len(config['DEFAULT']) == 0:
+        #create default config
+        config['DEFAULT']['path'] = r'D:\Python\game-library\data\data.json'
+        config['DEFAULT']['default_message'] = 'Hey! help me!!!'   # create
+        with open(configpath, 'w') as configfile:    # save
+            config.write(configfile)
+    return config
+
 def get_app_data(appid,launcher="exe",filepath=r'D:\games\shortcuts\Code\data.txt'):
     import json
     appdata=None
@@ -10,6 +28,7 @@ def get_app_data(appid,launcher="exe",filepath=r'D:\games\shortcuts\Code\data.tx
  
 def print_app_data(p,launcher='exe'):
     #print(p)
+    #TODO: launcher is not parsed correctly. it always prints exe. the default should be embedded in p
     output='Name: ' + p['name'] + "\n"
     output = output + 'ID: ' + p['id'] + "\n"
     output = output + 'Platform: ' + p['platform'] + "\n"
@@ -47,6 +66,12 @@ def launchapp(appdata,argv,verbose=True):
             print('Working Directory: ', os.getcwd())
             print('executing ', appdata['path']['exe'])
         subprocess.call(appdata['path']['exe'])
+    elif argv[2] in ('admin', 'gog', 'dosbox', 'scummvm'):
+        os.chdir(os.path.dirname(appdata['path']['exe']))
+        if verbose:
+            print('Working Directory: ', os.getcwd())
+            print('executing ', appdata['path'][argv[2]])
+        subprocess.call(appdata['path'][argv[2]])
     else:
         if verbose:
             print('executing ', appdata['path'][argv[2]])
@@ -140,6 +165,8 @@ def saverecord(appdata,elapsedmin,datatype,notes,status,rating):
     import requests
     from modules.secrets import secrets
 
+    #print(int("30a".strip("abcdefg")))
+
     url = 'http://games.stuffiknowabout.com/gl6/addhistory.php'
     PostArgs = {
         'currenttime': 'on',
@@ -150,7 +177,7 @@ def saverecord(appdata,elapsedmin,datatype,notes,status,rating):
         'datarow[1][minutes]': 'on',
         'datarow[1][achievements]': '',
 
-        'datarow[1][ProductID]': appdata['id'],
+        'datarow[1][ProductID]': int(appdata['id'].strip("abcdefg")),
         'datarow[1][Title]': appdata['name'],
         'datarow[1][hours]': elapsedmin,
         'datarow[1][System]': appdata['system'],
