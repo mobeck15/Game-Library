@@ -43,7 +43,7 @@ with open(datafile) as json_file:
             with winshell.shortcut(link_filepath) as link:
                 link.path = r"C:\Users\mobec\python\virtualenv\Scripts\python.exe"
                 link.description = link_desc
-                link.arguments = r"d:\Python\game-library\launchapp.py " + link_args
+                link.arguments = r"d:\Python\game-library\client\launchapp.py " + link_args
                 #link.icon_location = (r"C:\Users\mobec\python\virtualenv\Scripts\python.exe", 0)
                 link.icon_location = (str(p['path']['exe']), 0)
                 link.working_directory = r"C:\Users\mobec\python\virtualenv\Scripts"
