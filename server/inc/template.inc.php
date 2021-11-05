@@ -49,11 +49,11 @@ function Get_Header($title="",$WIP=""){
 	<title>$title</title>
 	<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">
 	<link rel=\"shortcut icon\" href=\"/gl6/img/favicon.ico\"/>";
-	$Template_Header .= "\n	<link rel=\"stylesheet\" type=\"text/css\" href=\"/gl6/css/style.css\">";
+	$Template_Header .= "\n	<link rel=\"stylesheet\" type=\"text/css\" href=\"css/style.css\">";
 	
 	//Needed to support the dynamic navigation menu. 
 	//There is a conflict with something in style.css that makes it act weird if style.css is loaded after this one.
-	$Template_Header .= "\n	<link rel=\"stylesheet\" type=\"text/css\" href=\"/gl6/css/menu_style2.css\">";
+	$Template_Header .= "\n	<link rel=\"stylesheet\" type=\"text/css\" href=\"css/menu_style2.css\">";
 
 	//Needed to support dynamic lookups
 	$Template_Header .= "\n	<link rel=\"stylesheet\" href=\"http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.1/themes/base/minified/jquery-ui.min.css\" type=\"text/css\" /> ";
@@ -131,7 +131,7 @@ function get_navmenu($dropbar=true){
 			$navmenu .= "\t\t<li><a href=\"/gl6/tests/test.php\"><img src=\"/gl6/img/favicon.ico\" height=15 />Tests <img src=\"/gl6/img/caret-right.png\" height=15 /></a>\r\n";
 			$navmenu .= "\t<ul>\r\n";
 			$navmenu .= "\t\t<li><a href=\"/gl6/inc/getGames.inc.php\">Get Games</a></li>\r\n";
-			$navmenu .= "\t\t<li><a href=\"/gl6/inc/getCalculations.inc.php\">Get Calculations</a></li>\r\n";
+			$navmenu .= "\t\t<li><a href=\"inc/getCalculations.inc.php\">Get Calculations</a></li>\r\n";
 			$navmenu .= "\t\t<li><a href=\"/gl6/inc/getPurchases.inc.php\">Get Purchases</a></li>\r\n";
 			$navmenu .= "\t\t<li><a href=\"/gl6/inc/getActivityCalculations.inc.php\">Get Activity Calculations</a></li>\r\n";
 			$navmenu .= "\t\t<li><a href=\"/gl6/inc/getHistoryCalculations.inc.php\">Get History Calculations</a></li>\r\n";

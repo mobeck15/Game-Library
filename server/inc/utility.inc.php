@@ -69,7 +69,7 @@ function read_memory_usage() {
 
 function getAllCpi($connection=false){
 	if($connection==false){
-		include $_SERVER['DOCUMENT_ROOT']."/gl6/inc/auth.inc.php";
+		include "inc/auth.inc.php";
 		//$conn = new mysqli($servername, $username, $password, $dbname);
 $conn=get_db_connection();
 	} else {
@@ -99,11 +99,9 @@ $conn=get_db_connection();
 
 
 function get_db_connection(){
-	//trigger_error("Memory Used: ".read_memory_usage(), E_USER_NOTICE);
-	include $_SERVER['DOCUMENT_ROOT']."/gl6/inc/auth.inc.php";
-	//trigger_error("Memory Used: ".read_memory_usage(), E_USER_NOTICE);
+	include "inc/auth.inc.php";
 	
-	$conn = new mysqli($servername, $username, $password, $dbname);
+	//$conn = new mysqli($servername, $username, $password, $dbname);
 
 	/* check connection */
 	if (mysqli_connect_errno()) {
@@ -144,7 +142,7 @@ function makeIndex($array,$indexKey){
 
 function getAllItems($gameID="",$connection=false){
 	if($connection==false){
-		include $_SERVER['DOCUMENT_ROOT']."/gl6/inc/auth.inc.php";
+		include "inc/auth.inc.php";
 		$conn = new mysqli($servername, $username, $password, $dbname);
 	} else {
 		$conn = $connection;
@@ -226,7 +224,7 @@ function getAllItems($gameID="",$connection=false){
 
 function getKeywords($gameID="",$connection=false){
 	if($connection==false){
-		include $_SERVER['DOCUMENT_ROOT']."/gl6/inc/auth.inc.php";
+		include "inc/auth.inc.php";
 		$conn = new mysqli($servername, $username, $password, $dbname);
 	} else {
 		$conn = $connection;
@@ -317,7 +315,7 @@ function reIndexArray($array,$indexKey){
 
 function getGameDetail($gameID,$connection=false){
 	if($connection==false){
-		include $_SERVER['DOCUMENT_ROOT']."/gl6/inc/auth.inc.php";
+		include "inc/auth.inc.php";
 		$conn = new mysqli($servername, $username, $password, $dbname);
 	} else {
 		$conn = $connection;
