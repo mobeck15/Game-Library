@@ -42,6 +42,7 @@ function getGames($gameID="",$connection=false){
 		while($row = $result->fetch_assoc()) {
 			$row=CalculateGameRow($row);
 			
+			/*
 			$launchDate=strtotime($row['LaunchDate']);
 			$row['LaunchDateValue']=$launchDate;
 			if (isset($cpi[date("Y",$launchDate)][date("n",$launchDate)])) {
@@ -51,7 +52,7 @@ function getGames($gameID="",$connection=false){
 			}
 			$row['CPILaunch'] = round($row['LaunchPrice'] * ($cpi['Current'] / $cpi_launch) ,2);
 			$row['CPILaunch'] = sprintf("$%.2f",$row['CPILaunch']);
-
+			*/
 			
 			
 			$games[]=$row;
@@ -68,8 +69,13 @@ function getGames($gameID="",$connection=false){
 }
 
 function CalculateGameRow($row){
-	$row['LaunchDateSort'] = $row['LaunchDate'];
-	$row['LaunchDate'] = date("n/j/Y",strtotime($row['LaunchDate']));
+	$row['Game_ID']=(int)$row['Game_ID'];
+	
+	//$row['LaunchDateSort'] = $row['LaunchDate'];
+	//$row['LaunchDate'] = date("n/j/Y",strtotime($row['LaunchDate']));
+	$row['LaunchDate'] = new DateTime($row['LaunchDate']);
+	//TODO: update other files to remove need for 'LaunchDateValue'
+	//$row['LaunchDateValue'] = $row['LaunchDate']->getTimestamp();
 	if(strtotime($row['LowDate']) == 0) {
 		$row['LowDate'] = "";
 	} else {
@@ -105,37 +111,47 @@ function CalculateGameRow($row){
 	} else {
 		$row['HistoricLow'] = sprintf("%.2f",$row['HistoricLow']);
 	}
+	$row['SteamAchievements']=(int)$row['SteamAchievements'];
 	if ($row['SteamAchievements'] == 0){
-		$row['SteamAchievements'] = "";
+		$row['SteamAchievements'] = null;
 	} 
+	$row['SteamCards']=(int)$row['SteamCards'];
 	if ($row['SteamCards'] == 0){
-		$row['SteamCards'] = "";
+		$row['SteamCards'] = null;
 	} 
+	
+	$row['Metascore']=(int)$row['Metascore'];
 	if ($row['Metascore'] == 0){
 		if($row['MetascoreID']=="") {
-			$row['Metascore'] = "";
+			$row['MetascoreID'] = 
+			$row['Metascore'] = null;
 		} else {
 			$row['MetascoreLinkCritic']= "<a class='Search' href='http://www.metacritic.com/game/".$row['Metascore']."' target='_blank'>N/A</a>";
 		}
 	} else {
 		$row['MetascoreLinkCritic']= "<a href='http://www.metacritic.com/game/".$row['MetascoreID']."' target='_blank'>".$row['Metascore']."</a>";
 	}
+	
+	$row['UserMetascore']=(int)$row['UserMetascore'];
 	if ($row['UserMetascore'] == 0){
 		if($row['MetascoreID']=="") {
-			$row['UserMetascore'] = "";
+			$row['MetascoreID'] =
+			$row['UserMetascore'] = null;
 		} else {
 			$row['MetascoreLinkUser']= "<a class='Search' href='http://www.metacritic.com/game/".$row['MetascoreID']."' target='_blank'>N/A</a>";
 		}
 	} else {
 		$row['MetascoreLinkUser']= "<a href='http://www.metacritic.com/game/".$row['MetascoreID']."' target='_blank'>".$row['UserMetascore']."</a>";
 	}
+	$row['SteamRating']=(int)$row['SteamRating'];
 	if ($row['SteamRating'] == 0){
-		$row['SteamRating'] = "";
+		$row['SteamRating'] = null;
 	} 
+	$row['SteamID']=(int)$row['SteamID'];
 	if($row['SteamID']<>0) {
 		$row['SteamLinks'] = "<a href='http://store.steampowered.com/app/".$row['SteamID']."' target='_blank'>Store</a>";
 	} else {
-		$row['SteamID']="";
+		$row['SteamID']=null;
 		$row['SteamLinks'] = "<a class='Search' href='http://store.steampowered.com/search/?term=". urlencode($row['Title']) ."' target='_blank'>Search</a>";
 	}
 	if($row['GOGID']<>"") {
@@ -154,6 +170,7 @@ function CalculateGameRow($row){
 	} else {
 		$row['isthereanydealLink'] = "<a class='Search' href='http://isthereanydeal.com/search?q=". urlencode($row['Title']) ."' target='_blank'>Search</a>";
 	}
+	$row['TimeToBeatID']=(int)$row['TimeToBeatID'];
 	if($row['TimeToBeatID']<>0) {
 		$row['TimeToBeatLink']= "<a href='http://howlongtobeat.com/game.php?id=".$row['TimeToBeatID']."' target='_blank'>Link</a>";
 		if($row['TimeToBeat']==0){
@@ -171,8 +188,46 @@ function CalculateGameRow($row){
 		$row['MetascoreLink']= "<a class='Search' href='http://www.metacritic.com/search/game/". urlencode($row['Title']) ."/results' target='_blank'>Search</a>";
 		$row['MetascoreLinkCritic']= "<a class='Search' href='http://www.metacritic.com/search/game/". urlencode($row['Title']) ."/results' target='_blank'>Search</a>";
 		$row['MetascoreLinkUser']= "<a class='Search' href='http://www.metacritic.com/search/game/". urlencode($row['Title']) ."/results' target='_blank'>Search</a>";
-		
-	}	
+	}
+	
+	$row['Want']=(int)$row['Want'];
+	$row['ParentGameID']=(int)$row['ParentGameID'];
+	$row['Playable']=(bool)$row['Playable'];
+	
 	return $row;
+}
+
+if (basename($_SERVER["SCRIPT_NAME"], '.php') == "getGames.inc") {
+	include $_SERVER['DOCUMENT_ROOT']."/gl6/inc/php.ini.inc.php";
+	include $_SERVER['DOCUMENT_ROOT']."/gl6/inc/functions.inc.php";
+	
+	$title="Games Inc Test";
+	echo Get_Header($title);
+	
+	$lookupgame=lookupTextBox("Product", "ProductID", "id", "Game", "../ajax/search.ajax.php");
+	echo $lookupgame["header"];
+	if (!(isset($_GET['id']) && is_numeric($_GET['id']))) {
+		?>
+		Please specify a game by ID.
+		<form method="Get">
+			<?php echo $lookupgame["textBox"]; ?>
+			<input type="submit">
+		</form>
+
+		<?php
+		echo $lookupgame["lookupBox"];
+	} else {	
+		$games=reIndexArray(getGames(""),"Game_ID");
+		echo arrayTable($games[$_GET['id']]);
+		
+		/*
+		echo $games[$_GET['id']]["LaunchDate"]."<br>";
+		$datevalue=strtotime($games[$_GET['id']]["LaunchDate"]);
+		echo $datevalue."<br>";
+		$datetest = new DateTime($games[$_GET['id']]["LaunchDate"]);
+		var_dump($datetest);
+		*/
+	}
+	echo Get_Footer();
 }
 ?>

@@ -100,8 +100,7 @@ $conn=get_db_connection();
 
 function get_db_connection(){
 	//trigger_error("Memory Used: ".read_memory_usage(), E_USER_NOTICE);
-	include "inc/auth.inc.php";
-	//echo"<p>Connection:"; var_dump(debug_backtrace());
+	include $_SERVER['DOCUMENT_ROOT']."/gl6/inc/auth.inc.php";
 	//trigger_error("Memory Used: ".read_memory_usage(), E_USER_NOTICE);
 	
 	$conn = new mysqli($servername, $username, $password, $dbname);
@@ -175,6 +174,7 @@ function getAllItems($gameID="",$connection=false){
 				$row['Time Added']= date("H:i:s",$time) ;
 			}
 			
+			$row['AddedDateTime']=new DateTime($row['DateAdded'] . " " . $row['Time Added']);
 			$row['AddedTimeStamp']=strtotime($row['DateAdded'] . " " . $row['Time Added'])+$row['Sequence'];
 			if(date("H:i:s",$row['AddedTimeStamp']) == "00:00:00") {
 				$row['PrintAddedTimeStamp']= date("n/j/Y",$row['AddedTimeStamp']);
@@ -190,6 +190,28 @@ function getAllItems($gameID="",$connection=false){
 			
 			$items[]=$row;
 		}
+		
+		//DONE: change Paid calculation to use only the first bundle ****PAID****
+		$firstdate = array();
+		foreach($items as $row) {
+			if(isset($firstdate[$row["ProductID"]])){
+				if($firstdate[$row["ProductID"]] > strtotime($row['PrintAddedTimeStamp'])) {
+					$firstdate[$row["ProductID"]]=strtotime($row['PrintAddedTimeStamp']);
+				}
+			} else {
+				$firstdate[$row["ProductID"]]=strtotime($row['PrintAddedTimeStamp']);
+			}
+		}
+
+		foreach($items as &$row) {
+			if($firstdate[$row["ProductID"]] == strtotime($row['PrintAddedTimeStamp'])) {
+				$row["FirstItem"] = True;
+			} else {
+				$row["FirstItem"] = false;
+			}
+		}
+
+		
 	} else {
 		$items = false;
 		trigger_error("SQL Query Failed: " . mysqli_error($conn) . "</br>Query: ". $sql);
@@ -233,53 +255,6 @@ function regroupArray($array,$indexKey){
 		$index[$value[$indexKey]][]=$value;
 	}	
 	return $index;
-}
-
-function getPriceperhour($price,$time){
-	$hours=$time/60/60;
-	if($hours<1){
-		$priceperhour=$price;
-	} else {
-		$priceperhour=$price/$hours;
-	}
-	//$priceperhour=sprintf("%.2f",$priceperhour);
-	return $priceperhour;
-}
-
-function getLessXhour($price,$time,$xhour=1){
-	$hours=$time/60/60;
-	if($hours<1){
-		$priceperhour=$price;
-	} else {
-		$priceperhour=$price/$hours;
-	}
-	
-	if($xhour+$hours==0) {
-		$LessXhour=0;
-	} else {
-		//echo "LessXhour=" . "priceperhour: ". $priceperhour . " -( price: " . $price . " /(max( xhour: " .$xhour. ",hours: ".$hours. " )+ xhour: ". $xhour. " ))<br>";
-		$LessXhour=$priceperhour-($price/(max($xhour,$hours)+$xhour));
-	}
-	
-	//$LessXhour=sprintf("%.2f",$LessXhour);
-	return $LessXhour;
-}
-
-function getHourstoXless($price,$time,$xless=.01){
-	$priceperhour=getPriceperhour($price,$time);
-	$hoursxless=getHrsToTarget($price,$time,$priceperhour-$xless);
-	
-	return $hoursxless;
-}
-
-function getHrsToTarget($CalcValue,$time,$target){
-	if($target>0){
-		$hourstotarget= $CalcValue/$target-$time/60/60;
-	} else {
-		$hourstotarget=0;
-	}
-	
-	return $hourstotarget;
 }
 
 function getSortArray($SourceArray,$SortField){
@@ -443,4 +418,182 @@ function RatingsChartData($scale=100,$ConnOrCalculationsArray="",$fieldsArray="A
 	return $chartData;
 }
 
+function getCleanStringDate($datevalue) {
+	if(date("H:i:s",$datevalue) == "00:00:00") {
+		$stringdate= date("n/j/Y",$datevalue);
+	} else {
+		$stringdate= date("n/j/Y H:i:s",$datevalue);
+	}
+	return $stringdate;
+}
+
+function daysSinceDate($date) {
+	if(!is_numeric($date)) {
+		$daysSince=0;
+	}
+	
+	if($date>0){
+		$daysSince=floor((time()-$date) / (60 * 60 * 24));
+	} else {
+		$daysSince="";
+	}
+	return $daysSince;
+}
+
+function getTimeLeft($timetobeat,$totaltime,$status) {
+	$timeleft=$timetobeat-($totaltime/60/60);
+	if($timeleft<0 || $status=="Done"){
+		$timeleft=0;
+	}
+	return $timeleft;
+}
+
+function arrayTable($DataArray){
+	$output="";
+	$output .= "<table>";
+	foreach($DataArray as $stat => $value){
+		$output .= "<tr><th>$stat</th><td>";
+		$output .= gettype($value);
+		if(gettype($value) == "string") {
+			$output .= " (". strlen($value) . ")";
+		} elseif(gettype($value) == "object") {
+			$output .= " (". get_class($value) . ")";
+		}
+		$output .= "</td><td>";
+		if(is_array($value)) {
+			$output .= arrayTable($value);
+		} else {
+			switch (gettype($value)) {
+				case "boolean":
+					$output .= boolText($value);
+					break;
+				case "object":
+					switch (get_class($value)) {
+						case "DateTime":
+							$output .= $value->getTimestamp();
+							$output .= " (" . $value->format("Y-m-d  g:i:s A") . ")"; //G 24hr no leading zeros | A AM/PM | g 12hr format no leadig zero
+							break;
+						case "PriceCalculation":
+							$output .= "<table>";
+							$output .= "<tr><th>getPrice</th><td>".$value->getPrice()."</td><td>".$value->getPrice(true)."</td></tr>";
+							$output .= "<tr><th>getVarianceFromMSRP</th><td>".$value->getVarianceFromMSRP()."</td><td>".$value->getVarianceFromMSRP(true)."</td></tr>";
+							$output .= "<tr><th>getVarianceFromMSRPpct</th><td>".$value->getVarianceFromMSRPpct()."</td><td>".$value->getVarianceFromMSRPpct(true)."</td></tr>";
+							$output .= "<tr><th>getPricePerHourOfTimeToBeat</th><td>".$value->getPricePerHourOfTimeToBeat()."</td><td>".$value->getPricePerHourOfTimeToBeat(true)."</td></tr>";
+							$output .= "<tr><th>getPricePerHourOfTimePlayed</th><td>".$value->getPricePerHourOfTimePlayed()."</td><td>".$value->getPricePerHourOfTimePlayed(true)."</td></tr>";
+							$output .= "<tr><th>getPricePerHourOfTimePlayedReducedAfter1Hour</th><td>".$value->getPricePerHourOfTimePlayedReducedAfter1Hour()."</td><td>".$value->getPricePerHourOfTimePlayedReducedAfter1Hour(true)."</td></tr>";
+							$output .= "<tr><th>getHoursTo01LessPerHour</th><td>".$value->getHoursTo01LessPerHour()."</td><td>".$value->getHoursTo01LessPerHour(true)."</td></tr>";
+							
+							$output .= "</table>";
+						default:
+							$output .= print_r($value,true);
+							break;
+					}
+					break;
+				default:
+					$output .= nl2br(htmlspecialchars($value));
+					break;
+			}
+		}
+		$output .= "</td></tr>";
+	}
+	$output .= "</table>";
+	return $output;
+}
+
+
+function lookupTextBox($lookupid, $inputid, $inputname, $querytype="Game", $source="./ajax/search.ajax.php") {
+	$headerScript  = '<script src="https://code.jquery.com/jquery-1.12.4.js"></script>';
+	$headerScript .= '<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>';
+	
+	$textBox="<input type='numeric' id='$inputid' name='$inputname'>";
+	
+	$lookupBox="(?)<input id='$lookupid'	size=30 >";
+		
+	$lookupScript="<script>
+		  $(function() {
+				$('#$lookupid').autocomplete({ 
+					source: function(request, response) {
+						$.getJSON(
+							'$source',
+							{ term:request.term, querytype:'$querytype' }, 
+							response
+						);
+					},
+					select: function (event, ui) { 
+						$('#$inputid').val(ui.item.$inputname);
+					} }
+				);
+			} );
+		</script>";
+		
+	return array("header" => $headerScript,
+				"textBox" => $textBox,
+				"lookupBox" => $lookupBox . $lookupScript);
+}
+
+//Remove once price class is functional
+function getVariance($price,$msrp) {
+	$variance=0;
+	if($msrp<>0){
+		$variance=$price-$msrp;
+	}
+	return $variance;
+}
+
+function getVariancePct($price,$msrp) {
+	$variance=0;
+	if($msrp<>0){
+		$variance=(1-($price/$msrp))*100;
+	}
+	return $variance;
+}
+
+function getPriceperhour($price,$time){
+	$hours=$time/60/60;
+	if($hours<1){
+		$priceperhour=$price;
+	} else {
+		$priceperhour=$price/$hours;
+	}
+	//$priceperhour=sprintf("%.2f",$priceperhour);
+	return $priceperhour;
+}
+
+function getLessXhour($price,$time,$xhour=1){
+	$hours=$time/60/60;
+	if($hours<1){
+		$priceperhour=$price;
+	} else {
+		$priceperhour=$price/$hours;
+	}
+	
+	if($xhour+$hours==0) {
+		$LessXhour=0;
+	} else {
+		//echo "LessXhour=" . "priceperhour: ". $priceperhour . " -( price: " . $price . " /(max( xhour: " .$xhour. ",hours: ".$hours. " )+ xhour: ". $xhour. " ))<br>";
+		$LessXhour=$priceperhour-($price/(max($xhour,$hours)+$xhour));
+	}
+	
+	//$LessXhour=sprintf("%.2f",$LessXhour);
+	return $LessXhour;
+}
+
+function getHourstoXless($price,$time,$xless=.01){
+	$priceperhour=getPriceperhour($price,$time);
+	$hoursxless=getHrsToTarget($price,$time,$priceperhour-$xless);
+	
+	return $hoursxless;
+}
+
+function getHrsToTarget($CalcValue,$time,$target){
+	if($target>0){
+		$hourstotarget= $CalcValue/$target-$time/60/60;
+	} else {
+		$hourstotarget=0;
+	}
+	
+	return $hourstotarget;
+}
+
+//REMOVE END
 ?>

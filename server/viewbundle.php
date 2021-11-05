@@ -1,7 +1,7 @@
 <?php
 $time_start = microtime(true);
-include "inc/php.ini.inc.php";
-include "inc/functions.inc.php";
+include $_SERVER['DOCUMENT_ROOT']."/gl6/inc/php.ini.inc.php";
+include $_SERVER['DOCUMENT_ROOT']."/gl6/inc/functions.inc.php";
 
 $title="View Bundle";
 echo Get_Header($title);
@@ -51,9 +51,6 @@ $settings=getsettings($conn);
 $gameID="";
 $games=getGames($gameID,$conn);
 $items=getAllItems($gameID,$conn);
-//$history=getHistoryCalculations($gameID,$conn);
-//$activity=getActivityCalculations($gameID,$history,$conn);
-//$keywords=getKeywords($gameID,$conn);
 $purchases=getPurchases("",$conn,$items,$games);
 
 $purchaseIndex=makeIndex($purchases,"TransID");
@@ -61,44 +58,25 @@ $gameIndex=makeIndex($games,"Game_ID");
 $itemIndex=makeIndex($items,"ItemID");
 
 //<div style="background:yellow;color:black">WORK IN PROGRESS</div>
-?>
-<p>
-  <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
-  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-<?php
+
+$lookupbundle=lookupTextBox("BundleTitle", "BundleID", "id", "Trans");
+echo $lookupbundle["header"];
+
 $edit_mode=false;
 if (isset($_GET['edit']) && $_GET['edit'] = 1) {
 	$edit_mode=true;	
 }
 
-
-if (!isset($_GET['id'])) {
-	//DONE: Add ajax lookup by name
+if (!(isset($_GET['id']) && is_numeric($_GET['id']))) {
 	?>
-	Please specify a bundle by ID.
-	<form method="Get">
-		<input type="numeric" name="id" id="BundleID">
-		<input type="submit">
-		Search: <input id="BundleTitle" size=30>
-		<script>
-		  $(function() {
-			$( "#BundleTitle" ).autocomplete({
-				source: function(request, response) {
-					$.getJSON(
-						"ajax/search.ajax.php",
-						{ term:request.term, querytype:'Trans' }, 
-						response
-					);
-				},
-				select: function(event, ui){
-					$("#BundleID").val(ui.item.id);
-				}
-			});
-		  });
-		</script>
-	</form>
-	<?php
-	
+		Please specify a bundle by ID.
+		<form method="Get">
+			<?php echo $lookupbundle["textBox"]; ?>
+			<input type="submit">
+		</form>
+
+		<?php
+		echo $lookupbundle["lookupBox"];
 } else { ?>
 	<a href="<?php echo $_SERVER['PHP_SELF'] . "?id=" . ($_GET['id']-1); ?>">&lt;--Prev</a> | <a href="<?php echo $_SERVER['PHP_SELF'] . "?id=" . ($_GET['id']+1); ?>">Next--&gt;</a>
 	<form method="post">
@@ -375,13 +353,13 @@ array(25) {
 			<td><a href="viewgame.php?id=<?php echo $value['GameID']; ?>"><?php echo $games[$gameIndex[$value['GameID']]]['Title']; ?></a></td>
 			<td><?php echo $value['Type']; ?></td>
 			<td><?php echo booltext($value['Playable']); ?></td>
-			<td><?php echo money_format('%.2n', $value['MSRP']); ?></td>
+			<td><?php echo "$" . sprintf('%.2f', $value['MSRP']); ?></td>
 			<td><?php echo $value['Want']; ?></td>
-			<td><?php echo money_format('%.2n', $value['HistoricLow']); ?></td>
+			<td><?php echo "$" . sprintf('%.2f', $value['HistoricLow']); ?></td>
 			<td><?php echo round($value['Altwant'],3); ?></td>
 			<td><?php echo round($value['Althrs'],3); ?></td>
-			<td><?php echo money_format('%.2n', $value['SalePrice']); ?></td>
-			<td><?php echo money_format('%.2n', $value['AltSalePrice']); ?></td>
+			<td><?php echo "$" . sprintf('%.2f', $value['SalePrice']); ?></td>
+			<td><?php echo "$" . sprintf('%.2f', $value['AltSalePrice']); ?></td>
 			<td class="hidden"><?php var_dump($value); ?></td>
 			<td class="hidden"><?php var_dump($games[$gameIndex[$value['GameID']]]); ?></td>
 			</tr>
@@ -456,7 +434,7 @@ array(25) {
 		</summary>
 			<table>
 			<thead><tr>
-			<th>Product</th><th>Parent Game</th><th>Series</th><th>Want</th><th>Playable</th><th>Type</th><th>Launch Date</th><th>Launch Price</th><th>MSRP</th><th>Current MSRP</th><th>Historic Low</th><th>Historic Low Date</th><th>Steam Achievements</th><th>Steam Cards</th><th>Time To Beat</th><th>Metascore</th><th>Metascore User</th><th>Steam Rating</th><th>Date Updated</th><th>CPI Launch</th>
+			<th>Product</th><th>Parent Game</th><th>Series</th><th>Want</th><th>Playable</th><th>Type</th><th>Launch Date</th><th>Launch Price</th><th>MSRP</th><th>Current MSRP</th><th>Historic Low</th><th>Historic Low Date</th><th>Steam Achievements</th><th>Steam Cards</th><th>Time To Beat</th><th>Metascore</th><th>Metascore User</th><th>Steam Rating</th><th>Date Updated</th>
 			<th class="hidden">Steam Store</th><th class="hidden">GOG</th><th class="hidden">isthereanydeal</th><th class="hidden">Developer</th><th class="hidden">Publisher</th>
 			</tr></thead>
 			<?php foreach ($purchases[$purchaseIndex[$_GET['id']]]['ProductsinBunde'] as $value) { ?>
@@ -473,11 +451,11 @@ array(25) {
 			<td><?php echo $games[$gameIndex[$value]]['Want']; ?></td>
 			<td><?php echo booltext($games[$gameIndex[$value]]['Playable']); ?></td>
 			<td><?php echo $games[$gameIndex[$value]]['Type']; ?></td>
-			<td><?php echo $games[$gameIndex[$value]]['LaunchDate']; ?></td>
-			<td><?php echo money_format('%.2n', $games[$gameIndex[$value]]['LaunchPrice']); ?></td>
-			<td><?php echo money_format('%.2n', $games[$gameIndex[$value]]['MSRP']); ?></td>
-			<td><?php echo money_format('%.2n', $games[$gameIndex[$value]]['CurrentMSRP']); ?></td>
-			<td><?php echo money_format('%.2n', $games[$gameIndex[$value]]['HistoricLow']); ?></td>
+			<td><?php echo $games[$gameIndex[$value]]['LaunchDate']->format("n/d/Y"); ?></td>
+			<td><?php echo "$" . sprintf('%.2f', $games[$gameIndex[$value]]['LaunchPrice']); ?></td>
+			<td><?php echo "$" . sprintf('%.2f', $games[$gameIndex[$value]]['MSRP']); ?></td>
+			<td><?php echo "$" . sprintf('%.2f', $games[$gameIndex[$value]]['CurrentMSRP']); ?></td>
+			<td><?php echo "$" . sprintf('%.2f', $games[$gameIndex[$value]]['HistoricLow']); ?></td>
 			<td><?php echo $games[$gameIndex[$value]]['LowDate']; ?></td>
 			<td><?php echo $games[$gameIndex[$value]]['SteamAchievements']; ?></td>
 			<td><?php echo $games[$gameIndex[$value]]['SteamCards']; ?></td>
@@ -486,7 +464,6 @@ array(25) {
 			<td><?php echo $games[$gameIndex[$value]]['MetascoreLinkUser']; ?></td>
 			<td><?php echo $games[$gameIndex[$value]]['SteamRating']; ?></td>
 			<td><?php echo $games[$gameIndex[$value]]['DateUpdated']; ?></td>
-			<td><?php echo $games[$gameIndex[$value]]['CPILaunch']; ?></td>
 			<td class="hidden"><?php echo $games[$gameIndex[$value]]['SteamLinks']; ?></td>
 			<td class="hidden"><?php echo $games[$gameIndex[$value]]['GOGLink']; ?></td>
 			<td class="hidden"><?php echo $games[$gameIndex[$value]]['isthereanydealLink']; ?></td>
@@ -495,7 +472,9 @@ array(25) {
 			<td class="hidden"><?php var_dump($value); ?></td>
 			<td class="hidden"><?php var_dump($games[$gameIndex[$value]]); ?></td>
 			</tr>
-			<?php } ?>
+			<?php } 
+			//Clean up hidden data.
+			?>
 			
 			</table>
 		</details>

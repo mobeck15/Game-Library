@@ -1,24 +1,21 @@
 <?php
-include "inc/php.ini.inc.php";
-include "inc/functions.inc.php";
+include $_SERVER['DOCUMENT_ROOT']."/gl6/inc/php.ini.inc.php";
+include $_SERVER['DOCUMENT_ROOT']."/gl6/inc/functions.inc.php";
 
 //$ShowSteamThings=false; // Steam scraping is broken for now.
 $ShowSteamThings=true;
 
 $title="View Game";
 echo Get_Header($title);
-?>
 
-<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
-<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-<?php
+$lookupgame=lookupTextBox("Product", "ProductID", "id");
+echo $lookupgame["header"];
+
 $edit_mode=false;
 if (isset($_GET['edit']) && $_GET['edit'] = 1) {
 	$edit_mode=true;	
 }
-?>
 
-<?php
 $conn=get_db_connection();
 
 if (isset($_POST['ID'])) {
@@ -174,29 +171,15 @@ if (isset($_POST['ID'])) {
 }
 
 if (!(isset($_GET['id']) && is_numeric($_GET['id']))) {
-	//DONE: Add ajax lookup by name
 	?>
-	Please specify a game by ID.
-	<form method="Get">
-		<input type="numeric" id="ProductID" name="id">
-		<input type="submit">
-	</form>
+		Please specify a game by ID.
+		<form method="Get">
+			<?php echo $lookupgame["textBox"]; ?>
+			<input type="submit">
+		</form>
 
-	(?)<input id="Product" size=30 >
-	
-	<script>
-	  $(function() {
-			$('#Product').autocomplete({ 
-				source: "./ajax/search.ajax.php",
-				select: function (event, ui) { 
-					$("#ProductID").val(ui.item.id);
-				} }
-			);
-		} );
-	</script>
-
-
-	<?php
+		<?php
+		echo $lookupgame["lookupBox"];
 	
 } else {
 	//DONE: cleanse get[ID] to make sure it is only a numeric value - Rejects id if not numeric
@@ -319,8 +302,8 @@ if (!(isset($_GET['id']) && is_numeric($_GET['id']))) {
 			$Developer=parse_developer($result);
 			$Publisher=parse_publisher($result);
 			$PubDate=parse_releasedate($result);
-			if(($game['LaunchDate']==0 OR $game['LaunchDate']=="12/31/1969") && isset($PubDate)){
-				$game['LaunchDate']=date("Y-m-d",strtotime($PubDate));
+			if(($game['LaunchDate']==null OR $game['LaunchDate']->getTimestamp()==0) && isset($PubDate)){
+				$game['LaunchDate']=new DateTime($PubDate);
 			}
 
 			$matches=parse_genre($result);
@@ -351,6 +334,7 @@ if (!(isset($_GET['id']) && is_numeric($_GET['id']))) {
 			</details>
 		<?php }
 		
+		//TODO: Check for API data even if there is no store page. Currently skipps if steam redirects to home page.
 		if($result!=false) { ?>
 			<details>
 			<summary>Steam API</summary>
@@ -473,8 +457,11 @@ if (!(isset($_GET['id']) && is_numeric($_GET['id']))) {
 		<td><table><thead><tr><th>Launch</th><th>Updated</th><th>First Play</th><th>Last Play</th><th>Last Beat</th><th>Purchase</th><th>Last Play / Purchase</th></tr></thead>
 		<tr><td>
 		<?php if ($edit_mode === true) { ?>
-		<input type="date" name="LaunchDate" value="<?php echo date("Y-m-d",strtotime($game['LaunchDate'])); ?>">
-		<?php } else { echo $game['LaunchDate']; }
+		<input type="date" name="LaunchDate" value="<?php 
+			//echo date("Y-m-d",strtotime($game['LaunchDate'])); 
+			echo $game['LaunchDate']->format("Y-m-d");
+			?>">
+		<?php } else { echo $game['LaunchDate']->format("n/j/Y"); }
 		
 		if(isset($PubDate)){
 			echo "<br>".trim($PubDate);
@@ -496,7 +483,7 @@ if (!(isset($_GET['id']) && is_numeric($_GET['id']))) {
 		</td>
 		
 		<td><?php echo $calculations[$game['Game_ID']]['LastBeat']; ?></td>
-		<td><?php echo $calculations[$game['Game_ID']]['PrintPurchaseDate']; ?><br>(<?php echo $calculations[$game['Game_ID']]['DaysSincePurchaseDate']; ?> Days)</td>
+		<td><?php echo $calculations[$game['Game_ID']]['PurchaseDateTime']->format("n/j/Y g:i:s A"); ?><br>(<?php echo $calculations[$game['Game_ID']]['DaysSincePurchaseDate']; ?> Days)</td>
 		<td><?php echo $calculations[$game['Game_ID']]['LastPlayORPurchase']; ?><br>(<?php echo $calculations[$game['Game_ID']]['DaysSinceLastPlayORPurchase']; ?> Days)</td>
 		</tr></table>
 	</td></tr>
@@ -524,7 +511,7 @@ if (!(isset($_GET['id']) && is_numeric($_GET['id']))) {
 		<td>
 		<?php if ($edit_mode === true) { 
 			if ($game['LowDate']==0) {
-				$useLowDate=$game['LaunchDate'];
+				$useLowDate=$game['LaunchDate']->format("n/j/Y");
 			} else {
 				$useLowDate=$game['LowDate'];
 			} ?>
@@ -534,7 +521,11 @@ if (!(isset($_GET['id']) && is_numeric($_GET['id']))) {
 		</td>
 		<?php /* */ ?>
 		
-		<td><?php echo $game['CPILaunch']; ?></td>
+		
+		<td><?php 
+		//TODO: Move CPI to a row and a row for dates to calulate eache price type.
+		//echo $game['CPILaunch']; 
+		?></td>
 		<td>$<?php echo $calculations[$game['Game_ID']]['Paid']; ?></td>
 		<td>$<?php echo $calculations[$game['Game_ID']]['BundlePrice']; ?></td>
 		<td>$<?php echo sprintf("%.2f",$calculations[$game['Game_ID']]['SalePrice']); ?></td>
@@ -581,7 +572,7 @@ if (!(isset($_GET['id']) && is_numeric($_GET['id']))) {
 		<!-- Sale -->          <td>$<?php echo sprintf("%.2f",$calculations[$game['Game_ID']]['SaleLess1']); ?></td> 
 		<!-- Alt Sale -->      <td>$<?php echo sprintf("%.2f",$calculations[$game['Game_ID']]['AltLess1']); ?></td> 
 	</tr><tr><th>Time to $0.01 less</th>
-		<!-- Launch -->        <td><?php echo timeduration($calculations[$game['Game_ID']]['LaunchLess2'],"hours"); ?></td>
+		<!-- Launch -->        <td><?php echo $calculations[$game['Game_ID']]['LaunchPriceObj']->getHoursTo01LessPerHour(true); ?></td>
 		<!-- MSRP -->          <td><?php echo timeduration($calculations[$game['Game_ID']]['MSRPLess2'],"hours"); ?></td>
 		<!-- Current Price --> <td><?php echo timeduration($calculations[$game['Game_ID']]['CurrentLess2'],"hours"); ?></td>
 		<!-- Historic Low -->  <td><?php echo timeduration($calculations[$game['Game_ID']]['HistoricLess2'],"hours"); ?></td>
@@ -1123,6 +1114,7 @@ if (!(isset($_GET['id']) && is_numeric($_GET['id']))) {
 	<tr><th>All Game components</th><td>
 	
 	<?php 
+	//TODO: Move the All Game Components query into a sub-function of the datagetters such as getCalculations
 	$sql="select 
 		`gl_products`.`Game_ID`,
 		`gl_products`.`Title`,

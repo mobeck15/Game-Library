@@ -64,7 +64,7 @@ function getTopList($group,$connection=false,$calc=false){
 						$top[$keyID]['PurchaseSequence']=0;
 						$top[$keyID]['Paid']=0;
 					}
-					$getPurchaseTime=strtotime($calculations[$row['ProductID']]['PurchaseDate']);
+					$getPurchaseTime=$calculations[$row['ProductID']]['PurchaseDateTime']->getTimestamp();
 					if($getPurchaseTime<$top[$keyID]['PurchaseDate']){
 						$top[$keyID]['PurchaseDate']=$getPurchaseTime;
 					}
@@ -92,7 +92,7 @@ function getTopList($group,$connection=false,$calc=false){
 							$top['None']['PurchaseSequence']=0;
 							$top['None']['Paid']=0;
 						}
-						$getPurchaseTime=strtotime($row['PurchaseDate']);
+						$getPurchaseTime=$row['PurchaseDateTime']->getTimestamp();
 						if($getPurchaseTime<$top['None']['PurchaseDate']){
 							$top['None']['PurchaseDate']=$getPurchaseTime;
 						}
@@ -524,20 +524,32 @@ function getTopList($group,$connection=false,$calc=false){
 		$total['IncompleteCount']+=$row['IncompleteCount'];
 		$total['UnplayedInactiveCount']+=$row['UnplayedInactiveCount'];
 
-		if(!isset($total['leastPlay']['ID']) && $row['leastPlay']['ID']<>""){
-			$total['leastPlay']['ID']=$row['leastPlay']['ID'];
-			$total['leastPlay']['Name']=$row['leastPlay']['Name'];
-			$total['leastPlay']['hours']=$row['leastPlay']['hours'];
+		if(!isset($total['leastPlay']['ID'])){
+			if($row['leastPlay']['ID']<>""){
+				$total['leastPlay']['ID']=$row['leastPlay']['ID'];
+				$total['leastPlay']['Name']=$row['leastPlay']['Name'];
+				$total['leastPlay']['hours']=$row['leastPlay']['hours'];
+			} else {
+				$total['leastPlay']['ID']=null;
+				$total['leastPlay']['Name']=null;
+				$total['leastPlay']['hours']=null;
+			}
 		//Notice: Undefined index: leastPlay in C:\Users\Guerrero\Dropbox\Web\UniServerZ\www\gl5\functions2.inc.php on line 255
 		} elseif($row['leastPlay']['hours']<$total['leastPlay']['hours'] && $row['leastPlay']['ID']<>""){
 			$total['leastPlay']['ID']=$row['leastPlay']['ID'];
 			$total['leastPlay']['Name']=$row['leastPlay']['Name'];
 			$total['leastPlay']['hours']=$row['leastPlay']['hours'];
 		}
-		if(!isset($total['mostPlay']['ID']) && $row['mostPlay']['ID']<>""){
-			$total['mostPlay']['ID']=$row['mostPlay']['ID'];
-			$total['mostPlay']['Name']=$row['mostPlay']['Name'];
-			$total['mostPlay']['hours']=$row['mostPlay']['hours'];
+		if(!isset($total['mostPlay']['ID'])){
+			if($row['mostPlay']['ID']<>"") {
+				$total['mostPlay']['ID']=$row['mostPlay']['ID'];
+				$total['mostPlay']['Name']=$row['mostPlay']['Name'];
+				$total['mostPlay']['hours']=$row['mostPlay']['hours'];
+			} else {
+				$total['mostPlay']['ID']=null;
+				$total['mostPlay']['Name']=null;
+				$total['mostPlay']['hours']=null;
+			}
 		//Notice: Undefined index: mostPlay in C:\Users\Guerrero\Dropbox\Web\UniServerZ\www\gl5\functions2.inc.php on line 265
 		} elseif($row['mostPlay']['hours']>$total['mostPlay']['hours'] && $row['mostPlay']['ID']<>""){
 			$total['mostPlay']['ID']=$row['mostPlay']['ID'];
@@ -576,10 +588,35 @@ function getTopList($group,$connection=false,$calc=false){
 		}
 	}
 	
-	
-	
 	$top['Total']=$total;
 		
 	return $top;
+}
+
+if (basename($_SERVER["SCRIPT_NAME"], '.php') == "getTopList.inc") {
+	include $_SERVER['DOCUMENT_ROOT']."/gl6/inc/php.ini.inc.php";
+	include $_SERVER['DOCUMENT_ROOT']."/gl6/inc/functions.inc.php";
+	
+	$title="Top List Inc Test";
+	echo Get_Header($title);
+	
+	$lookupgame=lookupTextBox("Product", "ProductID", "id", "Game", "../ajax/search.ajax.php");
+	echo $lookupgame["header"];
+	if (!(isset($_GET['id']) && is_numeric($_GET['id']))) {
+		?>
+		Please specify a game by ID.
+		<form method="Get">
+			<?php echo $lookupgame["textBox"]; ?>
+			<input type="submit">
+		</form>
+
+		<?php
+		echo $lookupgame["lookupBox"];
+	} else {	
+		//$actcalculations=reIndexArray(getTopList(""),"GameID");
+		$toplist=getTopList("");
+		echo arrayTable($toplist[$_GET['id']]);
+	}
+	echo Get_Footer();
 }
 ?>

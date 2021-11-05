@@ -1,14 +1,13 @@
 <?php
 $time_start = microtime(true);
 $path = $_SERVER['DOCUMENT_ROOT'];
-include "inc/php.ini.inc.php";
+include $path."/gl6/inc/php.ini.inc.php";
 
 include 'inc/functions.inc.php';
 $title="Add Transaction";
 echo Get_Header($title);
 
-//DONE: AUTH.INC.PHP is called multiple times (it's called again in get_db_connection
-//include "inc/auth.inc.php";
+include "inc/auth.inc.php";
 //$conn = new mysqli($servername, $username, $password, $dbname);
 $conn=get_db_connection();
 

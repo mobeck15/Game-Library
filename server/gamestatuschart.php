@@ -1,6 +1,6 @@
 <?php
-include "inc/php.ini.inc.php";
-include "inc/functions.inc.php";
+include $_SERVER['DOCUMENT_ROOT']."/gl6/inc/php.ini.inc.php";
+include $_SERVER['DOCUMENT_ROOT']."/gl6/inc/functions.inc.php";
 
 $title="Status Charts";
 echo Get_Header($title);
@@ -106,15 +106,15 @@ foreach ($calculations as $gameRow){
 		$LastPlay=0;
 	}
 	if($gameRow['Playable']==true AND(
-	 ($gameRow['PurchaseDate']>=$startDate 
-	 AND $gameRow['PurchaseDate']<=$endDate) 
+	 ($gameRow['PurchaseDateTime']->getTimestamp()>=$startDate 
+	 AND $gameRow['PurchaseDateTime']->getTimestamp()<=$endDate) 
 	 OR ($LastPlay>=$startDate AND $LastPlay<=$endDate))
 	 ){
 		$usestatus= (isset($activity[$gameRow['Game_ID']]['Status']) ? $activity[$gameRow['Game_ID']]['Status'] : $gameRow['Status']);
 		 ?>
 		<tr class="<?php echo $gameRow['Status']; ?>">
 		<td class="text"><a href='viewgame.php?id=<?php echo $gameRow['Game_ID']; ?>' target='_blank'><?php echo $gameRow['Title']; ?></a></td>
-		<td class="numeric"><?php echo date("m/d/Y",$gameRow['PurchaseDate']); ?></td>
+		<td class="numeric"><?php echo $gameRow['PurchaseDateTime']->Format("m/d/Y"); ?></td>
 		<td class="numeric"><?php echo ($LastPlay==0 ? "":date("m/d/Y",$LastPlay)); ?></td>
 		<td class="numeric"><?php echo (isset($activity[$gameRow['Game_ID']]['Achievements']) ? $activity[$gameRow['Game_ID']]['Achievements'] : 0); ?></td>
 		<td class="text"><?php echo $usestatus; ?></td>

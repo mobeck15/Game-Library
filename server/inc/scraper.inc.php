@@ -9,7 +9,7 @@ if(isset($GLOBALS[__FILE__])){
 $GLOBALS[__FILE__]=1;
 
 function GetOwnedGames() {
-	include "inc/authapi.inc.php";
+	include $_SERVER['DOCUMENT_ROOT']."/gl6/inc/authapi.inc.php";
 	//GetOwnedGames
 	$url="http://api.steampowered.com/IPlayerService/GetOwnedGames/v0001/?key=".$SteamAPIwebkey."&steamid=".$SteamProfileID."&format=json";
 	//  Initiate curl
@@ -29,7 +29,9 @@ function GetOwnedGames() {
 }
 
 function GetRecentlyPlayedGames() {
-	include "inc/authapi.inc.php";
+	include $_SERVER['DOCUMENT_ROOT']."/gl6/inc/authapi.inc.php";
+	//$steamID="76561198111424124"; //Adri
+	//$steamID="76561198024968605"; //Isaac
 
 	//GetRecentlyPlayedGames
 	$url="http://api.steampowered.com/IPlayerService/GetRecentlyPlayedGames/v0001/?key=".$SteamAPIwebkey."&steamid=".$SteamProfileID."&format=json";
@@ -56,8 +58,9 @@ function GetRecentlyPlayedGames() {
 }
 
 function GetPlayerAchievements($steamgameid) {
-	//Example: 	
-	include "inc/authapi.inc.php";
+	//Example: http://api.steampowered.com/ISteamUserStats/GetPlayerAchievements/v0001/?appid=562500&key=71CBF878CA78EF8459DACF1E7F08C210&steamid=76561198024968605
+	
+	include $_SERVER['DOCUMENT_ROOT']."/gl6/inc/authapi.inc.php";
 	
 	//GetUserStatsForGame
 	$url="http://api.steampowered.com/ISteamUserStats/GetPlayerAchievements/v0001/?appid=".$steamgameid."&key=".$SteamAPIwebkey."&steamid=".$SteamProfileID;
@@ -84,9 +87,9 @@ function GetPlayerAchievements($steamgameid) {
 }
 
 function GetUserStatsForGame($steamgameid,$htmloutput=false) {
-	//Example: 
+	//Example: http://api.steampowered.com/ISteamUserStats/GetUserStatsForGame/v0002/?appid=562500&key=71CBF878CA78EF8459DACF1E7F08C210&steamid=76561198024968605
 	
-	include "inc/authapi.inc.php";
+	include $_SERVER['DOCUMENT_ROOT']."/gl6/inc/authapi.inc.php";
 	
 	//GetUserStatsForGame
 	$url="http://api.steampowered.com/ISteamUserStats/GetUserStatsForGame/v0002/?appid=".$steamgameid."&key=".$SteamAPIwebkey."&steamid=".$SteamProfileID;
@@ -145,7 +148,7 @@ function GetGameNews($steamgameid,$newscount=5,$length=500,$htmloutput=false) {
 }
 
 function GetSchemaForGame($steamgameid,$htmloutput=false) {
-	include "inc/authapi.inc.php";
+	include $_SERVER['DOCUMENT_ROOT']."/gl6/inc/authapi.inc.php";
 	//GetSchemaForGame
 	$url="http://api.steampowered.com/ISteamUserStats/GetSchemaForGame/v2/?key=".$SteamAPIwebkey."&appid=".$steamgameid;
 	//  Initiate curl
@@ -264,11 +267,28 @@ function scrapeSteamStore($steamgameid,$htmloutput=false) {
 	var_dump($result); 
 	/* */
 	
+	//Returns false if there is no store page (defaults to steam homepage)
+	//But this also makes the code skip the stamAPI calls to view achievements which could still be valid.
+	if(getPageTitle($result)=="Welcome to Steam"){
+		return false;
+	}
+	
 	if($htmloutput == false) {
 		return $result;
 	} else {
 		return $result;
 	}
+}
+
+function getPageTitle($source){
+	$pattern='/<title>(.*)<\/title>/';
+	$description= preg_match($pattern,$source,$matches);
+	if(isset($matches[1])){
+		$description=$matches[1];
+	} else {
+		$description="";
+	}
+	return $description;
 }
 
 function parse_game_description($source){

@@ -234,4 +234,31 @@ function getHistoryCalculations($gameID="",$connection=false,$start=false,$end=f
 	
 	return $activity;	
 }
+
+if (basename($_SERVER["SCRIPT_NAME"], '.php') == "getHistoryCalculations.inc") {
+	include $_SERVER['DOCUMENT_ROOT']."/gl6/inc/php.ini.inc.php";
+	include $_SERVER['DOCUMENT_ROOT']."/gl6/inc/functions.inc.php";
+	
+	$title="History Calculations Inc Test";
+	echo Get_Header($title);
+	
+	$lookupgame=lookupTextBox("History", "HistoryID", "id", "History", "../ajax/search.ajax.php");
+	echo $lookupgame["header"];
+	if (!(isset($_GET['id']) && is_numeric($_GET['id']))) {
+		?>
+		Please specify a hisotry record by ID.
+		<form method="Get">
+			<?php echo $lookupgame["textBox"]; ?>
+			<input type="submit">
+		</form>
+
+		<?php
+		echo $lookupgame["lookupBox"];
+	} else {	
+		//$actcalculations=reIndexArray(getHistoryCalculations(""),"GameID");
+		$actcalculations=getHistoryCalculations("");
+		echo arrayTable($actcalculations[$_GET['id']]);
+	}
+	echo Get_Footer();
+}
 ?>

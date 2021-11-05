@@ -1,13 +1,13 @@
 <?php
-include "inc/php.ini.inc.php";
-include "inc/functions.inc.php";
+include $_SERVER['DOCUMENT_ROOT']."/gl6/inc/php.ini.inc.php";
+include $_SERVER['DOCUMENT_ROOT']."/gl6/inc/functions.inc.php";
 
 $title="Steam API All Games";
 echo Get_Header($title);
 
 $conn=get_db_connection();
 
-//include "inc/auth.inc.php";
+include "inc/auth.inc.php";
 
 $hitory=getHistoryCalculations("",$conn);
 $games=getCalculations("",$conn);
@@ -164,7 +164,7 @@ $resultarray=GetOwnedGames();
 		<?php } else { 
 		//GetAppDetails($game['SteamID'])
 		//$appdetails['data']['name']
-		//TODO: get the real name of the game somehow. All API options seem ineffective. 
+		//CANCELLED: get the real name of the game somehow. All API options seem ineffective. 
 		?>
 			<td>Removed from Steam</td>
 		<?php } ?>

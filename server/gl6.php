@@ -63,7 +63,7 @@ echo formatSteamLinks("",$settings['LinkSteam']);
 <hr>
 <b>Dynamic To Do list:</b>
 <?php
-$directory    = ".";
+$directory    = $_SERVER['DOCUMENT_ROOT']."/gl6/";
 //$scanned_directory = array_diff(scandir($directory), array('..', '.'));
 $scanned_directory=dirToArray($directory);
 

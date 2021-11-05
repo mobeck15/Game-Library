@@ -1,7 +1,7 @@
 <?php
 $time_start = microtime(true);
-include "inc/php.ini.inc.php";
-include "inc/functions.inc.php";
+include $_SERVER['DOCUMENT_ROOT']."/gl6/inc/php.ini.inc.php";
+include $_SERVER['DOCUMENT_ROOT']."/gl6/inc/functions.inc.php";
 
 $title="View Item";
 echo Get_Header($title);

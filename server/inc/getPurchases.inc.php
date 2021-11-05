@@ -79,7 +79,9 @@ function getPurchases($transID="",$connection=false,$items=false,$games=false){
 			} else {
 				$row['PrintPurchaseTimeStamp']= date("n/j/Y H:i:s",$row['PurchaseTimeStamp']) ;
 			}
-
+			
+			$row['PurchaseDateTime'] = new DateTime($row['PurchaseDate'] . " " . $row['PurchaseTime']);
+			
 			if($row['Sequence']==0){$row['Sequence']="";}
 			
 			$row['Price'] = sprintf("%.2f",$row['Price']);
@@ -109,6 +111,7 @@ function getPurchases($transID="",$connection=false,$items=false,$games=false){
 			$row['TotalWant']=0;
 			$row['TotalHrs']=0;
 			
+			$row['TotalMSRPFormula']="0";
 			/*
 			if ($row['TransID']==61 OR $row['TransID']==57) {
 				echo "<b>Bundle</b>";
@@ -132,26 +135,36 @@ function getPurchases($transID="",$connection=false,$items=false,$games=false){
 
 
 	//$itemsbyBundle=regroupArray($items,"TransID");
+	//var_dump($settings);
 	
 	$max_loop=5;
 	foreach ($items as $key => $value) {
-		$bundleID=$value['TransID'];
-		$n=0;
-		$parentbundle=$ParentBundleIndex[$bundleID];
-		
-		if(!isset($ParentBundleIndex[$bundleID])){
-			var_dump($value);
+		//DONE: change Paid calculation to use only the first bundle ****PAID****
+		$count=true;
+		if($settings["CountDupes"]=="First" && $value["FirstItem"]==false){
+			$count=false;
 		}
 		
-		while($purchases[$parentbundle]['BundleID']<>$bundleID){
-			$bundleID=$purchases[$ParentBundleIndex[$bundleID]]['BundleID'];
-			if($n>=$max_loop) {
-				trigger_error("Exceeded maximum parent bundles (" . $n . ")");
-				break;
+		if($count) {
+			$bundleID=$value['TransID'];
+			$n=0;
+			$parentbundle=$ParentBundleIndex[$bundleID];
+			
+			if(!isset($ParentBundleIndex[$bundleID])){
+				trigger_error("No parent bundle found");
+				var_dump($value);
 			}
-			$n++;
-		}		
-		$itemsbyBundle[$bundleID][]=$value;
+			
+			while($purchases[$parentbundle]['BundleID']<>$bundleID){
+				$bundleID=$purchases[$ParentBundleIndex[$bundleID]]['BundleID'];
+				if($n>=$max_loop) {
+					trigger_error("Exceeded maximum parent bundles (" . $n . ")");
+					break;
+				}
+				$n++;
+			}		
+			$itemsbyBundle[$bundleID][]=$value;
+		}
 	}
 
 	
@@ -213,6 +226,7 @@ SELECT `Game_ID`,`Title`,`MSRP` FROM `gl_products` join `gl_items` on `gl_produc
 							//var_dump($settings['status'][$activity[$item['ProductID']]['Status']]['Count']);
 							//var_dump($activity[$item['ProductID']]);
 							$row['TotalMSRP']+=$games[$gameIndex[$item['ProductID']]]['MSRP'];
+							$row['TotalMSRPFormula'] .= " + " . $games[$gameIndex[$item['ProductID']]]['MSRP'];
 							$row['TotalWant']+=$games[$gameIndex[$item['ProductID']]]['Want'];
 							
 							//May need to use $activity[$item['ProductID']]['GrandTotal'] intead of 'totalHrs'
@@ -220,6 +234,7 @@ SELECT `Game_ID`,`Title`,`MSRP` FROM `gl_products` join `gl_items` on `gl_produc
 							//var_dump($activity[$item['ProductID']]);	
 						} elseif (!isset($activity[$item['ProductID']])){
 							$row['TotalMSRP']+=$games[$gameIndex[$item['ProductID']]]['MSRP'];
+							$row['TotalMSRPFormula'] .= " + " . $games[$gameIndex[$item['ProductID']]]['MSRP'];
 							$row['TotalWant']+=$games[$gameIndex[$item['ProductID']]]['Want'];
 						}
 					}
@@ -265,10 +280,12 @@ SELECT `Game_ID`,`Title`,`MSRP` FROM `gl_products` join `gl_items` on `gl_produc
 							//$row['GamesinBundle'][$item['ProductID']]['Debug'] .= $debug1;
 						
 							$row['GamesinBundle'][$item['ProductID']]['SalePrice']=$row['GamesinBundle'][$item['ProductID']]['MSRP']/$row['TotalMSRP']*$row['Paid'];
+							$row['GamesinBundle'][$item['ProductID']]['SalePriceFormula']="(" . $row['GamesinBundle'][$item['ProductID']]['MSRP'] . " / " . $row['TotalMSRP'] . ") * " . $row['Paid'];
 						} else {
 							//$row['GamesinBundle'][$item['ProductID']]['Debug'].=$item['ProductID'].": totalMSRP=0<br>";
 							
 							$row['GamesinBundle'][$item['ProductID']]['SalePrice']=0;
+							$row['GamesinBundle'][$item['ProductID']]['SalePriceFormula']="0";
 						}
 						
 						//Good except need to add weight
@@ -300,6 +317,9 @@ SELECT `Game_ID`,`Title`,`MSRP` FROM `gl_products` join `gl_items` on `gl_produc
 						$useWeightWant=$settings['WeightWant']/$totalWeight;
 						/* */
 						
+						//TODO: Alt paid needs some corrections in the calculation for when games have zero hours.
+						//TODO: Alt paid needs some corrections in the calculation for when a bundle has zero total hours.
+
 						$row['GamesinBundle'][$item['ProductID']]['AltSalePrice']=
 							$row['GamesinBundle'][$item['ProductID']]['Altwant']  *$useWeightWant +
 							$row['GamesinBundle'][$item['ProductID']]['Althrs']   *$useWeightPlay +
@@ -350,12 +370,13 @@ SELECT `Game_ID`,`Title`,`MSRP` FROM `gl_products` join `gl_items` on `gl_produc
 		}
 	}
 	
-
 	return $purchases;
 }
 
 
 function getAllPurchases($transID=""){
+	trigger_error("FUNCTION getAllPurchases() IS DEPRICATED IN ".__FILE__.". ");
+	
 	include "auth.inc.php";
 	$conn = new mysqli($servername, $username, $password, $dbname);
 	$sql="SELECT * FROM `gl_transactions`";
@@ -468,7 +489,48 @@ function getAllPurchases($transID=""){
 
 	}
 			
-
 	return $purchases;
 }
+
+if (basename($_SERVER["SCRIPT_NAME"], '.php') == "getPurchases.inc") {
+	include $_SERVER['DOCUMENT_ROOT']."/gl6/inc/php.ini.inc.php";
+	include $_SERVER['DOCUMENT_ROOT']."/gl6/inc/functions.inc.php";
+	
+	$title="get Purchases Inc Test";
+	echo Get_Header($title);
+	
+	$lookupbundle=lookupTextBox("BundleTitle", "BundleID", "id", "Trans", "../ajax/search.ajax.php");
+	echo $lookupbundle["header"];
+	if (!(isset($_GET['id']) && is_numeric($_GET['id']))) {
+		?>
+		Please specify a bundle by ID.
+		<form method="Get">
+			<?php echo $lookupbundle["textBox"]; ?>
+			<br><label><input type="radio" name="function" value="getPurchases" CHECKED>getPurchases</label>
+			<br><label><input type="radio" name="function" value="getAllPurchases">getAllPurchases</label>
+			<br><input type="submit">
+		</form>
+
+		<?php
+		echo $lookupbundle["lookupBox"];
+	} else {
+		if(!isset($_GET['function'])) {
+			$_GET['function'] = "getPurchases";
+		}
+		
+		switch ($_GET['function']) {
+			case "getPurchases":
+			default:
+				$purchases=reIndexArray(getPurchases(),"TransID");
+				break;
+			case "getAllPurchases":
+				$purchases=reIndexArray(getAllPurchases(),"TransID");
+				break;
+		}
+		
+		echo arrayTable($purchases[$_GET['id']]);
+	}
+	echo Get_Footer();
+}
+
 ?>

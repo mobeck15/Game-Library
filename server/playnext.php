@@ -1,6 +1,6 @@
 <?php
-include "inc/php.ini.inc.php";
-include "inc/functions.inc.php";
+include $_SERVER['DOCUMENT_ROOT']."/gl6/inc/php.ini.inc.php";
+include $_SERVER['DOCUMENT_ROOT']."/gl6/inc/functions.inc.php";
 
 $title="Play Next";
 echo Get_Header($title);
@@ -21,7 +21,7 @@ foreach($topList as $key => $toprow){
 		$countrow=true;
 	}
 	
-	if($toprow['GameCount']<=$toprow['UnplayedCount']){
+	if($toprow['UnplayedCount']>0 && $toprow['GameCount']<=$toprow['UnplayedCount']){
 		$UnPlayedList[]['BundleKey']=$key;
 		$countrow=true;
 	}
@@ -148,7 +148,11 @@ function unplayedlist($bundlelist,$title,$topList){
 				<td><?php echo $game['Unplayed']; ?></td>
 				<td><?php echo sprintf("%.2f",$game['points']); ?></td>
 			</tr>
-			<?php $Sortby1[$key]  = $calculations[$game['GameID']]['Metascore']; 
+			<?php 
+			$Sortby1[$key] = $calculations[$game['GameID']]['Metascore']; 
+			$Sortby2[$key] = $calculations[$game['GameID']]['UserMetascore'];
+			$Sortby3[$key] = $game['TotalMetascore'];
+			$Sortby4[$key] = $game['points'];
 		} ?>
 		</tbody>
 	</table>
@@ -157,8 +161,9 @@ function unplayedlist($bundlelist,$title,$topList){
 <td valign=top>
 
 <?php
-//TODO: change these four lists into a function call - will have to move the sortby1($key) statement out and double the loops but will be self contained.
-
+//TODO: Fixed? change these four lists into a function call - will have to move the sortby1($key) statement out and double the loops but will be self contained.
+//TODO: Test this fix by adding metacritic data to unplayed games
+/* * /
 array_multisort($Sortby1, SORT_DESC, $AllGamesList);
 unset($Sortby1);
 echo "<table>";
@@ -243,5 +248,43 @@ foreach($AllGamesList as $key => $game){
 echo "</tbody>";
 echo "</table>";
 
+
+/* */
+echo "<td valign=top>".playnexttable($Sortby1,$AllGamesList,"Sort by critic","critic","Metascore",$calculations)."</td>";
+echo "<td valign=top>".playnexttable($Sortby2,$AllGamesList,"Sort by user","user","UserMetascore",$calculations)."</td>";
+echo "<td valign=top>".playnexttable($Sortby3,$AllGamesList,"Sort by Total Critic","Total","TotalMetascore",$calculations)."</td>";
+echo "<td valign=top>".playnexttable($Sortby4,$AllGamesList,"Sort Points","Points","points",$calculations)."</td>";
+
+function playnexttable($sortby, $gamelist, $title, $caption, $chekfield, $calculations) {
+	$output="";
+	array_multisort($sortby, SORT_DESC, $gamelist);
+	$output .= "<table>";
+	$output .= "<thead>";
+	$output .= "<tr><th>$title</th><th>$caption</th></tr>";
+	$output .= "</thead>";
+	$output .= "<tbody>";
+	foreach($gamelist as $key => $game){
+		if(isset($game[$chekfield])) {
+			$checkvalue=$game[$chekfield];
+		} else {
+			$checkvalue=$calculations[$game['GameID']][$chekfield];
+		}
+		if($checkvalue<>0){
+			$output .= "<tr>";
+			$output .= "<td><a href='viewgame.php?id=".$game['GameID']."' target='_blank'>".$calculations[$game['GameID']]['Title']."</a></td>";
+			$output .= "<td>".sprintf("%.2f",$checkvalue)."</td>";
+			$output .= "</tr>";
+		}
+		unset($checkvalue);
+	}
+	$output .= "</tbody>";
+	$output .= "</table>";
+	
+	return $output;
+}
+
 echo "</td></tr></table>";
-echo Get_Footer(); ?>
+echo Get_Footer(); 
+
+
+?>

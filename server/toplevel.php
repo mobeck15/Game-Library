@@ -1,6 +1,6 @@
 <?php
-include "inc/php.ini.inc.php";
-include "inc/functions.inc.php";
+include $_SERVER['DOCUMENT_ROOT']."/gl6/inc/php.ini.inc.php";
+include $_SERVER['DOCUMENT_ROOT']."/gl6/inc/functions.inc.php";
 $title="Group by Top Level";
 echo Get_Header($title);
 
@@ -19,7 +19,7 @@ if(isset($_GET['Group'])){
 $conn->close();	
 
 $calculations=reIndexArray($calculations,"Game_ID");
-
+//TODO: Trading cards are showing up in top level bundles. Why?
 ?>
 <ul>
 	<li><a href='<?php echo $_SERVER['SCRIPT_NAME']; ?>?Group=Bundle'>Bundles</a></li>

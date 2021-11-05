@@ -1,6 +1,6 @@
 <?php
-include "inc/php.ini.inc.php";
-include "inc/functions.inc.php";
+include $_SERVER['DOCUMENT_ROOT']."/gl6/inc/php.ini.inc.php";
+include $_SERVER['DOCUMENT_ROOT']."/gl6/inc/functions.inc.php";
 $title="Calculations";
 echo Get_Header($title);
 //DONE: Floating divs don't float in gl6, fix the header stuff.
@@ -113,6 +113,7 @@ $urlbase         = "calculations.php?fav=Custom";
 $filterItems     = "&hide=None";
 $filterGames     = "&hide=Playable,eq,0";
 $filterGames2    = "&hide=Playable,eq,0,Status,eq,Never,Status,eq,Broken";
+$filterGames3    = $filterGames2 . ",Review,eq,1,Review,eq,2,Status,eq,Done";
 $filterActive    = "&hide=Playable,eq,0,Status,ne,Active";
 $filterUnplayed  = "&hide=Playable,eq,0,Status,eq,Never,Status,eq,Broken,GrandTotal,ne,0";
 $extrafilternext = ",Review,eq,1,Review,eq,2";
@@ -135,11 +136,12 @@ $sortnext = "&sort=Altperhr&dir=3";
 ?>
 
 <table>
-	<tr><th>Sort Order</th><th>All Items</th><th>All Games</th><th>Games</th><th>Active Games</th><th>Un-Played Games</th><th>Un-Finished Games</th></tr>
+	<tr><th>Sort Order</th><th>All Items</th><th>All Games</th><th>Games</th><th>Games+</th><th>Active Games</th><th>Un-Played Games</th><th>Un-Finished Games</th></tr>
 	<tr><td>Paid/hr</td>
 		<td><a href="<?php echo $urlbase.$sortPaid.$filterItems.$paidcolumns;?>">All Items</a></td>
 		<td><a href="<?php echo $urlbase.$sortPaid.$filterGames.$paidcolumns;?>">All Games</a></td>
 		<td class='greencell'><a href="<?php echo $urlbase.$sortPaid.$filterGames2.$paidcolumns;?>">Games</a></td>
+		<td class='greencell'><a href="<?php echo $urlbase.$sortPaid.$filterGames3.$paidcolumns;?>">Games+</a></td>
 		<td class='greencell'><a href="<?php echo $urlbase.$sortPaid.$filterActive.$paidcolumns;?>">Active Games</a></td>
 		<td><a href="<?php echo $urlbase.$sortPaid.$filterUnplayed.$paidcolumns;?>">Un-Played Games</a></td>
 		<td><a href="<?php echo $urlbase.$sortPaid.$filterunbeat.$paidcolumns;?>">Un-Finished Games</a></td></tr>
@@ -147,6 +149,7 @@ $sortnext = "&sort=Altperhr&dir=3";
 		<td><a href="<?php echo $urlbase.$sortLaunchp.$filterItems.$launchcolumns;?>">All Items</a></td>
 		<td><a href="<?php echo $urlbase.$sortLaunchp.$filterGames.$launchcolumns;?>">All Games</a></td>
 		<td class='greencell'><a href="<?php echo $urlbase.$sortLaunchp.$filterGames2.$launchcolumns;?>">Games</a></td>
+		<td class='greencell'><a href="<?php echo $urlbase.$sortLaunchp.$filterGames3.$launchcolumns;?>">Games+</a></td>
 		<td class='greencell'><a href="<?php echo $urlbase.$sortLaunchp.$filterActive.$launchcolumns;?>">Active Games</a></td>
 		<td><a href="<?php echo $urlbase.$sortLaunchp.$filterUnplayed.$launchcolumns;?>">Un-Played Games</a></td>
 		<td><a href="<?php echo $urlbase.$sortLaunchp.$filterunbeat.$launchcolumns;?>">Un-Finished Games</a></td></tr>
@@ -154,6 +157,7 @@ $sortnext = "&sort=Altperhr&dir=3";
 		<td><a href="<?php echo $urlbase.$sortMSRP.$filterItems.$msrpcolumns;?>">All Items</a></td>
 		<td><a href="<?php echo $urlbase.$sortMSRP.$filterGames.$msrpcolumns;?>">All Games</a></td>
 		<td class='greencell'><a href="<?php echo $urlbase.$sortMSRP.$filterGames2.$msrpcolumns;?>">Games</a></td>
+		<td class='greencell'><a href="<?php echo $urlbase.$sortMSRP.$filterGames3.$msrpcolumns;?>">Games+</a></td>
 		<td class='greencell'><a href="<?php echo $urlbase.$sortMSRP.$filterActive.$msrpcolumns;?>">Active Games</a></td>
 		<td><a href="<?php echo $urlbase.$sortMSRP.$filterUnplayed.$msrpcolumns;?>">Un-Played Games</a></td>
 		<td><a href="<?php echo $urlbase.$sortMSRP.$filterunbeat.$msrpcolumns;?>">Un-Finished Games</a></td></tr>
@@ -161,6 +165,7 @@ $sortnext = "&sort=Altperhr&dir=3";
 		<td><a href="<?php echo $urlbase.$sortHist.$filterItems.$histcolumns;?>">All Items</a></td>
 		<td><a href="<?php echo $urlbase.$sortHist.$filterGames.$histcolumns;?>">All Games</a></td>
 		<td class='greencell'><a href="<?php echo $urlbase.$sortHist.$filterGames2.$histcolumns;?>">Games</a></td>
+		<td class='greencell'><a href="<?php echo $urlbase.$sortHist.$filterGames3.$histcolumns;?>">Games+</a></td>
 		<td class='greencell'><a href="<?php echo $urlbase.$sortHist.$filterActive.$histcolumns;?>">Active Games</a></td>
 		<td><a href="<?php echo $urlbase.$sortHist.$filterUnplayed.$histcolumns;?>">Un-Played Games</a></td>
 		<td><a href="<?php echo $urlbase.$sortHist.$filterunbeat.$histcolumns;?>">Un-Finished Games</a></td></tr>
@@ -168,6 +173,7 @@ $sortnext = "&sort=Altperhr&dir=3";
 		<td><a href="<?php echo $urlbase.$sortSale.$filterItems.$salecolumns;?>">All Items</a></td>
 		<td><a href="<?php echo $urlbase.$sortSale.$filterGames.$salecolumns;?>">All Games</a></td>
 		<td class='greencell'><a href="<?php echo $urlbase.$sortSale.$filterGames2.$salecolumns;?>">Games</a></td>
+		<td class='greencell'><a href="<?php echo $urlbase.$sortSale.$filterGames3.$salecolumns;?>">Games+</a></td>
 		<td class='greencell'><a href="<?php echo $urlbase.$sortSale.$filterActive.$salecolumns;?>">Active Games</a></td>
 		<td><a href="<?php echo $urlbase.$sortSale.$filterUnplayed.$salecolumns;?>">Un-Played Games</a></td>
 		<td><a href="<?php echo $urlbase.$sortSale.$filterunbeat.$salecolumns;?>">Un-Finished Games</a></td></tr>
@@ -175,6 +181,7 @@ $sortnext = "&sort=Altperhr&dir=3";
 		<td><a href="<?php echo $urlbase.$sortAlt.$filterItems.$altcolumns;?>">All Items</a></td>
 		<td><a href="<?php echo $urlbase.$sortAlt.$filterGames.$altcolumns;?>">All Games</a></td>
 		<td class='greencell'><a href="<?php echo $urlbase.$sortAlt.$filterGames2.$altcolumns;?>">Games</a></td>
+		<td class='greencell'><a href="<?php echo $urlbase.$sortAlt.$filterGames3.$altcolumns;?>">Games+</a></td>
 		<td class='greencell'><a href="<?php echo $urlbase.$sortAlt.$filterActive.$altcolumns;?>">Active Games</a></td>
 		<td><a href="<?php echo $urlbase.$sortAlt.$filterUnplayed.$altcolumns;?>">Un-Played Games</a></td>
 		<td><a href="<?php echo $urlbase.$sortAlt.$filterunbeat.$altcolumns;?>">Un-Finished Games</a></td></tr>
@@ -182,6 +189,7 @@ $sortnext = "&sort=Altperhr&dir=3";
 		<td><a href="<?php echo $urlbase.$sortLaunchd.$filterItems.$columns;?>">All Items</a></td>
 		<td><a href="<?php echo $urlbase.$sortLaunchd.$filterGames.$columns;?>">All Games</a></td>
 		<td class='greencell'><a href="<?php echo $urlbase.$sortLaunchd.$filterGames2.$columns;?>">Games</a></td>
+		<td class='greencell'><a href="<?php echo $urlbase.$sortLaunchd.$filterGames3.$columns;?>">Games+</a></td>
 		<td><a href="<?php echo $urlbase.$sortLaunchd.$filterActive.$columns;?>">Active Games</a></td>
 		<td class='greencell'><a href="<?php echo $urlbase.$sortLaunchd.$filterUnplayed.$columns;?>">Un-Played Games</a></td>
 		<td class='greencell'><a href="<?php echo $urlbase.$sortLaunchd.$filterunbeat.$columns;?>">Un-Finished Games</a></td></tr>
@@ -189,6 +197,7 @@ $sortnext = "&sort=Altperhr&dir=3";
 		<td><a href="<?php echo $urlbase.$sortPurch.$filterItems.$columns;?>">All Items</a></td>
 		<td><a href="<?php echo $urlbase.$sortPurch.$filterGames.$columns;?>">All Games</a></td>
 		<td class='greencell'><a href="<?php echo $urlbase.$sortPurch.$filterGames2.$columns;?>">Games</a></td>
+		<td class='greencell'><a href="<?php echo $urlbase.$sortPurch.$filterGames3.$columns;?>">Games+</a></td>
 		<td><a href="<?php echo $urlbase.$sortPurch.$filterActive.$columns;?>">Active Games</a></td>
 		<td class='greencell'><a href="<?php echo $urlbase.$sortPurch.$filterUnplayed.$columns;?>">Un-Played Games</a></td>
 		<td class='greencell'><a href="<?php echo $urlbase.$sortPurch.$filterunbeat.$columns;?>">Un-Finished Games</a></td></tr>
@@ -196,6 +205,7 @@ $sortnext = "&sort=Altperhr&dir=3";
 		<td><a href="<?php echo $urlbase.$sortHrs.$filterItems.",Status,eq,Done,GrandTotal,eq,0".$columns;?>">All Items</a></td>
 		<td class='greencell'><a href="<?php echo $urlbase.$sortHrs.$filterGames.",Status,eq,Done,GrandTotal,eq,0".$columns;?>">All Games</a></td>
 		<td><a href="<?php echo $urlbase.$sortHrs.$filterGames2.",Status,eq,Done,GrandTotal,eq,0".$columns;?>">Games</a></td>
+		<td><a href="<?php echo $urlbase.$sortHrs.$filterGames3.",GrandTotal,eq,0".$columns;?>">Games+</a></td>
 		<td><a href="<?php echo $urlbase.$sortHrs.$filterActive.",Status,eq,Done,GrandTotal,eq,0".$columns;?>">Active Games</a></td>
 		<td><a href="<?php echo $urlbase.$sortHrs.$filterUnplayed.",Status,eq,Done,GrandTotal,eq,0".$columns;?>">Un-Played Games</a></td>
 		<td><a href="<?php echo $urlbase.$sortHrs.$filterunbeat.",Status,eq,Done,GrandTotal,eq,0".$columns;?>">Un-Finished Games</a></td></tr>
@@ -203,6 +213,7 @@ $sortnext = "&sort=Altperhr&dir=3";
 		<td><a href="<?php echo $urlbase.$sortPlay.$filterItems.$lastplaycols;?>">All Items</a></td>
 		<td><a href="<?php echo $urlbase.$sortPlay.$filterGames.$lastplaycols;?>">All Games</a></td>
 		<td class='greencell'><a href="<?php echo $urlbase.$sortPlay.$filterGames2.$lastplaycols;?>">Games</a></td>
+		<td class='greencell'><a href="<?php echo $urlbase.$sortPlay.$filterGames3.$lastplaycols;?>">Games+</a></td>
 		<td><a href="<?php echo $urlbase.$sortPlay.$filterActive.$lastplaycols;?>">Active Games</a></td>
 		<td><a href="<?php echo $urlbase.$sortPlay.$filterUnplayed.$lastplaycols;?>">Un-Played Games</a></td>
 		<td><a href="<?php echo $urlbase.$sortPlay.$filterunbeat.$lastplaycols;?>">Un-Finished Games</a></td></tr>
@@ -210,6 +221,7 @@ $sortnext = "&sort=Altperhr&dir=3";
 		<td><a href="<?php echo $urlbase.$sortPlayP.$filterItems.$lastplaycols;?>,LastPlayORPurchase">All Items</a></td>
 		<td><a href="<?php echo $urlbase.$sortPlayP.$filterGames.$lastplaycols;?>,LastPlayORPurchase">All Games</a></td>
 		<td class='greencell'><a href="<?php echo $urlbase.$sortPlayP.$filterGames2.$lastplaycols;?>,LastPlayORPurchase">Games</a></td>
+		<td class='greencell'><a href="<?php echo $urlbase.$sortPlayP.$filterGames3.$lastplaycols;?>,LastPlayORPurchase">Games+</a></td>
 		<td><a href="<?php echo $urlbase.$sortPlayP.$filterActive.$lastplaycols;?>,LastPlayORPurchase">Active Games</a></td>
 		<td><a href="<?php echo $urlbase.$sortPlayP.$filterUnplayed.$lastplaycols;?>,LastPlayORPurchase">Un-Played Games</a></td>
 		<td><a href="<?php echo $urlbase.$sortPlayP.$filterunbeat.$lastplaycols;?>,LastPlayORPurchase">Un-Finished Games</a></td></tr>
@@ -217,6 +229,7 @@ $sortnext = "&sort=Altperhr&dir=3";
 		<td><a href="<?php echo $urlbase.$sortnext.$filterItems.$extrafilternext.$nextcols;?>">All Items</a></td>
 		<td><a href="<?php echo $urlbase.$sortnext.$filterGames.$extrafilternext.$nextcols;?>">All Games</a></td>
 		<td class='greencell'><a href="<?php echo $urlbase.$sortnext.$filterGames2.$extrafilternext.$nextcols;?>">Games</a></td>
+		<td class='greencell'><a href="<?php echo $urlbase.$sortnext.$filterGames3.$extrafilternext.$nextcols;?>">Games+</a></td>
 		<td><a href="<?php echo $urlbase.$sortnext.$filterActive.$extrafilternext.$nextcols;?>">Active Games</a></td>
 		<td><a href="<?php echo $urlbase.$sortnext.$filterUnplayed.$extrafilternext.$nextcols;?>">Un-Played Games</a></td>
 		<td><a href="<?php echo $urlbase.$sortnext.$filterunbeat.$extrafilternext.$nextcols;?>">Un-Finished Games</a></td></tr>
@@ -224,6 +237,7 @@ $sortnext = "&sort=Altperhr&dir=3";
 		<td><a href="<?php echo $urlbase.$sortPlayP.$filterItems.$extrafilternext.$lastplaycols;?>">All Items</a></td>
 		<td><a href="<?php echo $urlbase.$sortPlayP.$filterGames.$extrafilternext.$lastplaycols;?>">All Games</a></td>
 		<td class='greencell'><a href="<?php echo $urlbase.$sortPlayP.$filterGames2.$extrafilternext.$lastplaycols;?>">Games</a></td>
+		<td class='greencell'><a href="<?php echo $urlbase.$sortPlayP.$filterGames3.$extrafilternext.$lastplaycols;?>">Games+</a></td>
 		<td><a href="<?php echo $urlbase.$sortPlayP.$filterActive.$extrafilternext.$lastplaycols;?>">Active Games</a></td>
 		<td><a href="<?php echo $urlbase.$sortPlayP.$filterUnplayed.$extrafilternext.$lastplaycols;?>">Un-Played Games</a></td>
 		<td><a href="<?php echo $urlbase.$sortPlayP.$filterunbeat.$extrafilternext.$lastplaycols;?>">Un-Finished Games</a></td></tr>
@@ -289,7 +303,15 @@ if(isset($_GET['fav'])) {
 				//var_dump($filter['Columns'] );
 			}
 			if(isset($_GET['sort'])){
-				$filter['Sortby']=$_GET['sort'];
+				if($_GET['sort']== "PurchaseDate") {
+					//TODO: Fix all the links to use PurchaseDateTime instead of Purchasedate
+					$filter['Sortby']="AddedDateTime";
+				} else if($_GET['sort']== "LaunchDateValue") {
+					//TODO: Fix all the links to use LaunchDate insted of LaunchDateValue
+					$filter['Sortby']="LaunchDate";
+				} else {
+					$filter['Sortby']=$_GET['sort'];
+				}
 				$filter['SortDir']=SORT_DESC;
 			}
 			if(isset($_GET['dir']) && ($_GET['dir']==3 || $_GET['dir']==1)){
@@ -551,8 +573,16 @@ $counters['data']=array();
 //DONE: Calculations Sort field sorts dates as text
 
 switch($filter['Sortby']){
+	case "PurchaseDate": 
+		foreach ($calculations as $key => $row) {
+			$Sortby1[$key] = $row['AddedDateTime']->getTimestamp();
+		}
+		break;
 	case "LaunchDate":
-	case "PurchaseDate":
+		foreach ($calculations as $key => $row) {
+			$Sortby1[$key] = $row[$filter['Sortby']]->getTimestamp();
+		}
+		break;
 	case "lastplay":
 	case "firstplay":
 	case "LastBeat":
@@ -560,16 +590,17 @@ switch($filter['Sortby']){
 	case "LastPlayORPurchase":
 		foreach ($calculations as $key => $row) {
 			$Sortby1[$key]  = strtotime($row[$filter['Sortby']]);
+			//echo "<br>sort " . $row[$filter['Sortby']] . " as " . $Sortby1[$key];  //Debug sorting issues
 		}
 		break;
 	default:
 		foreach ($calculations as $key => $row) {
+			//TODO: use date object instead on 'LaunchDateValue'
 			$Sortby1[$key]  = $row[$filter['Sortby']];
 		}
 		break;
 }
 array_multisort($Sortby1, $filter['SortDir'], $calculations);
-
 
 foreach ($calculations as $game) {
 	$showgame=true;
@@ -648,6 +679,9 @@ foreach ($calculations as $game) {
 					<td class="text"><?php echo nl2br($game['allKeywords']); ?></td><?php // Keywords
 					break;
 				case "LaunchDate":
+					?>
+					<td class="numeric"><?php echo $game[$row]->format("n/d/Y"); ?></td><?php
+					break;
 				case "Want":
 				case "AchievementsLeft":
 				case "DateUpdated":
@@ -685,7 +719,7 @@ foreach ($calculations as $game) {
 					break;
 				case "PurchaseDate":
 					?>
-					<td class="numeric"><?php echo str_replace(" ", "&nbsp;", $game['PrintPurchaseDate']);?></td><?php // Purchase Dates
+					<td class="numeric"><?php echo str_replace(" ", "&nbsp;", $game['AddedDateTime']->format("n/j/Y g:i:s A"));?></td><?php
 					break;
 				case "Achievements":
 					?>
@@ -730,7 +764,6 @@ foreach ($calculations as $game) {
 					?>
 					<td class="numeric"><?php echo str_replace(" ", "&nbsp;", $game[$row]); ?></td><?php
 					break;
-				case "LaunchLess2":
 				case "MSRPLess2":
 				case "CurrentLess2":
 				case "HistoricLess2":
@@ -757,6 +790,10 @@ foreach ($calculations as $game) {
 				case "TimeLeftToBeat":
 					?>
 					<td class="numeric"><?php echo timeduration($game[$row],"hours"); ?></td><?php
+					break;
+				case "LaunchLess2":
+					?>
+					<td class="numeric"><?php echo $game['LaunchPriceObj']->getHoursTo01LessPerHour(true); ?></td><?php
 					break;
 			}
 		}

@@ -54,9 +54,11 @@ function getActivityCalculations($gameID="",$historytable="",$connection=false){
 					if($value['Elapsed'] >= $settings['MinPlay'] && $value['Total'] >= $settings['MinTotal']) {
 						if(!isset($totals[$value['GameID']]['firstplay'])){
 							$totals[$value['GameID']]['firstplay']=$value['Timestamp'];
+							$totals[$value['GameID']]['firstPlayDateTime']=new DateTime($value['Timestamp']);
 						}
 						
 						$totals[$value['GameID']]['lastplay']=$value['Timestamp'];
+						$totals[$value['GameID']]['lastPlayDateTime']=new DateTime($value['Timestamp']);
 						$totals[$value['GameID']]['elapsed'] = $value['Elapsed'];
 						
 					}
@@ -116,6 +118,8 @@ function getActivityCalculations($gameID="",$historytable="",$connection=false){
 			
 			if(!isset($totals[$value['GameID']]['firstplay'])){$totals[$value['GameID']]['firstplay']="";}
 			if(!isset($totals[$value['GameID']]['lastplay'])) {$totals[$value['GameID']]['lastplay'] ="";}
+			if(!isset($totals[$value['GameID']]['firstPlayDateTime'])){$totals[$value['GameID']]['firstPlayDateTime']=null;}
+			if(!isset($totals[$value['GameID']]['lastPlayDateTime'])) {$totals[$value['GameID']]['lastPlayDateTime'] =null;}
 			if(!isset($totals[$value['GameID']]['elapsed']))  {$totals[$value['GameID']]['elapsed']  =0 ;}
 
 			$grandTotals[$totals[$value['GameID']]['Basegame']][$value['GameID']]['GameID']    =$value['GameID'];
@@ -123,6 +127,7 @@ function getActivityCalculations($gameID="",$historytable="",$connection=false){
 			$grandTotals[$totals[$value['GameID']]['Basegame']][$value['GameID']]['PlayTime']  =$totals[$value['GameID']]['totalHrs'];
 		}
 
+		//DONE: Play total needs to be added to unplayable DLC so they can get $/hr calculations
 		foreach ($grandTotals as $basegame) {
 			foreach ($basegame as $game) {
 				if(!isset($totals[$game['GameID']]['GrandTotal'])) {$totals[$game['GameID']]['GrandTotal']=0;}				
@@ -140,4 +145,30 @@ function getActivityCalculations($gameID="",$historytable="",$connection=false){
 	return($totals);
 }
 
+if (basename($_SERVER["SCRIPT_NAME"], '.php') == "getActivityCalculations.inc") {
+	include $_SERVER['DOCUMENT_ROOT']."/gl6/inc/php.ini.inc.php";
+	include $_SERVER['DOCUMENT_ROOT']."/gl6/inc/functions.inc.php";
+	
+	$title="Activity Calculations Inc Test";
+	echo Get_Header($title);
+	
+	$lookupgame=lookupTextBox("Product", "ProductID", "id", "Game", "../ajax/search.ajax.php");
+	echo $lookupgame["header"];
+	if (!(isset($_GET['id']) && is_numeric($_GET['id']))) {
+		?>
+		Please specify a game by ID.
+		<form method="Get">
+			<?php echo $lookupgame["textBox"]; ?>
+			<input type="submit">
+		</form>
+
+		<?php
+		echo $lookupgame["lookupBox"];
+	} else {	
+		//$actcalculations=reIndexArray(getActivityCalculations(""),"GameID");
+		$actcalculations=getActivityCalculations("");
+		echo arrayTable($actcalculations[$_GET['id']]);
+	}
+	echo Get_Footer();
+}
 ?>
