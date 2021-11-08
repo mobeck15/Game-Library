@@ -1,7 +1,7 @@
-<?
-$time_start = microtime(true);
-include "../inc/php.ini.inc.php";
-include "../inc/functions.inc.php";
+<?php
+$GLOBALS['rootpath']="..";
+require $GLOBALS['rootpath']."/inc/php.ini.inc.php";
+require $GLOBALS['rootpath']."/inc/functions.inc.php";
 
 $title="Test Functions";
 echo Get_Header($title);

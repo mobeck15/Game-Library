@@ -1,9 +1,7 @@
 <?php
-$time_start = microtime(true);
-$path = $_SERVER['DOCUMENT_ROOT'];
-include $path."/gl6/inc/php.ini.inc.php";
-
-include 'inc/functions.inc.php';
+$GLOBALS['rootpath']=".";
+require_once $GLOBALS['rootpath']."/inc/php.ini.inc.php";
+require_once $GLOBALS['rootpath']."/inc/functions.inc.php";
 $title="Settings";
 echo Get_Header($title);
 

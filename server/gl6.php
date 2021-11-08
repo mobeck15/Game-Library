@@ -1,6 +1,6 @@
 <?php
 $time_start = microtime(true);
-include 'inc/functions.inc.php';
+require_once 'inc/functions.inc.php';
 $title="Index";
 echo Get_Header($title);
 ?>

@@ -1,11 +1,9 @@
 <?php
-include $_SERVER['DOCUMENT_ROOT']."/gl6/inc/php.ini.inc.php";
-include $_SERVER['DOCUMENT_ROOT']."/gl6/inc/functions.inc.php";
+require_once "/inc/php.ini.inc.php";
+require_once "/inc/functions.inc.php";
 
 $title="Waste";
 echo Get_Header($title);
-
-include "inc/functions.inc.php";
 
 $conn=get_db_connection();
 	$settings=getsettings($conn);

@@ -69,7 +69,7 @@ function read_memory_usage() {
 
 function getAllCpi($connection=false){
 	if($connection==false){
-		include "inc/auth.inc.php";
+		require_once "inc/auth.inc.php";
 		//$conn = new mysqli($servername, $username, $password, $dbname);
 $conn=get_db_connection();
 	} else {
@@ -99,9 +99,10 @@ $conn=get_db_connection();
 
 
 function get_db_connection(){
-	include "inc/auth.inc.php";
 	
-	//$conn = new mysqli($servername, $username, $password, $dbname);
+	require_once $GLOBALS['rootpath']."/inc/auth.inc.php";
+	
+	$conn = new mysqli($servername, $username, $password, $dbname);
 
 	/* check connection */
 	if (mysqli_connect_errno()) {
@@ -142,7 +143,7 @@ function makeIndex($array,$indexKey){
 
 function getAllItems($gameID="",$connection=false){
 	if($connection==false){
-		include "inc/auth.inc.php";
+		require_once "inc/auth.inc.php";
 		$conn = new mysqli($servername, $username, $password, $dbname);
 	} else {
 		$conn = $connection;
@@ -224,7 +225,7 @@ function getAllItems($gameID="",$connection=false){
 
 function getKeywords($gameID="",$connection=false){
 	if($connection==false){
-		include "inc/auth.inc.php";
+		require_once "inc/auth.inc.php";
 		$conn = new mysqli($servername, $username, $password, $dbname);
 	} else {
 		$conn = $connection;
@@ -315,7 +316,7 @@ function reIndexArray($array,$indexKey){
 
 function getGameDetail($gameID,$connection=false){
 	if($connection==false){
-		include "inc/auth.inc.php";
+		require_once "inc/auth.inc.php";
 		$conn = new mysqli($servername, $username, $password, $dbname);
 	} else {
 		$conn = $connection;

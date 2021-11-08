@@ -14,16 +14,18 @@ error_reporting(E_ALL);
 //ini_set('memory_limit' , '512M')
 //ini_set('memory_limit' , '-1')
 
-include_once "inc/template.inc.php";
-include_once "inc/utility.inc.php";
-include_once "inc/getsettings.inc.php";
-include_once "inc/getGames.inc.php";
-include_once "inc/getPurchases.inc.php";
-include_once "inc/getActivityCalculations.inc.php";
-include_once "inc/getHistoryCalculations.inc.php";
-include_once "inc/getCalculations.inc.php";
-include_once "inc/scraper.inc.php";
-include_once "inc/getTopList.inc.php";
+if(!isset($GLOBALS['rootpath'])) {$GLOBALS['rootpath']=".";}
+
+include_once $GLOBALS['rootpath']."/inc/template.inc.php";
+include_once $GLOBALS['rootpath']."/inc/utility.inc.php";
+include_once $GLOBALS['rootpath']."/inc/getsettings.inc.php";
+include_once $GLOBALS['rootpath']."/inc/getGames.inc.php";
+include_once $GLOBALS['rootpath']."/inc/getPurchases.inc.php";
+include_once $GLOBALS['rootpath']."/inc/getActivityCalculations.inc.php";
+include_once $GLOBALS['rootpath']."/inc/getHistoryCalculations.inc.php";
+include_once $GLOBALS['rootpath']."/inc/getCalculations.inc.php";
+include_once $GLOBALS['rootpath']."/inc/scraper.inc.php";
+include_once $GLOBALS['rootpath']."/inc/getTopList.inc.php";
 
 //DONE: add control function to prevent loading multiple times.
 if(isset($GLOBALS[__FILE__])){
