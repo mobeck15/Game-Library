@@ -180,6 +180,14 @@ function makeStatDataSet($filter,$statname) {
 	return $dataset;
 }
 
+function valueTranslator($row, $statname) {
+	$usekey=objectTranslator($statname);
+	if (isset($row[$usekey]) && $row[$usekey] <> null) {
+		return methodTranslator($statname, $usekey, $row);
+	}
+	return null;
+}
+
 function objectTranslator($statname) {
 	switch ($statname) {
 		case "LaunchVariance":
@@ -188,6 +196,34 @@ function objectTranslator($statname) {
 		case "Launchperhr":
 		case "LaunchLess1":
 		case "LaunchLess2":
+		case "MSRPperhrbeat":
+		case "MSRPperhr":
+		case "MSRPLess1":
+		case "MSRPLess2":
+		case "HistoricVariance":
+		case "HistoricVariancePct":
+		case "Historicperhrbeat":
+		case "Historicperhr":
+		case "HistoricLess1":
+		case "HistoricLess2":
+		case "PaidVariance":
+		case "PaidVariancePct":
+		case "Paidperhrbeat":
+		case "Paidperhr":
+		case "PaidLess1":
+		case "PaidLess2":
+		case "SaleVariance":
+		case "SaleVariancePct":
+		case "Saleperhrbeat":
+		case "Saleperhr":
+		case "SaleLess1":
+		case "SaleLess2":
+		case "AltSaleVariance":
+		case "AltSaleVariancePct":
+		case "Altperhrbeat":
+		case "Altperhr":
+		case "AltLess1":
+		case "AltLess2":
 			return 'LaunchPriceObj';
 		default:
 			return $statname;
@@ -197,16 +233,44 @@ function objectTranslator($statname) {
 function methodTranslator($statname, $usekey, $row) {
 	switch ($statname) {
 		case "LaunchVariance":
+		case "HistoricVariance":
+		case "PaidVariance":
+		case "SaleVariance":
+		case "AltSaleVariance":
 			return $row[$usekey]->getVarianceFromMSRP();
 		case "LaunchVariancePct":
+		case "HistoricVariancePct":
+		case "PaidVariancePct":
+		case "SaleVariancePct":
+		case "AltSaleVariancePct":
 			return $row[$usekey]->getVarianceFromMSRPpct();
 		case "Launchperhrbeat":
+		case "MSRPperhrbeat":
+		case "Historicperhrbeat":
+		case "Paidperhrbeat":
+		case "Saleperhrbeat":
+		case "Altperhrbeat":
 			return $row[$usekey]->getPricePerHourOfTimeToBeat();
 		case "Launchperhr":
+		case "MSRPperhr":
+		case "Historicperhr":
+		case "Paidperhr":
+		case "Saleperhr":
+		case "Altperhr":
 			return $row[$usekey]->getPricePerHourOfTimePlayed();
 		case "LaunchLess1":
+		case "MSRPLess1":
+		case "HistoricLess1":
+		case "PaidLess1":
+		case "SaleLess1":
+		case "AltLess1":
 			return $row[$usekey]->getPricePerHourOfTimePlayedReducedAfter1Hour();
 		case "LaunchLess2":
+		case "MSRPLess2":
+		case "HistoricLess2":
+		case "PaidLess2":
+		case "SaleLess2":
+		case "AltLess2":
 			return $row[$usekey]->getHoursTo01LessPerHour();
 		default:
 			return isset($row[$usekey]) ? $row[$usekey] : null;
@@ -752,17 +816,15 @@ function getOnlyValues($dataset,$statname) {
 			case "MSRP":
 			case "MSRPperhr":
 			case "MSRPLess1":
-			case "MSRPLess2":
 			case "MSRPperhrbeat":
 				$onlydata[]=$statrow[$statname];
-				//$onlydatamode[]=timeduration($statrow[$statname],"seconds");
 				$onlydatamode[]=sprintf("%.2f", $statrow[$statname]);
 				break;
+			case "MSRPLess2":
 			case "LaunchLess2":
-			//var_dump($statrow);
 				$onlydata[]=$statrow[$statname];
-				//$onlydatamode[]=timeduration($statrow[$statname],"seconds");
-				$onlydatamode[]=sprintf("%.2f", $statrow[$statname]);
+				$onlydatamode[]=timeduration($statrow[$statname],"seconds");
+				//$onlydatamode[]=sprintf("%.2f", $statrow[$statname]);
 				break;
 			case "AchievementsPct":
 				$onlydata[]=$statrow[$statname];
