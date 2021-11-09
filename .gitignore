@@ -6,3 +6,4 @@ auth*.php
 *.lnk
 data.json
 config.ini
+insertlog*.txt

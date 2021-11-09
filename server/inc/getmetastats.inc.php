@@ -160,23 +160,31 @@ function countrow($row) {
 function makeStatDataSet($filter,$statname) {
 	$calculations=getCalculations();
 	$dataset=array();
-
-	//TODO: Change this funciton to use price objects.
-	//$settings['CountFree']=0;
-	//var_dump($settings);
+	
+	//TODO: Change this funciton to use price objects. - IN PROGRESS
 	foreach ($calculations as $key => $row) {
-		if(countrow($row) && isset($row[$statname]) && $row[$statname] <> null) {
-			//echo "counted";
-			$dataset[] = array (
-				"Game_ID" => $row['Game_ID'],
-				$statname => $row[$statname]
-			);
+		if(countrow($row)) {
+			switch ($statname) {
+				case "LaunchLess2":
+					if (isset($row['LaunchPriceObj']) && $row['LaunchPriceObj'] <> null) {
+						$dataset[] = array (
+							"Game_ID" => $row['Game_ID'],
+							$statname => $row['LaunchPriceObj']->getHoursTo01LessPerHour()
+						);
+					}
+					break;
+				default:
+					if (isset($row[$statname]) && $row[$statname] <> null) {
+						$dataset[] = array (
+							"Game_ID" => $row['Game_ID'],
+							$statname => $row[$statname]
+						);
+					}
+					break;
+			}
 		}
 	}
-	//var_dump($dataset);
 	array_multisort (array_column($dataset, $statname), SORT_DESC, $dataset);
-	//echo "<hr>";
-	//var_dump($dataset);
 	
 	return $dataset;
 }
@@ -398,6 +406,7 @@ function getStatRow($filter,$statname){
 
 			//Average (Mean)
 			//var_dump($row); echo "<br>\n";
+			if($row['Total']==0) {echo $statname . " Total not set<br>\n";}
 			$row['Average']=$row['Sum']/$row['Total'];
 			
 			//Median
