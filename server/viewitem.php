@@ -1,7 +1,7 @@
 <?php
-$time_start = microtime(true);
-include $_SERVER['DOCUMENT_ROOT']."/gl6/inc/php.ini.inc.php";
-include $_SERVER['DOCUMENT_ROOT']."/gl6/inc/functions.inc.php";
+$GLOBALS['rootpath']=".";
+require_once $GLOBALS['rootpath']."/inc/php.ini.inc.php";
+require_once $GLOBALS['rootpath']."/inc/functions.inc.php";
 
 $title="View Item";
 echo Get_Header($title);

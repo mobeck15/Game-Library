@@ -9,7 +9,7 @@ if(isset($GLOBALS[__FILE__])){
 $GLOBALS[__FILE__]=1;
 
 function GetOwnedGames() {
-	include $_SERVER['DOCUMENT_ROOT']."/gl6/inc/authapi.inc.php";
+	require $GLOBALS['rootpath']."/inc/authapi.inc.php";
 	//GetOwnedGames
 	$url="http://api.steampowered.com/IPlayerService/GetOwnedGames/v0001/?key=".$SteamAPIwebkey."&steamid=".$SteamProfileID."&format=json";
 	//  Initiate curl
@@ -29,7 +29,7 @@ function GetOwnedGames() {
 }
 
 function GetRecentlyPlayedGames() {
-	include $_SERVER['DOCUMENT_ROOT']."/gl6/inc/authapi.inc.php";
+	require $GLOBALS['rootpath']."/inc/authapi.inc.php";
 	//$steamID="76561198111424124"; //Adri
 	//$steamID="76561198024968605"; //Isaac
 
@@ -60,7 +60,7 @@ function GetRecentlyPlayedGames() {
 function GetPlayerAchievements($steamgameid) {
 	//Example: http://api.steampowered.com/ISteamUserStats/GetPlayerAchievements/v0001/?appid=562500&key=71CBF878CA78EF8459DACF1E7F08C210&steamid=76561198024968605
 	
-	include $_SERVER['DOCUMENT_ROOT']."/gl6/inc/authapi.inc.php";
+	require $GLOBALS['rootpath']."/inc/authapi.inc.php";
 	
 	//GetUserStatsForGame
 	$url="http://api.steampowered.com/ISteamUserStats/GetPlayerAchievements/v0001/?appid=".$steamgameid."&key=".$SteamAPIwebkey."&steamid=".$SteamProfileID;
@@ -89,7 +89,7 @@ function GetPlayerAchievements($steamgameid) {
 function GetUserStatsForGame($steamgameid,$htmloutput=false) {
 	//Example: http://api.steampowered.com/ISteamUserStats/GetUserStatsForGame/v0002/?appid=562500&key=71CBF878CA78EF8459DACF1E7F08C210&steamid=76561198024968605
 	
-	include $_SERVER['DOCUMENT_ROOT']."/gl6/inc/authapi.inc.php";
+	require $GLOBALS['rootpath']."/inc/authapi.inc.php";
 	
 	//GetUserStatsForGame
 	$url="http://api.steampowered.com/ISteamUserStats/GetUserStatsForGame/v0002/?appid=".$steamgameid."&key=".$SteamAPIwebkey."&steamid=".$SteamProfileID;
@@ -148,7 +148,7 @@ function GetGameNews($steamgameid,$newscount=5,$length=500,$htmloutput=false) {
 }
 
 function GetSchemaForGame($steamgameid,$htmloutput=false) {
-	include $_SERVER['DOCUMENT_ROOT']."/gl6/inc/authapi.inc.php";
+	require $GLOBALS['rootpath']."/inc/authapi.inc.php";
 	//GetSchemaForGame
 	$url="http://api.steampowered.com/ISteamUserStats/GetSchemaForGame/v2/?key=".$SteamAPIwebkey."&appid=".$steamgameid;
 	//  Initiate curl

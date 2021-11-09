@@ -1,9 +1,9 @@
 <?php
-include $_SERVER['DOCUMENT_ROOT']."/gl6/inc/php.ini.inc.php";
-include $_SERVER['DOCUMENT_ROOT']."/gl6/inc/functions.inc.php";
+$GLOBALS['rootpath']=".";
+require_once $GLOBALS['rootpath']."/inc/php.ini.inc.php";
+require_once $GLOBALS['rootpath']."/inc/functions.inc.php";
 $title="Calculations";
 echo Get_Header($title);
-//DONE: Floating divs don't float in gl6, fix the header stuff.
 //TODO: Make a form menu for custom view
 
 $conn=get_db_connection();

@@ -100,7 +100,7 @@ $conn=get_db_connection();
 
 function get_db_connection(){
 	
-	require_once $GLOBALS['rootpath']."/inc/auth.inc.php";
+	require $GLOBALS['rootpath']."/inc/auth.inc.php";
 	
 	$conn = new mysqli($servername, $username, $password, $dbname);
 
@@ -143,7 +143,7 @@ function makeIndex($array,$indexKey){
 
 function getAllItems($gameID="",$connection=false){
 	if($connection==false){
-		require_once "inc/auth.inc.php";
+		require $GLOBALS['rootpath']."/inc/auth.inc.php";
 		$conn = new mysqli($servername, $username, $password, $dbname);
 	} else {
 		$conn = $connection;

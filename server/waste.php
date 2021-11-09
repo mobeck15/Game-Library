@@ -1,6 +1,7 @@
 <?php
-require_once "/inc/php.ini.inc.php";
-require_once "/inc/functions.inc.php";
+$GLOBALS['rootpath']=".";
+require_once $GLOBALS['rootpath']."/inc/php.ini.inc.php";
+require_once $GLOBALS['rootpath']."/inc/functions.inc.php";
 
 $title="Waste";
 echo Get_Header($title);

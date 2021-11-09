@@ -7,9 +7,9 @@ if(isset($GLOBALS[__FILE__])){
 $GLOBALS[__FILE__]=1;
 
 function getHistoryCalculations($gameID="",$connection=false,$start=false,$end=false){
-	include_once('utility.inc.php');
+	//include_once('utility.inc.php');
 	if($connection==false){
-		include "auth.inc.php";
+		require $GLOBALS['rootpath']."/inc/auth.inc.php";
 		$conn = new mysqli($servername, $username, $password, $dbname);
 	} else {
 		$conn = $connection;
@@ -236,13 +236,14 @@ function getHistoryCalculations($gameID="",$connection=false,$start=false,$end=f
 }
 
 if (basename($_SERVER["SCRIPT_NAME"], '.php') == "getHistoryCalculations.inc") {
-	include $_SERVER['DOCUMENT_ROOT']."/gl6/inc/php.ini.inc.php";
-	include $_SERVER['DOCUMENT_ROOT']."/gl6/inc/functions.inc.php";
+	$GLOBALS['rootpath']="..";
+	require_once $GLOBALS['rootpath']."/inc/php.ini.inc.php";
+	require_once $GLOBALS['rootpath']."/inc/functions.inc.php";
 	
 	$title="History Calculations Inc Test";
 	echo Get_Header($title);
 	
-	$lookupgame=lookupTextBox("History", "HistoryID", "id", "History", "../ajax/search.ajax.php");
+	$lookupgame=lookupTextBox("History", "HistoryID", "id", "History", $GLOBALS['rootpath']."/ajax/search.ajax.php");
 	echo $lookupgame["header"];
 	if (!(isset($_GET['id']) && is_numeric($_GET['id']))) {
 		?>

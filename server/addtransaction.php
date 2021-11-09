@@ -1,14 +1,11 @@
 <?php
-$time_start = microtime(true);
-$path = $_SERVER['DOCUMENT_ROOT'];
-include $path."/gl6/inc/php.ini.inc.php";
+$GLOBALS['rootpath']=".";
+require_once $GLOBALS['rootpath']."/inc/php.ini.inc.php";
+require_once $GLOBALS['rootpath']."/inc/functions.inc.php";
 
-include 'inc/functions.inc.php';
 $title="Add Transaction";
 echo Get_Header($title);
 
-include "inc/auth.inc.php";
-//$conn = new mysqli($servername, $username, $password, $dbname);
 $conn=get_db_connection();
 
 $settings=getsettings($conn);

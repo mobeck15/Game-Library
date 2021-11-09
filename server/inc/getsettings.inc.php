@@ -21,7 +21,7 @@ function getsettings($connection=false){
 		
 		//If connection was not provided, include the authorization variables and establish a connection.
 		if($connection==false){
-			include "auth.inc.php";
+			require $GLOBALS['rootpath']."/inc/auth.inc.php";
 			$conn = new mysqli($servername, $username, $password, $dbname);
 		} else {
 			$conn = $connection;
@@ -93,13 +93,14 @@ function getsettings($connection=false){
 }
 
 if (basename($_SERVER["SCRIPT_NAME"], '.php') == "getsettings.inc") {
-	include $_SERVER['DOCUMENT_ROOT']."/gl6/inc/php.ini.inc.php";
-	include $_SERVER['DOCUMENT_ROOT']."/gl6/inc/functions.inc.php";
+	$GLOBALS['rootpath']="..";
+	require_once $GLOBALS['rootpath']."/inc/php.ini.inc.php";
+	require_once $GLOBALS['rootpath']."/inc/functions.inc.php";
 	
 	$title="Settings Inc Test";
 	echo Get_Header($title);
 	
-	$lookupgame=lookupTextBox("History", "HistoryID", "id", "History", "../ajax/search.ajax.php");
+	$lookupgame=lookupTextBox("History", "HistoryID", "id", "History", $GLOBALS['rootpath']."/ajax/search.ajax.php");
 	echo $lookupgame["header"];
 	$Settings=getsettings();
 	echo arrayTable($Settings);

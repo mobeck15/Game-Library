@@ -3,11 +3,9 @@
  * Based on code from https://jqueryui.com/autocomplete/
  * and https://www.codeproject.com/Articles/152558/jQuery-UI-Autocomplete-with-ID
  */
-
-$path = $_SERVER['DOCUMENT_ROOT'];
-include $path."/gl6/inc/php.ini.inc.php";
-
-include $path."/gl6/inc/functions.inc.php";
+$GLOBALS['rootpath']="..";
+require_once $GLOBALS['rootpath']."/inc/php.ini.inc.php";
+require_once $GLOBALS['rootpath']."/inc/functions.inc.php";
 
 if(isset($_GET['querytype'])) {} else {$_GET['querytype']="Game";}
 

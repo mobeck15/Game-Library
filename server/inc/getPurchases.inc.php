@@ -493,13 +493,14 @@ function getAllPurchases($transID=""){
 }
 
 if (basename($_SERVER["SCRIPT_NAME"], '.php') == "getPurchases.inc") {
-	include $_SERVER['DOCUMENT_ROOT']."/gl6/inc/php.ini.inc.php";
-	include $_SERVER['DOCUMENT_ROOT']."/gl6/inc/functions.inc.php";
+	$GLOBALS['rootpath']="..";
+	require_once $GLOBALS['rootpath']."/inc/php.ini.inc.php";
+	require_once $GLOBALS['rootpath']."/inc/functions.inc.php";
 	
 	$title="get Purchases Inc Test";
 	echo Get_Header($title);
 	
-	$lookupbundle=lookupTextBox("BundleTitle", "BundleID", "id", "Trans", "../ajax/search.ajax.php");
+	$lookupbundle=lookupTextBox("BundleTitle", "BundleID", "id", "Trans", $GLOBALS['rootpath']."/ajax/search.ajax.php");
 	echo $lookupbundle["header"];
 	if (!(isset($_GET['id']) && is_numeric($_GET['id']))) {
 		?>

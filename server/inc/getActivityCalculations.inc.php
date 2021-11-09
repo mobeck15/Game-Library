@@ -3,7 +3,6 @@
  *  GL5 Version - Need to re-work for GL6
  */
  
-//DONE: add control function to prevent loading multiple times.
 if(isset($GLOBALS[__FILE__])){
 	trigger_error("File already included once ".__FILE__.". ");
 }
@@ -12,13 +11,11 @@ $GLOBALS[__FILE__]=1;
 function getActivityCalculations($gameID="",$historytable="",$connection=false){
 	//This function is getting called twice from viewgame.php
 	if($connection==false){
-		include "auth.inc.php";
+		require $GLOBALS['rootpath']."/inc/auth.inc.php";
 		$conn = new mysqli($servername, $username, $password, $dbname);
 	} else {
 		$conn = $connection;
 	}
-	include_once "utility.inc.php";
-	include_once "getHistoryCalculations.inc.php";
 	
 	$settings=getsettings($conn);
 	if($historytable=="") {
@@ -146,13 +143,14 @@ function getActivityCalculations($gameID="",$historytable="",$connection=false){
 }
 
 if (basename($_SERVER["SCRIPT_NAME"], '.php') == "getActivityCalculations.inc") {
-	include $_SERVER['DOCUMENT_ROOT']."/gl6/inc/php.ini.inc.php";
-	include $_SERVER['DOCUMENT_ROOT']."/gl6/inc/functions.inc.php";
+	$GLOBALS['rootpath']="..";
+	require_once $GLOBALS['rootpath']."/inc/php.ini.inc.php";
+	require_once $GLOBALS['rootpath']."/inc/functions.inc.php";
 	
 	$title="Activity Calculations Inc Test";
 	echo Get_Header($title);
 	
-	$lookupgame=lookupTextBox("Product", "ProductID", "id", "Game", "../ajax/search.ajax.php");
+	$lookupgame=lookupTextBox("Product", "ProductID", "id", "Game", $GLOBALS['rootpath']."/ajax/search.ajax.php");
 	echo $lookupgame["header"];
 	if (!(isset($_GET['id']) && is_numeric($_GET['id']))) {
 		?>
@@ -164,7 +162,7 @@ if (basename($_SERVER["SCRIPT_NAME"], '.php') == "getActivityCalculations.inc") 
 
 		<?php
 		echo $lookupgame["lookupBox"];
-	} else {	
+	} else {
 		//$actcalculations=reIndexArray(getActivityCalculations(""),"GameID");
 		$actcalculations=getActivityCalculations("");
 		echo arrayTable($actcalculations[$_GET['id']]);

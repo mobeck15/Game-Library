@@ -3,11 +3,7 @@
  *  GL5 Version - Need to re-work for GL6
  */
 
-//CANCELLED: Update getCalculations function to GL5 version --Not sure what this means anymore...
-//DONE Kind of: Load and parse settings.
-
 //TODO: Paid total should include DLC (this will make free games with paid DLC show as not free)
-//DONE: Copy this control function to other inc files.
 //TODO: Re-evaluate how parent game is calculated
 if(isset($GLOBALS[__FILE__])){
 	trigger_error("File already included once ".__FILE__.". ");
@@ -569,13 +565,14 @@ class PriceCalculation {
 
 
 if (basename($_SERVER["SCRIPT_NAME"], '.php') == "getCalculations.inc") {
-	include $_SERVER['DOCUMENT_ROOT']."/gl6/inc/php.ini.inc.php";
-	include $_SERVER['DOCUMENT_ROOT']."/gl6/inc/functions.inc.php";
+	$GLOBALS['rootpath']="..";
+	require_once $GLOBALS['rootpath']."/inc/php.ini.inc.php";
+	require_once $GLOBALS['rootpath']."/inc/functions.inc.php";
 	
 	$title="Calculations Inc Test";
 	echo Get_Header($title);
 	
-	$lookupgame=lookupTextBox("Product", "ProductID", "id", "Game", "../ajax/search.ajax.php");
+	$lookupgame=lookupTextBox("Product", "ProductID", "id", "Game", $GLOBALS['rootpath']."/ajax/search.ajax.php");
 	echo $lookupgame["header"];
 	if (!(isset($_GET['id']) && is_numeric($_GET['id']))) {
 		?>

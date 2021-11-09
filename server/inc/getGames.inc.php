@@ -11,7 +11,7 @@ $GLOBALS[__FILE__]=1;
 
 function getGames($gameID="",$connection=false){
 	if($connection==false){
-		include "auth.inc.php";
+		require_once $GLOBALS['rootpath']."/inc/auth.inc.php";
 		$conn = new mysqli($servername, $username, $password, $dbname);
 	} else {
 		$conn = $connection;
@@ -198,13 +198,14 @@ function CalculateGameRow($row){
 }
 
 if (basename($_SERVER["SCRIPT_NAME"], '.php') == "getGames.inc") {
-	include $_SERVER['DOCUMENT_ROOT']."/gl6/inc/php.ini.inc.php";
-	include $_SERVER['DOCUMENT_ROOT']."/gl6/inc/functions.inc.php";
+	$GLOBALS['rootpath']="..";
+	require_once $GLOBALS['rootpath']."/inc/php.ini.inc.php";
+	require_once $GLOBALS['rootpath']."/inc/functions.inc.php";
 	
 	$title="Games Inc Test";
 	echo Get_Header($title);
 	
-	$lookupgame=lookupTextBox("Product", "ProductID", "id", "Game", "../ajax/search.ajax.php");
+	$lookupgame=lookupTextBox("Product", "ProductID", "id", "Game", $GLOBALS['rootpath']."/ajax/search.ajax.php");
 	echo $lookupgame["header"];
 	if (!(isset($_GET['id']) && is_numeric($_GET['id']))) {
 		?>
