@@ -338,7 +338,7 @@ function getCalculations($gameID="",$connection=false,$start=false,$end=false){
 			$game['SaleLess1']    =getLessXhour($game['SalePrice']  ,$game['GrandTotal'],$settings['XhourGet']);
 			$game['AltLess1']     =getLessXhour($game['AltSalePrice']  ,$game['GrandTotal'],$settings['XhourGet']);
 
-			//$game['LaunchLess2']  =getHourstoXless($game['LaunchPrice'],$game['GrandTotal'],$settings['LessStat']);
+			$game['LaunchLess2']  =getHourstoXless($game['LaunchPrice'],$game['GrandTotal'],$settings['LessStat']);
 			$game['MSRPLess2']    =getHourstoXless($game['MSRP']       ,$game['GrandTotal'],$settings['LessStat']);
 			$game['CurrentLess2'] =getHourstoXless($game['CurrentMSRP'],$game['GrandTotal'],$settings['LessStat']);
 			$game['HistoricLess2']=getHourstoXless($game['HistoricLow'],$game['GrandTotal'],$settings['LessStat']);

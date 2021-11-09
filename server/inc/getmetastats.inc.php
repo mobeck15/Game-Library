@@ -164,29 +164,53 @@ function makeStatDataSet($filter,$statname) {
 	//TODO: Change this funciton to use price objects. - IN PROGRESS
 	foreach ($calculations as $key => $row) {
 		if(countrow($row)) {
-			switch ($statname) {
-				case "LaunchLess2":
-					if (isset($row['LaunchPriceObj']) && $row['LaunchPriceObj'] <> null) {
-						$dataset[] = array (
-							"Game_ID" => $row['Game_ID'],
-							$statname => $row['LaunchPriceObj']->getHoursTo01LessPerHour()
-						);
-					}
-					break;
-				default:
-					if (isset($row[$statname]) && $row[$statname] <> null) {
-						$dataset[] = array (
-							"Game_ID" => $row['Game_ID'],
-							$statname => $row[$statname]
-						);
-					}
-					break;
+			$usekey=objectTranslator($statname);
+			$usevalue=methodTranslator($statname, $usekey, $row);
+			
+			if (isset($row[$usekey]) && $row[$usekey] <> null) {
+				$dataset[] = array (
+					"Game_ID" => $row['Game_ID'],
+					$statname => $usevalue
+				);
 			}
 		}
 	}
 	array_multisort (array_column($dataset, $statname), SORT_DESC, $dataset);
 	
 	return $dataset;
+}
+
+function objectTranslator($statname) {
+	switch ($statname) {
+		case "LaunchVariance":
+		case "LaunchVariancePct":
+		case "Launchperhrbeat":
+		case "Launchperhr":
+		case "LaunchLess1":
+		case "LaunchLess2":
+			return 'LaunchPriceObj';
+		default:
+			return $statname;
+	}
+}
+
+function methodTranslator($statname, $usekey, $row) {
+	switch ($statname) {
+		case "LaunchVariance":
+			return $row[$usekey]->getVarianceFromMSRP();
+		case "LaunchVariancePct":
+			return $row[$usekey]->getVarianceFromMSRPpct();
+		case "Launchperhrbeat":
+			return $row[$usekey]->getPricePerHourOfTimeToBeat();
+		case "Launchperhr":
+			return $row[$usekey]->getPricePerHourOfTimePlayed();
+		case "LaunchLess1":
+			return $row[$usekey]->getPricePerHourOfTimePlayedReducedAfter1Hour();
+		case "LaunchLess2":
+			return $row[$usekey]->getHoursTo01LessPerHour();
+		default:
+			return isset($row[$usekey]) ? $row[$usekey] : null;
+	}
 }
 
 function printStatRow2($stats){
