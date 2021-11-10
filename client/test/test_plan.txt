@@ -1,0 +1,81 @@
+DataFiles
+	Test that the data file is valid json 
+
+Functions
+get_app_data
+	Test that get_app_data returns name
+	Test that get_app_data returns id
+	Test that get_app_data returns platform
+	Test that get_app_data returns system
+	Test that get_app_data fails gracefully when app not found
+
+print_app_data
+	Test that print_app_data outputs text as expected
+
+write_log_data
+	Test that write_log_data saves log data to the specified new log file when the log file does not exist
+	Test that write_log_data saves log data to the specidied existing log file and appedns without altering existing data
+	
+compose_log_record
+	Test that compose_log_record creates a valid record for -start-
+	Test that compose_log_record creates a valid full record for -end-
+
+launchapp
+	Test that launchapp launches app using -exe- option
+	Test that launchapp launches app using alternate launch option
+	Test that launchapp launches app using the default launch option when unspecified
+	Test that launchapp launches app using the exe launch option if appdata does not have a default
+	Test launchapp for an app that requires admin privelages
+	Test launchapp with a bad exe path
+	Use launchapp to start a Steam game
+	Use launchapp to start an Epic game
+	Use launchapp to start an Origin game
+	Use launchapp to start an amazon game
+	Use launchapp to start an exe using startfile
+
+printtime
+	Test printtime returns time in expected format
+	
+printelapses
+	Test that printelapses returns elapsed time for all time formats 
+	Test that printelapses returns elapsed time as Seconds 
+	Test that printelapses returns elapsed time as minutes 
+	Test that printelapses returns elapsed time as duration 
+	
+captureendtime
+	Test that captureendtime prompts to recapture time when below minimum
+	Test that captureendtime prompts to recapture time when below minimum even after prompting once
+	Test that captureendtime does not prompt to recapture time when above minimum
+	Test that captureendtime records an end time that is larger than start time
+	
+prompt_for_recapture
+	No tests
+	
+getrating
+	Test that getrating only accepts 1-4
+	*Test that getrating accepts blank as previously submitted value (only if one exists)
+	*Test that getrating rejects blank if no previous value
+	*Test that getrating displays previous value before prompt
+	
+getstatus
+	Test that getstatus only accepts listed options (Active)
+	Test that getstatus only accepts listed options (Done)
+	Test that getstatus only accepts listed options (Inative)
+	Test that getstatus only accepts listed options (OnHold)
+	Test that getstatus accepts -on hold- staus OnHold
+	Test that getstatus only accepts listed options (Unplayed)
+	Test that getstatus only accepts listed options (Broken)
+	Test that getstatus only accepts listed options (Never)
+	Test that getstatus accepts input as case insensetive
+	Test that getstatus output case is normalized
+	*Test that getstatus accepts blank as previously submitted value (only if one exists)
+	*Test that getstatus rejects blank if no previous value
+	*Test that getstatus displays previous value before prompt
+	
+saverecord
+	Test that saverecord submits data to onlind database
+	Test that saverecord upload prompt accecpts blank as -yes-
+	Test that saverecord composes post string as expected
+	Test that saverecord returns -Record updated successfully- on success
+	Test that saverecord returns -Record not saved- on error
+	Test that saverecord returns -Record not saved- decline prompt
