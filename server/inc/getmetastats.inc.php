@@ -12,8 +12,9 @@ function makeStatTable($MetaFilter,$filter){
 	$output .= "<tr>";
 	$output .= "<th></th>";
 	$output .= "<th></th>";
-	$output .= "<th>Total</th>";
-	$output .= "<th>Math</th>";
+	$output .= "<th>Count</th>";
+	//$output .= "<th>Total</th>";
+	$output .= "<th>Notes</th>";
 	$output .= "<th>Average (Mean)</th>";
 	$output .= "<th>Game</th>";
 	//$output .= "<th>Harmonic Mean</th>";
@@ -42,40 +43,130 @@ function makeStatTable($MetaFilter,$filter){
 		$output .= makeHeaderRow("STATS");
 		$output .= makeGameCountRow($filter,"blue1");
 		/* Launch Date */
-		$output .= makeStatRow($filter,"Release","LaunchDate","yellow1","Date",5);
-		$output .= makeStatRow($filter,"Purchased","PurchaseDateTime","yellow2");
-		$output .= makeStatRow($filter,"Date Added","AddedDateTime","yellow1");
-		$output .= makeStatRow($filter,"Last Played","lastPlayDateTime","yellow2");
+		$output .= makeStatRow($filter,"Release"     ,"LaunchDate"       ,"yellow1","Date",5);
+		$output .= makeStatRow($filter,"Purchased"   ,"PurchaseDateTime" ,"yellow2");
+		$output .= makeStatRow($filter,"Date Added"  ,"AddedDateTime"    ,"yellow1");
+		$output .= makeStatRow($filter,"Last Played" ,"lastPlayDateTime" ,"yellow2");
 		$output .= makeStatRow($filter,"First Played","firstPlayDateTime","yellow1");
 
-		$output .= makeStatRow($filter,"Count","SteamAchievements","blue1","Achievements",4);
-		$output .= makeStatRow($filter,"Earned","Achievements","blue2");
-		$output .= makeStatRow($filter,"Percent Complete","AchievementsPct","blue1");
-		$output .= makeStatRow($filter,"Left","AchievementsLeft","blue2");
+		$output .= makeStatRow($filter,"Count"           ,"SteamAchievements","blue1","Achievements",4);
+		$output .= makeStatRow($filter,"Earned"          ,"Achievements"     ,"blue2");
+		$output .= makeStatRow($filter,"Percent Complete","AchievementsPct"  ,"blue1");
+		$output .= makeStatRow($filter,"Left"            ,"AchievementsLeft" ,"blue2");
 		
-		$output .= makeStatRow($filter,"Play Time","totalHrs","yellow1","Time",4);
-		$output .= makeStatRow($filter,"Total Play Time","GrandTotal","yellow2");
-		$output .= makeStatRow($filter,"Time to Beat","TimeToBeat","yellow1");
+		$output .= makeStatRow($filter,"Play Time"             ,"totalHrs"      ,"yellow1","Time",4);
+		$output .= makeStatRow($filter,"Total Play Time"       ,"GrandTotal"    ,"yellow2");
+		$output .= makeStatRow($filter,"Time to Beat"          ,"TimeToBeat"    ,"yellow1");
 		$output .= makeStatRow($filter,"Remaining Time to Beat","TimeLeftToBeat","yellow2");
 
-		$output .= makeStatRow($filter,"Metascore","Metascore","blue1","Reviews",4);
+		$output .= makeStatRow($filter,"Metascore"     ,"Metascore"    ,"blue1","Reviews",4);
 		$output .= makeStatRow($filter,"User Metascore","UserMetascore","blue2");
-		$output .= makeStatRow($filter,"Steam Rating","SteamRating","blue1");
-		$output .= makeStatRow($filter,"Review","Review","blue2");
+		$output .= makeStatRow($filter,"Steam Rating"  ,"SteamRating"  ,"blue1");
+		$output .= makeStatRow($filter,"Review"        ,"Review"       ,"blue2");
 
-		$output .= makeStatRow($filter,"Price","LaunchPrice","yellow1","Launch",7);
-		$output .= makeStatRow($filter,"Variance from MSRP $","LaunchVariance","yellow2");
-		$output .= makeStatRow($filter,"Variance from MSRP %","LaunchVariancePct","yellow1");
-		$output .= makeStatRow($filter,"$/hr","Launchperhr","yellow2");
-		$output .= makeStatRow($filter,"Hrs to $0.01 Less $/hr","LaunchLess1","yellow1");
-		$output .= makeStatRow($filter,"1 Hrs Reduces $/hr by","LaunchLess2","yellow2");
-		$output .= makeStatRow($filter,"$/hr to Beat","Launchperhrbeat","yellow1");
+		$output .= makeStatRow($filter,"Price"                 ,"LaunchPrice"      ,"yellow1","Launch",7);
+		$output .= makeStatRow($filter,"Variance from MSRP $"  ,"LaunchVariance"   ,"yellow2");
+		$output .= makeStatRow($filter,"Variance from MSRP %"  ,"LaunchVariancePct","yellow1");
+		$output .= makeStatRow($filter,"$/hr"                  ,"Launchperhr"      ,"yellow2");
+		$output .= makeStatRow($filter,"Hrs to $0.01 Less $/hr","LaunchLess1"      ,"yellow1");
+		$output .= makeStatRow($filter,"1 Hrs Reduces $/hr by" ,"LaunchLess2"      ,"yellow2");
+		$output .= makeStatRow($filter,"$/hr to Beat"          ,"Launchperhrbeat"  ,"yellow1");
 
-		$output .= makeStatRow($filter,"Price","MSRP","blue1","MSRP",5);
-		$output .= makeStatRow($filter,"$/hr","MSRPperhr","blue2");
-		$output .= makeStatRow($filter,"Hrs to $0.01 Less $/hr","MSRPLess1","blue1");
-		$output .= makeStatRow($filter,"1 Hrs Reduces $/hr by","MSRPLess2","blue2");
-		$output .= makeStatRow($filter,"$/hr to Beat","MSRPperhrbeat","blue1");
+		$output .= makeStatRow($filter,"Price"                 ,"MSRP"         ,"blue1","MSRP",5);
+		$output .= makeStatRow($filter,"$/hr"                  ,"MSRPperhr"    ,"blue2");
+		$output .= makeStatRow($filter,"Hrs to $0.01 Less $/hr","MSRPLess1"    ,"blue1");
+		$output .= makeStatRow($filter,"1 Hrs Reduces $/hr by" ,"MSRPLess2"    ,"blue2");
+		$output .= makeStatRow($filter,"$/hr to Beat"          ,"MSRPperhrbeat","blue1");
+
+		$output .= makeStatRow($filter,"Price"                 ,"HistoricLow"        ,"yellow1","Historic Low",7);
+		$output .= makeStatRow($filter,"Variance from MSRP $"  ,"HistoricVariance"   ,"yellow2");
+		$output .= makeStatRow($filter,"Variance from MSRP %"  ,"HistoricVariancePct","yellow1");
+		$output .= makeStatRow($filter,"$/hr"                  ,"Historicperhr"      ,"yellow2");
+		$output .= makeStatRow($filter,"Hrs to $0.01 Less $/hr","HistoricLess1"      ,"yellow1");
+		$output .= makeStatRow($filter,"1 Hrs Reduces $/hr by" ,"HistoricLess2"      ,"yellow2");
+		$output .= makeStatRow($filter,"$/hr to Beat"          ,"Historicperhrbeat"  ,"yellow1");
+
+		$output .= makeStatRow($filter,"Price"                 ,"Paid"           ,"blue1","Paid",7);
+		$output .= makeStatRow($filter,"Variance from MSRP $"  ,"PaidVariance"   ,"blue2");
+		$output .= makeStatRow($filter,"Variance from MSRP %"  ,"PaidVariancePct","blue1");
+		$output .= makeStatRow($filter,"$/hr"                  ,"Paidperhr"      ,"blue2");
+		$output .= makeStatRow($filter,"Hrs to $0.01 Less $/hr","PaidLess1"      ,"blue1");
+		$output .= makeStatRow($filter,"1 Hrs Reduces $/hr by" ,"PaidLess2"      ,"blue2");
+		$output .= makeStatRow($filter,"$/hr to Beat"          ,"Paidperhrbeat"  ,"blue1");
+
+		$output .= makeStatRow($filter,"Price"                 ,"SalePrice"      ,"yellow1","Sale Price",7);
+		$output .= makeStatRow($filter,"Variance from MSRP $"  ,"SaleVariance"   ,"yellow2");
+		$output .= makeStatRow($filter,"Variance from MSRP %"  ,"SaleVariancePct","yellow1");
+		$output .= makeStatRow($filter,"$/hr"                  ,"Saleperhr"      ,"yellow2");
+		$output .= makeStatRow($filter,"Hrs to $0.01 Less $/hr","SaleLess1"      ,"yellow1");
+		$output .= makeStatRow($filter,"1 Hrs Reduces $/hr by" ,"SaleLess2"      ,"yellow2");
+		$output .= makeStatRow($filter,"$/hr to Beat"          ,"Saleperhrbeat"  ,"yellow1");
+
+		$output .= makeStatRow($filter,"Price"                 ,"AltSalePrice"      ,"blue1","Alt Sale",7);
+		$output .= makeStatRow($filter,"Variance from MSRP $"  ,"AltSaleVariance"   ,"blue2");
+		$output .= makeStatRow($filter,"Variance from MSRP %"  ,"AltSaleVariancePct","blue1");
+		$output .= makeStatRow($filter,"$/hr"                  ,"Altperhr"          ,"blue2");
+		$output .= makeStatRow($filter,"Hrs to $0.01 Less $/hr","AltLess1"          ,"blue1");
+		$output .= makeStatRow($filter,"1 Hrs Reduces $/hr by" ,"AltLess2"          ,"blue2");
+		$output .= makeStatRow($filter,"$/hr to Beat"          ,"Altperhrbeat"      ,"blue1");
+	}
+
+	if($MetaFilter=="meta" OR $MetaFilter=="both") {
+		$output .= makeHeaderRow("METASTATS");
+		
+		$output .= makeStatRow($filter,"Hrs to next position $/hr","LaunchHrsNext1" ,"yellow1","Launch",6);
+		$output .= makeStatRow($filter,"Hrs to next active $/hr"  ,"LaunchHrsNext2" ,"yellow2");
+		//$output .= makeStatRow($filter,"Hrs to $0.01 Less $/hr"   ,"LaunchLess2"    ,"yellow1"); //Duplicate from above rows.
+		$output .= makeStatRow($filter,"Hrs to $5.00/hr"          ,"LaunchHrs5"     ,"yellow1");
+		$output .= makeStatRow($filter,"Hrs to Avg/hr"            ,"launchhrsavg"   ,"yellow2");
+		//$output .= makeStatRow($filter,"Hrs to Mean/hr"           ,"launchhrsmean"  ,"yellow1"); //Mean not working yet
+		$output .= makeStatRow($filter,"Hrs to Median/hr"         ,"launchhrsmedian","yellow1");
+		$output .= makeStatRow($filter,"Hrs to XgameX $/hr"       ,"launchhrsgame"  ,"yellow2");
+
+		$output .= makeStatRow($filter,"Hrs to next position $/hr","MSRPHrsNext1" ,"blue1","MSRP",6);
+		$output .= makeStatRow($filter,"Hrs to next active $/hr"  ,"MSRPHrsNext2" ,"blue2");
+		//$output .= makeStatRow($filter,"Hrs to $0.01 Less $/hr"   ,"MSRPLess2"    ,"blue1"); //Duplicate from above rows.
+		$output .= makeStatRow($filter,"Hrs to $3.00/hr"          ,"MSRPHrs3"     ,"blue1");
+		$output .= makeStatRow($filter,"Hrs to Avg/hr"            ,"msrphrsavg"   ,"blue2");
+		//$output .= makeStatRow($filter,"Hrs to Mean/hr"           ,"msrphrsmean"  ,"blue1"); //Mean not working yet
+		$output .= makeStatRow($filter,"Hrs to Median/hr"         ,"msrphrsmedian","blue1");
+		$output .= makeStatRow($filter,"Hrs to XgameX $/hr"       ,"msrphrsgame"  ,"blue2");
+
+		$output .= makeStatRow($filter,"Hrs to next position $/hr","HistoricHrsNext1" ,"yellow1","Historic Low",6);
+		$output .= makeStatRow($filter,"Hrs to next active $/hr"  ,"HistoricHrsNext2" ,"yellow2");
+		//$output .= makeStatRow($filter,"Hrs to $0.01 Less $/hr"   ,"HistoricLess2"    ,"yellow1"); //Duplicate from above rows.
+		$output .= makeStatRow($filter,"Hrs to $3.00/hr"          ,"HistoricHrs3"     ,"yellow1");
+		$output .= makeStatRow($filter,"Hrs to Avg/hr"            ,"histhrsavg"   ,"yellow2");
+		//$output .= makeStatRow($filter,"Hrs to Mean/hr"           ,"histhrsmean"  ,"yellow1"); //Mean not working yet
+		$output .= makeStatRow($filter,"Hrs to Median/hr"         ,"histhrsmedian","yellow1");
+		$output .= makeStatRow($filter,"Hrs to XgameX $/hr"       ,"histhrsgame"  ,"yellow2");
+
+		$output .= makeStatRow($filter,"Hrs to next position $/hr","PaidHrsNext1" ,"blue1","Paid",6);
+		$output .= makeStatRow($filter,"Hrs to next active $/hr"  ,"PaidHrsNext2" ,"blue2");
+		//$output .= makeStatRow($filter,"Hrs to $0.01 Less $/hr"   ,"PaidLess2"    ,"blue1"); //Duplicate from above rows.
+		$output .= makeStatRow($filter,"Hrs to $3.00/hr"          ,"PaidHrs3"     ,"blue1");
+		$output .= makeStatRow($filter,"Hrs to Avg/hr"            ,"paidhrsavg"   ,"blue2");
+		//$output .= makeStatRow($filter,"Hrs to Mean/hr"           ,"paidhrsmean"  ,"blue1"); //Mean not working yet
+		$output .= makeStatRow($filter,"Hrs to Median/hr"         ,"paidhrsmedian","blue1");
+		$output .= makeStatRow($filter,"Hrs to XgameX $/hr"       ,"paidhrsgame"  ,"blue2");
+
+		$output .= makeStatRow($filter,"Hrs to next position $/hr","SaleHrsNext1" ,"yellow1","Sale",6);
+		$output .= makeStatRow($filter,"Hrs to next active $/hr"  ,"SaleHrsNext2" ,"yellow2");
+		//$output .= makeStatRow($filter,"Hrs to $0.01 Less $/hr"   ,"SaleLess2"    ,"yellow1"); //Duplicate from above rows.
+		$output .= makeStatRow($filter,"Hrs to $3.00/hr"          ,"SaleHrs3"     ,"yellow1");
+		$output .= makeStatRow($filter,"Hrs to Avg/hr"            ,"salehrsavg"   ,"yellow2");
+		//$output .= makeStatRow($filter,"Hrs to Mean/hr"           ,"salehrsmean"  ,"yellow1"); //Mean not working yet
+		$output .= makeStatRow($filter,"Hrs to Median/hr"         ,"salehrsmedian","yellow1");
+		$output .= makeStatRow($filter,"Hrs to XgameX $/hr"       ,"salehrsgame"  ,"yellow2");
+
+		$output .= makeStatRow($filter,"Hrs to next position $/hr","AltHrsNext1" ,"blue1","Alt Sale",6);
+		$output .= makeStatRow($filter,"Hrs to next active $/hr"  ,"AltHrsNext2" ,"blue2");
+		//$output .= makeStatRow($filter,"Hrs to $0.01 Less $/hr"   ,"AltLess2"    ,"blue1"); //Duplicate from above rows.
+		$output .= makeStatRow($filter,"Hrs to $3.00/hr"          ,"AltHrs3"     ,"blue1");
+		$output .= makeStatRow($filter,"Hrs to Avg/hr"            ,"althrsavg"   ,"blue2");
+		//$output .= makeStatRow($filter,"Hrs to Mean/hr"           ,"althrsmean"  ,"blue1"); //Mean not working yet
+		$output .= makeStatRow($filter,"Hrs to Median/hr"         ,"althrsmedian","blue1");
+		$output .= makeStatRow($filter,"Hrs to XgameX $/hr"       ,"althrsgame"  ,"blue2");
 	}
 	
 	return $output;
@@ -196,35 +287,40 @@ function objectTranslator($statname) {
 		case "Launchperhr":
 		case "LaunchLess1":
 		case "LaunchLess2":
+			return 'LaunchPriceObj';
 		case "MSRPperhrbeat":
 		case "MSRPperhr":
 		case "MSRPLess1":
 		case "MSRPLess2":
+			return 'MSRPPriceObj';
 		case "HistoricVariance":
 		case "HistoricVariancePct":
 		case "Historicperhrbeat":
 		case "Historicperhr":
 		case "HistoricLess1":
 		case "HistoricLess2":
+			return 'HistoricPriceObj';
 		case "PaidVariance":
 		case "PaidVariancePct":
 		case "Paidperhrbeat":
 		case "Paidperhr":
 		case "PaidLess1":
 		case "PaidLess2":
+			return 'PaidPriceObj';
 		case "SaleVariance":
 		case "SaleVariancePct":
 		case "Saleperhrbeat":
 		case "Saleperhr":
 		case "SaleLess1":
 		case "SaleLess2":
+			return 'SalePriceObj';
 		case "AltSaleVariance":
 		case "AltSaleVariancePct":
 		case "Altperhrbeat":
 		case "Altperhr":
 		case "AltLess1":
 		case "AltLess2":
-			return 'LaunchPriceObj';
+			return 'AltPriceObj';
 		default:
 			return $statname;
 	}
@@ -337,73 +433,25 @@ function getmetastats($filter){
 		$stats['althrsmedian']=$row;
 		$stats['althrsmean']=$row;
 		$stats['althrsavg']=$row;
-		$stats['AltHrs3']=$row;
-		$stats['AltHrsNext2']=$row;
-		$stats['AltHrsNext1']=$row;
 		$stats['salehrsgame']=$row;
 		$stats['salehrsmedian']=$row;
 		$stats['salehrsmean']=$row;
 		$stats['salehrsavg']=$row;
-		$stats['SaleHrs3']=$row;
-		$stats['SaleHrsNext2']=$row;
-		$stats['SaleHrsNext1']=$row;
 		$stats['paidhrsgame']=$row;
 		$stats['paidhrsmedian']=$row;
 		$stats['paidhrsmean']=$row;
 		$stats['paidhrsavg']=$row;
-		$stats['PaidHrs3']=$row;
-		$stats['PaidHrsNext2']=$row;
-		$stats['PaidHrsNext1']=$row;
 		$stats['histhrsgame']=$row;
 		$stats['histhrsmedian']=$row;
 		$stats['histhrsmean']=$row;
 		$stats['histhrsavg']=$row;
-		$stats['HistoricHrs3']=$row;
-		$stats['HistoricHrsNext2']=$row;
-		$stats['HistoricHrsNext1']=$row;
 		$stats['msrphrsgame']=$row;
 		$stats['msrphrsmedian']=$row;
 		$stats['msrphrsmean']=$row;
 		$stats['msrphrsavg']=$row;
-		$stats['MSRPHrs3']=$row;
-		$stats['MSRPHrsNext2']=$row;
-		$stats['MSRPHrsNext1']=$row;
-		$stats['launchhrsgame']=$row;
 		$stats['launchhrsmedian']=$row;
-		$stats['launchhrsmean']=$row;
+		$stats['launchhrsgame']=$row;
 		$stats['launchhrsavg']=$row;
-		$stats['LaunchHrs5']=$row;
-		$stats['LaunchHrsNext2']=$row;
-		$stats['LaunchHrsNext1']=$row;
-		$stats['Altperhrbeat']=$row;
-		$stats['AltLess1']=$row;
-		$stats['AltLess2']=$row;
-		$stats['Altperhr']=$row;
-		$stats['AltSaleVariancePct']=$row;
-		$stats['AltSalePrice']=$row;
-		$stats['AltSaleVariance']=$row;
-		$stats['AltSalePrice']=$row;
-		$stats['Saleperhrbeat']=$row;
-		$stats['SaleLess1']=$row;
-		$stats['SaleLess2']=$row;
-		$stats['Saleperhr']=$row;
-		$stats['SaleVariancePct']=$row;
-		$stats['SaleVariance']=$row;
-		$stats['SalePrice']=$row;
-		$stats['Paidperhrbeat']=$row;
-		$stats['PaidLess1']=$row;
-		$stats['PaidLess2']=$row;
-		$stats['Paidperhr']=$row;
-		$stats['PaidVariancePct']=$row;
-		$stats['PaidVariance']=$row;
-		$stats['Paid']=$row;
-		$stats['Historicperhrbeat']=$row;
-		$stats['HistoricLess1']=$row;
-		$stats['HistoricLess2']=$row;
-		$stats['Historicperhr']=$row;
-		$stats['HistoricVariancePct']=$row;
-		$stats['HistoricVariance']=$row;
-		$stats['HistoricLow']=$row;
 				
 		$stats['PurchaseDateTime']=getStatRow($filter,'PurchaseDateTime');
 		$stats['LaunchDate']=getStatRow($filter,'LaunchDate');
@@ -439,6 +487,62 @@ function getmetastats($filter){
 		$stats['MSRPLess1']=getStatRow($filter,'MSRPLess1');
 		$stats['MSRPLess2']=getStatRow($filter,'MSRPLess2');
 		$stats['MSRPperhrbeat']=getStatRow($filter,'MSRPperhrbeat');
+
+		$stats['HistoricLow']=getStatRow($filter,'HistoricLow');
+		$stats['HistoricVariance']=getStatRow($filter,'HistoricVariance');
+		$stats['HistoricVariancePct']=getStatRow($filter,'HistoricVariancePct');
+		$stats['Historicperhr']=getStatRow($filter,'Historicperhr');
+		$stats['HistoricLess1']=getStatRow($filter,'HistoricLess1');
+		$stats['HistoricLess2']=getStatRow($filter,'HistoricLess2');
+		$stats['Historicperhrbeat']=getStatRow($filter,'Historicperhrbeat');
+
+		$stats['Paid']=getStatRow($filter,'Paid');
+		$stats['PaidVariance']=getStatRow($filter,'PaidVariance');
+		$stats['PaidVariancePct']=getStatRow($filter,'PaidVariancePct');
+		$stats['Paidperhr']=getStatRow($filter,'Paidperhr');
+		$stats['PaidLess1']=getStatRow($filter,'PaidLess1');
+		$stats['PaidLess2']=getStatRow($filter,'PaidLess2');
+		$stats['Paidperhrbeat']=getStatRow($filter,'Paidperhrbeat');
+
+		$stats['SalePrice']=getStatRow($filter,'SalePrice');
+		$stats['SaleVariance']=getStatRow($filter,'SaleVariance');
+		$stats['SaleVariancePct']=getStatRow($filter,'SaleVariancePct');
+		$stats['Saleperhr']=getStatRow($filter,'Saleperhr');
+		$stats['SaleLess1']=getStatRow($filter,'SaleLess1');
+		$stats['SaleLess2']=getStatRow($filter,'SaleLess2');
+		$stats['Saleperhrbeat']=getStatRow($filter,'Saleperhrbeat');
+
+		$stats['AltSalePrice']=getStatRow($filter,'AltSalePrice');
+		$stats['AltSaleVariance']=getStatRow($filter,'AltSaleVariance');
+		$stats['AltSaleVariancePct']=getStatRow($filter,'AltSaleVariancePct');
+		$stats['Altperhr']=getStatRow($filter,'Altperhr');
+		$stats['AltLess1']=getStatRow($filter,'AltLess1');
+		$stats['AltLess2']=getStatRow($filter,'AltLess2');
+		$stats['Altperhrbeat']=getStatRow($filter,'Altperhrbeat');
+		
+		$stats['LaunchHrsNext1']=getStatRow($filter,'LaunchHrsNext1');
+		$stats['LaunchHrsNext2']=getStatRow($filter,'LaunchHrsNext2');
+		$stats['LaunchHrs5']=getStatRow($filter,'LaunchHrs5');
+
+		$stats['MSRPHrsNext1']=getStatRow($filter,'MSRPHrsNext1');
+		$stats['MSRPHrsNext2']=getStatRow($filter,'MSRPHrsNext2');
+		$stats['MSRPHrs3']=getStatRow($filter,'MSRPHrs3');
+
+		$stats['HistoricHrsNext1']=getStatRow($filter,'HistoricHrsNext1');
+		$stats['HistoricHrsNext2']=getStatRow($filter,'HistoricHrsNext2');
+		$stats['HistoricHrs3']=getStatRow($filter,'HistoricHrs3');
+
+		$stats['PaidHrsNext1']=getStatRow($filter,'PaidHrsNext1');
+		$stats['PaidHrsNext2']=getStatRow($filter,'PaidHrsNext2');
+		$stats['PaidHrs3']=getStatRow($filter,'PaidHrs3');
+
+		$stats['SaleHrsNext1']=getStatRow($filter,'SaleHrsNext1');
+		$stats['SaleHrsNext2']=getStatRow($filter,'SaleHrsNext2');
+		$stats['SaleHrs3']=getStatRow($filter,'SaleHrs3');
+
+		$stats['AltHrsNext1']=getStatRow($filter,'AltHrsNext1');
+		$stats['AltHrsNext2']=getStatRow($filter,'AltHrsNext2');
+		$stats['AltHrs3']=getStatRow($filter,'AltHrs3');
 
 		$GLOBALS["METASTATS"] = $stats;
 		return $stats;
@@ -511,6 +615,7 @@ function getStatRow($filter,$statname){
 			
 			//Harmonic Mean (Not working)
 			//$row['HarMean']=stats_harmonic_mean($onlydata);  //only in PECL library
+			$row['HarMean']=null;
 			
 			foreach ($dataset as $statrow) {
 				switch ($statname) {
@@ -555,6 +660,52 @@ function getStatRow($filter,$statname){
 					case "MSRPLess1":
 					case "MSRPLess2":
 					case "MSRPperhrbeat":
+					case "HistoricLow":
+					case "HistoricVariance":
+					case "HistoricVariancePct":
+					case "Historicperhrbeat":
+					case "Historicperhr":
+					case "HistoricLess1":
+					case "HistoricLess2":
+					case "Paid":
+					case "PaidVariance":
+					case "PaidVariancePct":
+					case "Paidperhr":
+					case "PaidLess1":
+					case "PaidLess2":
+					case "Paidperhrbeat":
+					case "SalePrice":
+					case "SaleVariance":
+					case "SaleVariancePct":
+					case "Saleperhr":
+					case "SaleLess1":
+					case "SaleLess2":
+					case "Saleperhrbeat":
+					case "AltSalePrice":
+					case "AltSaleVariance":
+					case "AltSaleVariancePct":
+					case "Altperhr":
+					case "AltLess1":
+					case "AltLess2":
+					case "Altperhrbeat":
+					case "LaunchHrsNext1":
+					case "LaunchHrsNext2":
+					case "LaunchHrs5":
+					case "MSRPHrsNext1":
+					case "MSRPHrsNext2":
+					case "MSRPHrs3":
+					case "HistoricHrsNext1":
+					case "HistoricHrsNext2":
+					case "HistoricHrs3":
+					case "PaidHrsNext1":
+					case "PaidHrsNext2":
+					case "PaidHrs3":
+					case "SaleHrsNext1":
+					case "SaleHrsNext2":
+					case "SaleHrs3":
+					case "AltHrsNext1":
+					case "AltHrsNext2":
+					case "AltHrs3":
 						if($row['Average']<=$statrow[$statname]){
 							$row['AverageGameID']=$statrow['Game_ID'];
 						}
@@ -591,6 +742,7 @@ function getStatRow($filter,$statname){
 				$row['Print']['Total']=number_format($row['Total'],0);
 				$row['Print']['Average']=date('Y-m-d', $row['Average']);
 				//$row['Print']['HarMean']=date('Y-m-d', $row['HarMean']);
+				$row['Print']['HarMean']=null;
 				$row['Print']['Median']=date('Y-m-d', $row['Median']);
 				$row['Print']['Mode']=date('Y-m-d', $row['Mode']);
 				$row['Print']['Max1']=date('Y-m-d', $row['Max1']);
@@ -609,6 +761,7 @@ function getStatRow($filter,$statname){
 				$row['Print']['Total']=number_format($row['Total'],0);
 				$row['Print']['Average']=number_format($row['Average'],2);
 				//$row['Print']['HarMean']=number_format($row['HarMean'],0);
+				$row['Print']['HarMean']=null;
 				$row['Print']['Median']=number_format($row['Median'],0);
 				$row['Print']['Mode']=number_format($row['Mode'],0);
 				$row['Print']['Max1']=number_format($row['Max1'],0);
@@ -621,17 +774,40 @@ function getStatRow($filter,$statname){
 			case "LaunchVariance":
 			case "LaunchVariancePct":
 			case "Launchperhr":
-			case "LaunchLess1":
 			case "LaunchLess2":
 			case "Launchperhrbeat":
 			case "MSRP":
 			case "MSRPperhr":
-			case "MSRPLess1":
 			case "MSRPLess2":
 			case "MSRPperhrbeat":
+			case "HistoricLow":
+			case "HistoricVariance":
+			case "HistoricVariancePct":
+			case "Historicperhrbeat":
+			case "Historicperhr":
+			case "HistoricLess2":
+			case "Paid":
+			case "PaidVariance":
+			case "PaidVariancePct":
+			case "Paidperhr":
+			case "PaidLess2":
+			case "Paidperhrbeat":
+			case "SalePrice":
+			case "SaleVariance":
+			case "SaleVariancePct":
+			case "Saleperhr":
+			case "SaleLess2":
+			case "Saleperhrbeat":
+			case "AltSalePrice":
+			case "AltSaleVariance":
+			case "AltSaleVariancePct":
+			case "Altperhr":
+			case "AltLess2":
+			case "Altperhrbeat":
 				$row['Print']['Total']=number_format($row['Total'],0);
 				$row['Print']['Average']=sprintf("$%.2f", $row['Average']);
 				//$row['Print']['HarMean']=sprintf("%.2f", $row['HarMean']);
+				$row['Print']['HarMean']=null;
 				$row['Print']['Median']=sprintf("$%.2f", $row['Median']);
 				$row['Print']['Mode']=sprintf("$%.2f", $row['Mode']);
 				$row['Print']['Max1']=sprintf("$%.2f", $row['Max1']);
@@ -644,6 +820,7 @@ function getStatRow($filter,$statname){
 				$row['Print']['Total']=number_format($row['Total'],0);
 				$row['Print']['Average']=sprintf("%.2f%%", $row['Average']);
 				//$row['Print']['HarMean']=sprintf("%.2f%%", $row['HarMean']);
+				$row['Print']['HarMean']=null;
 				$row['Print']['Median']=sprintf("%.2f%%", $row['Median']);
 				$row['Print']['Mode']=$row['Mode'];
 				$row['Print']['Max1']=sprintf("%.2f%%", $row['Max1']);
@@ -654,9 +831,34 @@ function getStatRow($filter,$statname){
 			//Duration from Seconds
 			case "totalHrs":
 			case "GrandTotal":
+			case "LaunchLess1":
+			case "MSRPLess1":
+			case "HistoricLess1":
+			case "PaidLess1":
+			case "SaleLess1":
+			case "AltLess1":
+			case "LaunchHrsNext1":
+			case "LaunchHrsNext2":
+			case "LaunchHrs5":
+			case "MSRPHrsNext1":
+			case "MSRPHrsNext2":
+			case "MSRPHrs3":
+			case "HistoricHrsNext1":
+			case "HistoricHrsNext2":
+			case "HistoricHrs3":
+			case "PaidHrsNext1":
+			case "PaidHrsNext2":
+			case "PaidHrs3":
+			case "SaleHrsNext1":
+			case "SaleHrsNext2":
+			case "SaleHrs3":
+			case "AltHrsNext1":
+			case "AltHrsNext2":
+			case "AltHrs3":
 				$row['Print']['Total']=number_format($row['Total'],0);
 				$row['Print']['Average']=timeduration($row['Average'],"seconds");
 				//$row['Print']['HarMean']=timeduration($row['HarMean'],"seconds");
+				$row['Print']['HarMean']=null;
 				$row['Print']['Median']=timeduration($row['Median'],"seconds");
 				$row['Print']['Mode']=timeduration($row['Mode'],"seconds");
 				$row['Print']['Max1']=timeduration($row['Max1'],"seconds");
@@ -670,6 +872,7 @@ function getStatRow($filter,$statname){
 				$row['Print']['Total']=number_format($row['Total'],0);
 				$row['Print']['Average']=timeduration($row['Average'],"hours");
 				//$row['Print']['HarMean']=timeduration($row['HarMean'],"hours");
+				$row['Print']['HarMean']=null;
 				$row['Print']['Median']=timeduration($row['Median'],"hours");
 				$row['Print']['Mode']=timeduration($row['Mode'],"hours");
 				$row['Print']['Max1']=timeduration($row['Max1'],"hours");
@@ -680,7 +883,7 @@ function getStatRow($filter,$statname){
 			default:
 				$row['Print']['Total']=null;
 				$row['Print']['Average']=null;
-				//$row['Print']['HarMean']=null;
+				$row['Print']['HarMean']=null;
 				$row['Print']['Median']=null;
 				$row['Print']['Mode']=null;
 				$row['Print']['Max1']=null;
@@ -740,6 +943,52 @@ function DetailDataTable($dataset,$statrow){
 			case "MSRPLess1":
 			case "MSRPLess2":
 			case "MSRPperhrbeat":
+			case "HistoricLow":
+			case "HistoricVariance":
+			case "HistoricVariancePct":
+			case "Historicperhrbeat":
+			case "Historicperhr":
+			case "HistoricLess1":
+			case "HistoricLess2":
+			case "Paid":
+			case "PaidVariance":
+			case "PaidVariancePct":
+			case "Paidperhr":
+			case "PaidLess1":
+			case "PaidLess2":
+			case "Paidperhrbeat":
+			case "SalePrice":
+			case "SaleVariance":
+			case "SaleVariancePct":
+			case "Saleperhr":
+			case "SaleLess1":
+			case "SaleLess2":
+			case "Saleperhrbeat":
+			case "AltSalePrice":
+			case "AltSaleVariance":
+			case "AltSaleVariancePct":
+			case "Altperhr":
+			case "AltLess1":
+			case "AltLess2":
+			case "Altperhrbeat":
+			case "LaunchHrsNext1":
+			case "LaunchHrsNext2":
+			case "LaunchHrs5":
+			case "MSRPHrsNext1":
+			case "MSRPHrsNext2":
+			case "MSRPHrs3":
+			case "HistoricHrsNext1":
+			case "HistoricHrsNext2":
+			case "HistoricHrs3":
+			case "PaidHrsNext1":
+			case "PaidHrsNext2":
+			case "PaidHrs3":
+			case "SaleHrsNext1":
+			case "SaleHrsNext2":
+			case "SaleHrs3":
+			case "AltHrsNext1":
+			case "AltHrsNext2":
+			case "AltHrs3":
 				$output .= "<td>$value</td>";
 				break;
 		}
@@ -811,20 +1060,66 @@ function getOnlyValues($dataset,$statname) {
 			case "LaunchVariance":
 			case "LaunchVariancePct":
 			case "Launchperhr":
-			case "LaunchLess1":
+			case "LaunchLess2":
 			case "Launchperhrbeat":
 			case "MSRP":
 			case "MSRPperhr":
-			case "MSRPLess1":
+			case "MSRPLess2":
 			case "MSRPperhrbeat":
+			case "HistoricLow":
+			case "HistoricVariance":
+			case "HistoricVariancePct":
+			case "Historicperhrbeat":
+			case "Historicperhr":
+			case "HistoricLess2":
+			case "Paid":
+			case "PaidVariance":
+			case "PaidVariancePct":
+			case "Paidperhr":
+			case "PaidLess2":
+			case "Paidperhrbeat":
+			case "SalePrice":
+			case "SaleVariance":
+			case "SaleVariancePct":
+			case "Saleperhr":
+			case "SaleLess2":
+			case "Saleperhrbeat":
+			case "AltSalePrice":
+			case "AltSaleVariance":
+			case "AltSaleVariancePct":
+			case "Altperhr":
+			case "AltLess2":
+			case "Altperhrbeat":
 				$onlydata[]=$statrow[$statname];
 				$onlydatamode[]=sprintf("%.2f", $statrow[$statname]);
 				break;
-			case "MSRPLess2":
-			case "LaunchLess2":
+			case "LaunchLess1":
+			case "MSRPLess1":
+			case "HistoricLess1":
+			case "PaidLess1":
+			case "SaleLess1":
+			case "AltLess1":
+			case "LaunchHrsNext1":
+			case "LaunchHrsNext2":
+			case "LaunchHrs5":
+			case "MSRPHrsNext1":
+			case "MSRPHrsNext2":
+			case "MSRPHrs3":
+			case "HistoricHrsNext1":
+			case "HistoricHrsNext2":
+			case "HistoricHrs3":
+			case "PaidHrsNext1":
+			case "PaidHrsNext2":
+			case "PaidHrs3":
+			case "SaleHrsNext1":
+			case "SaleHrsNext2":
+			case "SaleHrs3":
+			case "AltHrsNext1":
+			case "AltHrsNext2":
+			case "AltHrs3":
 				$onlydata[]=$statrow[$statname];
-				$onlydatamode[]=timeduration($statrow[$statname],"seconds");
-				//$onlydatamode[]=sprintf("%.2f", $statrow[$statname]);
+				//$onlydatamode[]=timeduration($statrow[$statname],"seconds");
+				$onlydatamode[]=sprintf("%.2f", $statrow[$statname]);
 				break;
 			case "AchievementsPct":
 				$onlydata[]=$statrow[$statname];
