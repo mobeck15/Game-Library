@@ -305,13 +305,14 @@ function getCalculations($gameID="",$connection=false,$start=false,$end=false){
 			$game['PaidHrsNext2']    =getHrsNextPosition($game['PaidPriceObj']->getPrice()         ,$sortbyActivePaid    ,$game['GrandTotal']);
 			$game['SaleHrsNext2']    =getHrsNextPosition($game['SalePriceObj']->getPrice()    ,$sortbyActiveSale    ,$game['GrandTotal']);
 			$game['AltHrsNext2']     =getHrsNextPosition($game['AltPriceObj']->getPrice() ,$sortbyActiveAlt  ,$game['GrandTotal']);
-			
+			/*
 			$game['LaunchHrs5']  =getHrsToTarget($game['LaunchPriceObj']->getPrice(),  $game['GrandTotal']  ,5);
 			$game['MSRPHrs3']    =getHrsToTarget($game['MSRPPriceObj']->getPrice(),         $game['GrandTotal']  ,3);
 			$game['PaidHrs3']    =getHrsToTarget($game['PaidPriceObj']->getPrice(),         $game['GrandTotal']  ,3);
 			$game['HistoricHrs3']=getHrsToTarget($game['HistoricPriceObj']->getPrice(),  $game['GrandTotal']  ,.3);
 			$game['AltHrs3']	 =getHrsToTarget($game['AltPriceObj']->getPrice(), $game['GrandTotal']  ,3);
 			$game['SaleHrs3']	 =getHrsToTarget($game['SalePriceObj']->getPrice(),    $game['GrandTotal']  ,3);
+			*/
 		}
 		
 		foreach ($games as &$game) {
@@ -368,10 +369,17 @@ function getCalculations($gameID="",$connection=false,$start=false,$end=false){
 			$game['PaidLess2']    = $game['PaidPriceObj']->getHoursTo01LessPerHour();
 			$game['SaleLess2']    = $game['SalePriceObj']->getHoursTo01LessPerHour();
 			$game['AltLess2']     = $game['AltPriceObj']->getHoursTo01LessPerHour();
+			
+			$game['LaunchHrs5']  =$game['LaunchPriceObj']->getHoursToDollarPerHour(5);
+			$game['MSRPHrs3']    =$game['MSRPPriceObj']->getHoursToDollarPerHour(3);
+			$game['PaidHrs3']    =$game['PaidPriceObj']->getHoursToDollarPerHour(3);
+			$game['HistoricHrs3']=$game['HistoricPriceObj']->getHoursToDollarPerHour(3);
+			$game['AltHrs3']	 =$game['AltPriceObj']->getHoursToDollarPerHour(3);
+			$game['SaleHrs3']	 =$game['SalePriceObj']->getHoursToDollarPerHour(3);
+			
 		}
 		
 		$GLOBALS["CALCULATIONS"] = $games;
-		
 		return $games;
 	}
 }
@@ -385,15 +393,12 @@ function getPriceSort($SourceArray,$SortObject,$onlyActive=false){
 		} else {
 			$SortArray[$key] = $row[$SortObject]->getPricePerHourOfTimePlayed();
 		}
-		
 	}
 	$SortArray=array_unique($SortArray);
 	array_multisort($SortArray, SORT_DESC );
 	
 	return $SortArray;
 }
-
-
 
 class PriceCalculation {
     public $price; 	//Currency
@@ -449,6 +454,11 @@ class PriceCalculation {
 		return $printformat ? $this->printDurationFormat($output) : $output;
 	}
 	
+    public function getHoursToDollarPerHour($target,$printformat=false)
+    {
+		$output=getHrsToTarget($this->price, $this->HoursPlayed  ,$target);
+		return $printformat ? $this->printDurationFormat($output) : $output;
+	}
 	
 	private function getVariance($price,$msrp) {
 		$variance=0;

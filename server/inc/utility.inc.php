@@ -481,8 +481,11 @@ function arrayTable($DataArray){
 							$output .= "<tr><th>getPricePerHourOfTimePlayed</th><td>".$value->getPricePerHourOfTimePlayed()."</td><td>".$value->getPricePerHourOfTimePlayed(true)."</td></tr>";
 							$output .= "<tr><th>getPricePerHourOfTimePlayedReducedAfter1Hour</th><td>".$value->getPricePerHourOfTimePlayedReducedAfter1Hour()."</td><td>".$value->getPricePerHourOfTimePlayedReducedAfter1Hour(true)."</td></tr>";
 							$output .= "<tr><th>getHoursTo01LessPerHour</th><td>".$value->getHoursTo01LessPerHour()."</td><td>".$value->getHoursTo01LessPerHour(true)."</td></tr>";
+							$output .= "<tr><th>getHoursToDollarPerHour 5</th><td>".$value->getHoursToDollarPerHour(5)."</td><td>".$value->getHoursToDollarPerHour(5,true)."</td></tr>";
+							$output .= "<tr><th>getHoursToDollarPerHour 3</th><td>".$value->getHoursToDollarPerHour(3)."</td><td>".$value->getHoursToDollarPerHour(3,true)."</td></tr>";
 							
 							$output .= "</table>";
+							break;
 						default:
 							$output .= print_r($value,true);
 							break;
