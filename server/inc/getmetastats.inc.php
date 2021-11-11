@@ -7,7 +7,7 @@ $GLOBALS[__FILE__]=1;
 
 function makeStatTable($MetaFilter,$filter){
 	$output="";
-	$output .= "<table width=110%>";
+	$output .= "<table width=100%>";
 	$output .= "<thead>";
 	$output .= "<tr>";
 	$output .= "<th></th>";
@@ -740,15 +740,15 @@ function getStatRow($filter,$statname){
 			case "lastPlayDateTime":
 			case "firstPlayDateTime":
 				$row['Print']['Total']=number_format($row['Total'],0);
-				$row['Print']['Average']=date('Y-m-d', $row['Average']);
+				$row['Print']['Average']=date('Y&#8209;m&#8209;d', $row['Average']);
 				//$row['Print']['HarMean']=date('Y-m-d', $row['HarMean']);
 				$row['Print']['HarMean']=null;
-				$row['Print']['Median']=date('Y-m-d', $row['Median']);
-				$row['Print']['Mode']=date('Y-m-d', $row['Mode']);
-				$row['Print']['Max1']=date('Y-m-d', $row['Max1']);
-				$row['Print']['Max2']=date('Y-m-d', $row['Max2']);
-				$row['Print']['Min1']=date('Y-m-d', $row['Min1']);
-				$row['Print']['Min2']=date('Y-m-d', $row['Min2']);
+				$row['Print']['Median']=date('Y&#8209;m&#8209;d', $row['Median']);
+				$row['Print']['Mode']=date('Y&#8209;m&#8209;d', $row['Mode']);
+				$row['Print']['Max1']=date('Y&#8209;m&#8209;d', $row['Max1']);
+				$row['Print']['Max2']=date('Y&#8209;m&#8209;d', $row['Max2']);
+				$row['Print']['Min1']=date('Y&#8209;m&#8209;d', $row['Min1']);
+				$row['Print']['Min2']=date('Y&#8209;m&#8209;d', $row['Min2']);
 				break;
 			//Integers
 			case "SteamAchievements":

@@ -49,6 +49,7 @@ function Get_Header($title="",$WIP=""){
 	<title>$title</title>
 	<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">
 	<link rel=\"shortcut icon\" href=\"".$GLOBALS['rootpath']."/img/favicon.ico\"/>";
+	$Template_Header .= "\n	<link rel=\"stylesheet\" type=\"text/css\" href=\"http://yui.yahooapis.com/3.11.0/build/cssnormalize/cssnormalize-min.css\">";
 	$Template_Header .= "\n	<link rel=\"stylesheet\" type=\"text/css\" href=\"".$GLOBALS['rootpath']."/css/style.css\">";
 	
 	//Needed to support the dynamic navigation menu. 
