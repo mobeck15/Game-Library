@@ -60,7 +60,7 @@ function boolText($boolValue){
 function read_memory_usage($mem_usage=false) {
 	//TODO: Refactor read_memory_usage function to take memory_get_usage(true) as an argument.
 	if($mem_usage===false) {
-	$mem_usage = memory_get_usage(true);
+		$mem_usage = memory_get_usage(true);
 	}
    
 	if ($mem_usage < 1024)
@@ -228,7 +228,7 @@ function getAllItems($gameID="",$connection=false){
 
 function getKeywords($gameID="",$connection=false){
 	if($connection==false){
-		require_once "inc/auth.inc.php";
+		require $GLOBALS['rootpath']."/inc/auth.inc.php";
 		$conn = new mysqli($servername, $username, $password, $dbname);
 	} else {
 		$conn = $connection;
@@ -249,7 +249,6 @@ function getKeywords($gameID="",$connection=false){
 		$conn->close();	
 	}	
 	return $keywords;
-	
 }
 
 function regroupArray($array,$indexKey){
