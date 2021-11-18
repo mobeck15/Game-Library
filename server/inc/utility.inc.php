@@ -30,6 +30,7 @@ function timeduration($time,$inputunit="hours"){
 
 	//echo "Time: "; var_dump($time);
 	if($time=="") {$time=0;}
+	//TODO: This time="" line may be useless. remove and test.
 	$s=$time % 60;
     $m=(($time-$s) / 60) % 60;
     $h=floor($time / 3600);
@@ -56,8 +57,11 @@ function boolText($boolValue){
 /* 
  * Reads PHP memory usage and returns a string formatted in KB or MB.
  */
-function read_memory_usage() {
+function read_memory_usage($mem_usage=false) {
+	//TODO: Refactor read_memory_usage function to take memory_get_usage(true) as an argument.
+	if($mem_usage===false) {
 	$mem_usage = memory_get_usage(true);
+	}
    
 	if ($mem_usage < 1024)
 		return $mem_usage." b";
@@ -69,9 +73,9 @@ function read_memory_usage() {
 
 function getAllCpi($connection=false){
 	if($connection==false){
-		require_once "inc/auth.inc.php";
+		//require_once $GLOBALS['rootpath']."/inc/auth.inc.php";
 		//$conn = new mysqli($servername, $username, $password, $dbname);
-$conn=get_db_connection();
+		$conn=get_db_connection();
 	} else {
 		$conn = $connection;
 	}
@@ -99,7 +103,6 @@ $conn=get_db_connection();
 
 
 function get_db_connection(){
-	
 	require $GLOBALS['rootpath']."/inc/auth.inc.php";
 	
 	$conn = new mysqli($servername, $username, $password, $dbname);
