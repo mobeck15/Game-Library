@@ -1,5 +1,4 @@
 <?php
-//DONE: add control function to prevent loading multiple times.
 if(isset($GLOBALS[__FILE__])){
 	trigger_error("File already included once ".__FILE__.". ");
 }
@@ -122,7 +121,7 @@ function get_navmenu($dropbar=true){
 	}
 		$navmenu .= "\t<ul class='main-navigation'>\r\n";
 //CONTROL
-		$navmenu .= "\t\t<li><a href=\"".$GLOBALS['rootpath']."/gl6.php\"><img src=\"himg/favicon.ico\" height=15 />Control</a>\r\n";
+		$navmenu .= "\t\t<li><a href=\"".$GLOBALS['rootpath']."/gl6.php\"><img src=\"".$GLOBALS['rootpath']."/img/favicon.ico\" height=15 />Control</a>\r\n";
 		$navmenu .= "\t<ul>\r\n";
 			$navmenu .= "\t\t<li><a href='games.stuffiknowabout.com/gl5/gl5.php' target='_blank'>GL5 Index<img src='".$GLOBALS['rootpath']."/img/new_window-512.png' height=15 /></a></li>\r\n";
 			//$navmenu .= "\t\t<li><a href=\"http://www.uniformserver.com/\" target=\"_blank\">Uniform Server<img src=\"".$GLOBALS['rootpath']."/img/new_window-512.png\" height=15 /></a></li>\r\n";
