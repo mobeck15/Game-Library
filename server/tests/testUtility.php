@@ -181,7 +181,6 @@ final class testUtility extends TestCase
 		$this->assertIsArray($index);
 		$this->assertEquals("banana", $index[1][0]["name"]);
 		$this->assertEquals($expected, $index);
-		
 	}
 
 	/**
@@ -212,32 +211,132 @@ final class testUtility extends TestCase
 			),
 		);
 		
+		$expected = array(
+			"apple" => "4",
+			"orange" => "2",
+			"banana" => "3",
+			"pear" => "1",
+		);
+		
 		//Act
 		$index=getSortArray($array,"id");
 		
 		//Assert
 		$this->assertIsArray($index);
+		$this->assertEquals($expected, $index);
 	}
 
 	/**
 	 * @covers utility.inc::getActiveSortArray
-	 * /
+	 */
 	public function test_getActiveSortArray() {
-		//$this->assertIsObject(getActiveSortArray());
+		//Arrange
+		$array = array(
+			"apple" => array(
+				"id" => "4",
+				"name" => "apple",
+				"Active" => true,
+			),
+			"orange" => array(
+				"id" => "2",
+				"name" => "orange",
+				"Active" => true,
+			),
+			"banana" => array(
+				"id" => "3",
+				"name" => "banana",
+				"Active" => false,
+			),
+			"pear" => array(
+				"id" => "1",
+				"name" => "pear",
+				"Active" => true,
+			),
+		);
+		
+		$expected = array(
+			"apple" => "4",
+			"orange" => "2",
+			"pear" => "1",
+		);
+		
+		//Act
+		$index=getActiveSortArray($array,"id");
+		
+		//Assert
+		$this->assertIsArray($index);
+		$this->assertEquals($expected, $index);
+	}
+
+	/**
+	 * @covers utility.inc::getNextPosition
+	 */
+	public function test_getNextPosition() {
+		$sortedArray = array(20,15,10,5,3,1,0);
+		
+		$value = 10;	$seconds = 60*60;
+		$this->assertEquals(5,getNextPosition($value,$sortedArray,$seconds));
+
+		$value = 10;	$seconds = 60*30;
+		$this->assertEquals(5,getNextPosition($value,$sortedArray,$seconds));
+
+		$value = 10;	$seconds = 60*60*5;
+		$this->assertEquals(1,getNextPosition($value,$sortedArray,$seconds));
 	}
 
 	/**
 	 * @covers utility.inc::getHrsNextPosition
-	 * /
+	 */
 	public function test_getHrsNextPosition() {
-		//$this->assertIsObject(getHrsNextPosition());
+		$sortedArray = array(20,15,10,5,3,1,0);
+		
+		$value = 10;	$seconds = 60*60;
+		$this->assertEquals(1,getHrsNextPosition($value,$sortedArray,$seconds));
+
+		$value = 10;	$seconds = 60*30;
+		$this->assertEquals(1.5,getHrsNextPosition($value,$sortedArray,$seconds));
 	}
 
 	/**
 	 * @covers utility.inc::reIndexArray
-	 * /
+	 */
 	public function test_reIndexArray() {
-		//$this->assertIsObject(reIndexArray());
+		//Arrange
+		$array = array(
+			"apple" => array(
+				"id" => "4",
+				"name" => "apple",
+				"rank" => "3",
+			),
+			"orange" => array(
+				"id" => "2",
+				"name" => "orange",
+				"rank" => "3",
+			),
+			"banana" => array(
+				"id" => "3",
+				"name" => "banana",
+				"rank" => "1",
+			),
+			"pear" => array(
+				"id" => "1",
+				"name" => "pear",
+				"rank" => "4",
+			),
+		);
+		
+		//Act
+		$index=reIndexArray($array,"id");
+		
+		//Assert
+		$this->assertIsArray($index);
+		$this->assertEquals("pear", $index[1]["name"]);
+		
+		try {
+			$index=reIndexArray($array,"rank");
+		} catch (Exception $ex) {
+			$this->assertEquals("rank is not a unique key, some data may be lost",$ex->getMessage());
+		}
 	}
 
 	/**
@@ -296,6 +395,8 @@ final class testUtility extends TestCase
 		//$this->assertIsObject(lookupTextBox());
 	}
 
+	//Below functions can be removed once priceobjects are fully working.
+	
 	/**
 	 * @covers utility.inc::getVariance
 	 * /
@@ -333,9 +434,15 @@ final class testUtility extends TestCase
 
 	/**
 	 * @covers utility.inc::getHrsToTarget
-	 * /
+	 */
 	public function test_getHrsToTarget() {
-		//$this->assertIsObject(getHrsToTarget());
+		$value = 10;		$seconds = 0;		$targetvalue = 5;
+		$this->assertEquals(2,getHrsToTarget($value,$seconds,$targetvalue));
+		
+		$value = 10;		$seconds = 60*60;		$targetvalue = 5;
+		$this->assertEquals(1,getHrsToTarget($value,$seconds,$targetvalue));
+		
+		$value = 10;		$seconds = 60*30;		$targetvalue = 5;
+		$this->assertEquals(1.5,getHrsToTarget($value,$seconds,$targetvalue));
 	}
-	/* */
 }

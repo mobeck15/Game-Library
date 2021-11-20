@@ -58,7 +58,6 @@ function boolText($boolValue){
  * Reads PHP memory usage and returns a string formatted in KB or MB.
  */
 function read_memory_usage($mem_usage=false) {
-	//TODO: Refactor read_memory_usage function to take memory_get_usage(true) as an argument.
 	if($mem_usage===false) {
 		$mem_usage = memory_get_usage(true);
 	}
@@ -276,29 +275,24 @@ function getActiveSortArray($SourceArray,$SortField){
 	return $SortArray;
 }
 
-function getHrsNextPosition($SortValue,$SortArray,$time){
+function getNextPosition($SortValue,$SortArray,$time){
 	$Marker=0;
 	if($SortValue<>0){
 		$calculated=getPriceperhour($SortValue,$time);
-		//echo "Search for: " . $calculated ." in ";
 		foreach ($SortArray as $value){
-			//echo "Value: " . $value ;
-			//echo " " . ($value < $calculated ? "True" : "False") .  ", ";
 			if($value<$calculated){
-				//echo " FOUND ";
 				$Marker=$value;
-				//echo "Marker: ". $Marker;
 				break;
 			}
 		}
 	}
+	return $Marker;
+}
+
+function getHrsNextPosition($SortValue,$SortArray,$time){
+	$Marker = getNextPosition($SortValue,$SortArray,$time);
 	
-	$hrsToTarget=getHrsToTarget($SortValue,$time,$Marker);
-	//echo "Price per hr (".$calculated.') | (Price (' . $SortValue . ") / Target (" . $Marker . ")=".timeduration($SortValue/$Marker,"hours").") - Hours " . timeduration($time,"seconds") . " = " . timeduration($hrsToTarget,"hours")."<br>";
-	
-	//var_dump($SortArray);
-	
-	return $hrsToTarget;
+	return getHrsToTarget($SortValue,$time,$Marker);
 }
 
 function reIndexArray($array,$indexKey){
@@ -318,7 +312,7 @@ function reIndexArray($array,$indexKey){
 
 function getGameDetail($gameID,$connection=false){
 	if($connection==false){
-		require_once "inc/auth.inc.php";
+		require $GLOBALS['rootpath']."/inc/auth.inc.php";
 		$conn = new mysqli($servername, $username, $password, $dbname);
 	} else {
 		$conn = $connection;
