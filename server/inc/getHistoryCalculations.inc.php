@@ -14,6 +14,8 @@ function getHistoryCalculations($gameID="",$connection=false,$start=false,$end=f
 	} else {
 		$conn = $connection;
 	}
+	
+	require_once $GLOBALS['rootpath']."/inc/getSettings.inc.php";
 	$settings=getsettings($conn);
 	
 	

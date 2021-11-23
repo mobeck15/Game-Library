@@ -317,6 +317,8 @@ function getGameDetail($gameID,$connection=false){
 	} else {
 		$conn = $connection;
 	}
+	
+	require_once $GLOBALS['rootpath']."/inc/getGames.inc.php";
 	$games=getGames($gameID,$conn);
 	
 	foreach ($games as $row) {
@@ -327,7 +329,11 @@ function getGameDetail($gameID,$connection=false){
 	}
 	
 	$GameData['GameFamily']=$GameFamily;
+
+	require_once $GLOBALS['rootpath']."/inc/getHistoryCalculations.inc.php";
 	$GameData['History']=getHistoryCalculations($gameID,$conn);
+
+	require_once $GLOBALS['rootpath']."/inc/getActivityCalculations.inc.php";
 	$GameData['Activity']=getActivityCalculations($gameID,$GameData['History'],$conn);
 	if($connection==false){
 		$conn->close();	

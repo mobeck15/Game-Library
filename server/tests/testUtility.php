@@ -9,8 +9,6 @@ use PHPUnit\Framework\TestCase;
 $GLOBALS['rootpath'] = "htdocs\Game-Library\server";
 require $GLOBALS['rootpath']."\inc\utility.inc.php";
 
-
-
 final class testUtility extends TestCase
 {
 	/**
@@ -341,9 +339,11 @@ final class testUtility extends TestCase
 
 	/**
 	 * @covers utility.inc::getGameDetail
-	 * /
+	 */
 	public function test_getGameDetail() {
-		//$this->assertIsObject(getGameDetail());
+		$array=getGameDetail(514);
+		$this->assertIsArray($array);
+		$this->assertEquals("The Elder Scrolls V: Skyrim",$array['Title']);
 	}
 
 	/**
