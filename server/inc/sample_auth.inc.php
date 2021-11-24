@@ -1,5 +1,5 @@
 <?php
-if($_SERVER['SERVER_NAME'] == "yourservername") {
+if(($_SERVER['SERVER_NAME'] ?? "") == "yourservername") {
 	$servername = "";
 	$username = "";
 	$password = "";
@@ -11,7 +11,6 @@ if($_SERVER['SERVER_NAME'] == "yourservername") {
 	$password = "";
 	$dbname = "";
 }
-
 
 include $_SERVER['DOCUMENT_ROOT']."/gl6/inc/authapi.inc.php";
 ?>

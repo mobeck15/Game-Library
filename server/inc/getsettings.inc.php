@@ -76,7 +76,7 @@ function getsettings($connection=false){
 		}
 
 		
-		if($GLOBALS['Debug_Enabled'] ?? false && False) {
+		if(($GLOBALS['Debug_Enabled'] ?? false) && False) {
 			trigger_error('Settings loaded, values shown below.', E_USER_NOTICE);
 			//echo '<pre>'. var_export($settings, true) . "</pre>";
 			//echo nl2br(var_export($settings, true));

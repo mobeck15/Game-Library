@@ -348,9 +348,15 @@ final class testUtility extends TestCase
 
 	/**
 	 * @covers utility.inc::combinedate
-	 * /
+	 */
 	public function test_combinedate() {
-		//$this->assertIsObject(combinedate());
+		$newDate= date("n/j/Y",strtotime(" "));
+		
+		$this->assertIsString(combinedate("1/1/1990","6:00 PM",1));
+		$this->assertEquals("1/1/1990 18:00:01",combinedate("1/1/1990","6:00 PM",1));
+		$this->assertEquals("1/1/1990 00:00:01",combinedate("1/1/1990","",1));
+		$this->assertEquals("1/1/1990 18:00:00",combinedate("1/1/1990","6:00 PM",0));
+		$this->assertEquals($newDate. " 18:00:01",combinedate("","6:00 PM",1));
 	}
 
 	/**

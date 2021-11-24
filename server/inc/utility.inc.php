@@ -343,15 +343,7 @@ function getGameDetail($gameID,$connection=false){
 }
 
 function combinedate($date,$time,$sequence){
-	//Not owned has no sequence - causes problems
-	
-	//If ($date=="") {$date="5/12/2010";}
 	If ($sequence=="") {$sequence=0;}
-	
-	//echo "\$newDate=strtotime(".var_export($date,true)." . \" \" . ".var_export($time,true).")+".var_export($sequence,true).";<br>";
-	//echo "Date: "; var_dump($date); echo "<br>";
-	//echo "Time: "; var_dump($time); echo "<br>";
-	//echo "Sequence: "; var_dump($sequence); echo "<br>";
 	
 	$newDate=strtotime($date . " " . $time)+$sequence;
 	
