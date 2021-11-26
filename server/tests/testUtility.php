@@ -110,7 +110,7 @@ final class testUtility extends TestCase
 	 * @covers utility.inc::getKeywords
 	 */
 	public function test_getKeywords() {
-		//TODO: Add more functional tests for getAllItems
+		//TODO: Add more functional tests for getKeywords
 		$this->assertIsArray(getKeywords());
 	}
 
@@ -350,6 +350,7 @@ final class testUtility extends TestCase
 	 * @covers utility.inc::combinedate
 	 */
 	public function test_combinedate() {
+		//"" is 1/1/1970 , " " is todays date
 		$newDate= date("n/j/Y",strtotime(" "));
 		
 		$this->assertIsString(combinedate("1/1/1990","6:00 PM",1));
@@ -361,37 +362,146 @@ final class testUtility extends TestCase
 
 	/**
 	 * @covers utility.inc::RatingsChartData
-	 * /
+	 */
 	public function test_RatingsChartData() {
-		//$this->assertIsObject(RatingsChartData());
+		//TODO: Cleanup variables to make tests more intuative.
+		//Arrange
+		$fieldarray0 = "Invalid";
+		
+		$fieldarray1 = "All";
+
+		$fieldarray2 = "Metascore";
+
+		$fieldarray3 = array(
+				"Metascore", //1 - 100
+				"UserMetascore", //1 - 100
+				"SteamRating", //1 - 100
+				"Review", //1 - 4
+				"Want", //1 - 5
+		);
+		
+		$fieldarray4 = array(
+				"Metascore", //1 - 100
+				"UserMetascore", //1 - 100
+				"Want", //1 - 5
+		);
+		
+		$calculations=array(
+			array(
+				"Metascore" => 79, //1 - 100
+				"UserMetascore" => 44, //1 - 100
+				"SteamRating" => 30, //1 - 100
+				"Review" => 3, //1 - 4
+				"Want" => 2, //1 - 5
+			),
+			array(
+				"Metascore" => 29, //1 - 100
+				"UserMetascore" => 14, //1 - 100
+				"SteamRating" => 90, //1 - 100
+				"Review" => 1, //1 - 4
+				"Want" => 1, //1 - 5
+			),
+			array(
+				"Metascore" => 69, //1 - 100
+				"UserMetascore" => 84, //1 - 100
+				"SteamRating" => 70, //1 - 100
+				"Review" => 4, //1 - 4
+				"Want" => 5, //1 - 5
+			),
+			array(
+				"Metascore" => 69, //1 - 100
+				"UserMetascore" => 84, //1 - 100
+				"SteamRating" => 70, //1 - 100
+				"Review" => 4, //1 - 4
+				"Want" => 5, //1 - 5
+			),
+		);
+		
+		$metascore=array(
+			79 => 1,
+			29 => 1,
+			69 => 2,
+		);
+		//Act
+		
+		//Assert
+		$this->assertIsArray(RatingsChartData());
+		$this->assertIsArray(RatingsChartData(100,$calculations));
+		$this->assertEquals(5,count(RatingsChartData(100,$calculations)));
+		$this->assertEquals(5,count(RatingsChartData(100,$calculations,$fieldarray1)));
+		$this->assertEquals(5,count(RatingsChartData(100,$calculations,$fieldarray3)));
+
+		$this->assertEquals($metascore,RatingsChartData(100,$calculations,$fieldarray3)["Metascore"]);
+		
+		$this->assertEquals(3,count(RatingsChartData(100,$calculations,$fieldarray4)));
+		$this->assertEquals(1,count(RatingsChartData(100,$calculations,$fieldarray2)));
+		
+		//Function is incomplete and returns an empty array if no calculation data is provided.
+		$this->assertEquals(0,count(RatingsChartData()));
 	}
 
 	/**
 	 * @covers utility.inc::getCleanStringDate
-	 * /
+	 */
 	public function test_getCleanStringDate() {
-		//$this->assertIsObject(getCleanStringDate());
+		//Arrange
+		$dateString = "1/10/2013";
+		$date = new DateTime($dateString);
+		$datetimeString = "1/10/2013 11:32:00";
+		$datetime = new DateTime($datetimeString);
+		$datetimeString2 = "1/10/2013 14:32:00";
+		$datetime2 = new DateTime($datetimeString2);
+		//Act
+		
+		//Assert
+		$this->assertEquals($dateString,getCleanStringDate($date->getTimestamp()));
+		$this->assertEquals($datetimeString,getCleanStringDate($datetime->getTimestamp()));
+		$this->assertEquals($datetimeString2,getCleanStringDate($datetime2->getTimestamp()));
 	}
 
 	/**
 	 * @covers utility.inc::daysSinceDate
-	 * /
+	 */
 	public function test_daysSinceDate() {
-		//$this->assertIsObject(daysSinceDate());
+		//TODO: Add mock for Time() function in daysSinceDate()
+		//Arrange
+		$date = new DateTime();
+		$days55 = new DateInterval('P55D');
+		$date = $date->sub($days55);
+		
+		//Act
+		
+		//Assert
+		$this->assertEquals(55,daysSinceDate($date->getTimestamp()));
 	}
 
 	/**
 	 * @covers utility.inc::getTimeLeft
-	 * /
+	 */
 	public function test_getTimeLeft() {
-		//$this->assertIsObject(getTimeLeft());
+		$this->assertEquals(15,getTimeLeft(55,40*60*60,"Active"));
+		$this->assertEquals(0,getTimeLeft(55,40*60*60,"Done"));
+		$this->assertEquals(0,getTimeLeft(55,60*60*60,"Active"));
 	}
 
 	/**
 	 * @covers utility.inc::arrayTable
-	 * /
+	 */
 	public function test_arrayTable() {
-		//$this->assertIsObject(arrayTable());
+		$array=array(
+			"a string",
+			667667,
+			array(
+				"sub array (string)",
+				88888,
+			),
+			15.7,
+		);
+		
+		$html="<table><tr><th>0</th><td>string (8)</td><td>a string</td></tr><tr><th>1</th><td>integer</td><td>667667</td></tr><tr><th>2</th><td>array</td><td><table><tr><th>0</th><td>string (18)</td><td>sub array (string)</td></tr><tr><th>1</th><td>integer</td><td>88888</td></tr></table></td></tr><tr><th>3</th><td>double</td><td>15.7</td></tr></table>";
+		
+		$this->assertIsString(arrayTable($array));
+		$this->assertEquals($html,arrayTable($array));
 	}
 
 	/**

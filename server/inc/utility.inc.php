@@ -100,7 +100,6 @@ function getAllCpi($connection=false){
 	return $cpi;
 }
 
-
 function get_db_connection(){
 	require $GLOBALS['rootpath']."/inc/auth.inc.php";
 	
@@ -122,11 +121,6 @@ function get_db_connection(){
 	return $conn;
 
 }
-
-/*
- *  GL5 Version - Need to re-work for GL6
- */
-//TODO: Update to GL6
 
 function makeIndex($array,$indexKey){
 	$errorlist=array();
@@ -358,6 +352,7 @@ function combinedate($date,$time,$sequence){
 
 
 function RatingsChartData($scale=100,$ConnOrCalculationsArray="",$fieldsArray="All"){ 
+	//TODO: Break RatingsChartData into multiple functions
 	$chartData=array();
 	if($ConnOrCalculationsArray<>"" and gettype($ConnOrCalculationsArray)=="array"){
 		$calculations=$ConnOrCalculationsArray;
@@ -376,7 +371,6 @@ function RatingsChartData($scale=100,$ConnOrCalculationsArray="",$fieldsArray="A
 		}
 		
 		foreach($calculations as $row){
-			//var_dump($row);
 			foreach($fields as $field){
 				$useDataValue=$row[$field];
 				switch($field){
@@ -396,16 +390,13 @@ function RatingsChartData($scale=100,$ConnOrCalculationsArray="",$fieldsArray="A
 				
 				if($useDataValue=="") {$useDataValue=0;}
 				
-				//echo "useDataValue "; var_dump($useDataValue); echo "<br>";
-				//echo "fieldScale "; var_dump($fieldScale); echo "<br>";
-				//echo "scale "; var_dump($scale); echo "<br>";
 				$useDataValue=ceil(($useDataValue/$fieldScale)*$scale);
 				
 				if(!isset($chartData[$field][$useDataValue])){
 					$chartData[$field][$useDataValue]=0;
 				}
 				$chartData[$field][$useDataValue]++;
-			} //break;
+			}
 		} 
 	}
 	return $chartData;
@@ -442,6 +433,7 @@ function getTimeLeft($timetobeat,$totaltime,$status) {
 }
 
 function arrayTable($DataArray){
+	//TODO: Make object display components as seperate functions.
 	$output="";
 	$output .= "<table>";
 	foreach($DataArray as $stat => $value){
