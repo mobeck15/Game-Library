@@ -9,7 +9,7 @@ use PHPUnit\Framework\TestCase;
 $GLOBALS['rootpath'] = "htdocs\Game-Library\server";
 require $GLOBALS['rootpath']."\inc\utility.inc.php";
 
-final class testUtility extends TestCase
+final class Utility_Test extends TestCase
 {
 	/**
 	 * @covers utility.inc::timeduration
