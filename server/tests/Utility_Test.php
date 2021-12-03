@@ -1,6 +1,6 @@
 <?php 
-//declare(strict_types=1);
-//command line: phpunit .\htdocs\Game-Library\server\tests\testUtility.php
+declare(strict_types=1);
+//command> phpunit .\htdocs\Game-Library\server\tests
 
 use PHPUnit\Framework\TestCase;
 
