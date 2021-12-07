@@ -1,6 +1,6 @@
 <?php
 class PriceCalculation {
-    public $price; 	//Currency
+    private $price; 	//Currency
 
 	private $MSRP;
 	private $HoursPlayed;
