@@ -86,11 +86,7 @@ class PriceCalculation {
 
 	private function getLessXhour($price,$time,$xhour=1){
 		$hours=$time/60/60;
-		if($hours<1){
-			$priceperhour=$price;
-		} else {
-			$priceperhour=$price/$hours;
-		}
+		$priceperhour=$this->getPriceperhour($price,$time);
 		
 		if($xhour+$hours==0) {
 			$LessXhour=0;
@@ -102,8 +98,8 @@ class PriceCalculation {
 	}
 
 	private function getHourstoXless($price,$time,$xless=.01){
-		$priceperhour=getPriceperhour($price,$time);
-		$hoursxless=getHrsToTarget($price,$time,$priceperhour-$xless);
+		$priceperhour=$this->getPriceperhour($price,$time);
+		$hoursxless=$this->getHrsToTarget($price,$time,$priceperhour-$xless);
 		
 		return $hoursxless;
 	}

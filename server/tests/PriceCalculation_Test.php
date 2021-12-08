@@ -94,7 +94,158 @@ final class PriceCalculation_Test extends TestCase
 		
 		$result = $method->invokeArgs( $object, array( 10 , 20 ) );
 		
-		$this->assertEquals($result, -10);
+		$this->assertEquals(-10,$result);
 	}
 	
+	/**
+	 * @covers PriceCalculation::getVariancePct
+	 */
+	public function test_getVariancePct() {
+		$price=10;
+		$HoursPlayed=2;
+		$HoursToBeat=4;
+		$MSRP=20;
+		
+        $object = new PriceCalculation($price,$HoursPlayed,$HoursToBeat,$MSRP);
+		$reflector = new ReflectionClass( 'PriceCalculation' );
+		$method = $reflector->getMethod( 'getVariancePct' );
+		$method->setAccessible( true );
+		
+		$result = $method->invokeArgs( $object, array( 10 , 20 ) );
+		
+		$this->assertEquals(50,$result);
+	}
+	
+	/**
+	 * @covers PriceCalculation::getPriceperhour
+	 */
+	public function test_getPriceperhour() {
+		$price=10;
+		$HoursPlayed=2;
+		$HoursToBeat=4;
+		$MSRP=20;
+		
+        $object = new PriceCalculation($price,$HoursPlayed,$HoursToBeat,$MSRP);
+		$reflector = new ReflectionClass( 'PriceCalculation' );
+		$method = $reflector->getMethod( 'getPriceperhour' );
+		$method->setAccessible( true );
+		
+		$result = $method->invokeArgs( $object, array( 10 , 20*60*60 ) );
+		
+		$this->assertEquals(.5,$result);
+	}
+	
+	/**
+	 * @covers PriceCalculation::getLessXhour
+	 */
+	public function test_getLessXhour() {
+		$price=10;
+		$HoursPlayed=2;
+		$HoursToBeat=4;
+		$MSRP=20;
+		
+        $object = new PriceCalculation($price,$HoursPlayed,$HoursToBeat,$MSRP);
+		$reflector = new ReflectionClass( 'PriceCalculation' );
+		$method = $reflector->getMethod( 'getLessXhour' );
+		$method->setAccessible( true );
+		
+		$result = $method->invokeArgs( $object, array( 10 , 20*60*60 ) );
+		
+		$this->assertEquals(0.023809523809523836,$result);
+	}
+	
+	/**
+	 * @covers PriceCalculation::getHourstoXless
+	 */
+	public function test_getHourstoXless() {
+		$price=10;
+		$HoursPlayed=2;
+		$HoursToBeat=4;
+		$MSRP=20;
+		
+        $object = new PriceCalculation($price,$HoursPlayed,$HoursToBeat,$MSRP);
+		$reflector = new ReflectionClass( 'PriceCalculation' );
+		$method = $reflector->getMethod( 'getHourstoXless' );
+		$method->setAccessible( true );
+		
+		$result = $method->invokeArgs( $object, array( 10 , 20*60*60 ) );
+		
+		$this->assertEquals(0.408163265306122,$result);
+	}
+	
+	/**
+	 * @covers PriceCalculation::getHrsToTarget
+	 */
+	public function test_getHrsToTarget() {
+		$price=10;
+		$HoursPlayed=2;
+		$HoursToBeat=4;
+		$MSRP=20;
+		
+        $object = new PriceCalculation($price,$HoursPlayed,$HoursToBeat,$MSRP);
+		$reflector = new ReflectionClass( 'PriceCalculation' );
+		$method = $reflector->getMethod( 'getHrsToTarget' );
+		$method->setAccessible( true );
+		
+		$result = $method->invokeArgs( $object, array( 10 , 0 , 5) );
+		
+		$this->assertEquals(2,$result);
+	}
+
+	/**
+	 * @covers PriceCalculation::printCurrencyFormat
+	 */
+	public function test_printCurrencyFormat() {
+		$price=10;
+		$HoursPlayed=2;
+		$HoursToBeat=4;
+		$MSRP=20;
+		
+        $object = new PriceCalculation($price,$HoursPlayed,$HoursToBeat,$MSRP);
+		$reflector = new ReflectionClass( 'PriceCalculation' );
+		$method = $reflector->getMethod( 'printCurrencyFormat' );
+		$method->setAccessible( true );
+		
+		$result = $method->invokeArgs( $object, array( 12.345 ) );
+		
+		$this->assertEquals("$12.35",$result);
+	}
+
+	/**
+	 * @covers PriceCalculation::printPercentFormat
+	 */
+	public function test_printPercentFormat() {
+		$price=10;
+		$HoursPlayed=2;
+		$HoursToBeat=4;
+		$MSRP=20;
+		
+        $object = new PriceCalculation($price,$HoursPlayed,$HoursToBeat,$MSRP);
+		$reflector = new ReflectionClass( 'PriceCalculation' );
+		$method = $reflector->getMethod( 'printPercentFormat' );
+		$method->setAccessible( true );
+		
+		$result = $method->invokeArgs( $object, array( 12.345 ) );
+		
+		$this->assertEquals("12.35%",$result);
+	}
+
+	/**
+	 * @covers PriceCalculation::printDurationFormat
+	 */
+	public function test_printDurationFormat() {
+		$price=10;
+		$HoursPlayed=2;
+		$HoursToBeat=4;
+		$MSRP=20;
+		
+        $object = new PriceCalculation($price,$HoursPlayed,$HoursToBeat,$MSRP);
+		$reflector = new ReflectionClass( 'PriceCalculation' );
+		$method = $reflector->getMethod( 'printDurationFormat' );
+		$method->setAccessible( true );
+		
+		$result = $method->invokeArgs( $object, array( 12.345 ) );
+		
+		$this->assertEquals("12:20:42",$result);
+	}
 }
