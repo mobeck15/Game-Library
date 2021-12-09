@@ -21,7 +21,7 @@ require $GLOBALS['rootpath']."\inc\utility.inc.php";
 final class Utility_Test extends TestCase
 {
 	/**
-	 * @covers utility.inc::timeduration
+	 * @covers timeduration
 	 */
     public function test_timeduration() {
 		//timeduration($time,$inputunit="hours")
@@ -35,7 +35,7 @@ final class Utility_Test extends TestCase
     }
 
 	/**
-	 * @covers utility.inc::boolText
+	 * @covers boolText
 	 */
 	public function test_boolText() {
 		$this->assertEquals('TRUE', boolText(true));
@@ -45,7 +45,7 @@ final class Utility_Test extends TestCase
 	}
 
 	/**
-	 * @covers utility.inc::read_memory_usage
+	 * @covers read_memory_usage
 	 */
 	public function test_read_memory_usage() {
 		$this->assertEquals('64 b', read_memory_usage(64));
@@ -56,7 +56,7 @@ final class Utility_Test extends TestCase
 	}
 
 	/**
-	 * @covers utility.inc::getAllCpi
+	 * @covers getAllCpi
 	 */
 	public function test_getAllCpi() {
 		//TODO: Add more functional tests for getAllCpi
@@ -64,7 +64,7 @@ final class Utility_Test extends TestCase
 	}
 
 	/**
-	 * @covers utility.inc::get_db_connection
+	 * @covers get_db_connection
 	 */
 	public function test_get_db_connection() {
 		//TODO: Add more functional tests for get_db_connection
@@ -72,7 +72,7 @@ final class Utility_Test extends TestCase
 	}
 
 	/**
-	 * @covers utility.inc::makeIndex
+	 * @covers makeIndex
 	 */
 	public function test_makeIndex() {
 		//Arrange
@@ -108,7 +108,7 @@ final class Utility_Test extends TestCase
 	}
 
 	/**
-	 * @covers utility.inc::getAllItems
+	 * @covers getAllItems
 	 */
 	public function test_getAllItems() {
 		//TODO: Add more functional tests for getAllItems
@@ -116,7 +116,7 @@ final class Utility_Test extends TestCase
 	}
 
 	/**
-	 * @covers utility.inc::getKeywords
+	 * @covers getKeywords
 	 */
 	public function test_getKeywords() {
 		//TODO: Add more functional tests for getKeywords
@@ -124,7 +124,7 @@ final class Utility_Test extends TestCase
 	}
 
 	/**
-	 * @covers utility.inc::regroupArray
+	 * @covers regroupArray
 	 */
 	public function test_regroupArray() {
 		//Arrange
@@ -191,7 +191,7 @@ final class Utility_Test extends TestCase
 	}
 
 	/**
-	 * @covers utility.inc::getSortArray
+	 * @covers getSortArray
 	 */
 	public function test_getSortArray() {
 		//Arrange
@@ -234,7 +234,7 @@ final class Utility_Test extends TestCase
 	}
 
 	/**
-	 * @covers utility.inc::getActiveSortArray
+	 * @covers getActiveSortArray
 	 */
 	public function test_getActiveSortArray() {
 		//Arrange
@@ -276,7 +276,7 @@ final class Utility_Test extends TestCase
 	}
 
 	/**
-	 * @covers utility.inc::getNextPosition
+	 * @covers getNextPosition
 	 */
 	public function test_getNextPosition() {
 		$sortedArray = array(20,15,10,5,3,1,0);
@@ -292,7 +292,7 @@ final class Utility_Test extends TestCase
 	}
 
 	/**
-	 * @covers utility.inc::getHrsNextPosition
+	 * @covers getHrsNextPosition
 	 */
 	public function test_getHrsNextPosition() {
 		$sortedArray = array(20,15,10,5,3,1,0);
@@ -305,7 +305,7 @@ final class Utility_Test extends TestCase
 	}
 
 	/**
-	 * @covers utility.inc::reIndexArray
+	 * @covers reIndexArray
 	 */
 	public function test_reIndexArray() {
 		//Arrange
@@ -347,7 +347,7 @@ final class Utility_Test extends TestCase
 	}
 
 	/**
-	 * @covers utility.inc::getGameDetail
+	 * @covers getGameDetail
 	 */
 	public function test_getGameDetail() {
 		$array=getGameDetail(514);
@@ -356,7 +356,7 @@ final class Utility_Test extends TestCase
 	}
 
 	/**
-	 * @covers utility.inc::combinedate
+	 * @covers combinedate
 	 */
 	public function test_combinedate() {
 		//"" is 1/1/1970 , " " is todays date
@@ -370,7 +370,7 @@ final class Utility_Test extends TestCase
 	}
 
 	/**
-	 * @covers utility.inc::RatingsChartData
+	 * @covers RatingsChartData
 	 */
 	public function test_RatingsChartData() {
 		//TODO: Cleanup variables to make tests more intuative.
@@ -450,7 +450,7 @@ final class Utility_Test extends TestCase
 	}
 
 	/**
-	 * @covers utility.inc::getCleanStringDate
+	 * @covers getCleanStringDate
 	 */
 	public function test_getCleanStringDate() {
 		//Arrange
@@ -469,7 +469,7 @@ final class Utility_Test extends TestCase
 	}
 
 	/**
-	 * @covers utility.inc::daysSinceDate
+	 * @covers daysSinceDate
 	 */
 	public function test_daysSinceDate() {
 		//TODO: Add mock for Time() function in daysSinceDate()
@@ -485,7 +485,7 @@ final class Utility_Test extends TestCase
 	}
 
 	/**
-	 * @covers utility.inc::getTimeLeft
+	 * @covers getTimeLeft
 	 */
 	public function test_getTimeLeft() {
 		$this->assertEquals(15,getTimeLeft(55,40*60*60,"Active"));
@@ -494,7 +494,7 @@ final class Utility_Test extends TestCase
 	}
 
 	/**
-	 * @covers utility.inc::arrayTable
+	 * @covers arrayTable
 	 */
 	public function test_arrayTable() {
 		$array=array(
@@ -514,7 +514,7 @@ final class Utility_Test extends TestCase
 	}
 
 	/**
-	 * @covers utility.inc::lookupTextBox
+	 * @covers lookupTextBox
 	 * /
 	public function test_lookupTextBox() {
 		//$this->assertIsObject(lookupTextBox());
@@ -523,42 +523,42 @@ final class Utility_Test extends TestCase
 	//Below functions can be removed once priceobjects are fully working.
 	
 	/**
-	 * @covers utility.inc::getVariance
+	 * @covers getVariance
 	 * /
 	public function test_getVariance() {
 		//$this->assertIsObject(getVariance());
 	}
 
 	/**
-	 * @covers utility.inc::getVariancePct
+	 * @covers getVariancePct
 	 * /
 	public function test_getVariancePct() {
 		//$this->assertIsObject(getVariancePct());
 	}
 
 	/**
-	 * @covers utility.inc::getPriceperhour
+	 * @covers getPriceperhour
 	 * /
 	public function test_getPriceperhour() {
 		//$this->assertIsObject(getPriceperhour());
 	}
 
 	/**
-	 * @covers utility.inc::getLessXhour
+	 * @covers getLessXhour
 	 * /
 	public function test_getLessXhour() {
 		//$this->assertIsObject(getLessXhour());
 	}
 
 	/**
-	 * @covers utility.inc::getHourstoXless
+	 * @covers getHourstoXless
 	 * /
 	public function test_getHourstoXless() {
 		//$this->assertIsObject(getHourstoXless());
 	}
 
 	/**
-	 * @covers utility.inc::getHrsToTarget
+	 * @covers getHrsToTarget
 	 */
 	public function test_getHrsToTarget() {
 		$value = 10;		$seconds = 0;		$targetvalue = 5;

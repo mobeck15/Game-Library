@@ -1,6 +1,7 @@
 <?php
 $time_start = microtime(true);
-require_once 'inc/functions.inc.php';
+$GLOBALS['rootpath']=$GLOBALS['rootpath'] ?? ".";
+require_once $GLOBALS['rootpath']."/inc/functions.inc.php";
 $title="Index";
 echo Get_Header($title);
 ?>

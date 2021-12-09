@@ -12,5 +12,6 @@ if(($_SERVER['SERVER_NAME'] ?? "") == "yourservername") {
 	$dbname = "";
 }
 
-include $_SERVER['DOCUMENT_ROOT']."/gl6/inc/authapi.inc.php";
+$GLOBALS['rootpath']=$GLOBALS['rootpath'] ?? "..";
+include $GLOBALS['rootpath']."/inc/authapi.inc.php";
 ?>

@@ -1,7 +1,7 @@
 <?php
 //TODO: Based on Chartdata.php, Update this to show top played games for each year.
 
-$GLOBALS['rootpath']=".";
+$GLOBALS['rootpath']=$GLOBALS['rootpath'] ?? ".";
 require_once $GLOBALS['rootpath']."/inc/php.ini.inc.php";
 require_once $GLOBALS['rootpath']."/inc/functions.inc.php";
 
