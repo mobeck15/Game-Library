@@ -1,4 +1,5 @@
 <?php
+// @codeCoverageIgnoreStart
 if(($_SERVER['SERVER_NAME'] ?? "") == "yourservername") {
 	$servername = "";
 	$username = "";
@@ -14,4 +15,4 @@ if(($_SERVER['SERVER_NAME'] ?? "") == "yourservername") {
 
 $GLOBALS['rootpath']=$GLOBALS['rootpath'] ?? "..";
 include $GLOBALS['rootpath']."/inc/authapi.inc.php";
-?>
+// @codeCoverageIgnoreEnd

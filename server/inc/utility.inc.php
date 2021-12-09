@@ -28,9 +28,6 @@ function timeduration($time,$inputunit="hours"){
 		case "seconds":
 	}
 
-	//echo "Time: "; var_dump($time);
-	if($time=="") {$time=0;}
-	//TODO: This time="" line may be useless. remove and test.
 	$s=$time % 60;
     $m=(($time-$s) / 60) % 60;
     $h=floor($time / 3600);
@@ -72,8 +69,6 @@ function read_memory_usage($mem_usage=false) {
 
 function getAllCpi($connection=false){
 	if($connection==false){
-		//require_once $GLOBALS['rootpath']."/inc/auth.inc.php";
-		//$conn = new mysqli($servername, $username, $password, $dbname);
 		$conn=get_db_connection();
 	} else {
 		$conn = $connection;
@@ -92,7 +87,7 @@ function getAllCpi($connection=false){
 			$cpi['Current']=$row['cpi'];
 		}
 	} else {
-		trigger_error("SQL Query Failed: " . mysqli_error($conn) . "</br>Query: ". $sql);
+		trigger_error("SQL Query Failed: " . mysqli_error($conn) . "</br>Query: ". $sql); // @codeCoverageIgnore
 	}
 	if($connection==false){
 		$conn->close();	
@@ -113,9 +108,7 @@ function get_db_connection(){
 
 	/* change character set to utf8 */
 	if (!$conn->set_charset("utf8")) {
-		printf("Error loading character set utf8: %s\n", $conn->error);
-	} else {
-		//printf("Current character set: %s\n", $conn->character_set_name());
+		printf("Error loading character set utf8: %s\n", $conn->error); 
 	}
 	
 	return $conn;

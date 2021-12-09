@@ -15,7 +15,7 @@ use PHPUnit\Framework\TestCase;
 
 // We require the file we need to test.
 // Relative path to the current working dir (root of xampp)
-$GLOBALS['rootpath'] = "htdocs\Game-Library\server";
+$GLOBALS['rootpath'] = $GLOBALS['rootpath'] ?? "htdocs\Game-Library\server";
 require $GLOBALS['rootpath']."\inc\utility.inc.php";
 
 final class Utility_Test extends TestCase
@@ -48,6 +48,7 @@ final class Utility_Test extends TestCase
 	 * @covers read_memory_usage
 	 */
 	public function test_read_memory_usage() {
+		$this->assertisString(read_memory_usage(false));
 		$this->assertEquals('64 b', read_memory_usage(64));
 		$this->assertEquals('1 kb', read_memory_usage(1024));
 		$this->assertEquals('1 mb', read_memory_usage(1048576));
@@ -57,9 +58,13 @@ final class Utility_Test extends TestCase
 
 	/**
 	 * @covers getAllCpi
+	 * @uses get_db_connection
 	 */
 	public function test_getAllCpi() {
 		//TODO: Add more functional tests for getAllCpi
+		
+		$conn=get_db_connection();
+		$this->assertIsArray(getAllCpi($conn));
 		$this->assertIsArray(getAllCpi());
 	}
 
@@ -107,6 +112,41 @@ final class Utility_Test extends TestCase
 		$this->assertEquals("pear", $array[$index[1]]["name"]);
 	}
 
+	/**
+	 * @covers makeIndex
+	 */
+	public function test_makeIndexError() {
+		//Arrange
+		$array = array(
+			"apple" => array(
+				"id" => "4",
+				"name" => "apple",
+				"rank" => "3",
+			),
+			"orange" => array(
+				"id" => "4",
+				"name" => "orange",
+				"rank" => "3",
+			),
+			"banana" => array(
+				"id" => "3",
+				"name" => "apple",
+				"rank" => "1",
+			),
+			"pear" => array(
+				"id" => "1",
+				"name" => "pear",
+				"rank" => "4",
+			),
+		);
+		
+		$this->expectNotice();
+		$this->expectNoticeMessage("id '4' is not a unique key, some data may be lost.");
+		
+		//Act
+		$index=makeIndex($array,"id");
+	}
+	
 	/**
 	 * @covers getAllItems
 	 */
