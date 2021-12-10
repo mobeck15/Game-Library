@@ -102,13 +102,13 @@ function get_db_connection(){
 
 	/* check connection */
 	if (mysqli_connect_errno()) {
-		printf("Connect failed: %s\n", mysqli_connect_error());
-		exit();
+		trigger_error("Connect failed: %s\n", mysqli_connect_error()); // @codeCoverageIgnore
+		exit(); // @codeCoverageIgnore
 	}
 
 	/* change character set to utf8 */
 	if (!$conn->set_charset("utf8")) {
-		printf("Error loading character set utf8: %s\n", $conn->error); 
+		trigger_error("Error loading character set utf8: %s\n", $conn->error); // @codeCoverageIgnore
 	}
 	
 	return $conn;
@@ -513,23 +513,25 @@ function lookupTextBox($lookupid, $inputid, $inputname, $querytype="Game", $sour
 }
 
 //Remove once price class is functional
-function getVariance($price,$msrp) {
-	$variance=0;
-	if($msrp<>0){
-		$variance=$price-$msrp;
+function getHrsToTarget($CalcValue,$time,$target){
+	//Depricated? used in getHrsNextPosition
+	$backtrace=debug_backtrace();
+	//trigger_error(__FUNCTION__ . " is depricated, use PriceCalculation Class instead. (Called from ".$backtrace[0]["file"]." line ". $backtrace[0]["line"].")");
+	
+	if($target>0){
+		$hourstotarget= $CalcValue/$target-$time/60/60;
+	} else {
+		$hourstotarget=0;
 	}
-	return $variance;
-}
-
-function getVariancePct($price,$msrp) {
-	$variance=0;
-	if($msrp<>0){
-		$variance=(1-($price/$msrp))*100;
-	}
-	return $variance;
+	
+	return $hourstotarget;
 }
 
 function getPriceperhour($price,$time){
+	//Depricated? Used in getNextPosition and getHrsNextPosition
+	$backtrace=debug_backtrace();
+	//trigger_error(__FUNCTION__ . " is depricated, use PriceCalculation Class instead. (Called from ".$backtrace[0]["file"]." line ". $backtrace[0]["line"].")");
+	
 	$hours=$time/60/60;
 	if($hours<1){
 		$priceperhour=$price;
@@ -540,7 +542,35 @@ function getPriceperhour($price,$time){
 	return $priceperhour;
 }
 
+function getVariance($price,$msrp) {
+	//Depricated
+	$backtrace=debug_backtrace();
+	trigger_error(__FUNCTION__ . " is depricated, use PriceCalculation Class instead. (Called from ".$backtrace[0]["file"]." line ". $backtrace[0]["line"].")");
+	
+	$variance=0;
+	if($msrp<>0){
+		$variance=$price-$msrp;
+	}
+	return $variance;
+}
+
+function getVariancePct($price,$msrp) {
+	//Depricated
+	$backtrace=debug_backtrace();
+	trigger_error(__FUNCTION__ . " is depricated, use PriceCalculation Class instead. (Called from ".$backtrace[0]["file"]." line ". $backtrace[0]["line"].")");
+	
+	$variance=0;
+	if($msrp<>0){
+		$variance=(1-($price/$msrp))*100;
+	}
+	return $variance;
+}
+
 function getLessXhour($price,$time,$xhour=1){
+	//Depricated
+	$backtrace=debug_backtrace();
+	trigger_error(__FUNCTION__ . " is depricated, use PriceCalculation Class instead. (Called from ".$backtrace[0]["file"]." line ". $backtrace[0]["line"].")");
+	
 	$hours=$time/60/60;
 	if($hours<1){
 		$priceperhour=$price;
@@ -551,29 +581,21 @@ function getLessXhour($price,$time,$xhour=1){
 	if($xhour+$hours==0) {
 		$LessXhour=0;
 	} else {
-		//echo "LessXhour=" . "priceperhour: ". $priceperhour . " -( price: " . $price . " /(max( xhour: " .$xhour. ",hours: ".$hours. " )+ xhour: ". $xhour. " ))<br>";
 		$LessXhour=$priceperhour-($price/(max($xhour,$hours)+$xhour));
 	}
 	
-	//$LessXhour=sprintf("%.2f",$LessXhour);
 	return $LessXhour;
 }
 
 function getHourstoXless($price,$time,$xless=.01){
+	//Depricated
+	$backtrace=debug_backtrace();
+	trigger_error(__FUNCTION__ . " is depricated, use PriceCalculation Class instead. (Called from ".$backtrace[0]["file"]." line ". $backtrace[0]["line"].")");
+	
 	$priceperhour=getPriceperhour($price,$time);
 	$hoursxless=getHrsToTarget($price,$time,$priceperhour-$xless);
 	
 	return $hoursxless;
-}
-
-function getHrsToTarget($CalcValue,$time,$target){
-	if($target>0){
-		$hourstotarget= $CalcValue/$target-$time/60/60;
-	} else {
-		$hourstotarget=0;
-	}
-	
-	return $hourstotarget;
 }
 
 //REMOVE END

@@ -55,7 +55,7 @@ class PriceCalculation {
 	
     public function getHoursToDollarPerHour($target,$printformat=false)
     {
-		$output=getHrsToTarget($this->price, $this->HoursPlayed  ,$target);
+		$output=$this->getHrsToTarget($this->price, $this->HoursPlayed  ,$target);
 		return $printformat ? $this->printDurationFormat($output) : $output;
 	}
 	
@@ -75,18 +75,19 @@ class PriceCalculation {
 		return $variance;
 	}
 	
-	private function getPriceperhour($price,$hours){
-		if(($hours/60/60)<1){
+	private function getPriceperhour($price,$seconds){
+		$hours=$seconds/60/60;
+		if($hours<1){
 			$priceperhour=$price;
 		} else {
-			$priceperhour=$price/($hours/60/60);
+			$priceperhour=$price/$hours;
 		}
 		return $priceperhour;
 	}
 
-	private function getLessXhour($price,$time,$xhour=1){
-		$hours=$time/60/60;
-		$priceperhour=$this->getPriceperhour($price,$time);
+	private function getLessXhour($price,$seconds,$xhour=1){
+		$hours=$seconds/60/60;
+		$priceperhour=$this->getPriceperhour($price,$seconds);
 		
 		if($xhour+$hours==0) {
 			$LessXhour=0;
@@ -96,17 +97,18 @@ class PriceCalculation {
 		
 		return $LessXhour;
 	}
-
-	private function getHourstoXless($price,$time,$xless=.01){
-		$priceperhour=$this->getPriceperhour($price,$time);
-		$hoursxless=$this->getHrsToTarget($price,$time,$priceperhour-$xless);
+	
+	private function getHourstoXless($price,$seconds,$xless=.01){
+		$priceperhour=$this->getPriceperhour($price,$seconds);
+		$hoursxless=$this->getHrsToTarget($price,$seconds,$priceperhour-$xless);
 		
 		return $hoursxless;
 	}
 
-	private function getHrsToTarget($CalcValue,$time,$target){
+	private function getHrsToTarget($CalcValue,$seconds,$target){
+		$hours=$seconds/60/60;
 		if($target>0){
-			$hourstotarget= $CalcValue/$target-$time/60/60;
+			$hourstotarget= $CalcValue/$target-$hours;
 		} else {
 			$hourstotarget=0;
 		}
@@ -118,7 +120,7 @@ class PriceCalculation {
 	{return sprintf("$%.2f", $price);}
 	private function printPercentFormat($price) 
 	{return sprintf("%.2f%%", $price);}
-	private function printDurationFormat($price) 
-	{return timeduration($price,"hours");}
-
+	private function printDurationFormat($hours) 
+	{return timeduration($hours,"hours");}
+	
 }
