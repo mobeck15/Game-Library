@@ -48,6 +48,60 @@ final class PriceCalculation_Test extends TestCase
     }
 
 	/**
+	 * @covers PriceCalculation::__construct
+	 */
+    public function test_PriceCalculationConstructor() {
+		
+		$property = $this->getPrivateProperty( 'PriceCalculation', 'price' );
+		$this->assertEquals( $property->getValue( $this->PriceCalculation ), 10 );
+
+		$property = $this->getPrivateProperty( 'PriceCalculation', 'HoursPlayed' );
+		$this->assertEquals( $property->getValue( $this->PriceCalculation ), 2 );
+
+		$property = $this->getPrivateProperty( 'PriceCalculation', 'HoursToBeat' );
+		$this->assertEquals( $property->getValue( $this->PriceCalculation ), 4 );
+
+		$property = $this->getPrivateProperty( 'PriceCalculation', 'MSRP' );
+		$this->assertEquals( $property->getValue( $this->PriceCalculation ), 20 );
+
+		
+    }
+
+	/**
+ 	 * getPrivateProperty
+ 	 *
+ 	 * @author	Joe Sexton <joe@webtipblog.com>
+ 	 * @param 	string $className
+ 	 * @param 	string $propertyName
+ 	 * @return	ReflectionProperty
+	 * Source: https://www.webtipblog.com/unit-testing-private-methods-and-properties-with-phpunit/
+ 	 */
+	public function getPrivateProperty( $className, $propertyName ) {
+		$reflector = new ReflectionClass( $className );
+		$property = $reflector->getProperty( $propertyName );
+		$property->setAccessible( true );
+
+		return $property;
+	}
+
+	/**
+ 	 * getPrivateMethod
+ 	 *
+ 	 * @author	Joe Sexton <joe@webtipblog.com>
+ 	 * @param 	string $className
+ 	 * @param 	string $methodName
+ 	 * @return	ReflectionMethod
+	 * Source: https://www.webtipblog.com/unit-testing-private-methods-and-properties-with-phpunit/
+ 	 */
+	public function getPrivateMethod( $className, $methodName ) {
+		$reflector = new ReflectionClass( $className );
+		$method = $reflector->getMethod( $methodName );
+		$method->setAccessible( true );
+
+		return $method;
+	}
+	
+	/**
 	 * @covers PriceCalculation::getVarianceFromMSRPpct
 	 * @uses PriceCalculation::__construct
 	 * /
@@ -100,12 +154,8 @@ final class PriceCalculation_Test extends TestCase
 	 * @uses PriceCalculation::__construct
 	 */
 	public function test_getVariance() {
-		$reflector = new ReflectionClass( 'PriceCalculation' );
-		$method = $reflector->getMethod( 'getVariance' );
-		$method->setAccessible( true );
-		
+		$method = $this->getPrivateMethod( 'PriceCalculation', 'getVariance' );
 		$result = $method->invokeArgs( $this->PriceCalculation, array( 10 , 20 ) );
-		
 		$this->assertEquals(-10,$result);
 	}
 	
@@ -114,12 +164,8 @@ final class PriceCalculation_Test extends TestCase
 	 * @uses PriceCalculation::__construct
 	 */
 	public function test_getVariancePct() {
-		$reflector = new ReflectionClass( 'PriceCalculation' );
-		$method = $reflector->getMethod( 'getVariancePct' );
-		$method->setAccessible( true );
-		
+		$method = $this->getPrivateMethod( 'PriceCalculation', 'getVariancePct' );
 		$result = $method->invokeArgs( $this->PriceCalculation, array( 10 , 20 ) );
-		
 		$this->assertEquals(50,$result);
 	}
 	
@@ -128,12 +174,8 @@ final class PriceCalculation_Test extends TestCase
 	 * @uses PriceCalculation::__construct
 	 */
 	public function test_getPriceperhour() {
-		$reflector = new ReflectionClass( 'PriceCalculation' );
-		$method = $reflector->getMethod( 'getPriceperhour' );
-		$method->setAccessible( true );
-		
+		$method = $this->getPrivateMethod( 'PriceCalculation', 'getPriceperhour' );
 		$result = $method->invokeArgs( $this->PriceCalculation, array( 10 , 20*60*60 ) );
-		
 		$this->assertEquals(.5,$result);
 	}
 	
@@ -142,12 +184,8 @@ final class PriceCalculation_Test extends TestCase
 	 * @uses PriceCalculation::__construct
 	 */
 	public function test_getLessXhour() {
-		$reflector = new ReflectionClass( 'PriceCalculation' );
-		$method = $reflector->getMethod( 'getLessXhour' );
-		$method->setAccessible( true );
-		
+		$method = $this->getPrivateMethod( 'PriceCalculation', 'getLessXhour' );
 		$result = $method->invokeArgs( $this->PriceCalculation, array( 10 , 20*60*60 ) );
-		
 		$this->assertEquals(0.023809523809523836,$result);
 	}
 	
@@ -156,12 +194,8 @@ final class PriceCalculation_Test extends TestCase
 	 * @uses PriceCalculation::__construct
 	 */
 	public function test_getHourstoXless() {
-		$reflector = new ReflectionClass( 'PriceCalculation' );
-		$method = $reflector->getMethod( 'getHourstoXless' );
-		$method->setAccessible( true );
-		
+		$method = $this->getPrivateMethod( 'PriceCalculation', 'getHourstoXless' );
 		$result = $method->invokeArgs( $this->PriceCalculation, array( 10 , 20*60*60 ) );
-		
 		$this->assertEquals(0.408163265306122,$result);
 	}
 	
@@ -170,12 +204,8 @@ final class PriceCalculation_Test extends TestCase
 	 * @uses PriceCalculation::__construct
 	 */
 	public function test_getHrsToTarget() {
-		$reflector = new ReflectionClass( 'PriceCalculation' );
-		$method = $reflector->getMethod( 'getHrsToTarget' );
-		$method->setAccessible( true );
-		
+		$method = $this->getPrivateMethod( 'PriceCalculation', 'getHrsToTarget' );
 		$result = $method->invokeArgs( $this->PriceCalculation, array( 10 , 0 , 5) );
-		
 		$this->assertEquals(2,$result);
 	}
 
@@ -184,12 +214,8 @@ final class PriceCalculation_Test extends TestCase
 	 * @uses PriceCalculation::__construct
 	 */
 	public function test_printCurrencyFormat() {
-		$reflector = new ReflectionClass( 'PriceCalculation' );
-		$method = $reflector->getMethod( 'printCurrencyFormat' );
-		$method->setAccessible( true );
-		
+		$method = $this->getPrivateMethod( 'PriceCalculation', 'printCurrencyFormat' );
 		$result = $method->invokeArgs( $this->PriceCalculation, array( 12.345 ) );
-		
 		$this->assertEquals("$12.35",$result);
 	}
 
@@ -198,12 +224,8 @@ final class PriceCalculation_Test extends TestCase
 	 * @uses PriceCalculation::__construct
 	 */
 	public function test_printPercentFormat() {
-		$reflector = new ReflectionClass( 'PriceCalculation' );
-		$method = $reflector->getMethod( 'printPercentFormat' );
-		$method->setAccessible( true );
-		
+		$method = $this->getPrivateMethod( 'PriceCalculation', 'printPercentFormat' );
 		$result = $method->invokeArgs( $this->PriceCalculation, array( 12.345 ) );
-		
 		$this->assertEquals("12.35%",$result);
 	}
 
@@ -212,12 +234,8 @@ final class PriceCalculation_Test extends TestCase
 	 * @uses PriceCalculation::__construct
  */
 	public function test_printDurationFormat() {
-		$reflector = new ReflectionClass( 'PriceCalculation' );
-		$method = $reflector->getMethod( 'printDurationFormat' );
-		$method->setAccessible( true );
-		
+		$method = $this->getPrivateMethod( 'PriceCalculation', 'printDurationFormat' );
 		$result = $method->invokeArgs( $this->PriceCalculation, array( 12.345 ) );
-		
 		$this->assertEquals("12:20:42",$result);
 	}
 }
