@@ -1,16 +1,5 @@
 <?php 
 declare(strict_types=1);
-//command> phpunit .\htdocs\Game-Library\server\tests
-
-/*
-Getting PHPunit to work in XAMPP:
-1) Download PHPunit.phar from this site
-   https://phpunit.de/getting-started/phpunit-9.html
-2) Copy the file to XAMPP/PHP folder
-3) Rename or delete the existing phpunit file (no extention)
-4) Rename the downloaded file to phpunit (no extention)
-*/
-
 use PHPUnit\Framework\TestCase;
 
 // We require the file we need to test.
@@ -554,47 +543,29 @@ final class Utility_Test extends TestCase
 	}
 
 	/**
-	 * @covers lookupTextBox
-	 * /
-	public function test_lookupTextBox() {
-		//$this->assertIsObject(lookupTextBox());
-	}
-
-	//Below functions can be removed once priceobjects are fully working.
-	
-	/**
-	 * @covers getVariance
-	 * /
-	public function test_getVariance() {
-		//$this->assertIsObject(getVariance());
-	}
-
-	/**
-	 * @covers getVariancePct
-	 * /
-	public function test_getVariancePct() {
-		//$this->assertIsObject(getVariancePct());
-	}
-
-	/**
 	 * @covers getPriceperhour
-	 * /
-	public function test_getPriceperhour() {
-		//$this->assertIsObject(getPriceperhour());
+	 */
+	public function test_getPriceperhour_utility() {
+
+		$result = getPriceperhour( 10 , 20*60*60 );
+		$this->assertEquals(.5,$result);
+
+		$result = getPriceperhour( 10 , .9*60*60 );
+		$this->assertEquals(10,$result);
 	}
 
 	/**
-	 * @covers getLessXhour
-	 * /
-	public function test_getLessXhour() {
-		//$this->assertIsObject(getLessXhour());
-	}
+	 * @covers getHrsToTarget
+	 */
+	public function test_getHrsToTarget_utility() {
+		$result = getHrsToTarget( 10 , 0 , 5);
+		$this->assertEquals(2,$result);
 
-	/**
-	 * @covers getHourstoXless
-	 * /
-	public function test_getHourstoXless() {
-		//$this->assertIsObject(getHourstoXless());
+		$result = getHrsToTarget( 10 , 5*60*60 , 5);
+		$this->assertEquals(-3,$result);
+
+		$result = getHrsToTarget(  10 , 5*60*60 , 0);
+		$this->assertEquals(0,$result);
 	}
 
 	/**

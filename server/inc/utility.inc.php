@@ -542,6 +542,7 @@ function getPriceperhour($price,$time){
 	return $priceperhour;
 }
 
+// @codeCoverageIgnoreStart
 function getVariance($price,$msrp) {
 	//Depricated
 	$backtrace=debug_backtrace();
@@ -597,6 +598,6 @@ function getHourstoXless($price,$time,$xless=.01){
 	
 	return $hoursxless;
 }
-
+// @codeCoverageIgnoreEnd
 //REMOVE END
 ?>
