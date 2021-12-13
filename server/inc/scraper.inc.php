@@ -2,241 +2,189 @@
 //https://steamcommunity.com/dev/apiterms
 //You are limited to one hundred thousand (100,000) calls to the Steam Web API per day. 
 
-//DONE: add control function to prevent loading multiple times.
 if(isset($GLOBALS[__FILE__])){
 	trigger_error("File already included once ".__FILE__.". ");
 }
 $GLOBALS[__FILE__]=1;
 
-function GetOwnedGames() {
+if(!isset($GLOBALS['rootpath'])) {$GLOBALS['rootpath']="..";}
+require_once $GLOBALS['rootpath']."/inc/CurlRequest.class.php";
+
+function GetOwnedGames($ch=null) {
+	$ch = $ch ?? new CurlRequest("");
 	require $GLOBALS['rootpath']."/inc/authapi.inc.php";
 	//GetOwnedGames
 	$url="http://api.steampowered.com/IPlayerService/GetOwnedGames/v0001/?key=".$SteamAPIwebkey."&steamid=".$SteamProfileID."&format=json";
-	//  Initiate curl
-	$ch = curl_init();
-	// Disable SSL verification
-	curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-	// Will return the response, if false it print the response
-	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-	// Set the url
-	curl_setopt($ch, CURLOPT_URL,$url);
-	// Execute
-	$result3=curl_exec($ch);
 
-	$resultarray3=json_decode($result3, true);
+	// Disable SSL verification
+	$ch->setOption(CURLOPT_SSL_VERIFYPEER, false); 
+	// Will return the response, if false it print the response
+	$ch->setOption(CURLOPT_RETURNTRANSFER, true); 
+	$ch->setOption(CURLOPT_URL, $url); 
+	$result = $ch->execute();
+	$ch->close();
+
+	$resultarray3=json_decode($result, true);
 	
 	return $resultarray3;
 }
 
-function GetRecentlyPlayedGames() {
+function GetRecentlyPlayedGames($ch=null) {
+	$ch = $ch ?? new CurlRequest("");
 	require $GLOBALS['rootpath']."/inc/authapi.inc.php";
-	//$steamID="76561198111424124"; //Adri
-	//$steamID="76561198024968605"; //Isaac
 
 	//GetRecentlyPlayedGames
 	$url="http://api.steampowered.com/IPlayerService/GetRecentlyPlayedGames/v0001/?key=".$SteamAPIwebkey."&steamid=".$SteamProfileID."&format=json";
 
-	//  Initiate curl
-	$ch = curl_init();
 	// Disable SSL verification
-	curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+	$ch->setOption(CURLOPT_SSL_VERIFYPEER, false); 
 	// Will return the response, if false it print the response
-	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-	// Set the url
-	curl_setopt($ch, CURLOPT_URL,$url);
-	// Execute
-	$result=curl_exec($ch);
-	// Closing
-	unset($ch);
+	$ch->setOption(CURLOPT_RETURNTRANSFER, true); 
+	$ch->setOption(CURLOPT_URL, $url); 
+	$result = $ch->execute();
+	$ch->close();
 
-	// Will dump a beauty json :3
 	$resultarray=json_decode($result, true);
 	unset($result);
-	//var_dump(json_decode($result, true));
 	
 	return $resultarray;
 }
 
-function GetPlayerAchievements($steamgameid) {
-	//Example: http://api.steampowered.com/ISteamUserStats/GetPlayerAchievements/v0001/?appid=562500&key=71CBF878CA78EF8459DACF1E7F08C210&steamid=76561198024968605
-	
+function GetPlayerAchievements($steamgameid,$ch=null) {
+	$ch = $ch ?? new CurlRequest("");
 	require $GLOBALS['rootpath']."/inc/authapi.inc.php";
 	
 	//GetUserStatsForGame
 	$url="http://api.steampowered.com/ISteamUserStats/GetPlayerAchievements/v0001/?appid=".$steamgameid."&key=".$SteamAPIwebkey."&steamid=".$SteamProfileID;
 	
-	//  Initiate curl
-	$ch = curl_init();
 	// set cookie for age verification
-	curl_setopt($ch, CURLOPT_COOKIE, "birthtime=28801; path=/; domain=store.steampowered.com");
+	$ch->setOption(CURLOPT_COOKIE, "birthtime=28801; path=/; domain=store.steampowered.com"); 
 	// Disable SSL verification
-	curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+	$ch->setOption(CURLOPT_SSL_VERIFYPEER, false); 
 	// Will return the response, if false it print the response
-	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-	// Set the url
-	curl_setopt($ch, CURLOPT_URL,$url);
-	// Execute
-	$result=curl_exec($ch);
+	$ch->setOption(CURLOPT_RETURNTRANSFER, true); 
+	$ch->setOption(CURLOPT_URL, $url); 
+	$result = $ch->execute();
+	$ch->close();
 	
 	$userstatsarray=json_decode($result, true);	
-	
-	// Closing
-	curl_close($ch);	
 	
 	return $userstatsarray;
 }
 
-function GetUserStatsForGame($steamgameid,$htmloutput=false) {
-	//Example: http://api.steampowered.com/ISteamUserStats/GetUserStatsForGame/v0002/?appid=562500&key=71CBF878CA78EF8459DACF1E7F08C210&steamid=76561198024968605
-	
+function GetUserStatsForGame($steamgameid,$ch=null) {
+	$ch = $ch ?? new CurlRequest("");
 	require $GLOBALS['rootpath']."/inc/authapi.inc.php";
 	
 	//GetUserStatsForGame
 	$url="http://api.steampowered.com/ISteamUserStats/GetUserStatsForGame/v0002/?appid=".$steamgameid."&key=".$SteamAPIwebkey."&steamid=".$SteamProfileID;
 	
-	//  Initiate curl
-	$ch = curl_init();
 	// set cookie for age verification
-	curl_setopt($ch, CURLOPT_COOKIE, "birthtime=28801; path=/; domain=store.steampowered.com");
+	$ch->setOption(CURLOPT_COOKIE, "birthtime=28801; path=/; domain=store.steampowered.com"); 
 	// Disable SSL verification
-	curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+	$ch->setOption(CURLOPT_SSL_VERIFYPEER, false); 
 	// Will return the response, if false it print the response
-	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-	// Set the url
-	curl_setopt($ch, CURLOPT_URL,$url);
-	// Execute
-	$result=curl_exec($ch);
+	$ch->setOption(CURLOPT_RETURNTRANSFER, true); 
+	$ch->setOption(CURLOPT_URL, $url); 
+	$result = $ch->execute();
+	$ch->close();
 	
 	$userstatsarray=json_decode($result, true);	
 	
-	// Closing
-	curl_close($ch);	
-	
-	if($htmloutput == false) {
-		return $userstatsarray;
-	} else {
-		return $userstatsarray;
-	}
+	return $userstatsarray;
 }
 
-function GetGameNews($steamgameid,$newscount=5,$length=500,$htmloutput=false) {
+function GetGameNews($steamgameid,$newscount=5,$length=500,$ch=null) {
+	$ch = $ch ?? new CurlRequest("");
+	
 	//Get Game News
 	$url="http://api.steampowered.com/ISteamNews/GetNewsForApp/v0002/?appid=".$steamgameid."&count=".$newscount."&maxlength=".$length."&format=json";
-	//  Initiate curl
-	$ch = curl_init();
+	
 	// set cookie for age verification
-	curl_setopt($ch, CURLOPT_COOKIE, "birthtime=28801; path=/; domain=store.steampowered.com");
+	$ch->setOption(CURLOPT_COOKIE, "birthtime=28801; path=/; domain=store.steampowered.com"); 
 	// Disable SSL verification
-	curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+	$ch->setOption(CURLOPT_SSL_VERIFYPEER, false); 
 	// Will return the response, if false it print the response
-	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-	// Set the url
-	curl_setopt($ch, CURLOPT_URL,$url);
-	// Execute
-	$result=curl_exec($ch);
+	$ch->setOption(CURLOPT_RETURNTRANSFER, true); 
+	$ch->setOption(CURLOPT_URL, $url); 
+	$result = $ch->execute();
+	$ch->close();
 	
 	$newsarray=json_decode($result, true);
-
-	// Closing
-	curl_close($ch);	
 	
-	if($htmloutput == false) {
-		return $newsarray;
-	} else {
-		return $newsarray;
-	}
+	return $newsarray;
 }
 
-function GetSchemaForGame($steamgameid,$htmloutput=false) {
+function GetSchemaForGame($steamgameid, $ch=null) {
+	$ch = $ch ?? new CurlRequest("");
+
 	require $GLOBALS['rootpath']."/inc/authapi.inc.php";
 	//GetSchemaForGame
 	$url="http://api.steampowered.com/ISteamUserStats/GetSchemaForGame/v2/?key=".$SteamAPIwebkey."&appid=".$steamgameid;
-	//  Initiate curl
-	$ch = curl_init();
+
 	// set cookie for age verification
-	curl_setopt($ch, CURLOPT_COOKIE, "birthtime=28801; path=/; domain=store.steampowered.com");
+	$ch->setOption(CURLOPT_COOKIE, "birthtime=28801; path=/; domain=store.steampowered.com"); 
 	// Disable SSL verification
-	curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+	$ch->setOption(CURLOPT_SSL_VERIFYPEER, false); 
 	// Will return the response, if false it print the response
-	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-	// Set the url
-	curl_setopt($ch, CURLOPT_URL,$url);
-	// Execute
-	$result=curl_exec($ch);
+	$ch->setOption(CURLOPT_RETURNTRANSFER, true); 
+	$ch->setOption(CURLOPT_URL, $url); 
+	$result = $ch->execute();
+	$ch->close();
 
 	$resultarray=json_decode($result, true);
 
-	// Closing
-	curl_close($ch);	
-
-	if($htmloutput == false) {
-		return $resultarray;
-	} else {
-		return $resultarray;
-	}
+	return $resultarray;
 }
 
-function GetAppDetails($steamgameid,$htmloutput=false) {
+function GetAppDetails($steamgameid,$ch=null) {
+	$ch = $ch ?? new CurlRequest("");
+
 	//unoficial app id information
-	//http://store.steampowered.com/api/appdetails/?appids=252490
 	$url="http://store.steampowered.com/api/appdetails/?appids=".$steamgameid;
-	//  Initiate curl
-	$ch = curl_init();
-	// set cookie for age verification
-	curl_setopt($ch, CURLOPT_COOKIE, "birthtime=28801; path=/; domain=store.steampowered.com");
-	// Disable SSL verification
-	curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-	// Will return the response, if false it print the response
-	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-	// Set the url
-	curl_setopt($ch, CURLOPT_URL,$url);
-	//Follow HTML redirects
-	curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-	// Execute
-	$result=curl_exec($ch);
-	
-	$appdetails=json_decode($result, true);
-	
-	// Closing
-	curl_close($ch);	
 
-	if($htmloutput == false) {
-		return $appdetails;
-	} else {
-		return $appdetails;
-	}
+	//Follow HTML redirects
+	$ch->setOption(CURLOPT_FOLLOWLOCATION, true); 
+	// set cookie for age verification
+	$ch->setOption(CURLOPT_COOKIE, "birthtime=28801; path=/; domain=store.steampowered.com"); 
+	// Disable SSL verification
+	$ch->setOption(CURLOPT_SSL_VERIFYPEER, false); 
+	// Will return the response, if false it print the response
+	$ch->setOption(CURLOPT_RETURNTRANSFER, true); 
+	$ch->setOption(CURLOPT_URL, $url); 
+	$result = $ch->execute();
+	$ch->close();
+
+	$appdetails=json_decode($result, true);
+
+	return $appdetails;
 }
 
-function GetSteamPICS($steamgameid,$htmloutput=false) {
+function GetSteamPICS($steamgameid,$ch=null) {
+	$ch = $ch ?? new CurlRequest("");
+
 	//https://github.com/DoctorMcKay/steam-pics-api
 	//https://steampics-mckay.rhcloud.com/info?apps=252490&prettyprint=1
 	$url="https://steampics-mckay.rhcloud.com/info?apps=".$steamgameid;
-	//  Initiate curl
-	$ch = curl_init();
+	
 	// set cookie for age verification
-	curl_setopt($ch, CURLOPT_COOKIE, "birthtime=28801; path=/; domain=store.steampowered.com");
+	$ch->setOption(CURLOPT_COOKIE, "birthtime=28801; path=/; domain=store.steampowered.com"); 
 	// Disable SSL verification
-	curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+	$ch->setOption(CURLOPT_SSL_VERIFYPEER, false); 
 	// Will return the response, if false it print the response
-	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-	// Set the url
-	curl_setopt($ch, CURLOPT_URL,$url);
-	// Execute
-	$result=curl_exec($ch);
+	$ch->setOption(CURLOPT_RETURNTRANSFER, true); 
+	$ch->setOption(CURLOPT_URL, $url); 
+	$result = $ch->execute();
+	$ch->close();
 
 	$steampics=json_decode($result, true);
 
-	// Closing
-	curl_close($ch);	
-
-	if($htmloutput == false) {
-		return $steampics;
-	} else {
-		return $steampics;
-	}
+	return $steampics;
 }
 
-function scrapeSteamStore($steamgameid,$htmloutput=false) {
+function scrapeSteamStore($steamgameid,$ch=null) {
+	$ch = $ch ?? new CurlRequest("");
+
 	//Simulate steam down
 	//return false;
 	
@@ -245,23 +193,20 @@ function scrapeSteamStore($steamgameid,$htmloutput=false) {
 	//Solution to age verification found on sourceforge: 
 	//http://stackoverflow.com/questions/22140197/how-to-pass-age-verification-with-dom
 
-	//  Initiate curl
-	$ch = curl_init();
-	// set cookie for age verification
-	curl_setopt($ch, CURLOPT_COOKIE, "birthtime=28801; path=/; domain=store.steampowered.com");
-	// Disable SSL verification
-	curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-	// Will return the response, if false it print the response
-	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 	//Follow HTML redirects
-	curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+	$ch->setOption(CURLOPT_FOLLOWLOCATION, true); 
 	//time out if too long
-	curl_setopt($ch, CURLOPT_TIMEOUT, 5); 
-	// Set the url
-	curl_setopt($ch, CURLOPT_URL,$url);
+	$ch->setOption(CURLOPT_TIMEOUT, 5); 
+	// set cookie for age verification
+	$ch->setOption(CURLOPT_COOKIE, "birthtime=28801; path=/; domain=store.steampowered.com"); 
+	// Disable SSL verification
+	$ch->setOption(CURLOPT_SSL_VERIFYPEER, false); 
+	// Will return the response, if false it print the response
+	$ch->setOption(CURLOPT_RETURNTRANSFER, true); 
+	$ch->setOption(CURLOPT_URL, $url); 
+	$result = $ch->execute();
+	$ch->close();
 	
-	$result=curl_exec($ch);
-
 	/* Return the Steam page for troubleshooting * /
 	echo $url . "<p>";
 	var_dump($result); 
@@ -273,11 +218,7 @@ function scrapeSteamStore($steamgameid,$htmloutput=false) {
 		return false;
 	}
 	
-	if($htmloutput == false) {
-		return $result;
-	} else {
-		return $result;
-	}
+	return $result;
 }
 
 function getPageTitle($source){
@@ -872,4 +813,3 @@ function formatnews($newsarray,$verbose=true){
 	
 	return $output;
 }
-?>

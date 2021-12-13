@@ -13,27 +13,8 @@ $GLOBALS[__FILE__]=1;
  * echo Get_Header($title);
  */
  
- 
- /*<?php 
- // Turn on output buffering 
- // There will be no output until you "flush" or echo the buffer's contents 
- ob_start(); 
- ?>
-<!-- Remember, none of this HTML will be sent to the browser, yet! -->
-<h1>Hi</h1>
-<p>I like PHP.</p>
-<?php 
-// Put all of the above ouptut into a variable 
-// This has to be before you "clean" the buffer 
-$content = ob_get_clean(); 
-// All of the data that was in the buffer is now in $content 
-echo $content; 
-?>
-*/
- 
 function Get_Header($title="",$WIP=""){
-	//$GLOBALS['time_start'] = microtime(true);
-	header('Content-Type: text/html; charset=utf-8');
+	//header('Content-Type: text/html; charset=utf-8');
 	 
 	$default_title="Game Library v6";
 	
@@ -57,24 +38,9 @@ function Get_Header($title="",$WIP=""){
 
 	//Needed to support dynamic lookups
 	$Template_Header .= "\n	<link rel=\"stylesheet\" href=\"http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.1/themes/base/minified/jquery-ui.min.css\" type=\"text/css\" /> ";
-	/* 
-	//These script links are for Ajax lookup prompts. Not needed in header.
-	$Template_Header .= "
-	<script type=\"text/javascript\" src=\"http://code.jquery.com/jquery-1.9.1.min.js\"></script>
-	<script type=\"text/javascript\" src=\"http://code.jquery.com/ui/1.10.1/jquery-ui.min.js\"></script>";
-	*/
 	
 	$Template_Header .= "
 	<script src=\"https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js\"></script>";
-	/* Used for floating table header script * /
-	$Template_Header .= "
-	<script src=\"/js/jquery.floatThead.js\"></script>
-	<script type=\"text/javascript\">
-		$(function(){
-			$('table').floatThead();
-		});
-	</script>";
-	/* */
 	$Template_Header .= "
 	</HEAD>
 	<BODY>";
@@ -143,7 +109,8 @@ function get_navmenu($dropbar=true){
 //MANAGE DATABASE
 		$navmenu .= "\t<li><a>Manage Database</a>\r\n";
 		$navmenu .= "\t<ul>\r\n";
-			if($_SERVER['SERVER_NAME']=="localhost"){
+			//if($_SERVER['SERVER_NAME']=="localhost"){
+			if(($_SERVER['SERVER_NAME'] ?? "localhost") == "localhost") {
 				//$navmenu .= "\t\t<li><a href=\"/us_opt1/\" target=\"_blank\">uniserver phpMyAdmin<img src=\"".$GLOBALS['rootpath']."/img/new_window-512.png\" height=15 /></a></li>\r\n";
 				$navmenu .= "\t\t<li><a href=\"/phpmyadmin/\" target=\"_blank\">local phpMyAdmin<img src=\"".$GLOBALS['rootpath']."/img/new_window-512.png\" height=15 /></a></li>\r\n";
 			} else {

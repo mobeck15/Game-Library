@@ -13,7 +13,6 @@ final class Utility_Test extends TestCase
 	 * @covers timeduration
 	 */
     public function test_timeduration() {
-		//timeduration($time,$inputunit="hours")
         $this->assertEquals("-1:00:00", timeduration(-1,"hours"));
         $this->assertEquals("1:00:00", timeduration(1,"hours"));
         $this->assertEquals("1:30:00", timeduration(1.5,"hours"));
