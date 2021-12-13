@@ -276,6 +276,7 @@ function parse_details($source){
 	//Searching for:
 	//class="game_area_details_specs"
 	$pattern="/game_area_details_specs.*?name.*?>(.+?)</";
+	$pattern="/\"label\">(.+?)</";
 	$featurematches= preg_match_all ($pattern,$source,$matches);
 	
 	$steamfeaturearray=$matches[1];
@@ -313,8 +314,10 @@ function parse_reviews($source){
 }
 
 function parse_developer($source){
+	//TODO: Update to read multiple developer entries.
 	//class="details_block"
 	$pattern="/Developer:<\/b>\s*<.*?>(.*?)<\/a>/";
+	$pattern="/\/developer\/(?:.*?)>(.*?)<\/a>/";
 	$Devmatch= preg_match ($pattern,$source,$matches);
 	if(isset($matches[1])) {
 		$Developer=$matches[1];
@@ -329,6 +332,7 @@ function parse_developer($source){
 
 function parse_publisher($source){
 	$pattern="/Publisher:<\/b>\s*<.*?>(.*?)<\/a>/";
+	$pattern="/\/publisher\/(?:.*?)>(.*?)<\/a>/";
 	$Pubmatch= preg_match ($pattern,$source,$matches);
 	if(isset($matches[1])){
 		$Publisher=$matches[1];
@@ -342,7 +346,7 @@ function parse_publisher($source){
 }
 
 function parse_releasedate($source){
-	$pattern="/<b>Release Date:<\/b>(.*?)<br>/";
+	$pattern="/<b>Release Date:<\/b>\s*(.*?)<br>/";
 	$Datematch= preg_match ($pattern,$source,$matches);
 	$PubDate=$matches[1];
 	unset($matches);
@@ -351,18 +355,23 @@ function parse_releasedate($source){
 }
 
 function parse_genre($source){
-	$pattern1="/Genre:(.*?)<br>/";
-	$genrematch= preg_match ($pattern1,$source,$matches1);
+	$pattern1="/Genre:(?:.*?)<a(?:.*?)\">(.*?)<\/a>/";
+	$genrematch= preg_match ($pattern1,$source,$matches);
 	$pattern2="/\">(.*?)<\/a>/";
-	if(isset($matches1[1])){
-		$genrematch= preg_match_all ($pattern2,$matches1[1],$matches);
+	if(isset($matches[1])){
+		//$genrematch= preg_match_all ($pattern2,$matches1[1],$matches);
 		$GenreArray=$matches[1];
 		$steamgenrelist="";
+		$allkeywordarray=array();
+		/*
 		foreach($matches[1] as $steamgenre){
 			if($steamgenrelist<>"") {$steamgenrelist.=", ";}
 			$steamgenrelist.=$steamgenre;
 			$allkeywordarray[strtolower($steamgenre)]=$steamgenre;
 		}
+		*/
+		$steamgenrelist.=$matches[1];
+		$allkeywordarray[strtolower($matches[1])]=$matches[1];
 	} else {
 		trigger_error("No data found for : Steam Genre");
 	}
@@ -545,7 +554,9 @@ function formatAppDetails($appdetails,$verbose=true){
 	return($output);
 }
 
-function formatSteamPics($steampics,$verbose=true){
+function formatSteamPics($steampics){
+	// @codeCoverageIgnoreStart
+	//function is unused and has been since 2020
 	$output  = "ID: ". $steampics['apps'][$game['SteamID']]['appid']."<br>";
 	$output .= "Change#: ". $steampics['apps'][$game['SteamID']]['change_number']."<br>";
 	$output .= "name: ". $steampics['apps'][$game['SteamID']]['common']['name']."<br>";
@@ -630,11 +641,13 @@ function formatSteamPics($steampics,$verbose=true){
 	
 	//var_dump($steampics);	
 	return $output;
+	// @codeCoverageIgnoreEnd
 }
 
-function formatSteamAPI($resultarray,$userstatsarray,$verbose=true){
-	//var_dump($resultarray);
-	//var_dump($userstatsarray);
+function formatSteamAPI($resultarray,$userstatsarray){
+	//echo "000-DEBUG-000";
+	//var_dump($resultarray); //GetSchemaForGame
+	//var_dump($userstatsarray); //GetUserStatsForGame
 	
 	//$output .= "<img src='http://cdn.akamai.steamstatic.com/steam/apps/".$game['SteamID']."/header.jpg'>";
 	//$output .= "<br>".$description;
@@ -651,6 +664,7 @@ function formatSteamAPI($resultarray,$userstatsarray,$verbose=true){
 		$output .= "<td ";
 		if(!isset($resultarray['game']['availableGameStats']['achievements'])){ $output .= "colspan=2 "; }
 		$output .= "valign=top><table><thead><tr><th>Stat</th><th>Value</th></tr></thead>";
+		//var_dump($userstatsarray['playerstats']);
 		if(isset($userstatsarray['playerstats']['stats'])){
 			$statarray=regroupArray($userstatsarray['playerstats']['stats'],"name");
 			//var_dump($statarray);
@@ -713,7 +727,7 @@ function formatSteamAPI($resultarray,$userstatsarray,$verbose=true){
 	return($output);
 }
 
-function formatSteamLinks($gameid,$profileid,$verbose=true){
+function formatSteamLinks($gameid,$profileid){
 	$output  = "<ul>";
 	if($gameid<>"") {
 		$output .= "<li><a href='http://astats.astats.nl/astats/Steam_Game_Info.php?AppID=".$gameid."'>Stats</a></li>";
@@ -788,7 +802,7 @@ function formatSteamLinks($gameid,$profileid,$verbose=true){
 	return $output;
 }
 
-function formatnews($newsarray,$verbose=true){
+function formatnews($newsarray){
 	$output  = "<b>News:</b>";
 	foreach($newsarray['appnews']['newsitems'] as $news){
 		$output .= "<p>";
@@ -798,14 +812,8 @@ function formatnews($newsarray,$verbose=true){
 		}
 		$output .= " on " . date("m/d/Y",$news['date']);
 		$output .= "<br>";
-		// https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,4}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)
-
-		//$m = '|([\w\d]*)\s?(https?://([\d\w\.-]+\.[\w\.]{2,6})[^\s\]\[\<\>]*/?)|i';
-		//$r = '$1 <a href="$2" target="_new">$3</a>';
-		//$news['contents'] = preg_replace($m,$r,$news['contents']);
 		
-		//Need to do a preg_replace that does not break existing valid HTML links
-		//AND if the URL is an image, imbed the image instead.
+		//TODO: Need to do a preg_replace that does not break existing valid HTML links AND if the URL is an image, imbed the image instead.
 		//http://stackoverflow.com/questions/1188129/replace-urls-in-text-with-html-links/
 		$output .= $news['contents'];
 		$output .= "</p>";
