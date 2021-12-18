@@ -1,5 +1,7 @@
 command> phpunit .\htdocs\Game-Library\server\tests
 phpunit --coverage-text .\htdocs\Game-Library\server\tests
+phpunit --coverage-html coverage.htm
+
 
 Getting PHPunit to work in XAMPP:
 1) Download PHPunit.phar from this site

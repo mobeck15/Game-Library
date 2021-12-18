@@ -143,9 +143,10 @@ function getAllItems($gameID="",$connection=false){
 		$sql .= " OR ParentProductID = " . $gameID ;
 	}
 	$sql .= " order by `DateAdded` ASC, `Time Added` ASC, `Sequence` ASC";
+	
 	if($result = $conn->query($sql)){
-		$cpi=getAllCpi($conn);
-
+		//$cpi=getAllCpi($conn); //unused?
+		$items=array();
 		while($row = $result->fetch_assoc()) {
 			
 			$date=strtotime($row['DateAdded']);
@@ -156,7 +157,7 @@ function getAllItems($gameID="",$connection=false){
 			}
 			
 			$time = strtotime($row['Time Added']);
-			if(date("H:i:s",$time) == "00:00:00") {
+			if(date("H:i:s",$time) == "00:00:00" OR $time == false) {
 				$row['Time Added']= "";
 			} else {
 				$row['Time Added']= date("H:i:s",$time) ;
@@ -221,9 +222,10 @@ function getKeywords($gameID="",$connection=false){
 	}
 	$sql="SELECT * FROM `gl_keywords` ";
 	if ($gameID <> "" ) {
-		$sql .= "WHERE `ProductID` = " . $game['Game_ID'];
+		$sql .= "WHERE `ProductID` = " . $gameID;
 	}
 	if($result = $conn->query($sql)) {
+		$keywords=array();
 		while($row2 = $result->fetch_assoc()) {
 			$keywords[$row2['ProductID']][$row2['KwType']][]=$row2['Keyword'] ;
 		}
@@ -330,7 +332,9 @@ function getGameDetail($gameID,$connection=false){
 }
 
 function combinedate($date,$time,$sequence){
-	If ($sequence=="") {$sequence=0;}
+	If ($sequence=="") {
+		$sequence=0;
+	}
 	
 	$newDate=strtotime($date . " " . $time)+$sequence;
 	
@@ -342,7 +346,6 @@ function combinedate($date,$time,$sequence){
 
 	return $newDate;
 }
-
 
 function RatingsChartData($scale=100,$ConnOrCalculationsArray="",$fieldsArray="All"){ 
 	//TODO: Break RatingsChartData into multiple functions
@@ -407,12 +410,12 @@ function getCleanStringDate($datevalue) {
 function daysSinceDate($date) {
 	if(!is_numeric($date)) {
 		$daysSince=0;
-	}
-	
-	if($date>0){
-		$daysSince=floor((time()-$date) / (60 * 60 * 24));
 	} else {
-		$daysSince="";
+		if($date>0){
+			$daysSince=floor((time()-$date) / (60 * 60 * 24));
+		} else {
+			$daysSince="";
+		}
 	}
 	return $daysSince;
 }

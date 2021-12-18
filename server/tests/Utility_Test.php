@@ -137,18 +137,48 @@ final class Utility_Test extends TestCase
 	
 	/**
 	 * @covers getAllItems
+	 * @uses get_db_connection
 	 */
 	public function test_getAllItems() {
 		//TODO: Add more functional tests for getAllItems
+
 		$this->assertIsArray(getAllItems());
+
+		$conn=get_db_connection();
+		$this->assertIsArray(getAllItems("",$conn));
+		
+		$this->assertIsArray(getAllItems("262"));
+		$this->assertIsArray(getAllItems("999999999"));
+		
+	}
+
+	/**
+	 * @covers getAllItems
+	 * @uses get_db_connection
+	 */
+	public function test_getAllItemsError() {
+		$this->expectNotice();
+		getAllItems(";");
+	}
+
+	/**
+	 * @covers getKeywords
+	 * @uses get_db_connection
+	 */
+	public function test_getKeywords() {
+		//TODO: Add more functional tests for getKeywords
+		$this->assertIsArray(getKeywords());
+		$this->assertIsArray(getKeywords(1));
+		$conn=get_db_connection();
+		$this->assertIsArray(getKeywords("",$conn));
 	}
 
 	/**
 	 * @covers getKeywords
 	 */
-	public function test_getKeywords() {
-		//TODO: Add more functional tests for getKeywords
-		$this->assertIsArray(getKeywords());
+	public function test_getKeywordsError() {
+		$this->expectNotice();
+		getKeywords(";");
 	}
 
 	/**
@@ -305,6 +335,7 @@ final class Utility_Test extends TestCase
 
 	/**
 	 * @covers getNextPosition
+	 * @uses getPriceperhour
 	 */
 	public function test_getNextPosition() {
 		$sortedArray = array(20,15,10,5,3,1,0);
@@ -321,6 +352,9 @@ final class Utility_Test extends TestCase
 
 	/**
 	 * @covers getHrsNextPosition
+	 * @uses getHrsToTarget
+	 * @uses getNextPosition
+	 * @uses getPriceperhour
 	 */
 	public function test_getHrsNextPosition() {
 		$sortedArray = array(20,15,10,5,3,1,0);
@@ -376,8 +410,18 @@ final class Utility_Test extends TestCase
 
 	/**
 	 * @covers getGameDetail
+	 * @uses CalculateGameRow
+	 * @uses getActivityCalculations
+	 * @uses getAllCpi
+	 * @uses getGames
+	 * @uses getHistoryCalculations
+	 * @uses getsettings
+	 * @uses timeduration
+	 * @uses get_db_connection
 	 */
 	public function test_getGameDetail() {
+		$conn=get_db_connection();
+		$array=getGameDetail(514,$conn);
 		$array=getGameDetail(514);
 		$this->assertIsArray($array);
 		$this->assertEquals("The Elder Scrolls V: Skyrim",$array['Title']);
@@ -393,6 +437,7 @@ final class Utility_Test extends TestCase
 		$this->assertIsString(combinedate("1/1/1990","6:00 PM",1));
 		$this->assertEquals("1/1/1990 18:00:01",combinedate("1/1/1990","6:00 PM",1));
 		$this->assertEquals("1/1/1990 00:00:01",combinedate("1/1/1990","",1));
+		$this->assertEquals("1/1/1990",combinedate("1/1/1990","",""));
 		$this->assertEquals("1/1/1990 18:00:00",combinedate("1/1/1990","6:00 PM",0));
 		$this->assertEquals($newDate. " 18:00:01",combinedate("","6:00 PM",1));
 	}
@@ -510,6 +555,8 @@ final class Utility_Test extends TestCase
 		
 		//Assert
 		$this->assertEquals(55,daysSinceDate($date->getTimestamp()));
+		$this->assertEquals(0,daysSinceDate("O"));
+		$this->assertEquals("",daysSinceDate(-1));
 	}
 
 	/**
@@ -523,6 +570,7 @@ final class Utility_Test extends TestCase
 
 	/**
 	 * @covers arrayTable
+	 * @uses boolText
 	 */
 	public function test_arrayTable() {
 		$array=array(
@@ -533,14 +581,39 @@ final class Utility_Test extends TestCase
 				88888,
 			),
 			15.7,
+			false,
+			new DateTime("1/1/1990"),
+			(object)[1]
 		);
 		
-		$html="<table><tr><th>0</th><td>string (8)</td><td>a string</td></tr><tr><th>1</th><td>integer</td><td>667667</td></tr><tr><th>2</th><td>array</td><td><table><tr><th>0</th><td>string (18)</td><td>sub array (string)</td></tr><tr><th>1</th><td>integer</td><td>88888</td></tr></table></td></tr><tr><th>3</th><td>double</td><td>15.7</td></tr></table>";
+		$html="<table><tr><th>0</th><td>string (8)</td><td>a string</td></tr><tr><th>1</th><td>integer</td><td>667667</td></tr><tr><th>2</th><td>array</td><td><table><tr><th>0</th><td>string (18)</td><td>sub array (string)</td></tr><tr><th>1</th><td>integer</td><td>88888</td></tr></table></td></tr><tr><th>3</th><td>double</td><td>15.7</td></tr><tr><th>4</th><td>boolean</td><td>FALSE</td></tr><tr><th>5</th><td>object (DateTime)</td><td>631148400 (1990-01-01  12:00:00 AM)</td></tr><tr><th>6</th><td>object (stdClass)</td><td>stdClass Object\n(\n    [0] => 1\n)\n</td></tr></table>";
 		
 		$this->assertIsString(arrayTable($array));
 		$this->assertEquals($html,arrayTable($array));
 	}
 
+	/**
+	 * @covers arrayTable
+	 * @uses PriceCalculation
+	 * @uses timeduration
+	 */
+	public function test_arrayTablePrice() {
+		require_once $GLOBALS['rootpath']."\inc\PriceCalculation.class.php";
+		$price=10;
+		$HoursPlayed=2;
+		$HoursToBeat=4;
+		$MSRP=20;
+		
+		$array=array(
+			new PriceCalculation($price,$HoursPlayed,$HoursToBeat,$MSRP)
+		);
+		
+		$html="<table><tr><th>0</th><td>object (PriceCalculation)</td><td><table><tr><th>getPrice</th><td>10</td><td>$10.00</td></tr><tr><th>getVarianceFromMSRP</th><td>-10</td><td>$-10.00</td></tr><tr><th>getVarianceFromMSRPpct</th><td>50</td><td>50.00%</td></tr><tr><th>getPricePerHourOfTimeToBeat</th><td>2.5</td><td>$2.50</td></tr><tr><th>getPricePerHourOfTimePlayed</th><td>10</td><td>$10.00</td></tr><tr><th>getPricePerHourOfTimePlayedReducedAfter1Hour</th><td>5</td><td>$5.00</td></tr><tr><th>getHoursTo01LessPerHour</th><td>1.0004454454454</td><td>1:00:01</td></tr><tr><th>getHoursToDollarPerHour 5</th><td>1.9994444444444</td><td>1:59:58</td></tr><tr><th>getHoursToDollarPerHour 3</th><td>3.3327777777778</td><td>3:19:58</td></tr></table></td></tr></table>";
+		
+		$this->assertIsString(arrayTable($array));
+		$this->assertEquals($html,arrayTable($array));
+	}
+	
 	/**
 	 * @covers getPriceperhour
 	 */
@@ -580,4 +653,69 @@ final class Utility_Test extends TestCase
 		$value = 10;		$seconds = 60*30;		$targetvalue = 5;
 		$this->assertEquals(1.5,getHrsToTarget($value,$seconds,$targetvalue));
 	}
+	
+	/**
+	 * @covers lookupTextBox
+	 */
+	public function test_lookupTextBox() {
+		$output = lookupTextBox(1, 2, "inputidxyz", "Game", "./ajax/search.ajax.php");
+		$header='<script src="https://code.jquery.com/jquery-1.12.4.js"></script><script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>';
+		$textBox="<input type='numeric' id='2' name='inputidxyz'>";
+		$lookupBox="(?)<input id='1'	size=30 >" . "<script>
+		  $(function() {
+				$('#1').autocomplete({ 
+					source: function(request, response) {
+						$.getJSON(
+							'./ajax/search.ajax.php',
+							{ term:request.term, querytype:'Game' }, 
+							response
+						);
+					},
+					select: function (event, ui) { 
+						$('#2').val(ui.item.inputidxyz);
+					} }
+				);
+			} );
+		</script>";
+		
+		$this->assertEquals($header,$output["header"]);
+		$this->assertEquals($textBox,$output["textBox"]);
+		$this->assertEquals($lookupBox,$output["lookupBox"]);
+	}
+	
 }
+
+/*
+-'(?)<input id='1'      size=30 ><script>\r\n
++'(?)<input id='1'      size=30 ><script>\r\n
+-                 $(function() {\r\n
++                 $(function() {\r\n
+-                               $('#1').autocomplete({ \r\n
++                               $('#1').autocomplete({ \r\n
+-                                       source: function(request, response) {\r\n
++                                       source: function(request, response) {\r\n
+-                                               $.getJSON(\r\n
++                                               $.getJSON(\r\n
+-                                                       './ajax/search.ajax.php',\r\n
++                                                       './ajax/search.ajax.php',\r\n
+-                                                       { term:request.term, querytype:'Game' }, \r\n
++                                                       { term:request.term, querytype:'Game' }, \r\n
+-                                                       response\r\n
++                                                       response\r\n
+-                                               );\r\n
++                                               );\r\n
+-                                       },\r\n
++                                       },\r\n
+-                                       select: function (event, ui) { \r\n
++                                       select: function (event, ui) { \r\n
+-                                               $('#2').val(ui.item.inputidxyz);\r\n
++                                               $('#2').val(ui.item.inputidxyz);\r\n
+-                                       } }\r\n
++                                       } }\r\n
+-                               );\r\n
++                               );\r\n
+-                       } );\r\n
++                       } );\r\n
+-               </script>'
++               </script>'
+*/
