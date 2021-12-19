@@ -1,15 +1,11 @@
 <?php
-/*
- *  GL5 Version - Need to re-work for GL6
- */
- 
 if(isset($GLOBALS[__FILE__])){
 	trigger_error("File already included once ".__FILE__.". ");
 }
 $GLOBALS[__FILE__]=1;
 
 function getActivityCalculations($gameID="",$historytable="",$connection=false){
-	//This function is getting called twice from viewgame.php
+	//TODO: This function is getting called twice from viewgame.php
 	if($connection==false){
 		require $GLOBALS['rootpath']."/inc/auth.inc.php";
 		$conn = new mysqli($servername, $username, $password, $dbname);
@@ -18,7 +14,8 @@ function getActivityCalculations($gameID="",$historytable="",$connection=false){
 	}
 	
 	$settings=getsettings($conn);
-	if($historytable=="") {
+	if($historytable==="") {
+		require_once $GLOBALS['rootpath']."/inc/getHistoryCalculations.inc.php";
 		$historytable=getHistoryCalculations($gameID,$conn);
 	}
 	if($connection==false){
@@ -60,18 +57,16 @@ function getActivityCalculations($gameID="",$historytable="",$connection=false){
 						
 					}
 					
-					//echo "<br>totalhrs: ";
-					//var_dump($totals[$value['GameID']]['totalHrs']);
-					//echo "elapsed: ";
-					//var_dump($value['Elapsed']);
-					
 					if($value['Elapsed'] == "") {$value['Elapsed']=0;}
 					$totals[$value['GameID']]['totalHrs'] += $value['Elapsed'];
+					//TODO: update to take injectable time values
 					if(strtotime($value['Timestamp']) >= strtotime("-7 Days Midnight")) {
-						$totals[$value['GameID']]['weekPlay'] += $value['Elapsed'];
+						//Untestable with aged data
+						$totals[$value['GameID']]['weekPlay'] += $value['Elapsed']; //@codeCoverageIgnore
 					}
 					if(strtotime($value['Timestamp']) >= strtotime("-1 month Midnight")) {
-						$totals[$value['GameID']]['monthPlay'] += $value['Elapsed'];
+						//Untestable with aged data
+						$totals[$value['GameID']]['monthPlay'] += $value['Elapsed']; //@codeCoverageIgnore
 					}
 					if(strtotime($value['Timestamp']) >= strtotime("-1 year Midnight")) {
 						$totals[$value['GameID']]['yearPlay'] += $value['Elapsed'];
@@ -81,11 +76,12 @@ function getActivityCalculations($gameID="",$historytable="",$connection=false){
 				if(!isset($totals[$value['GameID']]['Achievements'])) {$totals[$value['GameID']]['Achievements']=0;}
 				if ($value['Achievements']<>"" && $totals[$value['GameID']]['Achievements'] != $value['Achievements']) {
 					if(strtotime($value['Timestamp']) >= strtotime("-7 Days Midnight")) {
-						//var_dump($totals[$value['GameID']]['WeekAchievements']); echo " += "; var_dump($value['Achievements']); echo " - "; var_dump($totals[$value['GameID']]['Achievements']); echo "<br>";
-						$totals[$value['GameID']]['WeekAchievements'] += $value['Achievements'] - $totals[$value['GameID']]['Achievements'];
+						//Untestable with aged data
+						$totals[$value['GameID']]['WeekAchievements'] += $value['Achievements'] - $totals[$value['GameID']]['Achievements']; //@codeCoverageIgnore
 					}
 					if(strtotime($value['Timestamp']) >= strtotime("-1 month Midnight")) {
-						$totals[$value['GameID']]['MonthAchievements'] += $value['Achievements'] - $totals[$value['GameID']]['Achievements'];
+						//Untestable with aged data
+						$totals[$value['GameID']]['MonthAchievements'] += $value['Achievements'] - $totals[$value['GameID']]['Achievements']; //@codeCoverageIgnore
 					}
 					if(strtotime($value['Timestamp']) >= strtotime("-1 year Midnight")) {
 						$totals[$value['GameID']]['YearAchievements'] += $value['Achievements'] - $totals[$value['GameID']]['Achievements'];

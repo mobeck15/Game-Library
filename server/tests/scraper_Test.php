@@ -5,7 +5,7 @@ use PHPUnit\Framework\TestCase;
 // We require the file we need to test.
 // Relative path to the current working dir (root of xampp)
 $GLOBALS['rootpath'] = $GLOBALS['rootpath'] ?? "htdocs\Game-Library\server";
-require $GLOBALS['rootpath'].'\inc\scraper.inc.php';
+require_once $GLOBALS['rootpath'].'\inc\scraper.inc.php';
 
 final class Scraper_Test extends TestCase
 {

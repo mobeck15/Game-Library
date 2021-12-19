@@ -1,6 +1,4 @@
 <?php
-
-//DONE: add control function to prevent loading multiple times.
 if(isset($GLOBALS[__FILE__])){
 	trigger_error("File already included once ".__FILE__.". ");
 }
@@ -96,11 +94,7 @@ function getHistoryCalculations($gameID="",$connection=false,$start=false,$end=f
 				}
 				if($row['kwBeatGame']==1) {$row['KeyWords'] .= "Beat Game";}
 				
-				
-				///////////////////////
-				
 				$row['LaunchDate']= date("n/j/Y",strtotime($row['LaunchDate']));
-				
 				
 				if ($row['Status']<>""){
 					$final_Status[$row['GameID']]=$row['Status'];
@@ -218,8 +212,6 @@ function getHistoryCalculations($gameID="",$connection=false,$start=false,$end=f
 					}
 					$firstpair[$row['GameID']]=false;
 				}
-				
-
 			}
 		} else {
 			$activity = false;

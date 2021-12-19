@@ -13,6 +13,7 @@ function getCalculations($gameID="",$connection=false,$start=false,$end=false){
 	
 	if (isset($GLOBALS["CALCULATIONS"]))
 	{
+		//TODO: Global storage works for default parameters but is unpredictable when parameters are used.
 		return $GLOBALS["CALCULATIONS"];
 	} else {
 		if($connection==false){
@@ -74,7 +75,7 @@ function getCalculations($gameID="",$connection=false,$start=false,$end=false){
 			if (isset($gameIndex[$game['ParentGameID']])){
 				$game['ParentGame']=$games[$gameIndex[$game['ParentGameID']]]['Title'];
 			} else {
-				$game['ParentGame']="Not Found";
+				$game['ParentGame']="Not Found"; //@codeCoverageIgnore
 			}
 			
 			if ($game['SteamAchievements']=="") {$game['SteamAchievements']=0;}
@@ -146,9 +147,11 @@ function getCalculations($gameID="",$connection=false,$start=false,$end=false){
 								$game['PrintBundles'] .= "| ";
 							}
 						} else {
+							//@codeCoverageIgnoreStart
 							$useBundleID=null;
 							$game['PrintBundles']="Not Found";
 							$game['BundlePrice']="N/A";
+							//@codeCoverageIgnoreEnd
 						}
 					}
 					$game['Bundles'][$record['TransID']] = $record['TransID'];
@@ -194,8 +197,10 @@ function getCalculations($gameID="",$connection=false,$start=false,$end=false){
 				$game['PrintBundles']=trim($game['PrintBundles'] ,"\n\r| ");
 				$game['Paid']=sprintf("%.2f",$game['Paid']);
 			} else {
+				//@codeCoverageIgnoreStart
 				$game['PrintBundles']="Not Found";
 				$game['Platforms']="Not Found";
+				//@codeCoverageIgnoreEnd
 			}
 			
 			if($game['totalHrs']==0 && isset($historyByGame[$game['ParentGameID']])){

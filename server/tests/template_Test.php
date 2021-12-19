@@ -5,7 +5,7 @@ use PHPUnit\Framework\TestCase;
 // We require the file we need to test.
 // Relative path to the current working dir (root of xampp)
 $GLOBALS['rootpath'] = $GLOBALS['rootpath'] ?? "htdocs\Game-Library\server";
-require $GLOBALS['rootpath'].'\inc\template.inc.php';
+require_once $GLOBALS['rootpath'].'\inc\template.inc.php';
 
 final class Template_Test extends TestCase
 {

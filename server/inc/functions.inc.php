@@ -6,7 +6,7 @@
  * if($Debug_Enabled) {}
  */
 //$GLOBALS['Debug_Enabled']=false;
-$GLOBALS['Debug_Enabled']=true;
+//$GLOBALS['Debug_Enabled']=true;
 
 date_default_timezone_set("America/Los_Angeles");
 ini_set('display_errors', 1);

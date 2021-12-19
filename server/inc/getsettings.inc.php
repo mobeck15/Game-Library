@@ -49,8 +49,8 @@ function getsettings($connection=false){
 				
 			}
 		} else {
-			$settings = false;
-			trigger_error("SQL Query Failed: " . mysqli_error($conn) . "</br>Query: ". $sql);
+			$settings = false; //@codeCoverageIgnore
+			trigger_error("SQL Query Failed: " . mysqli_error($conn) . "</br>Query: ". $sql); //@codeCoverageIgnore
 		}
 
 		//Query the database for the status settings.
@@ -61,8 +61,8 @@ function getsettings($connection=false){
 				$settings['status'][$row['Status']]['Count']=$row['Count'];
 			}
 		} else {
-			$settings = false;
-			trigger_error("SQL Query Failed: " . mysqli_error($conn) . "</br>Query: ". $sql);
+			$settings = false; //@codeCoverageIgnore
+			trigger_error("SQL Query Failed: " . mysqli_error($conn) . "</br>Query: ". $sql); //@codeCoverageIgnore
 		}
 		
 		//If connection was not provided, close the connection created for this function.
@@ -76,11 +76,11 @@ function getsettings($connection=false){
 		}
 
 		
-		if(($GLOBALS['Debug_Enabled'] ?? false) && False) {
+		if(($GLOBALS['Debug_Enabled'] ?? false)) {
 			trigger_error('Settings loaded, values shown below.', E_USER_NOTICE);
 			//echo '<pre>'. var_export($settings, true) . "</pre>";
 			//echo nl2br(var_export($settings, true));
-			echo '<pre>'. print_r($settings,true) . "</pre>";
+			echo '<pre>'. print_r($settings,true) . "</pre>"; //@codeCoverageIgnore
 			//echo nl2br(print_r($settings,true));
 		}
 		

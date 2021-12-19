@@ -338,13 +338,18 @@ function combinedate($date,$time,$sequence){
 	
 	$newDate=strtotime($date . " " . $time)+$sequence;
 	
-	if(date("H:i:s",$newDate) == "00:00:00") {
-		$newDate= date("n/j/Y",$newDate);
-	} else {
-		$newDate= date("n/j/Y H:i:s",$newDate) ;
-	}
+	$newDate=getCleanStringDate($newDate);
 
 	return $newDate;
+}
+
+function getCleanStringDate($datevalue) {
+	if(date("H:i:s",$datevalue) == "00:00:00") {
+		$stringdate= date("n/j/Y",$datevalue);
+	} else {
+		$stringdate= date("n/j/Y H:i:s",$datevalue);
+	}
+	return $stringdate;
 }
 
 function RatingsChartData($scale=100,$ConnOrCalculationsArray="",$fieldsArray="All"){ 
@@ -396,15 +401,6 @@ function RatingsChartData($scale=100,$ConnOrCalculationsArray="",$fieldsArray="A
 		} 
 	}
 	return $chartData;
-}
-
-function getCleanStringDate($datevalue) {
-	if(date("H:i:s",$datevalue) == "00:00:00") {
-		$stringdate= date("n/j/Y",$datevalue);
-	} else {
-		$stringdate= date("n/j/Y H:i:s",$datevalue);
-	}
-	return $stringdate;
 }
 
 function daysSinceDate($date) {
