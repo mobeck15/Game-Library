@@ -1,17 +1,18 @@
 <?php
-/*
- *  GL5 Version - Need to re-work for GL6
- */
-
-//DONE: add control function to prevent loading multiple times.
 if(isset($GLOBALS[__FILE__])){
 	trigger_error("File already included once ".__FILE__.". ");
 }
 $GLOBALS[__FILE__]=1;
+require_once $GLOBALS['rootpath']."\inc\getCalculations.inc.php";
+require_once $GLOBALS['rootpath']."\inc\utility.inc.php";
+require_once $GLOBALS['rootpath']."\inc\getsettings.inc.php";
+require_once $GLOBALS['rootpath']."\inc\getHistoryCalculations.inc.php";
+require_once $GLOBALS['rootpath']."\inc\getActivityCalculations.inc.php";
+require_once $GLOBALS['rootpath']."\inc\getPurchases.inc.php";
 
 function getGames($gameID="",$connection=false){
 	if($connection==false){
-		require_once $GLOBALS['rootpath']."/inc/auth.inc.php";
+		require $GLOBALS['rootpath']."/inc/auth.inc.php";
 		$conn = new mysqli($servername, $username, $password, $dbname);
 	} else {
 		$conn = $connection;
@@ -28,8 +29,8 @@ function getGames($gameID="",$connection=false){
 					$sql2 .= " OR Game_ID = " . $value ;
 					$sql2 .= " OR ParentGameID = " . $value ;
 				}
-				$sql .= $sql2;
 			}
+			$sql .= $sql2;
 		} else {
 			$sql .= " where Game_ID = " . $gameID ;
 			$sql .= " OR ParentGameID = " . $gameID ;
@@ -41,19 +42,6 @@ function getGames($gameID="",$connection=false){
 
 		while($row = $result->fetch_assoc()) {
 			$row=CalculateGameRow($row);
-			
-			/*
-			$launchDate=strtotime($row['LaunchDate']);
-			$row['LaunchDateValue']=$launchDate;
-			if (isset($cpi[date("Y",$launchDate)][date("n",$launchDate)])) {
-				$cpi_launch=$cpi[date("Y",$launchDate)][date("n",$launchDate)];
-			} else {
-				$cpi_launch=$cpi['Current'];
-			}
-			$row['CPILaunch'] = round($row['LaunchPrice'] * ($cpi['Current'] / $cpi_launch) ,2);
-			$row['CPILaunch'] = sprintf("$%.2f",$row['CPILaunch']);
-			*/
-			
 			
 			$games[]=$row;
 		}
@@ -71,11 +59,8 @@ function getGames($gameID="",$connection=false){
 function CalculateGameRow($row){
 	$row['Game_ID']=(int)$row['Game_ID'];
 	
-	//$row['LaunchDateSort'] = $row['LaunchDate'];
-	//$row['LaunchDate'] = date("n/j/Y",strtotime($row['LaunchDate']));
 	$row['LaunchDate'] = new DateTime($row['LaunchDate']);
 	//TODO: update other files to remove need for 'LaunchDateValue'
-	//$row['LaunchDateValue'] = $row['LaunchDate']->getTimestamp();
 	if(strtotime($row['LowDate']) == 0) {
 		$row['LowDate'] = "";
 	} else {
@@ -220,14 +205,6 @@ if (basename($_SERVER["SCRIPT_NAME"], '.php') == "getGames.inc") {
 	} else {	
 		$games=reIndexArray(getGames(""),"Game_ID");
 		echo arrayTable($games[$_GET['id']]);
-		
-		/*
-		echo $games[$_GET['id']]["LaunchDate"]."<br>";
-		$datevalue=strtotime($games[$_GET['id']]["LaunchDate"]);
-		echo $datevalue."<br>";
-		$datetest = new DateTime($games[$_GET['id']]["LaunchDate"]);
-		var_dump($datetest);
-		*/
 	}
 	echo Get_Footer();
 }

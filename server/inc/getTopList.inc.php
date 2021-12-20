@@ -1,13 +1,20 @@
 <?php
 //TODO: Update getTopList function to GL5 version
-
-//DONE: add control function to prevent loading multiple times.
 if(isset($GLOBALS[__FILE__])){
 	trigger_error("File already included once ".__FILE__.". ");
 }
 $GLOBALS[__FILE__]=1;
 
-function getTopList($group,$connection=false,$calc=false){
+$GLOBALS['rootpath']=$GLOBALS['rootpath'] ?? "..";
+require_once $GLOBALS['rootpath']."\inc\getCalculations.inc.php";
+require_once $GLOBALS['rootpath']."\inc\getGames.inc.php";
+require_once $GLOBALS['rootpath']."\inc\utility.inc.php";
+require_once $GLOBALS['rootpath']."\inc\getsettings.inc.php";
+require_once $GLOBALS['rootpath']."\inc\getHistoryCalculations.inc.php";
+require_once $GLOBALS['rootpath']."\inc\getActivityCalculations.inc.php";
+require_once $GLOBALS['rootpath']."\inc\getPurchases.inc.php";
+
+function getTopList($group,$connection=false,$calc=false,$minGroupSize=2){
 	if($connection==false){
 		require $GLOBALS['rootpath']."/inc/auth.inc.php";
 		$conn = new mysqli($servername, $username, $password, $dbname);
@@ -66,7 +73,7 @@ function getTopList($group,$connection=false,$calc=false){
 					}
 					$getPurchaseTime=$calculations[$row['ProductID']]['PurchaseDateTime']->getTimestamp();
 					if($getPurchaseTime<$top[$keyID]['PurchaseDate']){
-						$top[$keyID]['PurchaseDate']=$getPurchaseTime;
+						$top[$keyID]['PurchaseDate']=$getPurchaseTime; //@codeCoverageIgnore
 					}
 					
 					$top[$keyID]['Paid']+=$calculations[$row['ProductID']]['AltSalePrice'];
@@ -94,7 +101,7 @@ function getTopList($group,$connection=false,$calc=false){
 						}
 						$getPurchaseTime=$row['PurchaseDateTime']->getTimestamp();
 						if($getPurchaseTime<$top['None']['PurchaseDate']){
-							$top['None']['PurchaseDate']=$getPurchaseTime;
+							$top['None']['PurchaseDate']=$getPurchaseTime; //@codeCoverageIgnore
 						}
 						
 						
@@ -107,8 +114,10 @@ function getTopList($group,$connection=false,$calc=false){
 				}
 				/* */
 			} else {
+				//@codeCoverageIgnoreStart
 				$keywords=false;
 				trigger_error("SQL Query Failed: " . mysqli_error($conn) . "</br>Query: ". $sql);
+				//@codeCoverageIgnoreEnd
 			}
 	
 			break;
@@ -130,7 +139,7 @@ function getTopList($group,$connection=false,$calc=false){
 					$top[$keyID]['PurchaseSequence']=0;
 					$top[$keyID]['Paid']=0;
 				}
-				$getPurchaseTime=strtotime($row['PurchaseDate']);
+				$getPurchaseTime=strtotime($row['PurchaseDateTime']->getTimestamp());
 				if($getPurchaseTime<$top[$keyID]['PurchaseDate']){
 					$top[$keyID]['PurchaseDate']=$getPurchaseTime;
 				}
@@ -151,10 +160,10 @@ function getTopList($group,$connection=false,$calc=false){
 				//$top[$keyID]['RawData'][]=$row;
 			}
 			
-			/* */
+			/* Don't Include Series with only one game */
 			foreach ($top as $key => $row) {
 				//if(count($row['Products'])>1) {
-				if($row['numGames']>1) {
+				if($row['numGames']>$minGroupSize-1) {
 					$Sortby1[$key]  = strtolower($row['ID']);
 				} else {
 					unset($top[$key]);
@@ -163,7 +172,7 @@ function getTopList($group,$connection=false,$calc=false){
 			array_multisort($Sortby1, SORT_ASC, $top);
 			/* */
 			
-			/* Single Game */
+			/* Create a recored for all Single Games */
 			foreach ($calculations as $key => $row) {
 				if(!in_array($keyID,$SeriesList)){
 					$top['None']['ID']="None";
@@ -210,10 +219,6 @@ function getTopList($group,$connection=false,$calc=false){
 					
 					$top[$StoreID]['Paid']+=$row['Paid'];
 					$top[$StoreID]['Products']=array_merge((array)$top[$StoreID]['Products'],(array)$row['ProductsinBunde']);
-					if($StoreID=="humble store"){
-						//var_dump($row['ProductsinBunde']);
-					}
-					
 				}
 				/* Singles */
 				/* */
@@ -225,11 +230,6 @@ function getTopList($group,$connection=false,$calc=false){
 			$GroupList=array();
 			//$d=0;
 			foreach ($calculations as $key => $row) {
-				//if($d==0){
-				//	var_dump($row);
-				//	$d=1;
-				//}
-				
 				if(!isset($row[$group])){
 					var_dump($row); echo "<br>";
 				}
@@ -271,10 +271,6 @@ function getTopList($group,$connection=false,$calc=false){
 			$GroupList=array();
 			//$d=0;
 			foreach ($calculations as $key => $row) {
-				//if($d==0){
-				//	var_dump($row);
-				//	$d=1;
-				//}
 				$set=ceil(($row[$group]/100)*$factor);
 				$GroupID=strtolower($set);
 				if(!in_array($GroupID,$GroupList)){
@@ -304,7 +300,7 @@ function getTopList($group,$connection=false,$calc=false){
 			if($group=="PMonthNum" OR $group=="LMonthNum") {$dateformat="m";}
 			if($group=="PMonth" OR $group=="LMonth") {$dateformat="Y-m";}
 			
-			if($group=="PYear" OR $group=="PMonth" OR $group=="PMonthNum"){$group="PurchaseDate";}
+			if($group=="PYear" OR $group=="PMonth" OR $group=="PMonthNum"){$group="PurchaseDateTime";}
 			if($group=="LYear" OR $group=="LMonth" OR $group=="LMonthNum"){$group="LaunchDate";}
 			
 			
@@ -315,6 +311,8 @@ function getTopList($group,$connection=false,$calc=false){
 					//$usedate=strtotime( $row[$group]);
 					$GroupID=date($dateformat,strtotime($row[$group]));
 					//var_dump($row[$group]);
+				} elseif ($group=="PurchaseDateTime") {
+					$GroupID=date($dateformat,$row[$group]->getTimestamp());
 				} else {
 					//$usedate=$row[$group];
 					$GroupID=date($dateformat,0+$row[$group]);
@@ -349,8 +347,6 @@ function getTopList($group,$connection=false,$calc=false){
 		//case "AlphaSort": //First Letter
 			break;
 	}
-	
-	//echo "FILE NAME: " . $_SERVER['SCRIPT_NAME'];
 	
 	if($connection==false){
 		$conn->close();	
@@ -562,9 +558,6 @@ function getTopList($group,$connection=false,$calc=false){
 	$total['PayHr']=$total['Paid']/($total['TotalHours']/60/60);
 	$total['BeatAvg']=$total['PctPlayed']=(1-$total['UnplayedCount']/$total['GameCount'])*100;
 	$total['BeatAvg2']=array_sum($total['PctiPlayed2source']) / count($total['PctiPlayed2source']);
-	//echo "BeatAvg: " . $total['BeatAvg']. "<br>";
-	//echo "PctPlayed: " . $total['PctPlayed']. "<br>";
-	//echo "BeatAvg2: " . $total['BeatAvg2']. "<br>";
 	
 	$total['AvgWant']=$GrandTotalWant/$total['GameCount'];
 	$total['AvgCost']=$total['Paid']/$total['GameCount'];
@@ -594,7 +587,7 @@ function getTopList($group,$connection=false,$calc=false){
 }
 
 if (basename($_SERVER["SCRIPT_NAME"], '.php') == "getTopList.inc") {
-	$GLOBALS['rootpath']="..";
+	$GLOBALS['rootpath']=$GLOBALS['rootpath'] ?? "..";
 	require_once $GLOBALS['rootpath']."/inc/php.ini.inc.php";
 	require_once $GLOBALS['rootpath']."/inc/functions.inc.php";
 	

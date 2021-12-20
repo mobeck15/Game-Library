@@ -3,6 +3,14 @@ if(isset($GLOBALS[__FILE__])){
 	trigger_error("File already included once ".__FILE__.". ",E_USER_WARNING  );
 }
 $GLOBALS[__FILE__]=1;
+require_once $GLOBALS['rootpath']."\inc\getCalculations.inc.php";
+require_once $GLOBALS['rootpath']."\inc\getGames.inc.php";
+require_once $GLOBALS['rootpath']."\inc\utility.inc.php";
+require_once $GLOBALS['rootpath']."\inc\getsettings.inc.php";
+require_once $GLOBALS['rootpath']."\inc\getHistoryCalculations.inc.php";
+require_once $GLOBALS['rootpath']."\inc\getActivityCalculations.inc.php";
+require_once $GLOBALS['rootpath']."\inc\getPurchases.inc.php";
+
 
 
 function makeStatTable($MetaFilter,$filter){
