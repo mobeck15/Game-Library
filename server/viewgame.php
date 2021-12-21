@@ -274,7 +274,7 @@ if (!(isset($_GET['id']) && is_numeric($_GET['id']))) {
 		}
 
 		$showSteamPics=false;
-		/* //Currently offline (1/23/2020)
+		/* //Currently offline (1/23/2020) * /
 		if($showSteamPics){
 			$steampics=GetSteamPICS($game['SteamID']);
 		}
