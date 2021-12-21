@@ -41,7 +41,47 @@ final class getmetastats_Test extends TestCase
 	 * @uses timeduration
 	 * @uses getGames
 	 */
-    public function test_getmetastats() {
+    public function test_getmetastats_global() {
         $this->assertisArray(getmetastats(""));
+        $this->assertisArray(getmetastats(""));
+	}
+	
+	/**
+	 * @covers makeDetailTable
+	 * @uses makeStatDataSet
+	 * @uses getStatRow
+	 * @uses DetailDataTable
+	 * @uses arrayTable
+	 * @uses CalculateGameRow
+	 * @uses PriceCalculation
+	 * @uses combinedate
+	 * @uses countrow
+	 * @uses daysSinceDate
+	 * @uses getActivityCalculations
+	 * @uses getAllCpi
+	 * @uses getAllItems
+	 * @uses getCalculations
+	 * @uses getCleanStringDate
+	 * @uses getGames
+	 * @uses getHistoryCalculations
+	 * @uses getHrsNextPosition
+	 * @uses getHrsToTarget
+	 * @uses getKeywords
+	 * @uses getNextPosition
+	 * @uses getOnlyValues
+	 * @uses getPriceSort
+	 * @uses getPriceperhour
+	 * @uses getPurchases
+	 * @uses getTimeLeft
+	 * @uses getsettings
+	 * @uses makeIndex
+	 * @uses methodTranslator
+	 * @uses objectTranslator
+	 * @uses reIndexArray
+	 * @uses regroupArray
+	 * @uses timeduration
+	 */
+    public function test_makeDetailTable() {
+        $this->assertisString(makeDetailTable("All","PurchaseDateTime"));
 	}
 }

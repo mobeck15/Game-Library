@@ -38,7 +38,6 @@ final class getTopList_Test extends TestCase
 	 * @uses get_db_connection
 	 */
     public function test_getTopList() {
-		//$_GET['Group']="Bundle";
 		$output=getTopList("");
         $this->assertisArray($output);
         $this->assertisArray($output[57]);
@@ -56,14 +55,6 @@ final class getTopList_Test extends TestCase
         $this->assertisArray(getTopList("SteamR10",$conn,$calculations));
         $this->assertisArray(getTopList("SteamR",$conn,$calculations));
         $this->assertisArray(getTopList("PYear",$conn,$calculations));
-
-		//var_dump($output[57]);
-		/*
-		foreach ($output as $key => $value){
-			Echo "KEY: " . $key . "\r\n";
-			var_dump($value);
-			break;
-		}
-		*/
+        $this->assertisArray(getTopList("LYear",$conn,$calculations));
 	}
 }

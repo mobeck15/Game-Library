@@ -126,15 +126,15 @@ function getTopList($group,$connection=false,$calc=false,$minGroupSize=2){
 			foreach ($calculations as $key => $row) {
 				$keyID=strtolower($row['Series']);
 				if(!in_array($keyID,$SeriesList)){
-					$SeriesList[]=$keyID;
+					$SeriesList[$keyID]=$keyID;
 					$top[$keyID]['ID']=$keyID;
 					$top[$keyID]['Title']=$row['Series'];
 					//$top[$keyID]['numGames']=0;
 					//$top[$keyID]['Debug']="";
 				}
-				
+				//TODO: Something is wrong with the date value in Series
 				if(!isset($top[$keyID]['PurchaseDate'])){
-					$top[$keyID]['PurchaseDate']=0;
+					$top[$keyID]['PurchaseDate']=time();
 					$top[$keyID]['PurchaseTime']=0;
 					$top[$keyID]['PurchaseSequence']=0;
 					$top[$keyID]['Paid']=0;
@@ -167,6 +167,7 @@ function getTopList($group,$connection=false,$calc=false,$minGroupSize=2){
 					$Sortby1[$key]  = strtolower($row['ID']);
 				} else {
 					unset($top[$key]);
+					unset($SeriesList[$keyID]);
 				}
 			}
 			array_multisort($Sortby1, SORT_ASC, $top);
@@ -178,12 +179,12 @@ function getTopList($group,$connection=false,$calc=false,$minGroupSize=2){
 					$top['None']['ID']="None";
 					$top['None']['Title']="Single Game";
 					if(!isset($top['None']['PurchaseDate'])){
-						$top['None']['PurchaseDate']=0;
+						$top['None']['PurchaseDate']=time();
 						$top['None']['PurchaseTime']=0;
 						$top['None']['PurchaseSequence']=0;
 						$top['None']['Paid']=0;
 					}
-					$getPurchaseTime=strtotime($row['PurchaseDate']);
+					$getPurchaseTime=$row['PurchaseDateTime']->getTimestamp();
 					if($getPurchaseTime<$top['None']['PurchaseDate']){
 						$top['None']['PurchaseDate']=$getPurchaseTime;
 					}
@@ -230,9 +231,6 @@ function getTopList($group,$connection=false,$calc=false,$minGroupSize=2){
 			$GroupList=array();
 			//$d=0;
 			foreach ($calculations as $key => $row) {
-				if(!isset($row[$group])){
-					var_dump($row); echo "<br>";
-				}
 				foreach ($row[$group] as $setkey => $set) {
 					$GroupID=strtolower($set);
 					if(!in_array($GroupID,$GroupList)){
@@ -309,13 +307,13 @@ function getTopList($group,$connection=false,$calc=false,$minGroupSize=2){
 			foreach ($calculations as $key => $row) {
 				if($group=="LaunchDate") {
 					//$usedate=strtotime( $row[$group]);
-					$GroupID=date($dateformat,strtotime($row[$group]));
-					//var_dump($row[$group]);
+					$GroupID=date($dateformat,$row[$group]->getTimestamp());
 				} elseif ($group=="PurchaseDateTime") {
 					$GroupID=date($dateformat,$row[$group]->getTimestamp());
 				} else {
 					//$usedate=$row[$group];
-					$GroupID=date($dateformat,0+$row[$group]);
+					//Unreachable
+					$GroupID=date($dateformat,0+$row[$group]); //@codeCoverageIgnore
 				}
 				if(!in_array($GroupID,$GroupList)){
 					$GroupList[]=$GroupID;
@@ -359,7 +357,8 @@ function getTopList($group,$connection=false,$calc=false,$minGroupSize=2){
 	//$TotalHours=0;
 	
 	foreach ($top as $key => &$row) {
-		$row['ModPaid']=$row['Paid']; // Need to acually calulate this
+		//TODO: Need to acually calulate ModPaid
+		$row['ModPaid']=$row['Paid']; 
 		$row['ItemCount']=0;
 		$row['GameCount']=0;
 		$totalWant=0;
@@ -521,32 +520,34 @@ function getTopList($group,$connection=false,$calc=false,$minGroupSize=2){
 		$total['UnplayedInactiveCount']+=$row['UnplayedInactiveCount'];
 
 		if(!isset($total['leastPlay']['ID'])){
-			if($row['leastPlay']['ID']<>""){
+			if($row['leastPlay']['ID']==""){
+				//@codeCoverageIgnoreStart
+				$total['leastPlay']['ID']=null;	
+				$total['leastPlay']['Name']=null;
+				$total['leastPlay']['hours']=null;
+				//@codeCoverageIgnoreEnd
+			} else {
 				$total['leastPlay']['ID']=$row['leastPlay']['ID'];
 				$total['leastPlay']['Name']=$row['leastPlay']['Name'];
 				$total['leastPlay']['hours']=$row['leastPlay']['hours'];
-			} else {
-				$total['leastPlay']['ID']=null;
-				$total['leastPlay']['Name']=null;
-				$total['leastPlay']['hours']=null;
 			}
-		//Notice: Undefined index: leastPlay in C:\Users\Guerrero\Dropbox\Web\UniServerZ\www\gl5\functions2.inc.php on line 255
 		} elseif($row['leastPlay']['hours']<$total['leastPlay']['hours'] && $row['leastPlay']['ID']<>""){
 			$total['leastPlay']['ID']=$row['leastPlay']['ID'];
 			$total['leastPlay']['Name']=$row['leastPlay']['Name'];
 			$total['leastPlay']['hours']=$row['leastPlay']['hours'];
 		}
 		if(!isset($total['mostPlay']['ID'])){
-			if($row['mostPlay']['ID']<>"") {
-				$total['mostPlay']['ID']=$row['mostPlay']['ID'];
-				$total['mostPlay']['Name']=$row['mostPlay']['Name'];
-				$total['mostPlay']['hours']=$row['mostPlay']['hours'];
-			} else {
+			if($row['mostPlay']['ID']=="") {
+				//@codeCoverageIgnoreStart
 				$total['mostPlay']['ID']=null;
 				$total['mostPlay']['Name']=null;
 				$total['mostPlay']['hours']=null;
+				//@codeCoverageIgnoreEnd
+			} else {
+				$total['mostPlay']['ID']=$row['mostPlay']['ID'];
+				$total['mostPlay']['Name']=$row['mostPlay']['Name'];
+				$total['mostPlay']['hours']=$row['mostPlay']['hours'];
 			}
-		//Notice: Undefined index: mostPlay in C:\Users\Guerrero\Dropbox\Web\UniServerZ\www\gl5\functions2.inc.php on line 265
 		} elseif($row['mostPlay']['hours']>$total['mostPlay']['hours'] && $row['mostPlay']['ID']<>""){
 			$total['mostPlay']['ID']=$row['mostPlay']['ID'];
 			$total['mostPlay']['Name']=$row['mostPlay']['Name'];

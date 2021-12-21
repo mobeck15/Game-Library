@@ -561,8 +561,10 @@ function makeDetailTable($filter,$statname){
 	$dataset=makeStatDataSet($filter,$statname);
 	$statrow=getStatRow($filter,$statname);
 	
-	echo DetailDataTable($dataset,$statrow);
-	echo arrayTable($statrow);
+	$output = DetailDataTable($dataset,$statrow);
+	$output .= arrayTable($statrow);
+	
+	return $output;
 	
 }
 
