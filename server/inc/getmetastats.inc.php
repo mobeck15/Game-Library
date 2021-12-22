@@ -384,7 +384,7 @@ function methodTranslator($statname, $usekey, $row) {
 function printStatRow2($stats){
 	$calculations=reIndexArray(getCalculations(),"Game_ID");
 	
-	if($stats['Print']['Total'] == "") {
+	if(($stats['Print']['Total'] ?? "") == "") {
 		return "";
 	}
 	
@@ -578,6 +578,7 @@ function getStatRow($filter,$statname){
 		$row['Title']=$statname;
 		
 		if($statname==null) {
+			/* UNREACHABLE * /
 			$row['HarMean']=null; //.00001;
 			$row['Median']=null; //.00001;
 			$row['Total']=.00001;
@@ -596,6 +597,7 @@ function getStatRow($filter,$statname){
 			$row['Max2GameID']=null; //.00001;
 			$row['Min1GameID']=null; //.00001;
 			$row['Min2GameID']=null; //.00001;
+			/* */
 		} else {
 			$dataset=makeStatDataSet($filter,$statname);
 			$val=getOnlyValues($dataset,$statname);
@@ -608,8 +610,11 @@ function getStatRow($filter,$statname){
 
 			//Average (Mean)
 			//var_dump($row); echo "<br>\n";
-			if($row['Total']==0) {echo $statname . " Total not set<br>\n";}
-			$row['Average']=$row['Sum']/$row['Total'];
+			if($row['Total']==0) {
+				trigger_error($statname . " Total not set");
+			} else {
+				$row['Average']=$row['Sum']/$row['Total'];
+			}
 			
 			//Median
 			$middleVal = floor(($row['Total'] - 1) / 2);
@@ -891,6 +896,7 @@ function getStatRow($filter,$statname){
 				$row['Print']['Min2']=timeduration($row['Min2'],"hours");
 				break;
 			default:
+				/* UNREACHABLE */
 				$row['Print']['Total']=null;
 				$row['Print']['Average']=null;
 				$row['Print']['HarMean']=null;
@@ -901,6 +907,7 @@ function getStatRow($filter,$statname){
 				$row['Print']['Min1']=null;
 				$row['Print']['Min2']=null;
 				break;
+				/* */
 		}
 		
 		$GLOBALS["METASTATS"][$statname] = $row;
