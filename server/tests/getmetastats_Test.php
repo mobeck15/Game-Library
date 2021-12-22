@@ -437,8 +437,136 @@ final class getmetastats_Test extends TestCase
 		
 		$row["LaunchPriceObj"]=new PriceCalculation($price,$HoursPlayed,$HoursToBeat,$MSRP);
         $this->assertEquals(-10,valueTranslator($row, "LaunchVariance"));
-        $this->assertEquals(null,valueTranslator($row, "LaunchVariancePct"));
+        $this->assertEquals(null,valueTranslator($row, "MSRPVariancePct"));
 	}	
 
+	/**
+	 * @covers printStatRow2
+	 * @uses CalculateGameRow
+	 * @uses PriceCalculation
+	 * @uses combinedate
+	 * @uses countrow
+	 * @uses daysSinceDate
+	 * @uses getActivityCalculations
+	 * @uses getAllCpi
+	 * @uses getAllItems
+	 * @uses getCalculations
+	 * @uses getCleanStringDate
+	 * @uses getGames
+	 * @uses getHistoryCalculations
+	 * @uses getHrsNextPosition
+	 * @uses getHrsToTarget
+	 * @uses getKeywords
+	 * @uses getNextPosition
+	 * @uses getOnlyValues
+	 * @uses getPriceSort
+	 * @uses getPriceperhour
+	 * @uses getPurchases
+	 * @uses getStatRow
+	 * @uses getTimeLeft
+	 * @uses getsettings
+	 * @uses makeIndex
+	 * @uses makeStatDataSet
+	 * @uses methodTranslator
+	 * @uses objectTranslator
+	 * @uses reIndexArray
+	 * @uses regroupArray
+	 * @uses timeduration
+	 */
+    public function test_printStatRow2() {
+		$statrow=getStatRow("All",'SteamRating');
+        $this->assertisString(printStatRow2($statrow));
+	}	
 
+	/**
+	 * @covers DetailDataTable
+	 * @uses CalculateGameRow
+	 * @uses PriceCalculation
+	 * @uses combinedate
+	 * @uses countrow
+	 * @uses daysSinceDate
+	 * @uses getActivityCalculations
+	 * @uses getAllCpi
+	 * @uses getAllItems
+	 * @uses getCalculations
+	 * @uses getCleanStringDate
+	 * @uses getGames
+	 * @uses getHistoryCalculations
+	 * @uses getHrsNextPosition
+	 * @uses getHrsToTarget
+	 * @uses getKeywords
+	 * @uses getNextPosition
+	 * @uses getOnlyValues
+	 * @uses getPriceSort
+	 * @uses getPriceperhour
+	 * @uses getPurchases
+	 * @uses getStatRow
+	 * @uses getTimeLeft
+	 * @uses getsettings
+	 * @uses makeIndex
+	 * @uses makeStatDataSet
+	 * @uses methodTranslator
+	 * @uses objectTranslator
+	 * @uses reIndexArray
+	 * @uses regroupArray
+	 * @uses timeduration
+	 */
+    public function test_DetailDataTable() {
+		$dataset=makeStatDataSet("All",'AltHrs3');
+		$statrow=getStatRow("All",'AltHrs3');
+		
+        $this->assertisString(DetailDataTable($dataset,$statrow));
+
+		$dataset=makeStatDataSet("All",'firstPlayDateTime');
+		$statrow=getStatRow("All",'firstPlayDateTime');
+		
+        $this->assertisString(DetailDataTable($dataset,$statrow));
+	}
+
+	/**
+	 * @covers getOnlyValues
+	 * @uses CalculateGameRow
+	 * @uses PriceCalculation
+	 * @uses combinedate
+	 * @uses countrow
+	 * @uses daysSinceDate
+	 * @uses getActivityCalculations
+	 * @uses getAllCpi
+	 * @uses getAllItems
+	 * @uses getCalculations
+	 * @uses getCleanStringDate
+	 * @uses getGames
+	 * @uses getHistoryCalculations
+	 * @uses getHrsNextPosition
+	 * @uses getHrsToTarget
+	 * @uses getKeywords
+	 * @uses getNextPosition
+	 * @uses getPriceSort
+	 * @uses getPriceperhour
+	 * @uses getPurchases
+	 * @uses getTimeLeft
+	 * @uses getsettings
+	 * @uses makeIndex
+	 * @uses makeStatDataSet
+	 * @uses methodTranslator
+	 * @uses objectTranslator
+	 * @uses regroupArray
+	 * @uses timeduration
+	 */
+    public function test_getOnlyValues() {
+		$statrow=makeStatDataSet("All",'firstPlayDateTime');
+        $this->assertisArray(getOnlyValues($statrow,'firstPlayDateTime'));
+		
+		$statrow=makeStatDataSet("All",'Review');
+        $this->assertisArray(getOnlyValues($statrow,'Review'));
+		
+		$statrow=makeStatDataSet("All",'Altperhrbeat');
+        $this->assertisArray(getOnlyValues($statrow,'Altperhrbeat'));
+		
+		$statrow=makeStatDataSet("All",'AltHrs3');
+        $this->assertisArray(getOnlyValues($statrow,'AltHrs3'));
+		
+		$statrow=makeStatDataSet("All",'AchievementsPct');
+        $this->assertisArray(getOnlyValues($statrow,'AchievementsPct'));
+	}	
 }

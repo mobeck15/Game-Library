@@ -385,7 +385,7 @@ function printStatRow2($stats){
 	$calculations=reIndexArray(getCalculations(),"Game_ID");
 	
 	if(($stats['Print']['Total'] ?? "") == "") {
-		return "";
+		return ""; //@codeCoverageIgnore
 	}
 	
 	//Total
