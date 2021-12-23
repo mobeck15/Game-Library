@@ -577,28 +577,8 @@ function getStatRow($filter,$statname){
 		
 		$row['Title']=$statname;
 		
-		if($statname==null) {
-			/* UNREACHABLE * /
-			$row['HarMean']=null; //.00001;
-			$row['Median']=null; //.00001;
-			$row['Total']=.00001;
-			$row['Average']=null; //.00001;
-			$row['Mode']=null; //.00001;
-			$row['Max1']=null; //.00001;
-			$row['Max2']=null; //.00001;
-			$row['Min1']=null; //.00001;
-			$row['Min2']=null; //.00001;
-
-			$row['MedianGameID']=null; //.00001;
-			$row['TotalGameID']=null;
-			$row['AverageGameID']=null; //.00001;
-			$row['ModeGameID']=null; //.00001;
-			$row['Max1GameID']=null; //.00001;
-			$row['Max2GameID']=null; //.00001;
-			$row['Min1GameID']=null; //.00001;
-			$row['Min2GameID']=null; //.00001;
-			/* */
-		} else {
+		//Always true?
+		if($statname<>null) {
 			$dataset=makeStatDataSet($filter,$statname);
 			$val=getOnlyValues($dataset,$statname);
 			//var_dump($val); echo "<br>\n";
