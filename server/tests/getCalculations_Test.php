@@ -7,6 +7,8 @@ use PHPUnit\Framework\TestCase;
 $GLOBALS['rootpath'] = $GLOBALS['rootpath'] ?? "htdocs\Game-Library\server";
 require_once $GLOBALS['rootpath']."\inc\getCalculations.inc.php";
 
+//Time: 00:37.892, Memory: 264.00 MB
+//(3 tests, 5 assertions)
 final class getCalculations_Test extends TestCase
 {
 	/**
@@ -34,6 +36,8 @@ final class getCalculations_Test extends TestCase
 	 * @uses makeIndex
 	 * @uses regroupArray
 	 * @uses timeduration
+	 * Time: 00:18.833, Memory: 262.00 MB
+	 * (1 test, 2 assertions)
 	 */
     public function test_getCalculations_Global() {
         $this->assertisArray(getCalculations());
@@ -65,6 +69,8 @@ final class getCalculations_Test extends TestCase
 	 * @uses makeIndex
 	 * @uses regroupArray
 	 * @uses timeduration
+	 * Time: 00:18.758, Memory: 262.00 MB
+	 * (1 test, 1 assertion)
 	 */
 	public function test_getCalculations_Connection() {
 		$conn=get_db_connection();
@@ -74,6 +80,8 @@ final class getCalculations_Test extends TestCase
 	/**
 	 * @covers getPriceSort
 	 * @uses PriceCalculation
+	 * Time: 00:00.224, Memory: 46.00 MB
+	 * (1 test, 2 assertions)
 	 */
 	public function test_getPriceSort() {
 		

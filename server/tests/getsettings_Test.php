@@ -8,10 +8,14 @@ $GLOBALS['rootpath'] = $GLOBALS['rootpath'] ?? "htdocs\Game-Library\server";
 require_once $GLOBALS['rootpath']."\inc\getsettings.inc.php";
 require_once $GLOBALS['rootpath']."\inc\utility.inc.php";
 
+//Time: 00:00.267, Memory: 48.00 MB
+//(3 tests, 5 assertions)
 final class getsettings_Test extends TestCase
 {
 	/**
 	 * @covers getsettings
+	 * Time: 00:00.244, Memory: 48.00 MB
+	 * (1 test, 2 assertions)
 	 */
     public function test_getsettings_global() {
         $this->assertisArray(getsettings());
@@ -22,6 +26,8 @@ final class getsettings_Test extends TestCase
 	/**
 	 * @covers getsettings
 	 * @uses get_db_connection
+	 * Time: 00:00.236, Memory: 48.00 MB
+	 * (1 test, 1 assertion)
 	 */
     public function test_getsettings_conn() {
 		$_GET['CountFree']=0;
@@ -32,6 +38,8 @@ final class getsettings_Test extends TestCase
 	
 	/**
 	 * @covers getsettings
+	 * Time: 00:00.239, Memory: 48.00 MB
+	 * (1 test, 2 assertions)
 	 */
     public function test_getsettings_debug() {
 		$GLOBALS['Debug_Enabled']=true;

@@ -7,12 +7,25 @@ use PHPUnit\Framework\TestCase;
 $GLOBALS['rootpath'] = $GLOBALS['rootpath'] ?? "htdocs\Game-Library\server";
 require_once $GLOBALS['rootpath']."\inc\utility.inc.php";
 
+//Time: 00:01.366, Memory: 58.00 MB
+//(29 tests, 89 assertions)
 final class Utility_Test extends TestCase
 {
 	/**
 	 * @covers timeduration
+	 * @testWith ["-1:00:00", -1, "hours"]
+	 *           ["1:00:00", 1, "hours"]
+	 *           ["1:30:00", 1.5, "hours"]
+	 *           ["1:00:00", 60, "minutes"]
+	 *           ["1:30:00", 90, "minutes"]
+	 *           ["0:01:00", 60, "seconds"]
+	 *           ["0:01:30", 90, "seconds"]
+	 * Time: 00:00.240, Memory: 46.00 MB
+	 * (7 tests, 7 assertions))
 	 */
-    public function test_timeduration() {
+    public function test_timeduration($expected, $time, $unit) {
+        $this->assertEquals($expected, timeduration($time,$unit));
+		/*
         $this->assertEquals("-1:00:00", timeduration(-1,"hours"));
         $this->assertEquals("1:00:00", timeduration(1,"hours"));
         $this->assertEquals("1:30:00", timeduration(1.5,"hours"));
@@ -20,33 +33,65 @@ final class Utility_Test extends TestCase
         $this->assertEquals("1:30:00", timeduration(90,"minutes"));
         $this->assertEquals("0:01:00", timeduration(60,"seconds"));
         $this->assertEquals("0:01:30", timeduration(90,"seconds"));
+		*/
     }
 
 	/**
 	 * @covers boolText
+	 * @testWith ["TRUE", true]
+	 *           ["FALSE", false]
+	 *           ["TRUE", 1]
+	 *           ["FALSE", 0]
+	 * Time: 00:00.231, Memory: 46.00 MB
+	 * (4 tests, 4 assertions)
 	 */
-	public function test_boolText() {
+	public function test_boolText($expected,$input) {
+		$this->assertEquals($expected, boolText($input));
+		/*
 		$this->assertEquals('TRUE', boolText(true));
 		$this->assertEquals('FALSE', boolText(false));
 		$this->assertEquals('TRUE', boolText(1));
 		$this->assertEquals('FALSE', boolText(0));
+		*/
 	}
 
 	/**
 	 * @covers read_memory_usage
+	 * @testWith ["64 b", 64]
+	 *           ["1 kb", 1024]
+	 *           ["1 mb", 1048576]
+	 *           ["1.1 mb", 1148576]
+	 *           ["1.01 mb", 1058576]
+	 * Time: 00:00.240, Memory: 46.00 MB
+	 * (5 tests, 5 assertions)
 	 */
-	public function test_read_memory_usage() {
+	public function test_read_memory_usage_data($expected, $input) {
+		$output=read_memory_usage($input);
+		$this->assertEquals($expected, $output);
+		/*
 		$this->assertisString(read_memory_usage(false));
 		$this->assertEquals('64 b', read_memory_usage(64));
 		$this->assertEquals('1 kb', read_memory_usage(1024));
 		$this->assertEquals('1 mb', read_memory_usage(1048576));
 		$this->assertEquals('1.1 mb', read_memory_usage(1148576));
 		$this->assertEquals('1.01 mb', read_memory_usage(1058576));
+		*/
 	}
 
 	/**
+	 * @covers read_memory_usage
+	 * Time: 00:00.219, Memory: 46.00 MB
+	 * (1 test, 1 assertion)
+	 */
+	public function test_read_memory_usage_null() {
+		$this->assertisString(read_memory_usage(false));
+	}
+	
+	/**
 	 * @covers getAllCpi
 	 * @uses get_db_connection
+	 * Time: 00:00.255, Memory: 46.00 MB
+	 * (1 test, 2 assertions)
 	 */
 	public function test_getAllCpi() {
 		//TODO: Add more functional tests for getAllCpi
@@ -58,6 +103,8 @@ final class Utility_Test extends TestCase
 
 	/**
 	 * @covers get_db_connection
+	 * Time: 00:00.249, Memory: 46.00 MB
+	 * (1 test, 1 assertion)
 	 */
 	public function test_get_db_connection() {
 		//TODO: Add more functional tests for get_db_connection
@@ -66,8 +113,10 @@ final class Utility_Test extends TestCase
 
 	/**
 	 * @covers makeIndex
+	 * Time: 00:00.219, Memory: 46.00 MB
+	 * (1 test, 2 assertions)
 	 */
-	public function test_makeIndex() {
+	public function test_makeIndex_base() {
 		//Arrange
 		$array = array(
 			"apple" => array(
@@ -102,6 +151,8 @@ final class Utility_Test extends TestCase
 
 	/**
 	 * @covers makeIndex
+	 * Time: 00:00.218, Memory: 46.00 MB
+	 * (1 test, 2 assertions)
 	 */
 	public function test_makeIndexError() {
 		//Arrange
@@ -138,23 +189,39 @@ final class Utility_Test extends TestCase
 	/**
 	 * @covers getAllItems
 	 * @uses get_db_connection
+	 * Time: 00:00.957, Memory: 66.00 MB
+	 * (1 test, 2 assertions)
 	 */
-	public function test_getAllItems() {
+	public function test_getAllItems_base() {
 		//TODO: Add more functional tests for getAllItems
-
 		$this->assertIsArray(getAllItems());
 
 		$conn=get_db_connection();
 		$this->assertIsArray(getAllItems("",$conn));
-		
+	}
+	
+	/**
+	 * @covers getAllItems
+	 * @uses get_db_connection
+	 * @testWith ["262"]
+	 *           ["999999999"]
+	 * Time: 00:00.258, Memory: 48.00 MB
+	 * (2 tests, 2 assertions)
+	 */
+	public function test_getAllItems_data($input) {
+		//TODO: Add more functional tests for getAllItems
+		$this->assertIsArray(getAllItems($input));
+		/*
 		$this->assertIsArray(getAllItems("262"));
 		$this->assertIsArray(getAllItems("999999999"));
-		
+		*/
 	}
 
 	/**
 	 * @covers getAllItems
 	 * @uses get_db_connection
+	 * Time: 00:00.243, Memory: 48.00 MB
+	 * (1 test, 1 assertion)
 	 */
 	public function test_getAllItemsError() {
 		$this->expectNotice();
@@ -164,8 +231,10 @@ final class Utility_Test extends TestCase
 	/**
 	 * @covers getKeywords
 	 * @uses get_db_connection
+	 * Time: 00:00.448, Memory: 52.00 MB
+	 * (1 test, 3 assertions)
 	 */
-	public function test_getKeywords() {
+	public function test_getKeywords_base() {
 		//TODO: Add more functional tests for getKeywords
 		$this->assertIsArray(getKeywords());
 		$this->assertIsArray(getKeywords(1));
@@ -175,6 +244,8 @@ final class Utility_Test extends TestCase
 
 	/**
 	 * @covers getKeywords
+	 * Time: 00:00.241, Memory: 48.00 MB
+	 * (1 test, 1 assertion)
 	 */
 	public function test_getKeywordsError() {
 		$this->expectNotice();
@@ -183,6 +254,8 @@ final class Utility_Test extends TestCase
 
 	/**
 	 * @covers regroupArray
+	 * Time: 00:00.220, Memory: 48.00 MB
+	 * (1 test, 3 assertions)
 	 */
 	public function test_regroupArray() {
 		//Arrange
@@ -250,6 +323,8 @@ final class Utility_Test extends TestCase
 
 	/**
 	 * @covers getSortArray
+	 * Time: 00:00.221, Memory: 48.00 MB
+	 * (1 test, 2 assertions)
 	 */
 	public function test_getSortArray() {
 		//Arrange
@@ -293,6 +368,8 @@ final class Utility_Test extends TestCase
 
 	/**
 	 * @covers getActiveSortArray
+	 * Time: 00:00.223, Memory: 48.00 MB
+	 * (1 test, 2 assertions)
 	 */
 	public function test_getActiveSortArray() {
 		//Arrange
@@ -336,6 +413,8 @@ final class Utility_Test extends TestCase
 	/**
 	 * @covers getNextPosition
 	 * @uses getPriceperhour
+	 * Time: 00:00.220, Memory: 48.00 MB
+	 * (1 test, 3 assertions)
 	 */
 	public function test_getNextPosition() {
 		$sortedArray = array(20,15,10,5,3,1,0);
@@ -355,6 +434,8 @@ final class Utility_Test extends TestCase
 	 * @uses getHrsToTarget
 	 * @uses getNextPosition
 	 * @uses getPriceperhour
+	 * Time: 00:00.224, Memory: 48.00 MB
+	 * (1 test, 2 assertions)
 	 */
 	public function test_getHrsNextPosition() {
 		$sortedArray = array(20,15,10,5,3,1,0);
@@ -368,6 +449,8 @@ final class Utility_Test extends TestCase
 
 	/**
 	 * @covers reIndexArray
+	 * Time: 00:00.219, Memory: 48.00 MB
+	 * (1 test, 3 assertions)
 	 */
 	public function test_reIndexArray() {
 		//Arrange
@@ -418,6 +501,8 @@ final class Utility_Test extends TestCase
 	 * @uses getsettings
 	 * @uses timeduration
 	 * @uses get_db_connection
+	 * Time: 00:00.464, Memory: 48.00 MB
+	 * (1 test, 2 assertions)
 	 */
 	public function test_getGameDetail() {
 		$conn=get_db_connection();
@@ -430,6 +515,8 @@ final class Utility_Test extends TestCase
 	/**
 	 * @covers combinedate
 	 * @uses getCleanStringDate
+	 * Time: 00:00.221, Memory: 48.00 MB
+	 * (1 test, 6 assertions)
 	 */
 	public function test_combinedate() {
 		//"" is 1/1/1970 , " " is todays date
@@ -445,6 +532,8 @@ final class Utility_Test extends TestCase
 
 	/**
 	 * @covers RatingsChartData
+	 * Time: 00:00.220, Memory: 48.00 MB
+	 * (1 test, 9 assertions)
 	 */
 	public function test_RatingsChartData() {
 		//TODO: Cleanup variables to make tests more intuative.
@@ -525,6 +614,8 @@ final class Utility_Test extends TestCase
 
 	/**
 	 * @covers getCleanStringDate
+	 * Time: 00:00.221, Memory: 48.00 MB
+	 * (1 test, 3 assertions)
 	 */
 	public function test_getCleanStringDate() {
 		//Arrange
@@ -544,6 +635,8 @@ final class Utility_Test extends TestCase
 
 	/**
 	 * @covers daysSinceDate
+	 * Time: 00:00.222, Memory: 48.00 MB
+	 * (1 test, 3 assertions)
 	 */
 	public function test_daysSinceDate() {
 		//TODO: Add mock for Time() function in daysSinceDate()
@@ -562,6 +655,8 @@ final class Utility_Test extends TestCase
 
 	/**
 	 * @covers getTimeLeft
+	 * Time: 00:00.220, Memory: 48.00 MB
+	 * (1 test, 3 assertions)
 	 */
 	public function test_getTimeLeft() {
 		$this->assertEquals(15,getTimeLeft(55,40*60*60,"Active"));
@@ -572,6 +667,8 @@ final class Utility_Test extends TestCase
 	/**
 	 * @covers arrayTable
 	 * @uses boolText
+	 * Time: 00:00.231, Memory: 48.00 MB
+	 * (2 tests, 4 assertions)
 	 */
 	public function test_arrayTable() {
 		$array=array(
@@ -597,6 +694,8 @@ final class Utility_Test extends TestCase
 	 * @covers arrayTable
 	 * @uses PriceCalculation
 	 * @uses timeduration
+	 * Time: 00:00.223, Memory: 48.00 MB
+	 * (1 test, 2 assertions)
 	 */
 	public function test_arrayTablePrice() {
 		require_once $GLOBALS['rootpath']."\inc\PriceCalculation.class.php";
@@ -617,6 +716,8 @@ final class Utility_Test extends TestCase
 	
 	/**
 	 * @covers getPriceperhour
+	 * Time: 00:00.219, Memory: 48.00 MB
+	 * (1 test, 2 assertions)
 	 */
 	public function test_getPriceperhour_utility() {
 
@@ -629,6 +730,8 @@ final class Utility_Test extends TestCase
 
 	/**
 	 * @covers getHrsToTarget
+	 * Time: 00:00.223, Memory: 48.00 MB
+	 * (1 test, 3 assertions)
 	 */
 	public function test_getHrsToTarget_utility() {
 		$result = getHrsToTarget( 10 , 0 , 5);
@@ -643,8 +746,10 @@ final class Utility_Test extends TestCase
 
 	/**
 	 * @covers getHrsToTarget
+	 * Time: 00:00.225, Memory: 48.00 MB
+	 * (1 test, 3 assertions)
 	 */
-	public function test_getHrsToTarget() {
+	public function test_getHrsToTarget_base() {
 		$value = 10;		$seconds = 0;		$targetvalue = 5;
 		$this->assertEquals(2,getHrsToTarget($value,$seconds,$targetvalue));
 		
@@ -657,6 +762,8 @@ final class Utility_Test extends TestCase
 	
 	/**
 	 * @covers lookupTextBox
+	 * Time: 00:00.220, Memory: 48.00 MB
+	 * (1 test, 3 assertions)
 	 */
 	public function test_lookupTextBox() {
 		$output = lookupTextBox(1, 2, "inputidxyz", "Game", "./ajax/search.ajax.php");
@@ -685,38 +792,3 @@ final class Utility_Test extends TestCase
 	}
 	
 }
-
-/*
--'(?)<input id='1'      size=30 ><script>\r\n
-+'(?)<input id='1'      size=30 ><script>\r\n
--                 $(function() {\r\n
-+                 $(function() {\r\n
--                               $('#1').autocomplete({ \r\n
-+                               $('#1').autocomplete({ \r\n
--                                       source: function(request, response) {\r\n
-+                                       source: function(request, response) {\r\n
--                                               $.getJSON(\r\n
-+                                               $.getJSON(\r\n
--                                                       './ajax/search.ajax.php',\r\n
-+                                                       './ajax/search.ajax.php',\r\n
--                                                       { term:request.term, querytype:'Game' }, \r\n
-+                                                       { term:request.term, querytype:'Game' }, \r\n
--                                                       response\r\n
-+                                                       response\r\n
--                                               );\r\n
-+                                               );\r\n
--                                       },\r\n
-+                                       },\r\n
--                                       select: function (event, ui) { \r\n
-+                                       select: function (event, ui) { \r\n
--                                               $('#2').val(ui.item.inputidxyz);\r\n
-+                                               $('#2').val(ui.item.inputidxyz);\r\n
--                                       } }\r\n
-+                                       } }\r\n
--                               );\r\n
-+                               );\r\n
--                       } );\r\n
-+                       } );\r\n
--               </script>'
-+               </script>'
-*/

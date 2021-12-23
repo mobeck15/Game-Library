@@ -7,6 +7,8 @@ use PHPUnit\Framework\TestCase;
 $GLOBALS['rootpath'] = $GLOBALS['rootpath'] ?? "htdocs\Game-Library\server";
 require_once $GLOBALS['rootpath']."\inc\getGames.inc.php";
 
+//Time: 00:00.979, Memory: 58.00 MB
+//(4 tests, 8 assertions)
 final class getGames_Test extends TestCase
 {
 	/**
@@ -15,13 +17,26 @@ final class getGames_Test extends TestCase
 	 * @uses CalculateGameRow
 	 * @uses getAllCpi
 	 * @uses timeduration
+	 * Time: 00:00.610, Memory: 70.00 MB
+	 * (1 test, 3 assertions)
 	 */
-    public function test_getGames() {
+    public function test_getGames_base() {
         $this->assertisArray(getGames());
 		
         $this->assertisArray(getGames(2));
         $this->assertisArray(getGames(array(2,3)));
-
+	}
+	
+	/**
+	 * @covers getGames
+	 * @uses CalculateGameRow
+	 * @uses getAllCpi
+	 * @uses get_db_connection
+	 * @uses timeduration
+	 * Time: 00:00.571, Memory: 70.00 MB
+	 * (1 test, 1 assertion)
+	 */
+    public function test_getGames_conn() {
 		$conn=get_db_connection();
 		$this->assertisArray(getGames("",$conn));
 	}
@@ -29,6 +44,8 @@ final class getGames_Test extends TestCase
 	/**
 	 * @covers getGames
 	 * @uses getsettings
+	 * Time: 00:00.234, Memory: 48.00 MB
+	 * (1 test, 1 assertion)
 	 */
     public function test_getGames_error() {
         $this->expectNotice();
@@ -40,6 +57,8 @@ final class getGames_Test extends TestCase
 	 * @uses getAllCpi
 	 * @uses getGames
 	 * @uses timeduration
+	 * Time: 00:00.221, Memory: 46.00 MB
+	 * (1 test, 3 assertions)
 	 */
     public function test_CalculateGameRow() {
 		$gamerow=array(

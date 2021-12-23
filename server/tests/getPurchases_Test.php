@@ -8,6 +8,8 @@ $GLOBALS['rootpath'] = $GLOBALS['rootpath'] ?? "htdocs\Game-Library\server";
 require_once $GLOBALS['rootpath']."\inc\getPurchases.inc.php";
 //require_once $GLOBALS['rootpath']."\inc\utility.inc.php";
 
+//Time: 00:08.725, Memory: 156.00 MB
+//(2 tests, 3 assertions)
 final class getPurchases_Test extends TestCase
 {
 	/**
@@ -24,8 +26,10 @@ final class getPurchases_Test extends TestCase
 	 * @uses timeduration
 	 * @uses combinedate
 	 * @uses getCleanStringDate
+	 * Time: 00:05.794, Memory: 156.00 MB
+	 * OK (1 test, 2 assertions)
 	 */
-    public function test_getPurchases() {
+    public function test_getPurchases_base() {
         $this->assertisArray(getPurchases());
 
 		$conn=get_db_connection();
@@ -45,6 +49,8 @@ final class getPurchases_Test extends TestCase
 	 * @uses timeduration
 	 * @uses combinedate
 	 * @uses getCleanStringDate
+	 * Time: 00:03.109, Memory: 156.00 MB
+	 * (1 test, 1 assertion)
 	 */
     public function test_getPurchases_specific() {
         $this->assertisArray(getPurchases(1054));

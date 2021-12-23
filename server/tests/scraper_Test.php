@@ -7,10 +7,14 @@ use PHPUnit\Framework\TestCase;
 $GLOBALS['rootpath'] = $GLOBALS['rootpath'] ?? "htdocs\Game-Library\server";
 require_once $GLOBALS['rootpath'].'\inc\scraper.inc.php';
 
+//Time: 00:00.315, Memory: 48.00 MB
+//OK (23 tests, 29 assertions)
 final class Scraper_Test extends TestCase
 {
 	/**
 	 * @covers GetOwnedGames
+	 * Time: 00:00.228, Memory: 48.00 MB
+	 * (1 test, 1 assertion)
 	 */
 	public function test_GetOwnedGames(): void
     {
@@ -27,6 +31,8 @@ final class Scraper_Test extends TestCase
 
 	/**
 	 * @covers GetRecentlyPlayedGames
+	 * Time: 00:00.221, Memory: 48.00 MB
+	 * (1 test, 1 assertion)
 	 */
 	public function test_GetRecentlyPlayedGames(): void
     {
@@ -43,6 +49,8 @@ final class Scraper_Test extends TestCase
 
 	/**
 	 * @covers GetPlayerAchievements
+	 * Time: 00:00.226, Memory: 48.00 MB
+	 * (1 test, 1 assertion)
 	 */
 	public function test_GetPlayerAchievements(): void
     {
@@ -59,6 +67,8 @@ final class Scraper_Test extends TestCase
 	
 	/**
 	 * @covers GetGameNews
+	 * Time: 00:00.221, Memory: 48.00 MB
+	 * (1 test, 1 assertion)
 	 */
 	public function test_GetGameNews(): void
     {
@@ -75,6 +85,8 @@ final class Scraper_Test extends TestCase
 	
 	/**
 	 * @covers GetUserStatsForGame
+	 * Time: 00:00.221, Memory: 48.00 MB
+	 * (1 test, 1 assertion)
 	 */
 	public function test_GetUserStatsForGame(): void
     {
@@ -91,6 +103,8 @@ final class Scraper_Test extends TestCase
 	
 	/**
 	 * @covers GetSchemaForGame
+	 * Time: 00:00.221, Memory: 48.00 MB
+	 * (1 test, 1 assertion)
 	 */
 	public function test_GetSchemaForGame(): void
     {
@@ -107,6 +121,8 @@ final class Scraper_Test extends TestCase
 	
 	/**
 	 * @covers GetAppDetails
+	 * Time: 00:00.223, Memory: 48.00 MB
+	 * (1 test, 1 assertion)
 	 */
 	public function test_GetAppDetails(): void
     {
@@ -123,6 +139,8 @@ final class Scraper_Test extends TestCase
 	
 	/**
 	 * @covers GetSteamPICS
+	 * Time: 00:00.227, Memory: 48.00 MB
+	 * (1 test, 1 assertion)
 	 */
 	public function test_GetSteamPICS(): void
     {
@@ -140,6 +158,8 @@ final class Scraper_Test extends TestCase
 	/**
 	 * @covers scrapeSteamStore
 	 * @uses getPageTitle
+	 * Time: 00:00.222, Memory: 48.00 MB
+	 * (1 test, 1 assertion)
 	 */
 	public function test_scrapeSteamStore_false(): void
     {
@@ -157,6 +177,8 @@ final class Scraper_Test extends TestCase
 	/**
 	 * @covers scrapeSteamStore
 	 * @uses getPageTitle
+	 * Time: 00:00.225, Memory: 48.00 MB
+	 * (2 tests, 2 assertions)
 	 */
 	public function test_scrapeSteamStore(): void
     {
@@ -173,6 +195,8 @@ final class Scraper_Test extends TestCase
 	
 	/**
 	 * @covers getPageTitle
+	 * Time: 00:00.217, Memory: 46.00 MB
+	 * (1 test, 2 assertions)
 	 */
 	public function test_getPageTitle(): void
     {
@@ -182,6 +206,8 @@ final class Scraper_Test extends TestCase
 	
 	/**
 	 * @covers parse_game_description
+	 * Time: 00:00.223, Memory: 46.00 MB
+	 * (1 test, 2 assertions)
 	 */
 	public function test_parse_game_description(): void
     {
@@ -193,6 +219,8 @@ final class Scraper_Test extends TestCase
 	
 	/**
 	 * @covers parse_tags
+	 * Time: 00:00.217, Memory: 46.00 MB
+	 * (1 test, 1 assertion)
 	 */
 	public function test_parse_tags(): void
     {
@@ -217,6 +245,8 @@ final class Scraper_Test extends TestCase
 
 	/**
 	 * @covers parse_details
+	 * Time: 00:00.219, Memory: 46.00 MB
+	 * (1 test, 1 assertion)
 	 */
 	public function test_parse_details(): void
     {
@@ -242,6 +272,8 @@ final class Scraper_Test extends TestCase
 
 	/**
 	 * @covers parse_reviews
+	 * Time: 00:00.220, Memory: 46.00 MB
+	 * (1 test, 1 assertion)
 	 */
 	public function test_parse_reviews(): void
     {
@@ -258,6 +290,8 @@ final class Scraper_Test extends TestCase
 
 	/**
 	 * @covers parse_developer
+	 * Time: 00:00.219, Memory: 46.00 MB
+	 * (1 test, 2 assertions)
 	 */
 	public function test_parse_developer(): void
     {
@@ -282,6 +316,8 @@ final class Scraper_Test extends TestCase
 
 	/**
 	 * @covers parse_publisher
+	 * Time: 00:00.219, Memory: 46.00 MB
+	 * (1 test, 2 assertions)
 	 */
 	public function test_parse_publisher(): void
     {
@@ -307,6 +343,8 @@ final class Scraper_Test extends TestCase
 
 	/**
 	 * @covers parse_releasedate
+	 * Time: 00:00.217, Memory: 46.00 MB
+	 * (1 test, 1 assertion)
 	 */
 	public function test_parse_releasedate(): void
     {
@@ -322,6 +360,8 @@ final class Scraper_Test extends TestCase
 
 	/**
 	 * @covers parse_genre
+	 * Time: 00:00.221, Memory: 46.00 MB
+	 * (1 test, 2 assertions)
 	 */
 	public function test_parse_genre(): void
     {
@@ -350,6 +390,8 @@ final class Scraper_Test extends TestCase
 	/**
 	 * @covers formatAppDetails
 	 * @uses boolText
+	 * Time: 00:00.223, Memory: 46.00 MB
+	 * (1 test, 1 assertion)
 	 */
 	public function test_formatAppDetails(): void
     {
@@ -456,19 +498,22 @@ final class Scraper_Test extends TestCase
         $this->assertisString($output);
     }
 	
-	/**
+	/* *
 	 * @covers formatSteamPics
+	 * Function not working
 	 * /
 	public function test_formatSteamPics(): void
     {
 		$SteamPics = array();
 		$output=formatSteamPics($SteamPics);
         $this->assertisString($output);
-    }
+    } /* */
 	
 	/**
 	 * @covers formatSteamAPI
 	 * @uses regroupArray
+	 * Time: 00:00.219, Memory: 46.00 MB
+	 * (1 test, 1 assertion)
 	 */
 	public function test_formatSteamAPI(): void
     {
@@ -588,6 +633,8 @@ final class Scraper_Test extends TestCase
 
 	/**
 	 * @covers formatSteamLinks
+	 * Time: 00:00.217, Memory: 46.00 MB
+	 * (1 test, 1 assertion)
 	 */
 	public function test_formatSteamLinks(): void
     {
@@ -597,6 +644,8 @@ final class Scraper_Test extends TestCase
 	
 	/**
 	 * @covers formatnews
+	 * Time: 00:00.221, Memory: 46.00 MB
+	 * (1 test, 2 assertions)
 	 */
 	public function test_formatnews(): void
     {

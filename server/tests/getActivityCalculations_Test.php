@@ -6,8 +6,9 @@ use PHPUnit\Framework\TestCase;
 // Relative path to the current working dir (root of xampp)
 $GLOBALS['rootpath'] = $GLOBALS['rootpath'] ?? "htdocs\Game-Library\server";
 require_once $GLOBALS['rootpath']."\inc\getActivityCalculations.inc.php";
-//require_once $GLOBALS['rootpath']."\inc\utility.inc.php";
 
+//Time: 00:03.651, Memory: 100.00 MB
+//(2 tests, 3 assertions)
 final class getActivityCalculations_Test extends TestCase
 {
 	/**
@@ -15,6 +16,8 @@ final class getActivityCalculations_Test extends TestCase
 	 * @uses getHistoryCalculations
 	 * @uses getsettings
 	 * @uses get_db_connection
+	 * Time: 00:03.641, Memory: 100.00 MB
+	 * (2 tests, 3 assertions)
 	 */
     public function test_getActivityCalculations() {
         $this->assertisArray(getActivityCalculations());
@@ -26,6 +29,8 @@ final class getActivityCalculations_Test extends TestCase
 	/**
 	 * @covers getActivityCalculations
 	 * @uses getsettings
+	 * Time: 00:00.243, Memory: 48.00 MB
+	 * (1 test, 1 assertion)
 	 */
     public function test_getActivityCalculations_false() {
         $this->assertEquals(false,getActivityCalculations(415,false));

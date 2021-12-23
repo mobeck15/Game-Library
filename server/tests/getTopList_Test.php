@@ -9,10 +9,28 @@ require_once $GLOBALS['rootpath']."\inc\getTopList.inc.php";
 
 //Time: 00:32.337, Memory: 292.00 MB
 //(1 test, 13 assertions)
-//Time: 04:18.271, Memory: 292.00 MB
-//(10 tests, 40 assertions)
+//Time: 00:54.240, Memory: 292.00 MB
+//(2 tests, 13 assertions)
 final class getTopList_Test extends TestCase
 {
+	private $Connection;
+	
+    /**
+     * @beforeClass
+     */
+	protected function makeconnection(): void
+    {
+		$this->Connection=get_db_connection();
+    }	
+	
+    /**
+     * @afterClass
+     */
+    protected function closeconnection(): void
+    {
+        $this->Connection->close;
+    }
+	
 	/**
 	 * @covers getTopList
 	 * @uses CalculateGameRow
@@ -40,6 +58,8 @@ final class getTopList_Test extends TestCase
 	 * @uses timeduration
 	 * @uses getGames
 	 * @uses get_db_connection
+	 * Time: 00:24.243, Memory: 292.00 MB
+	 * OK (1 test, 3 assertions)
 	 */
     public function test_getTopList_base() {
 		$output=getTopList("");
@@ -47,6 +67,7 @@ final class getTopList_Test extends TestCase
         $this->assertisArray($output[57]);
 
 		$conn=get_db_connection();
+		//$conn=$this->Connection;
         $this->assertisArray(getTopList("",$conn));
 	}
 
@@ -77,9 +98,12 @@ final class getTopList_Test extends TestCase
 	 * @uses timeduration
 	 * @uses getGames
 	 * @uses get_db_connection
+	 * Time: 00:26.980, Memory: 284.00 MB
+	 * OK (1 test, 10 assertions)
 	 */
     public function test_getTopList_Alt() {
 		$conn=get_db_connection();
+		//$conn=$this->Connection;
 		$calculations=getCalculations("",$conn);
         $this->assertisArray(getTopList("",$conn,$calculations));
         $this->assertisArray(getTopList("Keyword",$conn,$calculations));
@@ -93,7 +117,7 @@ final class getTopList_Test extends TestCase
         $this->assertisArray(getTopList("LYear",$conn,$calculations));
 	}
 	
-	/**
+	/* *
 	 * @covers getTopList
 	 * @uses CalculateGameRow
 	 * @uses PriceCalculation
@@ -130,6 +154,9 @@ final class getTopList_Test extends TestCase
 	 *           ["SteamR", 2]
 	 *           ["PYear", 2]
 	 *           ["LYear", 2]
+	 
+	 * Time: 03:14.870, Memory: 278.00 MB
+	 * OK (10 tests, 10 assertions)
 	 * /
     public function test_getTopList_keywords($group,$size) {
 		//ARRANGE
@@ -192,7 +219,7 @@ final class getTopList_Test extends TestCase
 				'Active'=>true
 			),
 		);
-		//$calculations=getCalculations("",$conn);
+		$calculations=getCalculations("",$conn);
 		
 		//ACT
 		//ASSERT
