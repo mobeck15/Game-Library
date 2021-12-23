@@ -13,6 +13,7 @@ require_once $GLOBALS['rootpath']."\inc\getPurchases.inc.php";
 final class getPurchases_Test extends TestCase
 {
 	/**
+	 * @group slow
 	 * @covers getPurchases
 	 * @uses get_db_connection
 	 * @uses CalculateGameRow
@@ -26,17 +27,38 @@ final class getPurchases_Test extends TestCase
 	 * @uses timeduration
 	 * @uses combinedate
 	 * @uses getCleanStringDate
-	 * Time: 00:05.794, Memory: 156.00 MB
-	 * OK (1 test, 2 assertions)
+	 * Time: 00:03.553, Memory: 154.00 MB
+	 * OK (1 test, 1 assertion)
 	 */
     public function test_getPurchases_base() {
         $this->assertisArray(getPurchases());
-
-		$conn=get_db_connection();
-        $this->assertisArray(getPurchases("",$conn));
    }
-	
+   
 	/**
+	 * @group slow
+	 * @covers getPurchases
+	 * @uses get_db_connection
+	 * @uses CalculateGameRow
+	 * @uses getActivityCalculations
+	 * @uses getAllCpi
+	 * @uses getAllItems
+	 * @uses getGames
+	 * @uses getHistoryCalculations
+	 * @uses getsettings
+	 * @uses makeIndex
+	 * @uses timeduration
+	 * @uses combinedate
+	 * @uses getCleanStringDate
+	 * Time: 00:03.613, Memory: 154.00 MB
+	 * (1 test, 1 assertion)
+	 */
+    public function test_getPurchases_conn() {
+		$conn=get_db_connection();
+        $this->assertisArray(getPurchases("6",$conn));
+   }
+   
+	/**
+	 * @group slow
 	 * @covers getPurchases
 	 * @uses CalculateGameRow
 	 * @uses getActivityCalculations

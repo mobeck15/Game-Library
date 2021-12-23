@@ -12,6 +12,7 @@ require_once $GLOBALS['rootpath']."\inc\getGames.inc.php";
 final class getGames_Test extends TestCase
 {
 	/**
+	 * @group fast
 	 * @covers getGames
 	 * @uses get_db_connection
 	 * @uses CalculateGameRow
@@ -28,6 +29,7 @@ final class getGames_Test extends TestCase
 	}
 	
 	/**
+	 * @group fast
 	 * @covers getGames
 	 * @uses CalculateGameRow
 	 * @uses getAllCpi
@@ -42,6 +44,7 @@ final class getGames_Test extends TestCase
 	}
 	
 	/**
+	 * @group fast
 	 * @covers getGames
 	 * @uses getsettings
 	 * Time: 00:00.234, Memory: 48.00 MB
@@ -53,6 +56,7 @@ final class getGames_Test extends TestCase
 	}
 
 	/**
+	 * @group fast
 	 * @covers CalculateGameRow
 	 * @uses getAllCpi
 	 * @uses getGames

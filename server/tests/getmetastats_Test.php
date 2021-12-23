@@ -12,6 +12,7 @@ require_once $GLOBALS['rootpath']."\inc\getmetastats.inc.php";
 final class getmetastats_Test extends TestCase
 {
 	/**
+	 * @group fast
 	 * @covers getmetastats
 	 * Time: 00:00.221, Memory: 46.00 MB
 	 * (1 test, 2 assertions)
@@ -39,6 +40,7 @@ final class getmetastats_Test extends TestCase
 	}
 	
 	/**
+	 * @group fast
 	 * @covers getmetastats
 	 * @uses getStatRow
 	 * Time: 00:00.221, Memory: 46.00 MB
@@ -77,6 +79,7 @@ final class getmetastats_Test extends TestCase
 	}
 	
 	/**
+	 * @group fast
 	 * @covers makeDetailTable
 	 * @uses DetailDataTable
 	 * @uses arrayTable
@@ -143,6 +146,7 @@ final class getmetastats_Test extends TestCase
 	}
 
 	/**
+	 * @group fast
 	 * @covers objectTranslator
 	 * @testWith ["LaunchPriceObj", "LaunchVariance"]
 	 *           ["HistoricPriceObj", "HistoricVariance"]
@@ -159,6 +163,7 @@ final class getmetastats_Test extends TestCase
 	}
 	
 	/**
+	 * @group fast
 	 * @covers methodTranslator
 	 * @uses PriceCalculation
 	 * @testWith [-10, "LaunchVariance", "statRowKey"]
@@ -188,6 +193,7 @@ final class getmetastats_Test extends TestCase
 	}
 	
 	/**
+	 * @group fast
 	 * @covers countrow
 	 * @uses getSettings
 	 * @testWith [true, "Active", true, true]
@@ -213,6 +219,7 @@ final class getmetastats_Test extends TestCase
 	}
 
 	/**
+	 * @group slow
 	 * @covers getStatRow
 	 * @uses CalculateGameRow
 	 * @uses PriceCalculation
@@ -261,6 +268,7 @@ final class getmetastats_Test extends TestCase
 	}
 	
 	/**
+	 * @group slow
 	 * @covers getStatRow
 	 * @uses CalculateGameRow
 	 * @uses PriceCalculation
@@ -301,6 +309,7 @@ final class getmetastats_Test extends TestCase
 	}	
 
 	/**
+	 * @group slow
 	 * @covers countgames
 	 * @uses CalculateGameRow
 	 * @uses PriceCalculation
@@ -334,6 +343,7 @@ final class getmetastats_Test extends TestCase
 	}	
 	
 	/**
+	 * @group slow
 	 * @covers makeStatTable
 	 * @uses CalculateGameRow
 	 * @uses PriceCalculation
@@ -381,6 +391,7 @@ final class getmetastats_Test extends TestCase
 	}
 	
 	/**
+	 * @group slow
 	 * @covers makeGameCountRow
 	 * @uses CalculateGameRow
 	 * @uses PriceCalculation
@@ -415,6 +426,7 @@ final class getmetastats_Test extends TestCase
 	}
 	
 	/**
+	 * @group slow
 	 * @covers makeStatRow
 	 * @uses CalculateGameRow
 	 * @uses PriceCalculation
@@ -458,6 +470,7 @@ final class getmetastats_Test extends TestCase
 	}	
 
 	/**
+	 * @group fast
 	 * @covers makeHeaderRow
 	 * Time: 00:00.219, Memory: 46.00 MB
 	 * (1 test, 1 assertion)
@@ -467,6 +480,7 @@ final class getmetastats_Test extends TestCase
 	}	
 
 	/**
+	 * @group slow
 	 * @covers makeStatDataSet
 	 * @uses CalculateGameRow
 	 * @uses PriceCalculation
@@ -502,6 +516,7 @@ final class getmetastats_Test extends TestCase
 	}	
 
 	/**
+	 * @group fast
 	 * @covers valueTranslator
 	 * @uses PriceCalculation
 	 * @uses objectTranslator
@@ -521,6 +536,7 @@ final class getmetastats_Test extends TestCase
 	}	
 
 	/**
+	 * @group slow
 	 * @covers printStatRow2
 	 * @uses CalculateGameRow
 	 * @uses PriceCalculation
@@ -561,6 +577,7 @@ final class getmetastats_Test extends TestCase
 	}	
 
 	/**
+	 * @group slow
 	 * @covers DetailDataTable
 	 * @uses CalculateGameRow
 	 * @uses PriceCalculation
@@ -608,6 +625,7 @@ final class getmetastats_Test extends TestCase
 	}
 
 	/**
+	 * @group slow
 	 * @covers getOnlyValues
 	 * @uses CalculateGameRow
 	 * @uses PriceCalculation

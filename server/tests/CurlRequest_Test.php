@@ -12,6 +12,7 @@ require_once $GLOBALS['rootpath']."\inc\CurlRequest.class.php";
 final class CurlRequest_Test extends TestCase
 {
 	/**
+	 * @group fast
 	 * @covers CurlRequest::__construct
 	 * Time: 00:00.222, Memory: 46.00 MB
 	 * (1 test, 1 assertion)
@@ -22,6 +23,7 @@ final class CurlRequest_Test extends TestCase
     }
 
 	/**
+	 * @group fast
 	 * @covers CurlRequest::setOption
 	 * @uses CurlRequest::__construct
 	 * @uses CurlRequest::getInfo
@@ -36,6 +38,7 @@ final class CurlRequest_Test extends TestCase
     }
 
 	/**
+	 * @group fast
 	 * @covers CurlRequest::execute
 	 * @uses CurlRequest::__construct
 	 * @uses CurlRequest::setOption
@@ -49,6 +52,7 @@ final class CurlRequest_Test extends TestCase
     }
 
 	/**
+	 * @group fast
 	 * @covers CurlRequest::getInfo
 	 * @uses CurlRequest::__construct
 	 * @uses CurlRequest::execute
@@ -65,6 +69,7 @@ final class CurlRequest_Test extends TestCase
     }
 
 	/**
+	 * @group fast
 	 * @covers CurlRequest::close
 	 * @uses CurlRequest::__construct
 	 * @doesNotPerformAssertions

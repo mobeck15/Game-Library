@@ -3,12 +3,12 @@ if(isset($GLOBALS[__FILE__])){
 	trigger_error("File already included once ".__FILE__.". ");
 }
 $GLOBALS[__FILE__]=1;
+require_once $GLOBALS['rootpath']."/inc/utility.inc.php";
 
 function getActivityCalculations($gameID="",$historytable="",$connection=false){
 	//TODO: This function is getting called twice from viewgame.php
 	if($connection==false){
-		require $GLOBALS['rootpath']."/inc/auth.inc.php";
-		$conn = new mysqli($servername, $username, $password, $dbname);
+		$conn=get_db_connection();
 	} else {
 		$conn = $connection;
 	}
@@ -20,7 +20,7 @@ function getActivityCalculations($gameID="",$historytable="",$connection=false){
 	}
 	if($connection==false){
 		$conn->close();	
-	}	
+	}
 	
 	if($historytable<>false){
 		foreach ($historytable as $row) {
@@ -61,12 +61,10 @@ function getActivityCalculations($gameID="",$historytable="",$connection=false){
 					$totals[$value['GameID']]['totalHrs'] += $value['Elapsed'];
 					//TODO: update to take injectable time values
 					if(strtotime($value['Timestamp']) >= strtotime("-7 Days Midnight")) {
-						//Untestable with aged data
-						$totals[$value['GameID']]['weekPlay'] += $value['Elapsed']; //@codeCoverageIgnore
+						$totals[$value['GameID']]['weekPlay'] += $value['Elapsed'];
 					}
 					if(strtotime($value['Timestamp']) >= strtotime("-1 month Midnight")) {
-						//Untestable with aged data
-						$totals[$value['GameID']]['monthPlay'] += $value['Elapsed']; //@codeCoverageIgnore
+						$totals[$value['GameID']]['monthPlay'] += $value['Elapsed'];
 					}
 					if(strtotime($value['Timestamp']) >= strtotime("-1 year Midnight")) {
 						$totals[$value['GameID']]['yearPlay'] += $value['Elapsed'];
@@ -76,12 +74,10 @@ function getActivityCalculations($gameID="",$historytable="",$connection=false){
 				if(!isset($totals[$value['GameID']]['Achievements'])) {$totals[$value['GameID']]['Achievements']=0;}
 				if ($value['Achievements']<>"" && $totals[$value['GameID']]['Achievements'] != $value['Achievements']) {
 					if(strtotime($value['Timestamp']) >= strtotime("-7 Days Midnight")) {
-						//Untestable with aged data
-						$totals[$value['GameID']]['WeekAchievements'] += $value['Achievements'] - $totals[$value['GameID']]['Achievements']; //@codeCoverageIgnore
+						$totals[$value['GameID']]['WeekAchievements'] += $value['Achievements'] - $totals[$value['GameID']]['Achievements'];
 					}
 					if(strtotime($value['Timestamp']) >= strtotime("-1 month Midnight")) {
-						//Untestable with aged data
-						$totals[$value['GameID']]['MonthAchievements'] += $value['Achievements'] - $totals[$value['GameID']]['Achievements']; //@codeCoverageIgnore
+						$totals[$value['GameID']]['MonthAchievements'] += $value['Achievements'] - $totals[$value['GameID']]['Achievements'];
 					}
 					if(strtotime($value['Timestamp']) >= strtotime("-1 year Midnight")) {
 						$totals[$value['GameID']]['YearAchievements'] += $value['Achievements'] - $totals[$value['GameID']]['Achievements'];

@@ -12,10 +12,24 @@ require_once $GLOBALS['rootpath']."\inc\getCalculations.inc.php";
 final class getCalculations_Test extends TestCase
 {
 	/**
+	 * @group fast
 	 * @covers getCalculations
-	 * @uses get_db_connection
-	 * @uses PriceCalculation
+	 * Time: 00:00.307, Memory: 48.00 MB
+	 * (1 test, 2 assertions)
+	 */
+    public function test_getCalculations_Global() {
+		$GLOBALS["CALCULATIONS"]=array("preset calculations");
+		
+		$output=getCalculations();
+        $this->assertisArray($output);
+		$this->assertEquals(array("preset calculations"),$output);
+	}
+
+	/**
+	 * @group slow
+	 * @covers getCalculations
 	 * @uses CalculateGameRow
+	 * @uses PriceCalculation
 	 * @uses combinedate
 	 * @uses daysSinceDate
 	 * @uses getActivityCalculations
@@ -36,15 +50,16 @@ final class getCalculations_Test extends TestCase
 	 * @uses makeIndex
 	 * @uses regroupArray
 	 * @uses timeduration
-	 * Time: 00:18.833, Memory: 262.00 MB
+	 * Time: 00:00.307, Memory: 48.00 MB
 	 * (1 test, 2 assertions)
 	 */
-    public function test_getCalculations_Global() {
-        $this->assertisArray(getCalculations());
-        $this->assertisArray(getCalculations());
-	}
-
+    public function test_getCalculations_Base() {
+		$output=getCalculations();
+        $this->assertisArray($output);
+	} /* */
+	
 	/**
+	 * @group slow
 	 * @covers getCalculations
 	 * @uses get_db_connection
 	 * @uses PriceCalculation
@@ -78,6 +93,7 @@ final class getCalculations_Test extends TestCase
 	}
 	
 	/**
+	 * @group fast
 	 * @covers getPriceSort
 	 * @uses PriceCalculation
 	 * Time: 00:00.224, Memory: 46.00 MB

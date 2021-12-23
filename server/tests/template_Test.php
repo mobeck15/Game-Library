@@ -12,6 +12,7 @@ require_once $GLOBALS['rootpath'].'\inc\template.inc.php';
 final class Template_Test extends TestCase
 {
 	/**
+	 * @group fast
 	 * @covers Get_Header
 	 * @uses get_navmenu
 	 * Time: 00:00.219, Memory: 46.00 MB
@@ -24,6 +25,7 @@ final class Template_Test extends TestCase
     }
 
 	/**
+	 * @group fast
 	 * @covers Get_Footer
 	 * @uses read_memory_usage
 	 * Time: 00:00.220, Memory: 46.00 MB
@@ -35,6 +37,7 @@ final class Template_Test extends TestCase
     }
 
 	/**
+	 * @group fast
 	 * @covers get_navmenu
 	 * Time: 00:00.220, Memory: 46.00 MB
 	 * (1 test, 3 assertions)

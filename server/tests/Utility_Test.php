@@ -12,6 +12,7 @@ require_once $GLOBALS['rootpath']."\inc\utility.inc.php";
 final class Utility_Test extends TestCase
 {
 	/**
+	 * @group fast
 	 * @covers timeduration
 	 * @testWith ["-1:00:00", -1, "hours"]
 	 *           ["1:00:00", 1, "hours"]
@@ -37,6 +38,7 @@ final class Utility_Test extends TestCase
     }
 
 	/**
+	 * @group fast
 	 * @covers boolText
 	 * @testWith ["TRUE", true]
 	 *           ["FALSE", false]
@@ -56,6 +58,7 @@ final class Utility_Test extends TestCase
 	}
 
 	/**
+	 * @group fast
 	 * @covers read_memory_usage
 	 * @testWith ["64 b", 64]
 	 *           ["1 kb", 1024]
@@ -79,6 +82,7 @@ final class Utility_Test extends TestCase
 	}
 
 	/**
+	 * @group fast
 	 * @covers read_memory_usage
 	 * Time: 00:00.219, Memory: 46.00 MB
 	 * (1 test, 1 assertion)
@@ -88,6 +92,7 @@ final class Utility_Test extends TestCase
 	}
 	
 	/**
+	 * @group fast
 	 * @covers getAllCpi
 	 * @uses get_db_connection
 	 * Time: 00:00.255, Memory: 46.00 MB
@@ -102,6 +107,7 @@ final class Utility_Test extends TestCase
 	}
 
 	/**
+	 * @group fast
 	 * @covers get_db_connection
 	 * Time: 00:00.249, Memory: 46.00 MB
 	 * (1 test, 1 assertion)
@@ -112,6 +118,7 @@ final class Utility_Test extends TestCase
 	}
 
 	/**
+	 * @group fast
 	 * @covers makeIndex
 	 * Time: 00:00.219, Memory: 46.00 MB
 	 * (1 test, 2 assertions)
@@ -150,6 +157,7 @@ final class Utility_Test extends TestCase
 	}
 
 	/**
+	 * @group fast
 	 * @covers makeIndex
 	 * Time: 00:00.218, Memory: 46.00 MB
 	 * (1 test, 2 assertions)
@@ -187,6 +195,7 @@ final class Utility_Test extends TestCase
 	}
 	
 	/**
+	 * @group fast
 	 * @covers getAllItems
 	 * @uses get_db_connection
 	 * Time: 00:00.957, Memory: 66.00 MB
@@ -201,6 +210,7 @@ final class Utility_Test extends TestCase
 	}
 	
 	/**
+	 * @group fast
 	 * @covers getAllItems
 	 * @uses get_db_connection
 	 * @testWith ["262"]
@@ -218,6 +228,7 @@ final class Utility_Test extends TestCase
 	}
 
 	/**
+	 * @group fast
 	 * @covers getAllItems
 	 * @uses get_db_connection
 	 * Time: 00:00.243, Memory: 48.00 MB
@@ -229,6 +240,7 @@ final class Utility_Test extends TestCase
 	}
 
 	/**
+	 * @group fast
 	 * @covers getKeywords
 	 * @uses get_db_connection
 	 * Time: 00:00.448, Memory: 52.00 MB
@@ -243,6 +255,7 @@ final class Utility_Test extends TestCase
 	}
 
 	/**
+	 * @group fast
 	 * @covers getKeywords
 	 * Time: 00:00.241, Memory: 48.00 MB
 	 * (1 test, 1 assertion)
@@ -253,6 +266,7 @@ final class Utility_Test extends TestCase
 	}
 
 	/**
+	 * @group fast
 	 * @covers regroupArray
 	 * Time: 00:00.220, Memory: 48.00 MB
 	 * (1 test, 3 assertions)
@@ -322,6 +336,7 @@ final class Utility_Test extends TestCase
 	}
 
 	/**
+	 * @group fast
 	 * @covers getSortArray
 	 * Time: 00:00.221, Memory: 48.00 MB
 	 * (1 test, 2 assertions)
@@ -367,6 +382,7 @@ final class Utility_Test extends TestCase
 	}
 
 	/**
+	 * @group fast
 	 * @covers getActiveSortArray
 	 * Time: 00:00.223, Memory: 48.00 MB
 	 * (1 test, 2 assertions)
@@ -411,6 +427,7 @@ final class Utility_Test extends TestCase
 	}
 
 	/**
+	 * @group fast
 	 * @covers getNextPosition
 	 * @uses getPriceperhour
 	 * Time: 00:00.220, Memory: 48.00 MB
@@ -430,6 +447,7 @@ final class Utility_Test extends TestCase
 	}
 
 	/**
+	 * @group fast
 	 * @covers getHrsNextPosition
 	 * @uses getHrsToTarget
 	 * @uses getNextPosition
@@ -448,6 +466,7 @@ final class Utility_Test extends TestCase
 	}
 
 	/**
+	 * @group fast
 	 * @covers reIndexArray
 	 * Time: 00:00.219, Memory: 48.00 MB
 	 * (1 test, 3 assertions)
@@ -492,6 +511,7 @@ final class Utility_Test extends TestCase
 	}
 
 	/**
+	 * @group fast
 	 * @covers getGameDetail
 	 * @uses CalculateGameRow
 	 * @uses getActivityCalculations
@@ -513,6 +533,7 @@ final class Utility_Test extends TestCase
 	}
 
 	/**
+	 * @group fast
 	 * @covers combinedate
 	 * @uses getCleanStringDate
 	 * Time: 00:00.221, Memory: 48.00 MB
@@ -531,6 +552,7 @@ final class Utility_Test extends TestCase
 	}
 
 	/**
+	 * @group fast
 	 * @covers RatingsChartData
 	 * Time: 00:00.220, Memory: 48.00 MB
 	 * (1 test, 9 assertions)
@@ -613,6 +635,7 @@ final class Utility_Test extends TestCase
 	}
 
 	/**
+	 * @group fast
 	 * @covers getCleanStringDate
 	 * Time: 00:00.221, Memory: 48.00 MB
 	 * (1 test, 3 assertions)
@@ -634,6 +657,7 @@ final class Utility_Test extends TestCase
 	}
 
 	/**
+	 * @group fast
 	 * @covers daysSinceDate
 	 * Time: 00:00.222, Memory: 48.00 MB
 	 * (1 test, 3 assertions)
@@ -654,6 +678,7 @@ final class Utility_Test extends TestCase
 	}
 
 	/**
+	 * @group fast
 	 * @covers getTimeLeft
 	 * Time: 00:00.220, Memory: 48.00 MB
 	 * (1 test, 3 assertions)
@@ -665,6 +690,7 @@ final class Utility_Test extends TestCase
 	}
 
 	/**
+	 * @group fast
 	 * @covers arrayTable
 	 * @uses boolText
 	 * Time: 00:00.231, Memory: 48.00 MB
@@ -691,6 +717,7 @@ final class Utility_Test extends TestCase
 	}
 
 	/**
+	 * @group fast
 	 * @covers arrayTable
 	 * @uses PriceCalculation
 	 * @uses timeduration
@@ -715,6 +742,7 @@ final class Utility_Test extends TestCase
 	}
 	
 	/**
+	 * @group fast
 	 * @covers getPriceperhour
 	 * Time: 00:00.219, Memory: 48.00 MB
 	 * (1 test, 2 assertions)
@@ -729,6 +757,7 @@ final class Utility_Test extends TestCase
 	}
 
 	/**
+	 * @group fast
 	 * @covers getHrsToTarget
 	 * Time: 00:00.223, Memory: 48.00 MB
 	 * (1 test, 3 assertions)
@@ -745,6 +774,7 @@ final class Utility_Test extends TestCase
 	}
 
 	/**
+	 * @group fast
 	 * @covers getHrsToTarget
 	 * Time: 00:00.225, Memory: 48.00 MB
 	 * (1 test, 3 assertions)
@@ -761,6 +791,7 @@ final class Utility_Test extends TestCase
 	}
 	
 	/**
+	 * @group fast
 	 * @covers lookupTextBox
 	 * Time: 00:00.220, Memory: 48.00 MB
 	 * (1 test, 3 assertions)

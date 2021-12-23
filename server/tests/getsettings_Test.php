@@ -13,6 +13,7 @@ require_once $GLOBALS['rootpath']."\inc\utility.inc.php";
 final class getsettings_Test extends TestCase
 {
 	/**
+	 * @group fast
 	 * @covers getsettings
 	 * Time: 00:00.244, Memory: 48.00 MB
 	 * (1 test, 2 assertions)
@@ -24,6 +25,7 @@ final class getsettings_Test extends TestCase
     }
 	
 	/**
+	 * @group fast
 	 * @covers getsettings
 	 * @uses get_db_connection
 	 * Time: 00:00.236, Memory: 48.00 MB
@@ -37,6 +39,7 @@ final class getsettings_Test extends TestCase
     }
 	
 	/**
+	 * @group fast
 	 * @covers getsettings
 	 * Time: 00:00.239, Memory: 48.00 MB
 	 * (1 test, 2 assertions)

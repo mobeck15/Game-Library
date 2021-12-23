@@ -12,20 +12,23 @@ require_once $GLOBALS['rootpath']."\inc\getHistoryCalculations.inc.php";
 final class getHistoryCalculations_Test extends TestCase
 {
 	/**
+	 * @group slow
+	 * @group medium
 	 * @covers getHistoryCalculations
 	 * @uses get_db_connection
 	 * @uses getsettings
-	 * Time: 00:02.279, Memory: 104.00 MB
+	 * Time: 00:01.572, Memory: 104.00 MB
 	 * (1 test, 2 assertions)
 	 */
     public function test_getHistoryCalculations_conn() {
         $this->assertisArray(getHistoryCalculations());
 
 		$conn=get_db_connection();
-        $this->assertisArray(getHistoryCalculations("",$conn));
+        $this->assertisArray(getHistoryCalculations("2",$conn,1422463133,1422517133));
 	}
    
 	/**
+	 * @group fast
 	 * @covers getHistoryCalculations
 	 * @uses getsettings
 	 * Time: 00:00.244, Memory: 48.00 MB
@@ -36,6 +39,7 @@ final class getHistoryCalculations_Test extends TestCase
 	}
 
 	/**
+	 * @group fast
 	 * @covers getHistoryCalculations
 	 * @uses getsettings
 	 * Time: 00:00.277, Memory: 48.00 MB
@@ -48,6 +52,7 @@ final class getHistoryCalculations_Test extends TestCase
 	}
 	
 	/**
+	 * @group fast
 	 * @covers getHistoryCalculations
 	 * @uses getsettings
 	 * Time: 00:00.243, Memory: 48.00 MB

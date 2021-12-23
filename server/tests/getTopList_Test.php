@@ -32,6 +32,7 @@ final class getTopList_Test extends TestCase
     }
 	
 	/**
+	 * @group slow
 	 * @covers getTopList
 	 * @uses CalculateGameRow
 	 * @uses PriceCalculation
@@ -72,6 +73,7 @@ final class getTopList_Test extends TestCase
 	}
 
 	/**
+	 * @group slow
 	 * @covers getTopList
 	 * @uses CalculateGameRow
 	 * @uses PriceCalculation
@@ -118,6 +120,7 @@ final class getTopList_Test extends TestCase
 	}
 	
 	/* *
+	 * @group slow
 	 * @covers getTopList
 	 * @uses CalculateGameRow
 	 * @uses PriceCalculation
