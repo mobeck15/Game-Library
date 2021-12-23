@@ -46,19 +46,26 @@ final class getmetastats_Test extends TestCase
 	 */
     public function test_getmetastats_main() {
 		//ARRANGE
-		$testarry=array(		'althrsgame'=>1,		'althrsmedian'=>2,		'althrsmean'=>3,			'althrsavg'=>4,				'salehrsgame'=>5,			'salehrsmedian'=>6,		'salehrsmean'=>7,	
-		'salehrsavg'=>8,		'paidhrsgame'=>9,		'paidhrsmedian'=>10,	'paidhrsmean'=>11,			'paidhrsavg'=>12,			'histhrsgame'=>13,			'histhrsmedian'=>14,	'histhrsmean'=>15,
-		'histhrsavg'=>16,		'msrphrsgame'=>17,		'msrphrsmedian'=>18,	'msrphrsmean'=>19,			'msrphrsavg'=>20,			'launchhrsmedian'=>21,		'launchhrsgame'=>22,	'launchhrsavg'=>23,
-		'PurchaseDateTime'=>24,	'LaunchDate'=>25,		'AddedDateTime'=>26,	'firstPlayDateTime'=>27,	'lastPlayDateTime'=>28,		'SteamAchievements'=>29,	'Achievements'=>30,		'AchievementsPct'=>31,	
-		'AchievementsLeft'=>32,	'totalHrs'=>33,			'GrandTotal'=>34,		'TimeToBeat'=>35,			'TimeLeftToBeat'=>36,		'Metascore'=>37,			'UserMetascore'=>38,	'SteamRating'=>39,		
-		'Review'=>40,			'LaunchPrice'=>41,		'LaunchVariance'=>42,	'LaunchVariancePct'=>43,	'Launchperhr'=>44,			'LaunchLess1'=>45,			'LaunchLess2'=>46,		'Launchperhrbeat'=>47,
-		'MSRP'=>48,				'MSRPperhr'=>49,		'MSRPLess1'=>50,		'MSRPLess2'=>51,			'MSRPperhrbeat'=>52,		'HistoricLow'=>53,			'HistoricVariance'=>54,	'HistoricVariancePct'=>55,
-		'Historicperhr'=>56,	'HistoricLess1'=>57,	'HistoricLess2'=>58,	'Historicperhrbeat'=>59,	'Paid'=>60,					'PaidVariance'=>61,			'PaidVariancePct'=>62,	'Paidperhr'=>63,
-		'PaidLess1'=>64,		'PaidLess2'=>65,		'Paidperhrbeat'=>66,	'SalePrice'=>67,			'SaleVariance'=>68,			'SaleVariancePct'=>69,		'Saleperhr'=>70,		'SaleLess1'=>71,
-		'SaleLess2'=>72,		'Saleperhrbeat'=>73,	'AltSalePrice'=>74,		'AltSaleVariance'=>75,		'AltSaleVariancePct'=>76,	'Altperhr'=>77,				'AltLess1'=>78,			'AltLess2'=>79,
-		'Altperhrbeat'=>80,		'LaunchHrsNext1'=>81,	'LaunchHrsNext2'=>82,	'LaunchHrs5'=>82,			'MSRPHrsNext1'=>83,			'MSRPHrsNext2'=>84,			'MSRPHrs3'=>85,			'HistoricHrsNext1'=>86,
-		'HistoricHrsNext2'=>87,	'HistoricHrs3'=>88,		'PaidHrsNext1'=>90,		'PaidHrsNext2'=>91,			'PaidHrs3'=>92,				'SaleHrsNext1'=>93,			'SaleHrsNext2'=>94,		'SaleHrs3'=>95,
-		'AltHrsNext1'=>96,		'AltHrsNext2'=>97,		'AltHrs3'=>98,			99);
+		$testarry=array(		'althrsgame'=>1,		'althrsmedian'=>2,			'althrsmean'=>3,		'althrsavg'=>4,
+		'salehrsgame'=>5,		'salehrsmedian'=>6,		'salehrsmean'=>7,			'salehrsavg'=>8,		'paidhrsgame'=>9,
+		'paidhrsmedian'=>10,	'paidhrsmean'=>11,		'paidhrsavg'=>12,			'histhrsgame'=>13,		'histhrsmedian'=>14,
+		'histhrsmean'=>15,		'histhrsavg'=>16,		'msrphrsgame'=>17,			'msrphrsmedian'=>18,	'msrphrsmean'=>19,
+		'msrphrsavg'=>20,		'launchhrsmedian'=>21,	'launchhrsgame'=>22,		'launchhrsavg'=>23,		'PurchaseDateTime'=>24,
+		'LaunchDate'=>25,		'AddedDateTime'=>26,	'firstPlayDateTime'=>27,	'lastPlayDateTime'=>28,	'SteamAchievements'=>29,	
+		'Achievements'=>30,		'AchievementsPct'=>31,	'AchievementsLeft'=>32,		'totalHrs'=>33,			'GrandTotal'=>34,
+		'TimeToBeat'=>35,		'TimeLeftToBeat'=>36,	'Metascore'=>37,			'UserMetascore'=>38,	'SteamRating'=>39,
+		'Review'=>40,			'LaunchPrice'=>41,		'LaunchVariancePct'=>43,	'LaunchVariance'=>42,	'Launchperhr'=>44,
+		'LaunchLess1'=>45,		'LaunchLess2'=>46,		'Launchperhrbeat'=>47,		'MSRP'=>48,				'MSRPperhr'=>49,
+		'MSRPLess1'=>50,		'MSRPLess2'=>51,		'MSRPperhrbeat'=>52,		'HistoricLow'=>53,		'HistoricVariance'=>54,
+		'Historicperhr'=>56,	'HistoricLess1'=>57,	'HistoricVariancePct'=>55,	'HistoricLess2'=>58,	'Historicperhrbeat'=>59,
+		'Paid'=>60,				'PaidVariance'=>61,		'PaidVariancePct'=>62,		'Paidperhr'=>63,		'PaidLess1'=>64,
+		'PaidLess2'=>65,		'Paidperhrbeat'=>66,	'SalePrice'=>67,			'SaleVariance'=>68,		'SaleVariancePct'=>69,
+		'Saleperhr'=>70,		'SaleLess1'=>71,		'SaleLess2'=>72,			'Saleperhrbeat'=>73,	'AltSalePrice'=>74,
+		'AltSaleVariance'=>75,	'Altperhr'=>77,			'AltSaleVariancePct'=>76,	'AltLess1'=>78,			'AltLess2'=>79,
+		'Altperhrbeat'=>80,		'LaunchHrsNext1'=>81,	'LaunchHrsNext2'=>82,		'LaunchHrs5'=>82,		'MSRPHrsNext1'=>83,
+		'MSRPHrsNext2'=>84,		'MSRPHrs3'=>85,			'HistoricHrsNext1'=>86,		'HistoricHrsNext2'=>87,	'HistoricHrs3'=>88,
+		'PaidHrsNext1'=>90,		'PaidHrsNext2'=>91,		'PaidHrs3'=>92,				'SaleHrsNext1'=>93,		'SaleHrsNext2'=>94,
+		'SaleHrs3'=>95,			'AltHrsNext1'=>96,		'AltHrsNext2'=>97,			'AltHrs3'=>98,			99);
 		
 		$GLOBALS["METASTATS"]=$testarry;
 		
@@ -319,6 +326,8 @@ final class getmetastats_Test extends TestCase
 	 * @uses makeIndex
 	 * @uses regroupArray
 	 * @uses timeduration
+	 * Time: 00:18.778, Memory: 262.00 MB
+	 * (1 test, 1 assertion)
 	 */
     public function test_countgames() {
         $this->assertisNumeric(countgames("All"));
@@ -362,6 +371,8 @@ final class getmetastats_Test extends TestCase
 	 * @uses reIndexArray
 	 * @uses regroupArray
 	 * @uses timeduration
+	 * Time: 00:30.697, Memory: 262.00 MB
+	 * (1 test, 1 assertion)
 	 */
     public function test_makeStatTable() {
 		$_GET['filter']="All";
@@ -396,6 +407,8 @@ final class getmetastats_Test extends TestCase
 	 * @uses makeIndex
 	 * @uses regroupArray
 	 * @uses timeduration
+	 * Time: 00:18.599, Memory: 262.00 MB
+	 * (1 test, 1 assertion)
 	 */
     public function test_makeGameCountRow() {
         $this->assertisString(makeGameCountRow("both","blue1"));
@@ -435,6 +448,8 @@ final class getmetastats_Test extends TestCase
 	 * @uses reIndexArray
 	 * @uses regroupArray
 	 * @uses timeduration
+	 * Time: 00:30.205, Memory: 262.00 MB
+	 * (1 test, 1 assertion)
 	 */
     public function test_makeStatRow() {
 		$_GET['filter']="All";
@@ -444,6 +459,8 @@ final class getmetastats_Test extends TestCase
 
 	/**
 	 * @covers makeHeaderRow
+	 * Time: 00:00.219, Memory: 46.00 MB
+	 * (1 test, 1 assertion)
 	 */
     public function test_makeHeaderRow() {
         $this->assertEquals("<tr><th colspan=100><hr>Some header</th></tr>",makeHeaderRow("Some header"));
@@ -477,6 +494,8 @@ final class getmetastats_Test extends TestCase
 	 * @uses objectTranslator
 	 * @uses regroupArray
 	 * @uses timeduration
+	 * Time: 00:18.707, Memory: 262.00 MB
+	 * (1 test, 1 assertion)
 	 */
     public function test_makeStatDataSet() {
         $this->assertisArray(makeStatDataSet("All",'Review'));
@@ -487,6 +506,8 @@ final class getmetastats_Test extends TestCase
 	 * @uses PriceCalculation
 	 * @uses objectTranslator
 	 * @uses methodTranslator
+	 * Time: 00:00.227, Memory: 46.00 MB
+	 * (1 test, 2 assertions)
 	 */
     public function test_valueTranslator() {
 		$price=10;
@@ -531,6 +552,8 @@ final class getmetastats_Test extends TestCase
 	 * @uses reIndexArray
 	 * @uses regroupArray
 	 * @uses timeduration
+	 * Time: 00:18.734, Memory: 262.00 MB
+	 * (1 test, 1 assertion)
 	 */
     public function test_printStatRow2() {
 		$statrow=getStatRow("All",'SteamRating');
@@ -569,6 +592,8 @@ final class getmetastats_Test extends TestCase
 	 * @uses reIndexArray
 	 * @uses regroupArray
 	 * @uses timeduration
+	 * Time: 00:19.394, Memory: 262.00 MB
+	 * (1 test, 2 assertions)
 	 */
     public function test_DetailDataTable() {
 		$dataset=makeStatDataSet("All",'AltHrs3');
@@ -611,6 +636,8 @@ final class getmetastats_Test extends TestCase
 	 * @uses objectTranslator
 	 * @uses regroupArray
 	 * @uses timeduration
+	 * Time: 00:19.246, Memory: 262.00 MB
+	 * (1 test, 5 assertions)
 	 */
     public function test_getOnlyValues() {
 		$statrow=makeStatDataSet("All",'firstPlayDateTime');

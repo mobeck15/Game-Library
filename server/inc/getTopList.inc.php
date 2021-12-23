@@ -294,13 +294,12 @@ function getTopList($group,$connection=false,$calc=false,$minGroupSize=2){
 		case "LMonth": //Launch Month
 		case "PMonthNum": //Purchase Month Number
 		case "LMonthNum": //Launch Month Number
-			if($group=="PYear" OR $group=="LYear") {$dateformat="Y";}
+			if($group=="PYear"     OR $group=="LYear") {$dateformat="Y";}
 			if($group=="PMonthNum" OR $group=="LMonthNum") {$dateformat="m";}
-			if($group=="PMonth" OR $group=="LMonth") {$dateformat="Y-m";}
+			if($group=="PMonth"    OR $group=="LMonth") {$dateformat="Y-m";}
 			
 			if($group=="PYear" OR $group=="PMonth" OR $group=="PMonthNum"){$group="PurchaseDateTime";}
 			if($group=="LYear" OR $group=="LMonth" OR $group=="LMonthNum"){$group="LaunchDate";}
-			
 			
 			$BundleList=array();
 			$GroupList=array();
