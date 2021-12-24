@@ -9,6 +9,10 @@ require_once $GLOBALS['rootpath']."\inc\CurlRequest.class.php";
 
 //Time: 00:00.258, Memory: 46.00 MB
 //(5 tests, 5 assertions)
+/**
+ * @group include
+ * @group classtest
+ */
 final class CurlRequest_Test extends TestCase
 {
 	/**

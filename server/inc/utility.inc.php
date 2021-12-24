@@ -511,6 +511,42 @@ function lookupTextBox($lookupid, $inputid, $inputname, $querytype="Game", $sour
 				"lookupBox" => $lookupBox . $lookupScript);
 }
 
+function findgaps($sql,$conn,$idname) {
+	//TODO: Reports values that are not gaps.
+	$stats=array();
+	if($result = $conn->query($sql)){
+		$stats['max']=0;
+		$stats['count']=0;
+		$stats['gaps']=array();
+		$stats['gapsText']="";
+		$index=0;
+		if ($result->num_rows > 0){
+			while($row = $result->fetch_assoc()){
+				$stats['count']++;
+				$stats['max']=$row[$idname];
+				if($row[$idname]<>$index){
+					while($row[$idname]<>$index){
+						$stats['gaps'][]=$index;
+						$stats['gapsText'] .= $index . ", ";
+						$index++;
+					}
+					$stats['gaps'][]=$index;
+					$stats['gapsText'] .= $index . ", ";
+				}
+				$index++;
+				$stats['lastrow']=$row;
+				if($idname=="TransID" AND (0+$row['Credit Used'])<0){
+					$stats['lastcard']=$row;
+				}
+				if($idname=="ItemID" AND $row['ProductID']==null){
+					$stats['lastcard']=$row;
+				}
+			}
+		}
+	}
+	return $stats;
+}
+
 //Remove once price class is functional
 function getHrsToTarget($CalcValue,$time,$target){
 	//Depricated? used in getHrsNextPosition

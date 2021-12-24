@@ -9,6 +9,9 @@ require_once $GLOBALS['rootpath']."\inc\getmetastats.inc.php";
 
 //Time: 03:49.664, Memory: 264.00 MB
 //(18 tests, 48 assertions)
+/**
+ * @group include
+ */
 final class getmetastats_Test extends TestCase
 {
 	/**

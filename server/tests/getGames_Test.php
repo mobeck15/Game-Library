@@ -9,6 +9,9 @@ require_once $GLOBALS['rootpath']."\inc\getGames.inc.php";
 
 //Time: 00:00.979, Memory: 58.00 MB
 //(4 tests, 8 assertions)
+/**
+ * @group include
+ */
 final class getGames_Test extends TestCase
 {
 	/**

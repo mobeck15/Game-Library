@@ -9,6 +9,9 @@ require_once $GLOBALS['rootpath'].'\inc\scraper.inc.php';
 
 //Time: 00:00.315, Memory: 48.00 MB
 //OK (23 tests, 29 assertions)
+/**
+ * @group include
+ */
 final class Scraper_Test extends TestCase
 {
 	/**

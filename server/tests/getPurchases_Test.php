@@ -10,6 +10,9 @@ require_once $GLOBALS['rootpath']."\inc\getPurchases.inc.php";
 
 //Time: 00:08.725, Memory: 156.00 MB
 //(2 tests, 3 assertions)
+/**
+ * @group include
+ */
 final class getPurchases_Test extends TestCase
 {
 	/**

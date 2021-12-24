@@ -9,6 +9,9 @@ require_once $GLOBALS['rootpath'].'\inc\template.inc.php';
 
 //Time: 00:00.226, Memory: 46.00 MB
 //(3 tests, 8 assertions)
+/**
+ * @group include
+ */
 final class Template_Test extends TestCase
 {
 	/**

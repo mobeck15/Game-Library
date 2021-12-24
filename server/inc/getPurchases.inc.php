@@ -3,6 +3,7 @@ if(isset($GLOBALS[__FILE__])){
 	trigger_error("File already included once ".__FILE__.". ");
 }
 $GLOBALS[__FILE__]=1;
+$GLOBALS['rootpath']= $GLOBALS['rootpath'] ?? "..";
 require_once $GLOBALS['rootpath']."\inc\utility.inc.php";
 require_once $GLOBALS['rootpath']."\inc\getGames.inc.php";
 require_once $GLOBALS['rootpath']."\inc\getActivityCalculations.inc.php";
@@ -481,7 +482,6 @@ function getAllPurchases($transID=""){
 }
 
 if (basename($_SERVER["SCRIPT_NAME"], '.php') == "getPurchases.inc") {
-	$GLOBALS['rootpath']="..";
 	require_once $GLOBALS['rootpath']."/inc/php.ini.inc.php";
 	require_once $GLOBALS['rootpath']."/inc/functions.inc.php";
 	

@@ -11,6 +11,9 @@ require_once $GLOBALS['rootpath']."\inc\getTopList.inc.php";
 //(1 test, 13 assertions)
 //Time: 00:54.240, Memory: 292.00 MB
 //(2 tests, 13 assertions)
+/**
+ * @group include
+ */
 final class getTopList_Test extends TestCase
 {
 	private $Connection;

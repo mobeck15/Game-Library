@@ -9,6 +9,9 @@ require_once $GLOBALS['rootpath']."\inc\getCalculations.inc.php";
 
 //Time: 00:37.892, Memory: 264.00 MB
 //(3 tests, 5 assertions)
+/**
+ * @group include
+ */
 final class getCalculations_Test extends TestCase
 {
 	/**

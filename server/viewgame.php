@@ -876,7 +876,10 @@ if (!(isset($_GET['id']) && is_numeric($_GET['id']))) {
 		<td><?php echo $bundleID; ?></td>
 		<td><?php echo $purchases[$purchaseIndex[$bundleID]]['Title']; ?></td>
 		<td><?php echo $purchases[$purchaseIndex[$bundleID]]['Store']; ?></td>
-		<td><?php echo Date("n/j/Y H:i:s",$purchases[$purchaseIndex[$bundleID]]['PurchaseTimeStamp']); ?></td>
+		<td><?php 
+		//echo Date("n/j/Y H:i:s",$purchases[$purchaseIndex[$bundleID]]['PurchaseTimeStamp']); 
+		echo $purchases[$purchaseIndex[$bundleID]]['PrintPurchaseTimeStamp'];
+		?></td>
 		<td><?php echo $purchases[$purchaseIndex[$bundleID]]['Paid']; ?></td>
 		
 		<td>

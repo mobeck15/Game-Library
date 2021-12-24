@@ -10,6 +10,9 @@ require_once $GLOBALS['rootpath']."\inc\utility.inc.php";
 
 //Time: 00:00.267, Memory: 48.00 MB
 //(3 tests, 5 assertions)
+/**
+ * @group include
+ */
 final class getsettings_Test extends TestCase
 {
 	/**

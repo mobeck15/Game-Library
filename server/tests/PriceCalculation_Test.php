@@ -9,6 +9,10 @@ require_once $GLOBALS['rootpath']."\inc\PriceCalculation.class.php";
 
 //Time: 00:00.279, Memory: 46.00 MB
 //(18 tests, 32 assertions)
+/**
+ * @group include
+ * @group classtest
+ */
 final class PriceCalculation_Test extends TestCase
 {
 	private $PriceCalculation;
