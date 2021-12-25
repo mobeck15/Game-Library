@@ -16,7 +16,7 @@ final class getHistoryCalculations_Test extends TestCase
 {
 	/**
 	 * @group slow
-	 * @group medium
+	 * @medium
 	 * @covers getHistoryCalculations
 	 * @uses get_db_connection
 	 * @uses getsettings
@@ -32,6 +32,7 @@ final class getHistoryCalculations_Test extends TestCase
    
 	/**
 	 * @group fast
+	 * @small
 	 * @covers getHistoryCalculations
 	 * @uses getsettings
 	 * Time: 00:00.244, Memory: 48.00 MB
@@ -43,6 +44,7 @@ final class getHistoryCalculations_Test extends TestCase
 
 	/**
 	 * @group fast
+	 * @small
 	 * @covers getHistoryCalculations
 	 * @uses getsettings
 	 * Time: 00:00.277, Memory: 48.00 MB
@@ -56,6 +58,7 @@ final class getHistoryCalculations_Test extends TestCase
 	
 	/**
 	 * @group fast
+	 * @small
 	 * @covers getHistoryCalculations
 	 * @uses getsettings
 	 * Time: 00:00.243, Memory: 48.00 MB

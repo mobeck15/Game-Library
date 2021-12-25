@@ -530,8 +530,8 @@ function findgaps($sql,$conn,$idname) {
 						$stats['gapsText'] .= $index . ", ";
 						$index++;
 					}
-					$stats['gaps'][]=$index;
-					$stats['gapsText'] .= $index . ", ";
+					//$stats['gaps'][]=$index;
+					//$stats['gapsText'] .= $index . ", ";
 				}
 				$index++;
 				$stats['lastrow']=$row;

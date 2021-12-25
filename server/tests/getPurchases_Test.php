@@ -17,6 +17,7 @@ final class getPurchases_Test extends TestCase
 {
 	/**
 	 * @group slow
+	 * @medium
 	 * @covers getPurchases
 	 * @uses get_db_connection
 	 * @uses CalculateGameRow
@@ -39,6 +40,7 @@ final class getPurchases_Test extends TestCase
    
 	/**
 	 * @group slow
+	 * @medium
 	 * @covers getPurchases
 	 * @uses get_db_connection
 	 * @uses CalculateGameRow
@@ -62,6 +64,7 @@ final class getPurchases_Test extends TestCase
    
 	/**
 	 * @group slow
+	 * @medium
 	 * @covers getPurchases
 	 * @uses CalculateGameRow
 	 * @uses getActivityCalculations

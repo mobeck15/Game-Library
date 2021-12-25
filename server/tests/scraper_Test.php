@@ -16,6 +16,7 @@ final class Scraper_Test extends TestCase
 {
 	/**
 	 * @group fast
+	 * @small
 	 * @covers GetOwnedGames
 	 * Time: 00:00.228, Memory: 48.00 MB
 	 * (1 test, 1 assertion)
@@ -35,6 +36,7 @@ final class Scraper_Test extends TestCase
 
 	/**
 	 * @group fast
+	 * @small
 	 * @covers GetRecentlyPlayedGames
 	 * Time: 00:00.221, Memory: 48.00 MB
 	 * (1 test, 1 assertion)
@@ -54,6 +56,7 @@ final class Scraper_Test extends TestCase
 
 	/**
 	 * @group fast
+	 * @small
 	 * @covers GetPlayerAchievements
 	 * Time: 00:00.226, Memory: 48.00 MB
 	 * (1 test, 1 assertion)
@@ -73,6 +76,7 @@ final class Scraper_Test extends TestCase
 	
 	/**
 	 * @group fast
+	 * @small
 	 * @covers GetGameNews
 	 * Time: 00:00.221, Memory: 48.00 MB
 	 * (1 test, 1 assertion)
@@ -92,6 +96,7 @@ final class Scraper_Test extends TestCase
 	
 	/**
 	 * @group fast
+	 * @small
 	 * @covers GetUserStatsForGame
 	 * Time: 00:00.221, Memory: 48.00 MB
 	 * (1 test, 1 assertion)
@@ -111,6 +116,7 @@ final class Scraper_Test extends TestCase
 	
 	/**
 	 * @group fast
+	 * @small
 	 * @covers GetSchemaForGame
 	 * Time: 00:00.221, Memory: 48.00 MB
 	 * (1 test, 1 assertion)
@@ -130,6 +136,7 @@ final class Scraper_Test extends TestCase
 	
 	/**
 	 * @group fast
+	 * @small
 	 * @covers GetAppDetails
 	 * Time: 00:00.223, Memory: 48.00 MB
 	 * (1 test, 1 assertion)
@@ -149,6 +156,7 @@ final class Scraper_Test extends TestCase
 	
 	/**
 	 * @group fast
+	 * @small
 	 * @covers GetSteamPICS
 	 * Time: 00:00.227, Memory: 48.00 MB
 	 * (1 test, 1 assertion)
@@ -168,6 +176,7 @@ final class Scraper_Test extends TestCase
 	
 	/**
 	 * @group fast
+	 * @small
 	 * @covers scrapeSteamStore
 	 * @uses getPageTitle
 	 * Time: 00:00.222, Memory: 48.00 MB
@@ -188,6 +197,7 @@ final class Scraper_Test extends TestCase
 	
 	/**
 	 * @group fast
+	 * @small
 	 * @covers scrapeSteamStore
 	 * @uses getPageTitle
 	 * Time: 00:00.225, Memory: 48.00 MB
@@ -208,6 +218,7 @@ final class Scraper_Test extends TestCase
 	
 	/**
 	 * @group fast
+	 * @small
 	 * @covers getPageTitle
 	 * Time: 00:00.217, Memory: 46.00 MB
 	 * (1 test, 2 assertions)
@@ -220,6 +231,7 @@ final class Scraper_Test extends TestCase
 	
 	/**
 	 * @group fast
+	 * @small
 	 * @covers parse_game_description
 	 * Time: 00:00.223, Memory: 46.00 MB
 	 * (1 test, 2 assertions)
@@ -234,6 +246,7 @@ final class Scraper_Test extends TestCase
 	
 	/**
 	 * @group fast
+	 * @small
 	 * @covers parse_tags
 	 * Time: 00:00.217, Memory: 46.00 MB
 	 * (1 test, 1 assertion)
@@ -261,6 +274,7 @@ final class Scraper_Test extends TestCase
 
 	/**
 	 * @group fast
+	 * @small
 	 * @covers parse_details
 	 * Time: 00:00.219, Memory: 46.00 MB
 	 * (1 test, 1 assertion)
@@ -289,6 +303,7 @@ final class Scraper_Test extends TestCase
 
 	/**
 	 * @group fast
+	 * @small
 	 * @covers parse_reviews
 	 * Time: 00:00.220, Memory: 46.00 MB
 	 * (1 test, 1 assertion)
@@ -308,6 +323,7 @@ final class Scraper_Test extends TestCase
 
 	/**
 	 * @group fast
+	 * @small
 	 * @covers parse_developer
 	 * Time: 00:00.219, Memory: 46.00 MB
 	 * (1 test, 2 assertions)
@@ -335,6 +351,7 @@ final class Scraper_Test extends TestCase
 
 	/**
 	 * @group fast
+	 * @small
 	 * @covers parse_publisher
 	 * Time: 00:00.219, Memory: 46.00 MB
 	 * (1 test, 2 assertions)
@@ -363,6 +380,7 @@ final class Scraper_Test extends TestCase
 
 	/**
 	 * @group fast
+	 * @small
 	 * @covers parse_releasedate
 	 * Time: 00:00.217, Memory: 46.00 MB
 	 * (1 test, 1 assertion)
@@ -381,6 +399,7 @@ final class Scraper_Test extends TestCase
 
 	/**
 	 * @group fast
+	 * @small
 	 * @covers parse_genre
 	 * Time: 00:00.221, Memory: 46.00 MB
 	 * (1 test, 2 assertions)
@@ -411,6 +430,7 @@ final class Scraper_Test extends TestCase
 
 	/**
 	 * @group fast
+	 * @small
 	 * @covers formatAppDetails
 	 * @uses boolText
 	 * Time: 00:00.223, Memory: 46.00 MB
@@ -534,6 +554,7 @@ final class Scraper_Test extends TestCase
 	
 	/**
 	 * @group fast
+	 * @small
 	 * @covers formatSteamAPI
 	 * @uses regroupArray
 	 * Time: 00:00.219, Memory: 46.00 MB
@@ -657,6 +678,7 @@ final class Scraper_Test extends TestCase
 
 	/**
 	 * @group fast
+	 * @small
 	 * @covers formatSteamLinks
 	 * Time: 00:00.217, Memory: 46.00 MB
 	 * (1 test, 1 assertion)
@@ -669,6 +691,7 @@ final class Scraper_Test extends TestCase
 	
 	/**
 	 * @group fast
+	 * @small
 	 * @covers formatnews
 	 * Time: 00:00.221, Memory: 46.00 MB
 	 * (1 test, 2 assertions)

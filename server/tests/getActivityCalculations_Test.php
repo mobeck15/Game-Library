@@ -16,6 +16,7 @@ final class getActivityCalculations_Test extends TestCase
 {
 	/**
 	 * @group fast
+	 * @small
 	 * @uses getsettings
 	 * @uses get_db_connection
 	 * @covers getActivityCalculations
@@ -95,6 +96,7 @@ final class getActivityCalculations_Test extends TestCase
 
 	/**
 	 * @group fast
+	 * @small
 	 * @covers getActivityCalculations
 	 * @uses getHistoryCalculations
 	 * @uses get_db_connection
@@ -110,6 +112,7 @@ final class getActivityCalculations_Test extends TestCase
    
 	/**
 	 * @group fast
+	 * @small
 	 * @covers getActivityCalculations
 	 * @uses get_db_connection
 	 * @uses getsettings

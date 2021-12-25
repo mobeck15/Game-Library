@@ -824,9 +824,9 @@ foreach ($calculations as $game) {
 		//$fullstatdata[$game['Game_ID']]['Title']=$row['Title'];
 		
 		?>
-		<td class="hidden text"><?php echo $game['Debug']; ?></td>
+		<td class="hidden text"><?php //echo $game['Debug']; ?></td>
 		</tr>
-		<tr class="hidden"><td colspan=100><?php echo $game['Debug']; ?></td></tr>
+		<tr class="hidden"><td colspan=100><?php //echo $game['Debug']; ?></td></tr>
 		<?php
 
 	}

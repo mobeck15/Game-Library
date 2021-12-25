@@ -16,6 +16,7 @@ final class getCalculations_Test extends TestCase
 {
 	/**
 	 * @group fast
+	 * @small
 	 * @covers getCalculations
 	 * Time: 00:00.307, Memory: 48.00 MB
 	 * (1 test, 2 assertions)
@@ -29,7 +30,8 @@ final class getCalculations_Test extends TestCase
 	}
 
 	/**
-	 * @group slow
+	 * @group fast
+	 * @small
 	 * @covers getCalculations
 	 * @uses CalculateGameRow
 	 * @uses PriceCalculation
@@ -63,6 +65,7 @@ final class getCalculations_Test extends TestCase
 	
 	/**
 	 * @group slow
+	 * @large
 	 * @covers getCalculations
 	 * @uses get_db_connection
 	 * @uses PriceCalculation
@@ -97,6 +100,7 @@ final class getCalculations_Test extends TestCase
 	
 	/**
 	 * @group fast
+	 * @small
 	 * @covers getPriceSort
 	 * @uses PriceCalculation
 	 * Time: 00:00.224, Memory: 46.00 MB

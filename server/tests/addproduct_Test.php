@@ -11,14 +11,14 @@ class testaddproduct extends TestCase {
     private function _execute(array $params = array()) {
         $_GET = $params;
         ob_start();
-		require_once $GLOBALS['rootpath']."\addproduct.php";
+		require $GLOBALS['rootpath']."\addproduct.php";
         return ob_get_clean();
     }
 
 	/**
 	 * @group fast
-	 * @covers addproduct.php
-	 * Time: 00:00.230, Memory: 36.00 MB
+	 * @small
+	 * Time: 00:00.027, Memory: 24.00 MB
 	 * (1 test, 1 assertion)
 	 */
     public function test_addproduct_Load() {

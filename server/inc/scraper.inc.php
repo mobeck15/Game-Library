@@ -534,7 +534,8 @@ function formatAppDetails($appdetails,$verbose=true){
 	if(isset($appdetails['data']['recommendations'])){
 		$output .= "<ul>recommendations: ";
 		foreach($appdetails['data']['recommendations'] as $recommendation){
-			$output .= "<li>".$recommendation['total']."</li>";
+			//$output .= "<li>".$recommendation['total']."</li>";
+			$output .= "<li>".$recommendation."</li>";
 		}
 		$output .= "</ul>";
 	}

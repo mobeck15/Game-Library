@@ -6,22 +6,22 @@ $GLOBALS['rootpath'] = $GLOBALS['rootpath'] ?? "htdocs\Game-Library\server";
 /**
  * @group page
  */
-class testActivity extends TestCase {
+class testprototype extends TestCase {
 
     private function _execute(array $params = array()) {
         $_GET = $params;
         ob_start();
-		require $GLOBALS['rootpath']."\activity.php";
+		require $GLOBALS['rootpath'].'\prototype\index.php';
         return ob_get_clean();
     }
 
 	/**
-	 * @group fast
+	 * @group short
 	 * @small
-	 * Time: 00:00.844, Memory: 96.00 MB
+	 * Time: 00:00.019, Memory: 26.00 MB
 	 * (1 test, 1 assertion)
 	 */
-    public function test_Activity_Load() {
+    public function test_prototype_Load() {
         $args = array();
         $this->assertisString($this->_execute($args));
     }

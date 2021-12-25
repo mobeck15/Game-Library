@@ -1,5 +1,5 @@
 <?php
-$GLOBALS['rootpath']="..";
+$GLOBALS['rootpath']=$GLOBALS['rootpath'] ?? "..";
 require_once $GLOBALS['rootpath']."/inc/php.ini.inc.php";
 require_once $GLOBALS['rootpath']."/inc/functions.inc.php";
 
@@ -111,6 +111,7 @@ $sheetURLs['4c']['id']['key']     = "1GV1c51ZGTbhNv_Sr9t7cXhRYFKYTxJp9LLnMqrigQ2
 $sheetURLs["4a"]['activity']      ="$sheet".$sheetURLs['4a']['id']['key']."/edit#gid="  ."1680994573";
 $sheetURLs["4a"]['activitystats'] ="$sheet".$sheetURLs['4a']['id']['key']."/edit#gid="  ."0";
 $sheetURLs["4a"]['historydata']   ="$sheet".$sheetURLs['4a']['id']['key']."/edit#gid="  ."1157015125";
+$sheetURLs["4a"]['dashboard']     ="$sheet".$sheetURLs['4a']['id']['key']."/edit#gid="  ."1610944904";
 $sheetURLs["4a"]['goty']          ="$sheet".$sheetURLs['4a']['id']['key']."/edit#gid="  ."985821080";
 $sheetURLs["4b"]['purchases']     ="$sheet".$sheetURLs['4b']['id']['key']."/edit#gid="  ."1091512546";
 $sheetURLs["4b"]['settings']      ="$sheet".$sheetURLs['4b']['id']['key']."/edit#gid="  ."1151251091";
@@ -119,6 +120,9 @@ $sheetURLs["4b"]['notes']         ="$sheet".$sheetURLs['4b']['id']['key']."/edit
 $sheetURLs["4b"]['chartdata']     ="$sheet".$sheetURLs['4b']['id']['key']."/edit#gid="  ."1876665488";
 $sheetURLs["4b"]['dashboard']     ="$sheet".$sheetURLs['4b']['id']['key']."/edit#gid="  ."2089204547";
 $sheetURLs["4b"]['upgrade']       ="$sheet".$sheetURLs['4b']['id']['key']."/edit#gid="  ."348543386";
+$sheetURLs["4b"]['hardware']      ="$sheet".$sheetURLs['4b']['id']['key']."/edit#gid="  ."918891093";
+$sheetURLs["4b"]['cpi']           ="$sheet".$sheetURLs['4b']['id']['key']."/edit#gid="  ."791406332";
+$sheetURLs["4b"]['export']        ="$sheet".$sheetURLs['4b']['id']['key']."/edit#gid="  ."1802149337";
 //$sheetURLs["4c"]['chartdata']     ="$sheet".$sheetURLs['4b']['id']['key']."/edit#gid="  ."2088545640"; //Deleted Sheet
 $sheetURLs["4c"]['chartdata']     ="$sheet".$sheetURLs['4c']['id']['key']."/edit#gid="  ."1271980432";
 $sheetURLs["4c"]['statistics']    ="$sheet".$sheetURLs['4c']['id']['key']."/edit#gid="  ."658646980";

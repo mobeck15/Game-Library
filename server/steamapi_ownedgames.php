@@ -126,7 +126,7 @@ $resultarray=GetOwnedGames();
 			<td></td>
 		<?php } ?>
 		
-		<td class="hidden"><?php print_r($thisgamedata); ?> </td>
+		<td class="hidden"><?php print_r(($thisgamedata ?? null)); ?> </td>
 		</tr>
 	<?php } ?>
 	

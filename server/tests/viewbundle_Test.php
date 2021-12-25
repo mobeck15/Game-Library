@@ -6,22 +6,22 @@ $GLOBALS['rootpath'] = $GLOBALS['rootpath'] ?? "htdocs\Game-Library\server";
 /**
  * @group page
  */
-class testActivity extends TestCase {
+class testviewbundle extends TestCase {
 
     private function _execute(array $params = array()) {
         $_GET = $params;
         ob_start();
-		require $GLOBALS['rootpath']."\activity.php";
+		require $GLOBALS['rootpath'].'\viewbundle.php';
         return ob_get_clean();
     }
 
 	/**
-	 * @group fast
-	 * @small
-	 * Time: 00:00.844, Memory: 96.00 MB
+	 * @group long
+	 * @medium
+	 * Time: 00:01.337, Memory: 144.00 MB
 	 * (1 test, 1 assertion)
 	 */
-    public function test_Activity_Load() {
+    public function test_viewbundle_Load() {
         $args = array();
         $this->assertisString($this->_execute($args));
     }

@@ -34,6 +34,7 @@ final class PriceCalculation_Test extends TestCase
 	
 	/**
 	 * @group fast
+	 * @small
 	 * @covers PriceCalculation::getPrice
 	 * @uses PriceCalculation::__construct
 	 * Time: 00:00.239, Memory: 46.00 MB
@@ -46,6 +47,7 @@ final class PriceCalculation_Test extends TestCase
 
 	/**
 	 * @group fast
+	 * @small
 	 * @covers PriceCalculation::__construct
 	 * Time: 00:00.218, Memory: 46.00 MB
 	 * (1 test, 4 assertions)
@@ -103,6 +105,7 @@ final class PriceCalculation_Test extends TestCase
 	
 	/**
 	 * @group fast
+	 * @small
 	 * @covers PriceCalculation::getVarianceFromMSRP
 	 * @uses PriceCalculation::__construct
 	 * @uses PriceCalculation::getVariance
@@ -117,6 +120,7 @@ final class PriceCalculation_Test extends TestCase
 
 	/**
 	 * @group fast
+	 * @small
 	 * @covers PriceCalculation::getVarianceFromMSRPpct
 	 * @uses PriceCalculation::__construct
 	 * @uses PriceCalculation::getVariancePct
@@ -131,6 +135,7 @@ final class PriceCalculation_Test extends TestCase
 
 	/**
 	 * @group fast
+	 * @small
 	 * @covers PriceCalculation::getPricePerHourOfTimeToBeat
 	 * @uses PriceCalculation::__construct
 	 * @uses PriceCalculation::getPriceperhour
@@ -145,6 +150,7 @@ final class PriceCalculation_Test extends TestCase
 
 	/**
 	 * @group fast
+	 * @small
 	 * @covers PriceCalculation::getPricePerHourOfTimePlayed
 	 * @uses PriceCalculation::__construct
 	 * @uses PriceCalculation::getPriceperhour
@@ -159,6 +165,7 @@ final class PriceCalculation_Test extends TestCase
 
 	/**
 	 * @group fast
+	 * @small
 	 * @covers PriceCalculation::getPricePerHourOfTimePlayedReducedAfter1Hour
 	 * @uses PriceCalculation::__construct
 	 * @uses PriceCalculation::getLessXhour
@@ -174,6 +181,7 @@ final class PriceCalculation_Test extends TestCase
 
 	/**
 	 * @group fast
+	 * @small
 	 * @covers PriceCalculation::getHoursTo01LessPerHour
 	 * @uses PriceCalculation::__construct
 	 * @uses PriceCalculation::getHourstoXless
@@ -191,6 +199,7 @@ final class PriceCalculation_Test extends TestCase
 
 	/**
 	 * @group fast
+	 * @small
 	 * @covers PriceCalculation::getHoursToDollarPerHour
 	 * @uses PriceCalculation::__construct
 	 * @uses PriceCalculation::getHrsToTarget
@@ -206,6 +215,7 @@ final class PriceCalculation_Test extends TestCase
 	
 	/**
 	 * @group fast
+	 * @small
 	 * @covers PriceCalculation::getVariance
 	 * @uses PriceCalculation::__construct
 	 * Time: 00:00.221, Memory: 46.00 MB
@@ -219,6 +229,7 @@ final class PriceCalculation_Test extends TestCase
 	
 	/**
 	 * @group fast
+	 * @small
 	 * @covers PriceCalculation::getVariancePct
 	 * @uses PriceCalculation::__construct
 	 * Time: 00:00.219, Memory: 46.00 MB
@@ -232,6 +243,7 @@ final class PriceCalculation_Test extends TestCase
 	
 	/**
 	 * @group fast
+	 * @small
 	 * @covers PriceCalculation::getPriceperhour
 	 * @uses PriceCalculation::__construct
 	 * Time: 00:00.221, Memory: 46.00 MB
@@ -248,6 +260,7 @@ final class PriceCalculation_Test extends TestCase
 	
 	/**
 	 * @group fast
+	 * @small
 	 * @covers PriceCalculation::getLessXhour
 	 * @uses PriceCalculation::__construct
 	 * @uses PriceCalculation::getPriceperhour
@@ -265,6 +278,7 @@ final class PriceCalculation_Test extends TestCase
 	
 	/**
 	 * @group fast
+	 * @small
 	 * @covers PriceCalculation::getHourstoXless
 	 * @uses PriceCalculation::__construct
 	 * @uses PriceCalculation::getPriceperhour
@@ -280,6 +294,7 @@ final class PriceCalculation_Test extends TestCase
 	
 	/**
 	 * @group fast
+	 * @small
 	 * @covers PriceCalculation::getHrsToTarget
 	 * @uses PriceCalculation::__construct
 	 * Time: 00:00.220, Memory: 46.00 MB
@@ -299,6 +314,7 @@ final class PriceCalculation_Test extends TestCase
 
 	/**
 	 * @group fast
+	 * @small
 	 * @covers PriceCalculation::printCurrencyFormat
 	 * @uses PriceCalculation::__construct
 	 * Time: 00:00.219, Memory: 46.00 MB
@@ -312,6 +328,7 @@ final class PriceCalculation_Test extends TestCase
 
 	/**
 	 * @group fast
+	 * @small
 	 * @covers PriceCalculation::printPercentFormat
 	 * @uses PriceCalculation::__construct
 	 * Time: 00:00.219, Memory: 46.00 MB
@@ -325,6 +342,7 @@ final class PriceCalculation_Test extends TestCase
 
 	/**
 	 * @group fast
+	 * @small
 	 * @covers PriceCalculation::printDurationFormat
 	 * @uses PriceCalculation::__construct
 	 * @uses timeduration
