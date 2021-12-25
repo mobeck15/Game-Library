@@ -3,6 +3,8 @@ if(isset($GLOBALS[__FILE__])){
 	trigger_error("File already included once ".__FILE__.". ");
 }
 $GLOBALS[__FILE__]=1;
+
+$GLOBALS['rootpath']=$GLOBALS['rootpath'] ?? "..";
 require_once $GLOBALS['rootpath']."/inc/utility.inc.php";
 
 function getActivityCalculations($gameID="",$historytable="",$connection=false){
@@ -135,7 +137,6 @@ function getActivityCalculations($gameID="",$historytable="",$connection=false){
 }
 
 if (basename($_SERVER["SCRIPT_NAME"], '.php') == "getActivityCalculations.inc") {
-	$GLOBALS['rootpath']="..";
 	require_once $GLOBALS['rootpath']."/inc/php.ini.inc.php";
 	require_once $GLOBALS['rootpath']."/inc/functions.inc.php";
 	

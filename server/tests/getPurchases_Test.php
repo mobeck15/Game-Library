@@ -60,7 +60,8 @@ final class getPurchases_Test extends TestCase
     public function test_getPurchases_conn() {
 		$conn=get_db_connection();
         $this->assertisArray(getPurchases("6",$conn));
-   }
+ 		$conn->close();
+  }
    
 	/**
 	 * @group slow

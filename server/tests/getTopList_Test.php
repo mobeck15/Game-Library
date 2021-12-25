@@ -74,6 +74,7 @@ final class getTopList_Test extends TestCase
 		$conn=get_db_connection();
 		//$conn=$this->Connection;
         $this->assertisArray(getTopList("",$conn));
+		$conn->close();
 	}
 
 	/**
@@ -122,6 +123,7 @@ final class getTopList_Test extends TestCase
         $this->assertisArray(getTopList("SteamR",$conn,$calculations));
         $this->assertisArray(getTopList("PYear",$conn,$calculations));
         $this->assertisArray(getTopList("LYear",$conn,$calculations));
+		$conn->close();
 	}
 	
 	/* *
@@ -233,5 +235,6 @@ final class getTopList_Test extends TestCase
 		//ACT
 		//ASSERT
         $this->assertisArray(getTopList($group,$conn,$calculations,$size));
+		$conn->close();
 	}	/* */	
 }

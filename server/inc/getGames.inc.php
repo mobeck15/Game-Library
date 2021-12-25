@@ -3,6 +3,8 @@ if(isset($GLOBALS[__FILE__])){
 	trigger_error("File already included once ".__FILE__.". ");
 }
 $GLOBALS[__FILE__]=1;
+
+$GLOBALS['rootpath']=$GLOBALS['rootpath'] ?? "..";
 require_once $GLOBALS['rootpath']."\inc\getCalculations.inc.php";
 require_once $GLOBALS['rootpath']."\inc\utility.inc.php";
 require_once $GLOBALS['rootpath']."\inc\getsettings.inc.php";
@@ -183,7 +185,6 @@ function CalculateGameRow($row){
 }
 
 if (basename($_SERVER["SCRIPT_NAME"], '.php') == "getGames.inc") {
-	$GLOBALS['rootpath']="..";
 	require_once $GLOBALS['rootpath']."/inc/php.ini.inc.php";
 	require_once $GLOBALS['rootpath']."/inc/functions.inc.php";
 	

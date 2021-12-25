@@ -112,6 +112,7 @@ final class Utility_Test extends TestCase
 		$conn=get_db_connection();
 		$this->assertIsArray(getAllCpi($conn));
 		$this->assertIsArray(getAllCpi());
+		$conn->close();
 	}
 
 	/**
@@ -219,6 +220,7 @@ final class Utility_Test extends TestCase
 
 		$conn=get_db_connection();
 		$this->assertIsArray(getAllItems("",$conn));
+		$conn->close();
 	}
 	
 	/**
@@ -265,8 +267,10 @@ final class Utility_Test extends TestCase
 		//TODO: Add more functional tests for getKeywords
 		$this->assertIsArray(getKeywords());
 		$this->assertIsArray(getKeywords(1));
+		
 		$conn=get_db_connection();
 		$this->assertIsArray(getKeywords("",$conn));
+		$conn->close();
 	}
 
 	/**
@@ -553,6 +557,7 @@ final class Utility_Test extends TestCase
 		$array=getGameDetail(514);
 		$this->assertIsArray($array);
 		$this->assertEquals("The Elder Scrolls V: Skyrim",$array['Title']);
+		$conn->close();
 	}
 
 	/**
@@ -877,5 +882,6 @@ final class Utility_Test extends TestCase
 		$this->assertEquals(6,$gaps['max']);
 		$this->assertEquals(array(2,3, 5),$gaps['gaps']);
 		$this->assertEquals("2, 3, 5, ",$gaps['gapsText']);
+		$conn->close();
 	}
 }

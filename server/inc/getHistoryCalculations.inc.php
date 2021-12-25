@@ -168,7 +168,7 @@ function getHistoryCalculations($gameID="",$connection=false,$start=false,$end=f
 								$exclude[$row['UseGame']][$row['System']] += ($date - $prevstart[$row['GameID']]);
 							}
 						} else {
-							$row['Elapsed']="";
+							$row['Elapsed']=0;
 							$row['prevTotSys']= $total[$row['UseGame']][$row['System']];
 						}
 						break;

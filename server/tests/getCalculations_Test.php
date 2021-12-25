@@ -96,6 +96,7 @@ final class getCalculations_Test extends TestCase
 	public function test_getCalculations_Connection() {
 		$conn=get_db_connection();
         $this->assertisArray(getCalculations("",$conn));
+		$conn->close();
 	}
 	
 	/**

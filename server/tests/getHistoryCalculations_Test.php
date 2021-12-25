@@ -20,16 +20,32 @@ final class getHistoryCalculations_Test extends TestCase
 	 * @covers getHistoryCalculations
 	 * @uses get_db_connection
 	 * @uses getsettings
-	 * Time: 00:01.572, Memory: 104.00 MB
-	 * (1 test, 2 assertions)
+	 * Time: 00:01.572, Memory: 108.00 MB
+	 * (1 test, 12275 assertions)
+	 */
+    public function test_getHistoryCalculations_detail() {
+		$output=getHistoryCalculations();
+        $this->assertisArray($output);
+		foreach($output as $row){
+			$this->assertisNumeric($row['Elapsed']);
+		}
+	}
+
+	/**
+	 * @group fast
+	 * @small
+	 * @covers getHistoryCalculations
+	 * @uses get_db_connection
+	 * @uses getsettings
+	 * Time: 00:00.294, Memory: 50.00 MB
+	 * (1 test, 1 assertion)
 	 */
     public function test_getHistoryCalculations_conn() {
-        $this->assertisArray(getHistoryCalculations());
-
 		$conn=get_db_connection();
         $this->assertisArray(getHistoryCalculations("2",$conn,1422463133,1422517133));
+		$conn->close();
 	}
-   
+	
 	/**
 	 * @group fast
 	 * @small

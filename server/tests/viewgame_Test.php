@@ -32,10 +32,20 @@ class testviewgame extends TestCase {
 	 * Time: 00:07.173, Memory: 276.00 MB
 	 * (1 test, 1 assertion)
 	 */
-    public function test_viewgame_gameid() {
+    public function test_viewgame_nonsteam() {
+        $args = array('id'=>17);
+        $this->assertisString($this->_execute($args));
+    }
+
+	/**
+	 * @group slow
+	 * @medium
+	 * Time: 00:07.173, Memory: 276.00 MB
+	 * (1 test, 1 assertion)
+	 */
+    public function test_viewgame_steamgame() {
         $args = array('id'=>515);
         $this->assertisString($this->_execute($args));
-
     }
 
 	/**

@@ -46,6 +46,7 @@ final class getGames_Test extends TestCase
     public function test_getGames_conn() {
 		$conn=get_db_connection();
 		$this->assertisArray(getGames("",$conn));
+		$conn->close();
 	}
 	
 	/**

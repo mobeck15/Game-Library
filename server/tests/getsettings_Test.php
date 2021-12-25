@@ -41,6 +41,7 @@ final class getsettings_Test extends TestCase
 		
 		$conn=get_db_connection();
 		$this->assertIsArray(getsettings($conn));
+		$conn->close();
     }
 	
 	/**

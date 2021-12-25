@@ -26,4 +26,15 @@ class teststatistics extends TestCase {
         $this->assertisString($this->_execute($args));
     }
 
+	/**
+	 * @group short
+	 * @small
+	 * Time: 00:00.019, Memory: 26.00 MB
+	 * (1 test, 1 assertion) 
+	 */
+    public function test_statistics_fullpage() {
+        $args = array('filter'=>"All",'meta'=>"both");
+        $this->assertisString($this->_execute($args));
+    }
+
 }

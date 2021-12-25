@@ -108,6 +108,7 @@ final class getActivityCalculations_Test extends TestCase
 		//TODO: Add default Settings variable.
 		$conn=get_db_connection();
         $this->assertisArray(getActivityCalculations("2","",$conn));
+		$conn->close();
    }
    
 	/**

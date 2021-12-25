@@ -327,6 +327,7 @@ if (!(isset($_GET['id']) && is_numeric($_GET['id']))) {
 		</details>
 		<?php } 
 		
+		//@codeCoverageIgnoreStart
 		if($showSteamPics){ ?>
 			<details>
 			<summary>steampics</summary>
@@ -334,6 +335,7 @@ if (!(isset($_GET['id']) && is_numeric($_GET['id']))) {
 			//var_dump($steampics); ?>
 			</details>
 		<?php }
+		//@codeCoverageIgnoreEnd
 		
 		//TODO: Check for API data even if there is no store page. Currently skipps if steam redirects to home page.
 		if($result!=false) { ?>
@@ -350,7 +352,6 @@ if (!(isset($_GET['id']) && is_numeric($_GET['id']))) {
 		</td>
 		<?php } ?>
 	</tr>
-	
 	
 	<tr><th height=10>Attributes</th><td>
 		<table><thead><tr><th>Type</th><th>Playable</th><th>Status</th><th>Active</th><th>Count Game</th><th>Achievements</th><th>Cards</th></tr></thead>
