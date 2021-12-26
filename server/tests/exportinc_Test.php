@@ -9,7 +9,6 @@ require_once $GLOBALS['rootpath'].'\inc\export.inc.php';
  */
 class testexportinc extends TestCase {
 
-	//TODO: Export function is exporting all data even if a single table is requested.
     private function _execute(array $params = array()) {
         $_GET = $params;
         ob_start();
@@ -17,6 +16,17 @@ class testexportinc extends TestCase {
         return ob_get_clean();
     }
 
+	/**
+	 * @group untimed
+	 * @small
+	 * @coversNothing
+	 * @doesNotPerformAssertions
+	 * Time
+	 */
+    public function test_Create_Export_placeholder() {
+		//TODO: Export function is exporting all data even if a single table is requested.
+    }
+	
 	/**
 	 * @group fast
 	 * @small

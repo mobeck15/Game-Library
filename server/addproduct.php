@@ -58,14 +58,16 @@ if(isset($_POST['Game_ID'])){
 	$insert_SQL .= $_POST['Developer'].", ";
 	$insert_SQL .= $_POST['Publisher'].");";
 
-		if($GLOBALS['Debug_Enabled']) {trigger_error("Running SQL Query to add new Item: ". $insert_SQL, E_USER_NOTICE);}
+		if(($GLOBALS['Debug_Enabled'] ?? false)) {trigger_error("Running SQL Query to add new Item: ". $insert_SQL, E_USER_NOTICE);}
 		
 		if ($conn->query($insert_SQL) === TRUE) {
-			if($GLOBALS['Debug_Enabled']) { trigger_error("Item record inserted successfully", E_USER_NOTICE);}
+			echo "Record " . $_POST['Game_ID'] . " inserted for " . $_POST['Title'];
+			if(($GLOBALS['Debug_Enabled'] ?? false)) { trigger_error("Item record inserted successfully", E_USER_NOTICE);}
+			echo "<hr>";
 		} else {
 			trigger_error( "Error inserting record: " . $conn->error ,E_USER_ERROR );
+			echo "<hr>";
 		}
-	echo "<hr>";
 }
 
 /*

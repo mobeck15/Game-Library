@@ -42,7 +42,7 @@ echo Get_Header($title);
 		if(!isset($_POST['On_Hold-Count'])) {$_POST['On_Hold-Count']="Off";}
 		if(!isset($_POST['Unplayed-Count'])) {$_POST['Unplayed-Count']="Off";}
 		
-		if($GLOBALS['Debug_Enabled']) {trigger_error('$_POST variable values: <pre>'. var_export($_POST, true) . "</pre>", E_USER_NOTICE);}
+		if(($GLOBALS['Debug_Enabled'] ?? false)) {trigger_error('$_POST variable values: <pre>'. var_export($_POST, true) . "</pre>", E_USER_NOTICE);}
 		
 		foreach ($_POST as $setting_label => $setting_value) {
 			switch ($setting_label) {
@@ -102,11 +102,11 @@ echo Get_Header($title);
 					break;
 			}
 
-			if($GLOBALS['Debug_Enabled']) {trigger_error("Running SQL Query to update $updateType settings: ". $update_SQL, E_USER_NOTICE);}
+			if(($GLOBALS['Debug_Enabled'] ?? false)) {trigger_error("Running SQL Query to update $updateType settings: ". $update_SQL, E_USER_NOTICE);}
 			
 			if ($conn->query($update_SQL) === TRUE) {
 				if(!isset($savesucess)){$savesucess=true;}
-				if($GLOBALS['Debug_Enabled']) { trigger_error("Setting record updated successfully for $setting_label", E_USER_NOTICE);}
+				if(($GLOBALS['Debug_Enabled'] ?? false)) { trigger_error("Setting record updated successfully for $setting_label", E_USER_NOTICE);}
 			} else {
 				$savesucess=false;
 				trigger_error( "Error updating record: " . $conn->error ,E_USER_ERROR );

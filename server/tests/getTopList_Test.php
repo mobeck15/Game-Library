@@ -7,8 +7,6 @@ use PHPUnit\Framework\TestCase;
 $GLOBALS['rootpath'] = $GLOBALS['rootpath'] ?? "htdocs\Game-Library\server";
 require_once $GLOBALS['rootpath']."\inc\getTopList.inc.php";
 
-//Time: 00:32.337, Memory: 292.00 MB
-//(1 test, 13 assertions)
 //Time: 00:54.240, Memory: 292.00 MB
 //(2 tests, 13 assertions)
 /**

@@ -31,9 +31,9 @@ $calculations=reIndexArray($calculations,"Game_ID");
 	<li><a href='<?php echo $_SERVER['SCRIPT_NAME']; ?>?Group=DRM'>DRM</a></li>
 	<li><a href='<?php echo $_SERVER['SCRIPT_NAME']; ?>?Group=OS'>OS</a></li>
 	<li><a href='<?php echo $_SERVER['SCRIPT_NAME']; ?>?Group=Library'>Library</a></li>
-	<li><a href='<?php echo $_SERVER['SCRIPT_NAME']; ?>?Group=Developer'>Developer</a></li>
-	<li><a href='<?php echo $_SERVER['SCRIPT_NAME']; ?>?Group=Publisher'>Publisher</a></li>
-	<li><a href='<?php echo $_SERVER['SCRIPT_NAME']; ?>?Group=AlphaSort'>First Letter</a></li>
+	<li class="hidden"><a href='<?php echo $_SERVER['SCRIPT_NAME']; ?>?Group=Developer'>Developer</a></li>
+	<li class="hidden"><a href='<?php echo $_SERVER['SCRIPT_NAME']; ?>?Group=Publisher'>Publisher</a></li>
+	<li class="hidden"><a href='<?php echo $_SERVER['SCRIPT_NAME']; ?>?Group=AlphaSort'>First Letter</a></li>
 	<li>Rating</li><ul>
 		<li><a href='<?php echo $_SERVER['SCRIPT_NAME']; ?>?Group=Review'>Review</a></li>
 		<li><a href='<?php echo $_SERVER['SCRIPT_NAME']; ?>?Group=Want'>Want</a></li>

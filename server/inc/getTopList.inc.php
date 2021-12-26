@@ -99,7 +99,11 @@ function getTopList($group,$connection=false,$calc=false,$minGroupSize=2){
 							$top['None']['PurchaseSequence']=0;
 							$top['None']['Paid']=0;
 						}
-						$getPurchaseTime=$row['PurchaseDateTime']->getTimestamp();
+						if(isset($row['PurchaseDateTime'])){
+							$getPurchaseTime=$row['PurchaseDateTime']->getTimestamp();
+						} else {
+							$getPurchaseTime=0;
+						}
 						if($getPurchaseTime<$top['None']['PurchaseDate']){
 							$top['None']['PurchaseDate']=$getPurchaseTime; //@codeCoverageIgnore
 						}
@@ -139,7 +143,11 @@ function getTopList($group,$connection=false,$calc=false,$minGroupSize=2){
 					$top[$keyID]['PurchaseSequence']=0;
 					$top[$keyID]['Paid']=0;
 				}
-				$getPurchaseTime=strtotime($row['PurchaseDateTime']->getTimestamp());
+				if(isset($row['PurchaseDateTime'])){
+					$getPurchaseTime=$row['PurchaseDateTime']->getTimestamp();
+				} else {
+					$getPurchaseTime=0;
+				}
 				if($getPurchaseTime<$top[$keyID]['PurchaseDate']){
 					$top[$keyID]['PurchaseDate']=$getPurchaseTime;
 				}
@@ -184,7 +192,11 @@ function getTopList($group,$connection=false,$calc=false,$minGroupSize=2){
 						$top['None']['PurchaseSequence']=0;
 						$top['None']['Paid']=0;
 					}
-					$getPurchaseTime=$row['PurchaseDateTime']->getTimestamp();
+					if(isset($row['PurchaseDateTime'])){
+						$getPurchaseTime=$row['PurchaseDateTime']->getTimestamp();
+					} else {
+						$getPurchaseTime=0;
+					}
 					if($getPurchaseTime<$top['None']['PurchaseDate']){
 						$top['None']['PurchaseDate']=$getPurchaseTime;
 					}
@@ -269,7 +281,7 @@ function getTopList($group,$connection=false,$calc=false,$minGroupSize=2){
 			$GroupList=array();
 			//$d=0;
 			foreach ($calculations as $key => $row) {
-				$set=ceil(($row[$group]/100)*$factor);
+				$set=ceil(((double)$row[$group]/100)*$factor);
 				$GroupID=strtolower($set);
 				if(!in_array($GroupID,$GroupList)){
 					$GroupList[]=$GroupID;
@@ -339,6 +351,7 @@ function getTopList($group,$connection=false,$calc=false,$minGroupSize=2){
 		//case "PWeekNum": //Purchase Week Number
 		//case "LWeek": //Launch Week
 		//case "LWeekNum": //Launch Week Number
+		//TODO: Group by Developer Publisher and Alphasort don't work yet.
 		//case "Developer": 
 		//case "Publisher": 
 		//case "AlphaSort": //First Letter
@@ -594,7 +607,8 @@ if (basename($_SERVER["SCRIPT_NAME"], '.php') == "getTopList.inc") {
 	$title="Top List Inc Test";
 	echo Get_Header($title);
 	
-	$lookupgame=lookupTextBox("Product", "ProductID", "id", "Game", $GLOBALS['rootpath']."/ajax/search.ajax.php");
+	//TODO: only top bundles are valid but all bundles are returned by the lookup prompt.
+	$lookupgame=lookupTextBox("Product", "ProductID", "id", "Trans", $GLOBALS['rootpath']."/ajax/search.ajax.php");
 	echo $lookupgame["header"];
 	if (!(isset($_GET['id']) && is_numeric($_GET['id']))) {
 		?>

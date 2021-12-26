@@ -596,6 +596,7 @@ switch($filter['Sortby']){
 	default:
 		foreach ($calculations as $key => $row) {
 			//TODO: use date object instead on 'LaunchDateValue'
+			//Warning: Undefined array key "AddedDateTime" in D:\xampp\htdocs\Game-Library\server\calculations.php on line 599
 			$Sortby1[$key]  = $row[$filter['Sortby']];
 		}
 		break;
@@ -719,7 +720,11 @@ foreach ($calculations as $game) {
 					break;
 				case "PurchaseDate":
 					?>
-					<td class="numeric"><?php echo str_replace(" ", "&nbsp;", $game['AddedDateTime']->format("n/j/Y g:i:s A"));?></td><?php
+					<td class="numeric"><?php 
+					if(isset($game['AddedDateTime'])) {
+						echo str_replace(" ", "&nbsp;", $game['AddedDateTime']->format("n/j/Y g:i:s A"));
+					}
+					?></td><?php
 					break;
 				case "Achievements":
 					?>
@@ -818,6 +823,9 @@ foreach ($calculations as $game) {
 		//$counters['max2']=0;
 		//$counters['min1']=
 		//$counters['min2']=time();	
+		
+		//TODO: use date objects here
+		//Warning: Undefined array key "AddedDateTime" in D:\xampp\htdocs\Game-Library\server\calculations.php on line 825
 		$counters['data'][]=$game[$filter['Sortby']];
 		
 		//$fullstatdata[$game['Game_ID']]['Game_ID']=$row['Game_ID'];

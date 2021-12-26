@@ -485,7 +485,11 @@ if (!(isset($_GET['id']) && is_numeric($_GET['id']))) {
 		</td>
 		
 		<td><?php echo $calculations[$game['Game_ID']]['LastBeat']; ?></td>
-		<td><?php echo $calculations[$game['Game_ID']]['PurchaseDateTime']->format("n/j/Y g:i:s A"); ?><br>(<?php echo $calculations[$game['Game_ID']]['DaysSincePurchaseDate']; ?> Days)</td>
+		<td><?php 
+		if(isset($calculations[$game['Game_ID']]['PurchaseDateTime'])) {
+			echo $calculations[$game['Game_ID']]['PurchaseDateTime']->format("n/j/Y g:i:s A"); 
+		}
+		?><br>(<?php echo $calculations[$game['Game_ID']]['DaysSincePurchaseDate']; ?> Days)</td>
 		<td><?php echo $calculations[$game['Game_ID']]['LastPlayORPurchase']; ?><br>(<?php echo $calculations[$game['Game_ID']]['DaysSinceLastPlayORPurchase']; ?> Days)</td>
 		</tr></table>
 	</td></tr>
@@ -529,7 +533,7 @@ if (!(isset($_GET['id']) && is_numeric($_GET['id']))) {
 		//echo $game['CPILaunch']; 
 		?></td>
 		<td>$<?php echo $calculations[$game['Game_ID']]['Paid']; ?></td>
-		<td>$<?php echo $calculations[$game['Game_ID']]['BundlePrice']; ?></td>
+		<td>$<?php echo ($calculations[$game['Game_ID']]['BundlePrice'] ?? 0); ?></td>
 		<td>$<?php echo sprintf("%.2f",$calculations[$game['Game_ID']]['SalePrice']); ?></td>
 		<td>$<?php echo sprintf("%.2f",$calculations[$game['Game_ID']]['AltSalePrice']); ?></td>
 	</tr><tr><th>Discount</th>	
@@ -868,54 +872,59 @@ if (!(isset($_GET['id']) && is_numeric($_GET['id']))) {
 	<?php
 	$purchases=getPurchases("",$conn);
 	$purchaseIndex=makeIndex($purchases,"TransID");
+
+	if(!isset($calculations[$game['Game_ID']]['TopBundleIDs'])) {
+		echo "<b>No Bundle Found!</b>";
+	} else {
 	?>
-	
-	<table>
-	<thead><tr><th>Bundle ID</th><th>Title</th><th>Store</th><th>Date</th><th>Paid</th><th>Detail</th><th class="hidden">Debug</th></tr></thead>
-	<?php foreach($calculations[$game['Game_ID']]['TopBundleIDs'] as $key => $bundleID){ ?>
-		<tr>
-		<td><?php echo $bundleID; ?></td>
-		<td><?php echo $purchases[$purchaseIndex[$bundleID]]['Title']; ?></td>
-		<td><?php echo $purchases[$purchaseIndex[$bundleID]]['Store']; ?></td>
-		<td><?php 
-		//echo Date("n/j/Y H:i:s",$purchases[$purchaseIndex[$bundleID]]['PurchaseTimeStamp']); 
-		echo $purchases[$purchaseIndex[$bundleID]]['PrintPurchaseTimeStamp'];
-		?></td>
-		<td><?php echo $purchases[$purchaseIndex[$bundleID]]['Paid']; ?></td>
-		
-		<td>
-		<details>
-		<summary><?php echo $purchases[$purchaseIndex[$bundleID]]['Title']; ?></summary>
-		
 		<table>
-		<thead><tr><th class="hidden">Game ID</th><th>Title</th><th>Type</th><th>Playable</th><th>MSRP</th><th>Want</th><th>HistoricLow</th>
-		<th>Altwant</th><th>Althrs</th><th>SalePrice</th><th>AltSalePrice</th><th class="hidden">Debug</th></tr></thead>
-		
-		<?php //ToDO: Fix this loop so it's not an embedded table. (make the previous cells multirow) 
-		foreach($purchases[$purchaseIndex[$bundleID]]['GamesinBundle'] as $gameinbundle ){ ?>
-				<tr>
-				<td class="hidden"><?php echo $gameinbundle['GameID']; ?></td>
-				<td><a href='viewgame.php?id=<?php echo $gameinbundle['GameID']; ?>'><?php echo $calculations[$gameinbundle['GameID']]['Title']; ?></a></td>
-				<td><?php echo $gameinbundle['Type']; ?></td>
-				<td><?php echo booltext($gameinbundle['Playable']); ?></td>
-				<td class="numeric">$<?php echo sprintf("%.2f",$gameinbundle['MSRP']); ?></td>
-				<td class="numeric"><?php echo $gameinbundle['Want']; ?></td>
-				<td class="numeric">$<?php echo sprintf("%.2f",$gameinbundle['HistoricLow']); ?></td>
-				<td class="numeric">$<?php echo sprintf("%.2f",$gameinbundle['Altwant']); ?></td>
-				<td class="numeric">$<?php echo sprintf("%.2f",$gameinbundle['Althrs']); ?></td>
-				<td class="numeric">$<?php echo sprintf("%.2f",$gameinbundle['SalePrice']); ?></td>
-				<td class="numeric">$<?php echo sprintf("%.2f",$gameinbundle['AltSalePrice']); ?></td>
-				<td class="hidden"><?php //echo $gameinbundle['Debug']; ?></td>
-				</tr>
-		<?php } ?>
+		<thead><tr><th>Bundle ID</th><th>Title</th><th>Store</th><th>Date</th><th>Paid</th><th>Detail</th><th class="hidden">Debug</th></tr></thead>
+		<?php 
+		foreach($calculations[$game['Game_ID']]['TopBundleIDs'] as $key => $bundleID){ ?>
+			<tr>
+			<td><?php echo $bundleID; ?></td>
+			<td><?php echo $purchases[$purchaseIndex[$bundleID]]['Title']; ?></td>
+			<td><?php echo $purchases[$purchaseIndex[$bundleID]]['Store']; ?></td>
+			<td><?php 
+			//echo Date("n/j/Y H:i:s",$purchases[$purchaseIndex[$bundleID]]['PurchaseTimeStamp']); 
+			echo $purchases[$purchaseIndex[$bundleID]]['PrintPurchaseTimeStamp'];
+			?></td>
+			<td><?php echo $purchases[$purchaseIndex[$bundleID]]['Paid']; ?></td>
+			
+			<td>
+			<details>
+			<summary><?php echo $purchases[$purchaseIndex[$bundleID]]['Title']; ?></summary>
+			
+			<table>
+			<thead><tr><th class="hidden">Game ID</th><th>Title</th><th>Type</th><th>Playable</th><th>MSRP</th><th>Want</th><th>HistoricLow</th>
+			<th>Altwant</th><th>Althrs</th><th>SalePrice</th><th>AltSalePrice</th><th class="hidden">Debug</th></tr></thead>
+			
+			<?php //ToDO: Fix this loop so it's not an embedded table. (make the previous cells multirow) 
+			foreach($purchases[$purchaseIndex[$bundleID]]['GamesinBundle'] as $gameinbundle ){ ?>
+					<tr>
+					<td class="hidden"><?php echo $gameinbundle['GameID']; ?></td>
+					<td><a href='viewgame.php?id=<?php echo $gameinbundle['GameID']; ?>'><?php echo $calculations[$gameinbundle['GameID']]['Title']; ?></a></td>
+					<td><?php echo $gameinbundle['Type']; ?></td>
+					<td><?php echo booltext($gameinbundle['Playable']); ?></td>
+					<td class="numeric">$<?php echo sprintf("%.2f",$gameinbundle['MSRP']); ?></td>
+					<td class="numeric"><?php echo $gameinbundle['Want']; ?></td>
+					<td class="numeric">$<?php echo sprintf("%.2f",$gameinbundle['HistoricLow']); ?></td>
+					<td class="numeric">$<?php echo sprintf("%.2f",$gameinbundle['Altwant']); ?></td>
+					<td class="numeric">$<?php echo sprintf("%.2f",$gameinbundle['Althrs']); ?></td>
+					<td class="numeric">$<?php echo sprintf("%.2f",$gameinbundle['SalePrice']); ?></td>
+					<td class="numeric">$<?php echo sprintf("%.2f",$gameinbundle['AltSalePrice']); ?></td>
+					<td class="hidden"><?php //echo $gameinbundle['Debug']; ?></td>
+					</tr>
+			<?php } ?>
+			</table>
+			</details>
+			</td>
+			
+			<td class="hidden"><?php print_r($purchases[$purchaseIndex[$bundleID]]); ?></td>
+			</tr>
+		<?php }	?>
 		</table>
-		</details>
-		</td>
-		
-		<td class="hidden"><?php print_r($purchases[$purchaseIndex[$bundleID]]); ?></td>
-		</tr>
-	<?php } ?>
-	</table>
+	<?php }	?>
 	
 	</td></tr>
 
@@ -1099,7 +1108,7 @@ if (!(isset($_GET['id']) && is_numeric($_GET['id']))) {
 		
 		if($result = $conn->query($sql)){ ?>
 			<table>
-			<thead><tr><th class="hidden">ID</th><th>Game</th><th>Parent Game</th><th>Type</th><th>Playable</th><th>Launch Date</th></tr></thead>
+			<thead><tr><th class="hidden">ID</th><th>Game</th><th>Parent Game</th><th>Type</th><th>Playable</th><th>Launch Date</th><th>Status</th><th>Review</th><th>Last Play</th></tr></thead>
 			<tbody>
 			<?php while($row2 = $result->fetch_assoc()) { ?>
 				<tr>
@@ -1109,6 +1118,9 @@ if (!(isset($_GET['id']) && is_numeric($_GET['id']))) {
 				<td><?php echo $row2['Type']; ?></td>
 				<td><?php echo booltext($row2['Playable']); ?></td>
 				<td><?php echo $row2['LaunchDate']; ?></td>
+				<td><?php echo $calculations[$row2['Game_ID']]['Status']; ?></td>
+				<td><?php echo $calculations[$row2['Game_ID']]['Review']; ?></td>
+				<td><?php echo $calculations[$row2['Game_ID']]['lastplay']; ?></td>
 				</tr>
 			<?php } ?>
 			</tbody>

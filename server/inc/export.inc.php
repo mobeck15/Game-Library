@@ -41,7 +41,7 @@ function Create_Export($host,$user,$pass,$name,  $tables=false, $backup_name=fal
 	foreach($target_tables as $table)
 	{
 		$result         =   $mysqli->query('SELECT * FROM '.$table);  
-		echo "Table: ". $table; var_dump($result);
+		//echo "Table: ". $table; var_dump($result);
 		$fields_amount  =   $result->field_count;  
 		$rows_num       =   $mysqli->affected_rows;     
 		$res            =   $mysqli->query('SHOW CREATE TABLE '.$table); 

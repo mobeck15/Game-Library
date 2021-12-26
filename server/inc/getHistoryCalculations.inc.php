@@ -236,6 +236,8 @@ if (basename($_SERVER["SCRIPT_NAME"], '.php') == "getHistoryCalculations.inc") {
 	$title="History Calculations Inc Test";
 	echo Get_Header($title);
 	
+	//TODO: lookup by game is not appropriate. 
+	//TODO: ID entered is not the ID displayed (Sorting issue?)
 	$lookupgame=lookupTextBox("History", "HistoryID", "id", "History", $GLOBALS['rootpath']."/ajax/search.ajax.php");
 	echo $lookupgame["header"];
 	if (!(isset($_GET['id']) && is_numeric($_GET['id']))) {

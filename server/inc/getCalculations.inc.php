@@ -214,7 +214,12 @@ function getCalculations($gameID="",$connection=false,$start=false,$end=false){
 				}
 			}
 			
-			$game['DaysSincePurchaseDate']=daysSinceDate($game['PurchaseDateTime']->getTimestamp());
+			//TODO: Lots of code freaks out for games without and associated item entry (should never happen any way but needs graceful failure)
+			if(isset($game['PurchaseDateTime'])) {
+				$game['DaysSincePurchaseDate']=daysSinceDate($game['PurchaseDateTime']->getTimestamp());
+			} else {
+				$game['DaysSincePurchaseDate']=0;
+			}
 
 			$game['SalePrice']=0;
 			$game['SalePriceFormula']="";
@@ -260,7 +265,11 @@ function getCalculations($gameID="",$connection=false,$start=false,$end=false){
 			}
 			*/
 			
-			$game['LastPlayORPurchaseValue']=max($game['lastplaySort'],$game['AddedDateTime']->getTimestamp());
+			if(isset($game['AddedDateTime'])) {
+				$game['LastPlayORPurchaseValue']=max($game['lastplaySort'],$game['AddedDateTime']->getTimestamp());
+			} else {
+				$game['LastPlayORPurchaseValue']=max($game['lastplaySort'],0);
+			}
 			$game['LastPlayORPurchase']=getCleanStringDate($game['LastPlayORPurchaseValue']);
 			$game['DaysSinceLastPlay']=daysSinceDate($game['lastplaySort']);
 			$game['DaysSinceLastPlayORPurchase']=daysSinceDate($game['LastPlayORPurchaseValue']);
