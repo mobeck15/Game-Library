@@ -11,7 +11,7 @@ class teststatistics extends TestCase {
     private function _execute(array $params = array()) {
         $_GET = $params;
         ob_start();
-		require $GLOBALS['rootpath'].'\statistics.php';
+		require $GLOBALS['rootpath'].'/statistics.php';
         return ob_get_clean();
     }
 

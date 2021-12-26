@@ -7,7 +7,7 @@ if(isset($GLOBALS[__FILE__])){
 $GLOBALS[__FILE__]=1;
 
 $GLOBALS['rootpath'] = $GLOBALS['rootpath'] ?? "..";
-require_once $GLOBALS['rootpath']."\inc\PriceCalculation.class.php";
+require_once $GLOBALS['rootpath']."/inc/PriceCalculation.class.php";
 
 function getCalculations($gameID="",$connection=false,$start=false,$end=false){
 	

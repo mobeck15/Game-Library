@@ -4,10 +4,10 @@ if(isset($GLOBALS[__FILE__])){
 }
 $GLOBALS[__FILE__]=1;
 $GLOBALS['rootpath']= $GLOBALS['rootpath'] ?? "..";
-require_once $GLOBALS['rootpath']."\inc\utility.inc.php";
-require_once $GLOBALS['rootpath']."\inc\getGames.inc.php";
-require_once $GLOBALS['rootpath']."\inc\getActivityCalculations.inc.php";
-require_once $GLOBALS['rootpath']."\inc\getsettings.inc.php";
+require_once $GLOBALS['rootpath']."/inc/utility.inc.php";
+require_once $GLOBALS['rootpath']."/inc/getGames.inc.php";
+require_once $GLOBALS['rootpath']."/inc/getActivityCalculations.inc.php";
+require_once $GLOBALS['rootpath']."/inc/getsettings.inc.php";
 
 function getPurchases($transID="",$connection=false,$items=false,$games=false){
 	if($connection==false){
