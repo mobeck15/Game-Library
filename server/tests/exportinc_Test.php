@@ -2,12 +2,14 @@
 declare(strict_types=1);
 use PHPUnit\Framework\TestCase;
 $GLOBALS['rootpath'] = $GLOBALS['rootpath'] ?? "htdocs\Game-Library\server";
+require_once $GLOBALS['rootpath'].'\inc\export.inc.php';
 
 /**
- * @group page
+ * @group include
  */
-class testexport extends TestCase {
+class testexportinc extends TestCase {
 
+	//TODO: Export function is exporting all data even if a single table is requested.
     private function _execute(array $params = array()) {
         $_GET = $params;
         ob_start();
@@ -20,7 +22,7 @@ class testexport extends TestCase {
 	 * @small
 	 * Time: 00:00.017, Memory: 26.00 MB
 	 * (1 test, 1 assertion)
-	 */
+	 * /
     public function test_export_Load() {
         $args = array();
         $this->assertisString($this->_execute($args));
@@ -48,8 +50,23 @@ class testexport extends TestCase {
 		$tables = array('gl_cpi');
 		
         $output=Export_Database($servername,$username,$password,$dbname,$tables);
-		$this->assertisString();
+		$this->assertisString($output);
     }
 	/* */
 
+	/**
+	 * @group untimed
+	 * @small
+	 * Time
+	 * /
+    public function test_Create_Export() {
+		require $GLOBALS['rootpath'].'\inc\auth.inc.php';
+		//$tables = array('gl_history','gl_items','gl_keywords','gl_products','gl_settings','gl_status','gl_transactions','gl_cpi');
+		//$tables = array('gl_cpi');
+		$tables = 'gl_cpi';
+		
+        $output=Export_Database($servername,$username,$password,$dbname,$tables);
+		$this->assertisString($output);
+    }
+	/* */
 }

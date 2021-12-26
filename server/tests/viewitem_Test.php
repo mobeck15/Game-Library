@@ -26,4 +26,24 @@ class testviewitem extends TestCase {
         $this->assertisString($this->_execute($args));
     }
 
+	/**
+	 * @group long
+	 * @medium
+	 * Time 
+	 */
+    public function test_viewitem_itemid() {
+        $args = array('id'=>13);
+        $this->assertisString($this->_execute($args));
+    }
+
+	/**
+	 * @group long
+	 * @medium
+	 * Time 
+	 */
+    public function test_viewitem_edit() {
+        $args = array('id'=>14,'edit'=>1);
+        $this->assertisString($this->_execute($args));
+    }
+
 }

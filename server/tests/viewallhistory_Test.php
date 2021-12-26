@@ -26,4 +26,14 @@ class testviewallhistory extends TestCase {
         $this->assertisString($this->_execute($args));
     }
 
+	/**
+	 * @group untimed
+	 * @small
+	 * Time: 
+	 */
+    public function test_viewallhistory_history() {
+        $args = array('num'=>30,'Sort'=>"Played");
+        $this->assertisString($this->_execute($args));
+    }
+
 }

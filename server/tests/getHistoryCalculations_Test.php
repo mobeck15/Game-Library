@@ -42,7 +42,9 @@ final class getHistoryCalculations_Test extends TestCase
 	 */
     public function test_getHistoryCalculations_conn() {
 		$conn=get_db_connection();
-        $this->assertisArray(getHistoryCalculations("2",$conn,1422463133,1422517133));
+		$start=strtotime("2021-01-01");
+		$end=strtotime("2021-01-31");
+		$this->assertisArray(getHistoryCalculations("2",$conn,$start,$end));
 		$conn->close();
 	}
 	

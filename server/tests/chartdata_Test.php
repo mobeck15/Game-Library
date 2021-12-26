@@ -26,4 +26,24 @@ class testchartdata extends TestCase {
         $this->assertisString($this->_execute($args));
     }
 
+	/**
+	 * @group untimed
+	 * @medium
+	 * Time
+	 */
+    public function test_chartdata_year() {
+        $args = array('group'=>"year");
+        $this->assertisString($this->_execute($args));
+    }
+
+	/**
+	 * @group untimed
+	 * @medium
+	 * Time
+	 */
+    public function test_chartdata_detail() {
+        $args = array('group'=>"month",'countfree'=>0,'detail'=>"2010-5");
+        $this->assertisString($this->_execute($args));
+    }
+
 }
