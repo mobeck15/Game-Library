@@ -1,5 +1,5 @@
 <?php
-$GLOBALS['rootpath']=".";
+$GLOBALS['rootpath']=$GLOBALS['rootpath'] ?? ".";
 require_once $GLOBALS['rootpath']."/inc/php.ini.inc.php";
 require_once $GLOBALS['rootpath']."/inc/functions.inc.php";
 
@@ -40,14 +40,16 @@ if(isset($_POST['TransID'])){
 	$insert_SQL .= $_POST['Sequence'].", ";
 	$insert_SQL .= $_POST['Library'].");";
 
-		if($GLOBALS['Debug_Enabled']) {trigger_error("Running SQL Query to add new Item: ". $insert_SQL, E_USER_NOTICE);}
+		if(($GLOBALS['Debug_Enabled'] ?? false)) {trigger_error("Running SQL Query to add new Item: ". $insert_SQL, E_USER_NOTICE);}
 		
 		if ($conn->query($insert_SQL) === TRUE) {
-			if($GLOBALS['Debug_Enabled']) { trigger_error("Item record inserted successfully", E_USER_NOTICE);}
+			echo "Record " . $_POST['ItemID'] . " inserted for " . $_POST['Notes'];
+			if(($GLOBALS['Debug_Enabled'] ?? false)) { trigger_error("Item record inserted successfully", E_USER_NOTICE);}
+			echo "<hr>";
 		} else {
 			trigger_error( "Error inserting record: " . $conn->error ,E_USER_ERROR );
+			echo "<hr>";
 		}
-	echo "<hr>";
 }
 
 if(isset($_POST['Product_ckbx'])){
@@ -65,14 +67,16 @@ if(isset($_POST['Product_ckbx'])){
 	$insert_SQL .= $_POST['ParentGameID'].", ";
 	$insert_SQL .= $_POST['ParentGame']."); ";
 
-		if($GLOBALS['Debug_Enabled']) {trigger_error("Running SQL Query to add new Item: ". $insert_SQL, E_USER_NOTICE);}
+		if(($GLOBALS['Debug_Enabled'] ?? false)) {trigger_error("Running SQL Query to add new Item: ". $insert_SQL, E_USER_NOTICE);}
 		
 		if ($conn->query($insert_SQL) === TRUE) {
-			if($GLOBALS['Debug_Enabled']) { trigger_error("Item record inserted successfully", E_USER_NOTICE);}
+			echo "Record " . $_POST['Game_ID'] . " inserted for " . $_POST['Title'];
+			if(($GLOBALS['Debug_Enabled'] ?? false)) { trigger_error("Item record inserted successfully", E_USER_NOTICE);}
+			echo "<hr>";
 		} else {
 			trigger_error( "Error inserting record: " . $conn->error ,E_USER_ERROR );
+			echo "<hr>";
 		}
-	echo "<hr>";
 }
 
 //TODO: Enforce required fields

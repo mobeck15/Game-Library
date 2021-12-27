@@ -1,13 +1,20 @@
 <?php
 //TODO: Update getTopList function to GL5 version
-
-//DONE: add control function to prevent loading multiple times.
 if(isset($GLOBALS[__FILE__])){
 	trigger_error("File already included once ".__FILE__.". ");
 }
 $GLOBALS[__FILE__]=1;
 
-function getTopList($group,$connection=false,$calc=false){
+$GLOBALS['rootpath']=$GLOBALS['rootpath'] ?? "..";
+require_once $GLOBALS['rootpath']."/inc/getCalculations.inc.php";
+require_once $GLOBALS['rootpath']."/inc/getGames.inc.php";
+require_once $GLOBALS['rootpath']."/inc/utility.inc.php";
+require_once $GLOBALS['rootpath']."/inc/getsettings.inc.php";
+require_once $GLOBALS['rootpath']."/inc/getHistoryCalculations.inc.php";
+require_once $GLOBALS['rootpath']."/inc/getActivityCalculations.inc.php";
+require_once $GLOBALS['rootpath']."/inc/getPurchases.inc.php";
+
+function getTopList($group,$connection=false,$calc=false,$minGroupSize=2){
 	if($connection==false){
 		require $GLOBALS['rootpath']."/inc/auth.inc.php";
 		$conn = new mysqli($servername, $username, $password, $dbname);
@@ -66,7 +73,7 @@ function getTopList($group,$connection=false,$calc=false){
 					}
 					$getPurchaseTime=$calculations[$row['ProductID']]['PurchaseDateTime']->getTimestamp();
 					if($getPurchaseTime<$top[$keyID]['PurchaseDate']){
-						$top[$keyID]['PurchaseDate']=$getPurchaseTime;
+						$top[$keyID]['PurchaseDate']=$getPurchaseTime; //@codeCoverageIgnore
 					}
 					
 					$top[$keyID]['Paid']+=$calculations[$row['ProductID']]['AltSalePrice'];
@@ -92,9 +99,13 @@ function getTopList($group,$connection=false,$calc=false){
 							$top['None']['PurchaseSequence']=0;
 							$top['None']['Paid']=0;
 						}
-						$getPurchaseTime=$row['PurchaseDateTime']->getTimestamp();
+						if(isset($row['PurchaseDateTime'])){
+							$getPurchaseTime=$row['PurchaseDateTime']->getTimestamp();
+						} else {
+							$getPurchaseTime=0; //@codeCoverageIgnore
+						}
 						if($getPurchaseTime<$top['None']['PurchaseDate']){
-							$top['None']['PurchaseDate']=$getPurchaseTime;
+							$top['None']['PurchaseDate']=$getPurchaseTime; //@codeCoverageIgnore
 						}
 						
 						
@@ -107,8 +118,10 @@ function getTopList($group,$connection=false,$calc=false){
 				}
 				/* */
 			} else {
+				//@codeCoverageIgnoreStart
 				$keywords=false;
 				trigger_error("SQL Query Failed: " . mysqli_error($conn) . "</br>Query: ". $sql);
+				//@codeCoverageIgnoreEnd
 			}
 	
 			break;
@@ -117,20 +130,24 @@ function getTopList($group,$connection=false,$calc=false){
 			foreach ($calculations as $key => $row) {
 				$keyID=strtolower($row['Series']);
 				if(!in_array($keyID,$SeriesList)){
-					$SeriesList[]=$keyID;
+					$SeriesList[$keyID]=$keyID;
 					$top[$keyID]['ID']=$keyID;
 					$top[$keyID]['Title']=$row['Series'];
 					//$top[$keyID]['numGames']=0;
 					//$top[$keyID]['Debug']="";
 				}
-				
+				//TODO: Something is wrong with the date value in Series
 				if(!isset($top[$keyID]['PurchaseDate'])){
-					$top[$keyID]['PurchaseDate']=0;
+					$top[$keyID]['PurchaseDate']=time();
 					$top[$keyID]['PurchaseTime']=0;
 					$top[$keyID]['PurchaseSequence']=0;
 					$top[$keyID]['Paid']=0;
 				}
-				$getPurchaseTime=strtotime($row['PurchaseDate']);
+				if(isset($row['PurchaseDateTime'])){
+					$getPurchaseTime=$row['PurchaseDateTime']->getTimestamp();
+				} else {
+					$getPurchaseTime=0; //@codeCoverageIgnore
+				}
 				if($getPurchaseTime<$top[$keyID]['PurchaseDate']){
 					$top[$keyID]['PurchaseDate']=$getPurchaseTime;
 				}
@@ -151,30 +168,35 @@ function getTopList($group,$connection=false,$calc=false){
 				//$top[$keyID]['RawData'][]=$row;
 			}
 			
-			/* */
+			/* Don't Include Series with only one game */
 			foreach ($top as $key => $row) {
 				//if(count($row['Products'])>1) {
-				if($row['numGames']>1) {
+				if($row['numGames']>$minGroupSize-1) {
 					$Sortby1[$key]  = strtolower($row['ID']);
 				} else {
 					unset($top[$key]);
+					unset($SeriesList[$keyID]);
 				}
 			}
 			array_multisort($Sortby1, SORT_ASC, $top);
 			/* */
 			
-			/* Single Game */
+			/* Create a recored for all Single Games */
 			foreach ($calculations as $key => $row) {
 				if(!in_array($keyID,$SeriesList)){
 					$top['None']['ID']="None";
 					$top['None']['Title']="Single Game";
 					if(!isset($top['None']['PurchaseDate'])){
-						$top['None']['PurchaseDate']=0;
+						$top['None']['PurchaseDate']=time();
 						$top['None']['PurchaseTime']=0;
 						$top['None']['PurchaseSequence']=0;
 						$top['None']['Paid']=0;
 					}
-					$getPurchaseTime=strtotime($row['PurchaseDate']);
+					if(isset($row['PurchaseDateTime'])){
+						$getPurchaseTime=$row['PurchaseDateTime']->getTimestamp();
+					} else {
+						$getPurchaseTime=0; //@codeCoverageIgnore
+					}
 					if($getPurchaseTime<$top['None']['PurchaseDate']){
 						$top['None']['PurchaseDate']=$getPurchaseTime;
 					}
@@ -210,10 +232,6 @@ function getTopList($group,$connection=false,$calc=false){
 					
 					$top[$StoreID]['Paid']+=$row['Paid'];
 					$top[$StoreID]['Products']=array_merge((array)$top[$StoreID]['Products'],(array)$row['ProductsinBunde']);
-					if($StoreID=="humble store"){
-						//var_dump($row['ProductsinBunde']);
-					}
-					
 				}
 				/* Singles */
 				/* */
@@ -225,14 +243,6 @@ function getTopList($group,$connection=false,$calc=false){
 			$GroupList=array();
 			//$d=0;
 			foreach ($calculations as $key => $row) {
-				//if($d==0){
-				//	var_dump($row);
-				//	$d=1;
-				//}
-				
-				if(!isset($row[$group])){
-					var_dump($row); echo "<br>";
-				}
 				foreach ($row[$group] as $setkey => $set) {
 					$GroupID=strtolower($set);
 					if(!in_array($GroupID,$GroupList)){
@@ -271,11 +281,7 @@ function getTopList($group,$connection=false,$calc=false){
 			$GroupList=array();
 			//$d=0;
 			foreach ($calculations as $key => $row) {
-				//if($d==0){
-				//	var_dump($row);
-				//	$d=1;
-				//}
-				$set=ceil(($row[$group]/100)*$factor);
+				$set=ceil(((double)$row[$group]/100)*$factor);
 				$GroupID=strtolower($set);
 				if(!in_array($GroupID,$GroupList)){
 					$GroupList[]=$GroupID;
@@ -300,24 +306,25 @@ function getTopList($group,$connection=false,$calc=false){
 		case "LMonth": //Launch Month
 		case "PMonthNum": //Purchase Month Number
 		case "LMonthNum": //Launch Month Number
-			if($group=="PYear" OR $group=="LYear") {$dateformat="Y";}
+			if($group=="PYear"     OR $group=="LYear") {$dateformat="Y";}
 			if($group=="PMonthNum" OR $group=="LMonthNum") {$dateformat="m";}
-			if($group=="PMonth" OR $group=="LMonth") {$dateformat="Y-m";}
+			if($group=="PMonth"    OR $group=="LMonth") {$dateformat="Y-m";}
 			
-			if($group=="PYear" OR $group=="PMonth" OR $group=="PMonthNum"){$group="PurchaseDate";}
+			if($group=="PYear" OR $group=="PMonth" OR $group=="PMonthNum"){$group="PurchaseDateTime";}
 			if($group=="LYear" OR $group=="LMonth" OR $group=="LMonthNum"){$group="LaunchDate";}
-			
 			
 			$BundleList=array();
 			$GroupList=array();
 			foreach ($calculations as $key => $row) {
 				if($group=="LaunchDate") {
 					//$usedate=strtotime( $row[$group]);
-					$GroupID=date($dateformat,strtotime($row[$group]));
-					//var_dump($row[$group]);
+					$GroupID=date($dateformat,$row[$group]->getTimestamp());
+				} elseif ($group=="PurchaseDateTime") {
+					$GroupID=date($dateformat,$row[$group]->getTimestamp());
 				} else {
 					//$usedate=$row[$group];
-					$GroupID=date($dateformat,0+$row[$group]);
+					//Unreachable
+					$GroupID=date($dateformat,0+$row[$group]); //@codeCoverageIgnore
 				}
 				if(!in_array($GroupID,$GroupList)){
 					$GroupList[]=$GroupID;
@@ -344,13 +351,12 @@ function getTopList($group,$connection=false,$calc=false){
 		//case "PWeekNum": //Purchase Week Number
 		//case "LWeek": //Launch Week
 		//case "LWeekNum": //Launch Week Number
+		//TODO: Group by Developer Publisher and Alphasort don't work yet.
 		//case "Developer": 
 		//case "Publisher": 
 		//case "AlphaSort": //First Letter
 			break;
 	}
-	
-	//echo "FILE NAME: " . $_SERVER['SCRIPT_NAME'];
 	
 	if($connection==false){
 		$conn->close();	
@@ -363,7 +369,8 @@ function getTopList($group,$connection=false,$calc=false){
 	//$TotalHours=0;
 	
 	foreach ($top as $key => &$row) {
-		$row['ModPaid']=$row['Paid']; // Need to acually calulate this
+		//TODO: Need to acually calulate ModPaid
+		$row['ModPaid']=$row['Paid']; 
 		$row['ItemCount']=0;
 		$row['GameCount']=0;
 		$totalWant=0;
@@ -525,32 +532,34 @@ function getTopList($group,$connection=false,$calc=false){
 		$total['UnplayedInactiveCount']+=$row['UnplayedInactiveCount'];
 
 		if(!isset($total['leastPlay']['ID'])){
-			if($row['leastPlay']['ID']<>""){
+			if($row['leastPlay']['ID']==""){
+				//@codeCoverageIgnoreStart
+				$total['leastPlay']['ID']=null;	
+				$total['leastPlay']['Name']=null;
+				$total['leastPlay']['hours']=null;
+				//@codeCoverageIgnoreEnd
+			} else {
 				$total['leastPlay']['ID']=$row['leastPlay']['ID'];
 				$total['leastPlay']['Name']=$row['leastPlay']['Name'];
 				$total['leastPlay']['hours']=$row['leastPlay']['hours'];
-			} else {
-				$total['leastPlay']['ID']=null;
-				$total['leastPlay']['Name']=null;
-				$total['leastPlay']['hours']=null;
 			}
-		//Notice: Undefined index: leastPlay in C:\Users\Guerrero\Dropbox\Web\UniServerZ\www\gl5\functions2.inc.php on line 255
 		} elseif($row['leastPlay']['hours']<$total['leastPlay']['hours'] && $row['leastPlay']['ID']<>""){
 			$total['leastPlay']['ID']=$row['leastPlay']['ID'];
 			$total['leastPlay']['Name']=$row['leastPlay']['Name'];
 			$total['leastPlay']['hours']=$row['leastPlay']['hours'];
 		}
 		if(!isset($total['mostPlay']['ID'])){
-			if($row['mostPlay']['ID']<>"") {
-				$total['mostPlay']['ID']=$row['mostPlay']['ID'];
-				$total['mostPlay']['Name']=$row['mostPlay']['Name'];
-				$total['mostPlay']['hours']=$row['mostPlay']['hours'];
-			} else {
+			if($row['mostPlay']['ID']=="") {
+				//@codeCoverageIgnoreStart
 				$total['mostPlay']['ID']=null;
 				$total['mostPlay']['Name']=null;
 				$total['mostPlay']['hours']=null;
+				//@codeCoverageIgnoreEnd
+			} else {
+				$total['mostPlay']['ID']=$row['mostPlay']['ID'];
+				$total['mostPlay']['Name']=$row['mostPlay']['Name'];
+				$total['mostPlay']['hours']=$row['mostPlay']['hours'];
 			}
-		//Notice: Undefined index: mostPlay in C:\Users\Guerrero\Dropbox\Web\UniServerZ\www\gl5\functions2.inc.php on line 265
 		} elseif($row['mostPlay']['hours']>$total['mostPlay']['hours'] && $row['mostPlay']['ID']<>""){
 			$total['mostPlay']['ID']=$row['mostPlay']['ID'];
 			$total['mostPlay']['Name']=$row['mostPlay']['Name'];
@@ -562,9 +571,6 @@ function getTopList($group,$connection=false,$calc=false){
 	$total['PayHr']=$total['Paid']/($total['TotalHours']/60/60);
 	$total['BeatAvg']=$total['PctPlayed']=(1-$total['UnplayedCount']/$total['GameCount'])*100;
 	$total['BeatAvg2']=array_sum($total['PctiPlayed2source']) / count($total['PctiPlayed2source']);
-	//echo "BeatAvg: " . $total['BeatAvg']. "<br>";
-	//echo "PctPlayed: " . $total['PctPlayed']. "<br>";
-	//echo "BeatAvg2: " . $total['BeatAvg2']. "<br>";
 	
 	$total['AvgWant']=$GrandTotalWant/$total['GameCount'];
 	$total['AvgCost']=$total['Paid']/$total['GameCount'];
@@ -594,14 +600,15 @@ function getTopList($group,$connection=false,$calc=false){
 }
 
 if (basename($_SERVER["SCRIPT_NAME"], '.php') == "getTopList.inc") {
-	$GLOBALS['rootpath']="..";
+	$GLOBALS['rootpath']=$GLOBALS['rootpath'] ?? "..";
 	require_once $GLOBALS['rootpath']."/inc/php.ini.inc.php";
 	require_once $GLOBALS['rootpath']."/inc/functions.inc.php";
 	
 	$title="Top List Inc Test";
 	echo Get_Header($title);
 	
-	$lookupgame=lookupTextBox("Product", "ProductID", "id", "Game", $GLOBALS['rootpath']."/ajax/search.ajax.php");
+	//TODO: only top bundles are valid but all bundles are returned by the lookup prompt.
+	$lookupgame=lookupTextBox("Product", "ProductID", "id", "Trans", $GLOBALS['rootpath']."/ajax/search.ajax.php");
 	echo $lookupgame["header"];
 	if (!(isset($_GET['id']) && is_numeric($_GET['id']))) {
 		?>

@@ -28,8 +28,6 @@ function timeduration($time,$inputunit="hours"){
 		case "seconds":
 	}
 
-	//echo "Time: "; var_dump($time);
-	if($time=="") {$time=0;}
 	$s=$time % 60;
     $m=(($time-$s) / 60) % 60;
     $h=floor($time / 3600);
@@ -56,8 +54,10 @@ function boolText($boolValue){
 /* 
  * Reads PHP memory usage and returns a string formatted in KB or MB.
  */
-function read_memory_usage() {
-	$mem_usage = memory_get_usage(true);
+function read_memory_usage($mem_usage=false) {
+	if($mem_usage===false) {
+		$mem_usage = memory_get_usage(true);
+	}
    
 	if ($mem_usage < 1024)
 		return $mem_usage." b";
@@ -69,9 +69,7 @@ function read_memory_usage() {
 
 function getAllCpi($connection=false){
 	if($connection==false){
-		require_once "inc/auth.inc.php";
-		//$conn = new mysqli($servername, $username, $password, $dbname);
-$conn=get_db_connection();
+		$conn=get_db_connection();
 	} else {
 		$conn = $connection;
 	}
@@ -89,7 +87,7 @@ $conn=get_db_connection();
 			$cpi['Current']=$row['cpi'];
 		}
 	} else {
-		trigger_error("SQL Query Failed: " . mysqli_error($conn) . "</br>Query: ". $sql);
+		trigger_error("SQL Query Failed: " . mysqli_error($conn) . "</br>Query: ". $sql); // @codeCoverageIgnore
 	}
 	if($connection==false){
 		$conn->close();	
@@ -97,34 +95,25 @@ $conn=get_db_connection();
 	return $cpi;
 }
 
-
 function get_db_connection(){
-	
 	require $GLOBALS['rootpath']."/inc/auth.inc.php";
 	
 	$conn = new mysqli($servername, $username, $password, $dbname);
 
 	/* check connection */
 	if (mysqli_connect_errno()) {
-		printf("Connect failed: %s\n", mysqli_connect_error());
-		exit();
+		trigger_error("Connect failed: %s\n", mysqli_connect_error()); // @codeCoverageIgnore
+		exit(); // @codeCoverageIgnore
 	}
 
 	/* change character set to utf8 */
 	if (!$conn->set_charset("utf8")) {
-		printf("Error loading character set utf8: %s\n", $conn->error);
-	} else {
-		//printf("Current character set: %s\n", $conn->character_set_name());
+		trigger_error("Error loading character set utf8: %s\n", $conn->error); // @codeCoverageIgnore
 	}
 	
 	return $conn;
 
 }
-
-/*
- *  GL5 Version - Need to re-work for GL6
- */
-//TODO: Update to GL6
 
 function makeIndex($array,$indexKey){
 	$errorlist=array();
@@ -154,9 +143,10 @@ function getAllItems($gameID="",$connection=false){
 		$sql .= " OR ParentProductID = " . $gameID ;
 	}
 	$sql .= " order by `DateAdded` ASC, `Time Added` ASC, `Sequence` ASC";
+	
 	if($result = $conn->query($sql)){
-		$cpi=getAllCpi($conn);
-
+		//$cpi=getAllCpi($conn); //unused?
+		$items=array();
 		while($row = $result->fetch_assoc()) {
 			
 			$date=strtotime($row['DateAdded']);
@@ -167,7 +157,7 @@ function getAllItems($gameID="",$connection=false){
 			}
 			
 			$time = strtotime($row['Time Added']);
-			if(date("H:i:s",$time) == "00:00:00") {
+			if(date("H:i:s",$time) == "00:00:00" OR $time == false) {
 				$row['Time Added']= "";
 			} else {
 				$row['Time Added']= date("H:i:s",$time) ;
@@ -225,16 +215,17 @@ function getAllItems($gameID="",$connection=false){
 
 function getKeywords($gameID="",$connection=false){
 	if($connection==false){
-		require_once "inc/auth.inc.php";
+		require $GLOBALS['rootpath']."/inc/auth.inc.php";
 		$conn = new mysqli($servername, $username, $password, $dbname);
 	} else {
 		$conn = $connection;
 	}
 	$sql="SELECT * FROM `gl_keywords` ";
 	if ($gameID <> "" ) {
-		$sql .= "WHERE `ProductID` = " . $game['Game_ID'];
+		$sql .= "WHERE `ProductID` = " . $gameID;
 	}
 	if($result = $conn->query($sql)) {
+		$keywords=array();
 		while($row2 = $result->fetch_assoc()) {
 			$keywords[$row2['ProductID']][$row2['KwType']][]=$row2['Keyword'] ;
 		}
@@ -246,7 +237,6 @@ function getKeywords($gameID="",$connection=false){
 		$conn->close();	
 	}	
 	return $keywords;
-	
 }
 
 function regroupArray($array,$indexKey){
@@ -274,29 +264,24 @@ function getActiveSortArray($SourceArray,$SortField){
 	return $SortArray;
 }
 
-function getHrsNextPosition($SortValue,$SortArray,$time){
+function getNextPosition($SortValue,$SortArray,$time){
 	$Marker=0;
 	if($SortValue<>0){
 		$calculated=getPriceperhour($SortValue,$time);
-		//echo "Search for: " . $calculated ." in ";
 		foreach ($SortArray as $value){
-			//echo "Value: " . $value ;
-			//echo " " . ($value < $calculated ? "True" : "False") .  ", ";
 			if($value<$calculated){
-				//echo " FOUND ";
 				$Marker=$value;
-				//echo "Marker: ". $Marker;
 				break;
 			}
 		}
 	}
+	return $Marker;
+}
+
+function getHrsNextPosition($SortValue,$SortArray,$time){
+	$Marker = getNextPosition($SortValue,$SortArray,$time);
 	
-	$hrsToTarget=getHrsToTarget($SortValue,$time,$Marker);
-	//echo "Price per hr (".$calculated.') | (Price (' . $SortValue . ") / Target (" . $Marker . ")=".timeduration($SortValue/$Marker,"hours").") - Hours " . timeduration($time,"seconds") . " = " . timeduration($hrsToTarget,"hours")."<br>";
-	
-	//var_dump($SortArray);
-	
-	return $hrsToTarget;
+	return getHrsToTarget($SortValue,$time,$Marker);
 }
 
 function reIndexArray($array,$indexKey){
@@ -316,11 +301,13 @@ function reIndexArray($array,$indexKey){
 
 function getGameDetail($gameID,$connection=false){
 	if($connection==false){
-		require_once "inc/auth.inc.php";
+		require $GLOBALS['rootpath']."/inc/auth.inc.php";
 		$conn = new mysqli($servername, $username, $password, $dbname);
 	} else {
 		$conn = $connection;
 	}
+	
+	require_once $GLOBALS['rootpath']."/inc/getGames.inc.php";
 	$games=getGames($gameID,$conn);
 	
 	foreach ($games as $row) {
@@ -331,7 +318,11 @@ function getGameDetail($gameID,$connection=false){
 	}
 	
 	$GameData['GameFamily']=$GameFamily;
+
+	require_once $GLOBALS['rootpath']."/inc/getHistoryCalculations.inc.php";
 	$GameData['History']=getHistoryCalculations($gameID,$conn);
+
+	require_once $GLOBALS['rootpath']."/inc/getActivityCalculations.inc.php";
 	$GameData['Activity']=getActivityCalculations($gameID,$GameData['History'],$conn);
 	if($connection==false){
 		$conn->close();	
@@ -341,29 +332,28 @@ function getGameDetail($gameID,$connection=false){
 }
 
 function combinedate($date,$time,$sequence){
-	//Not owned has no sequence - causes problems
-	
-	//If ($date=="") {$date="5/12/2010";}
-	If ($sequence=="") {$sequence=0;}
-	
-	//echo "\$newDate=strtotime(".var_export($date,true)." . \" \" . ".var_export($time,true).")+".var_export($sequence,true).";<br>";
-	//echo "Date: "; var_dump($date); echo "<br>";
-	//echo "Time: "; var_dump($time); echo "<br>";
-	//echo "Sequence: "; var_dump($sequence); echo "<br>";
+	If ($sequence=="") {
+		$sequence=0;
+	}
 	
 	$newDate=strtotime($date . " " . $time)+$sequence;
 	
-	if(date("H:i:s",$newDate) == "00:00:00") {
-		$newDate= date("n/j/Y",$newDate);
-	} else {
-		$newDate= date("n/j/Y H:i:s",$newDate) ;
-	}
+	$newDate=getCleanStringDate($newDate);
 
 	return $newDate;
 }
 
+function getCleanStringDate($datevalue) {
+	if(date("H:i:s",$datevalue) == "00:00:00") {
+		$stringdate= date("n/j/Y",$datevalue);
+	} else {
+		$stringdate= date("n/j/Y H:i:s",$datevalue);
+	}
+	return $stringdate;
+}
 
 function RatingsChartData($scale=100,$ConnOrCalculationsArray="",$fieldsArray="All"){ 
+	//TODO: Break RatingsChartData into multiple functions
 	$chartData=array();
 	if($ConnOrCalculationsArray<>"" and gettype($ConnOrCalculationsArray)=="array"){
 		$calculations=$ConnOrCalculationsArray;
@@ -382,7 +372,6 @@ function RatingsChartData($scale=100,$ConnOrCalculationsArray="",$fieldsArray="A
 		}
 		
 		foreach($calculations as $row){
-			//var_dump($row);
 			foreach($fields as $field){
 				$useDataValue=$row[$field];
 				switch($field){
@@ -402,39 +391,27 @@ function RatingsChartData($scale=100,$ConnOrCalculationsArray="",$fieldsArray="A
 				
 				if($useDataValue=="") {$useDataValue=0;}
 				
-				//echo "useDataValue "; var_dump($useDataValue); echo "<br>";
-				//echo "fieldScale "; var_dump($fieldScale); echo "<br>";
-				//echo "scale "; var_dump($scale); echo "<br>";
 				$useDataValue=ceil(($useDataValue/$fieldScale)*$scale);
 				
 				if(!isset($chartData[$field][$useDataValue])){
 					$chartData[$field][$useDataValue]=0;
 				}
 				$chartData[$field][$useDataValue]++;
-			} //break;
+			}
 		} 
 	}
 	return $chartData;
 }
 
-function getCleanStringDate($datevalue) {
-	if(date("H:i:s",$datevalue) == "00:00:00") {
-		$stringdate= date("n/j/Y",$datevalue);
-	} else {
-		$stringdate= date("n/j/Y H:i:s",$datevalue);
-	}
-	return $stringdate;
-}
-
 function daysSinceDate($date) {
 	if(!is_numeric($date)) {
 		$daysSince=0;
-	}
-	
-	if($date>0){
-		$daysSince=floor((time()-$date) / (60 * 60 * 24));
 	} else {
-		$daysSince="";
+		if($date>0){
+			$daysSince=floor((time()-$date) / (60 * 60 * 24));
+		} else {
+			$daysSince="";
+		}
 	}
 	return $daysSince;
 }
@@ -448,6 +425,7 @@ function getTimeLeft($timetobeat,$totaltime,$status) {
 }
 
 function arrayTable($DataArray){
+	//TODO: Make object display components as seperate functions.
 	$output="";
 	$output .= "<table>";
 	foreach($DataArray as $stat => $value){
@@ -481,8 +459,11 @@ function arrayTable($DataArray){
 							$output .= "<tr><th>getPricePerHourOfTimePlayed</th><td>".$value->getPricePerHourOfTimePlayed()."</td><td>".$value->getPricePerHourOfTimePlayed(true)."</td></tr>";
 							$output .= "<tr><th>getPricePerHourOfTimePlayedReducedAfter1Hour</th><td>".$value->getPricePerHourOfTimePlayedReducedAfter1Hour()."</td><td>".$value->getPricePerHourOfTimePlayedReducedAfter1Hour(true)."</td></tr>";
 							$output .= "<tr><th>getHoursTo01LessPerHour</th><td>".$value->getHoursTo01LessPerHour()."</td><td>".$value->getHoursTo01LessPerHour(true)."</td></tr>";
+							$output .= "<tr><th>getHoursToDollarPerHour 5</th><td>".$value->getHoursToDollarPerHour(5)."</td><td>".$value->getHoursToDollarPerHour(5,true)."</td></tr>";
+							$output .= "<tr><th>getHoursToDollarPerHour 3</th><td>".$value->getHoursToDollarPerHour(3)."</td><td>".$value->getHoursToDollarPerHour(3,true)."</td></tr>";
 							
 							$output .= "</table>";
+							break;
 						default:
 							$output .= print_r($value,true);
 							break;
@@ -530,24 +511,62 @@ function lookupTextBox($lookupid, $inputid, $inputname, $querytype="Game", $sour
 				"lookupBox" => $lookupBox . $lookupScript);
 }
 
-//Remove once price class is functional
-function getVariance($price,$msrp) {
-	$variance=0;
-	if($msrp<>0){
-		$variance=$price-$msrp;
+function findgaps($sql,$conn,$idname) {
+	//TODO: Reports values that are not gaps.
+	$stats=array();
+	if($result = $conn->query($sql)){
+		$stats['max']=0;
+		$stats['count']=0;
+		$stats['gaps']=array();
+		$stats['gapsText']="";
+		$index=0;
+		if ($result->num_rows > 0){
+			while($row = $result->fetch_assoc()){
+				$stats['count']++;
+				$stats['max']=$row[$idname];
+				if($row[$idname]<>$index){
+					while($row[$idname]<>$index){
+						$stats['gaps'][]=$index;
+						$stats['gapsText'] .= $index . ", ";
+						$index++;
+					}
+					//$stats['gaps'][]=$index;
+					//$stats['gapsText'] .= $index . ", ";
+				}
+				$index++;
+				$stats['lastrow']=$row;
+				if($idname=="TransID" AND (0+$row['Credit Used'])<0){
+					$stats['lastcard']=$row;
+				}
+				if($idname=="ItemID" AND $row['ProductID']==null){
+					$stats['lastcard']=$row;
+				}
+			}
+		}
 	}
-	return $variance;
+	return $stats;
 }
 
-function getVariancePct($price,$msrp) {
-	$variance=0;
-	if($msrp<>0){
-		$variance=(1-($price/$msrp))*100;
+//Remove once price class is functional
+function getHrsToTarget($CalcValue,$time,$target){
+	//Depricated? used in getHrsNextPosition
+	$backtrace=debug_backtrace();
+	//trigger_error(__FUNCTION__ . " is depricated, use PriceCalculation Class instead. (Called from ".$backtrace[0]["file"]." line ". $backtrace[0]["line"].")");
+	
+	if($target>0){
+		$hourstotarget= $CalcValue/$target-$time/60/60;
+	} else {
+		$hourstotarget=0;
 	}
-	return $variance;
+	
+	return $hourstotarget;
 }
 
 function getPriceperhour($price,$time){
+	//Depricated? Used in getNextPosition and getHrsNextPosition
+	$backtrace=debug_backtrace();
+	//trigger_error(__FUNCTION__ . " is depricated, use PriceCalculation Class instead. (Called from ".$backtrace[0]["file"]." line ". $backtrace[0]["line"].")");
+	
 	$hours=$time/60/60;
 	if($hours<1){
 		$priceperhour=$price;
@@ -558,7 +577,36 @@ function getPriceperhour($price,$time){
 	return $priceperhour;
 }
 
+// @codeCoverageIgnoreStart
+function getVariance($price,$msrp) {
+	//Depricated
+	$backtrace=debug_backtrace();
+	trigger_error(__FUNCTION__ . " is depricated, use PriceCalculation Class instead. (Called from ".$backtrace[0]["file"]." line ". $backtrace[0]["line"].")");
+	
+	$variance=0;
+	if($msrp<>0){
+		$variance=$price-$msrp;
+	}
+	return $variance;
+}
+
+function getVariancePct($price,$msrp) {
+	//Depricated
+	$backtrace=debug_backtrace();
+	trigger_error(__FUNCTION__ . " is depricated, use PriceCalculation Class instead. (Called from ".$backtrace[0]["file"]." line ". $backtrace[0]["line"].")");
+	
+	$variance=0;
+	if($msrp<>0){
+		$variance=(1-($price/$msrp))*100;
+	}
+	return $variance;
+}
+
 function getLessXhour($price,$time,$xhour=1){
+	//Depricated
+	$backtrace=debug_backtrace();
+	trigger_error(__FUNCTION__ . " is depricated, use PriceCalculation Class instead. (Called from ".$backtrace[0]["file"]." line ". $backtrace[0]["line"].")");
+	
 	$hours=$time/60/60;
 	if($hours<1){
 		$priceperhour=$price;
@@ -569,30 +617,22 @@ function getLessXhour($price,$time,$xhour=1){
 	if($xhour+$hours==0) {
 		$LessXhour=0;
 	} else {
-		//echo "LessXhour=" . "priceperhour: ". $priceperhour . " -( price: " . $price . " /(max( xhour: " .$xhour. ",hours: ".$hours. " )+ xhour: ". $xhour. " ))<br>";
 		$LessXhour=$priceperhour-($price/(max($xhour,$hours)+$xhour));
 	}
 	
-	//$LessXhour=sprintf("%.2f",$LessXhour);
 	return $LessXhour;
 }
 
 function getHourstoXless($price,$time,$xless=.01){
+	//Depricated
+	$backtrace=debug_backtrace();
+	trigger_error(__FUNCTION__ . " is depricated, use PriceCalculation Class instead. (Called from ".$backtrace[0]["file"]." line ". $backtrace[0]["line"].")");
+	
 	$priceperhour=getPriceperhour($price,$time);
 	$hoursxless=getHrsToTarget($price,$time,$priceperhour-$xless);
 	
 	return $hoursxless;
 }
-
-function getHrsToTarget($CalcValue,$time,$target){
-	if($target>0){
-		$hourstotarget= $CalcValue/$target-$time/60/60;
-	} else {
-		$hourstotarget=0;
-	}
-	
-	return $hourstotarget;
-}
-
+// @codeCoverageIgnoreEnd
 //REMOVE END
 ?>

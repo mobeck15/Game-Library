@@ -1,8 +1,4 @@
 <?php
-/*
- *  GL5 Version - Need to re-work for GL6
- */
-
 //TODO: Paid total should include DLC (this will make free games with paid DLC show as not free)
 //TODO: Re-evaluate how parent game is calculated
 if(isset($GLOBALS[__FILE__])){
@@ -10,21 +6,16 @@ if(isset($GLOBALS[__FILE__])){
 }
 $GLOBALS[__FILE__]=1;
 
+$GLOBALS['rootpath'] = $GLOBALS['rootpath'] ?? "..";
+require_once $GLOBALS['rootpath']."/inc/PriceCalculation.class.php";
+
 function getCalculations($gameID="",$connection=false,$start=false,$end=false){
 	
 	if (isset($GLOBALS["CALCULATIONS"]))
 	{
-		//echo "CALCULATIONS DEFINED ";
+		//TODO: Global storage works for default parameters but is unpredictable when parameters are used.
 		return $GLOBALS["CALCULATIONS"];
 	} else {
-		/*
-		if(isset($GLOBALS[__FUNCTION__])){
-			trigger_error("Function already called once; ".__FUNCTION__.". ");
-			debug_print_backtrace();
-		}
-		$GLOBALS[__FUNCTION__]=1;
-		*/
-		
 		if($connection==false){
 			include "auth.inc.php";
 			$conn = new mysqli($servername, $username, $password, $dbname);
@@ -40,14 +31,11 @@ function getCalculations($gameID="",$connection=false,$start=false,$end=false){
 		$keywords=getKeywords($gameID,$conn);
 		$purchases=getPurchases("",$conn,$items,$games);
 		
-		//$history=regroupArray($history,'ParentGameID');
 		foreach ($history as $row) {
 			//Group the history records by GameID
 			$historyByGame[$row['ParentGameID']][]=$row;
 		}
 
-		//var_dump($activity[514]);
-		
 		if($connection==false){
 			$conn->close();	
 		}
@@ -58,25 +46,6 @@ function getCalculations($gameID="",$connection=false,$start=false,$end=false){
 		$itemsbyGame=regroupArray($items,"ProductID");
 		
 		foreach ($games as &$game) {
-			//if(!isset($game['Debug'])) {$game['Debug']="<b>".$game['Title'].":</b>";}
-
-			//DONE in getActivityCalculations.php: Play total needs to be added to unplayable DLC so they can get $/hr calculations
-			//This isn't neededed unless we want to capture all values as if parent game:
-			/*
-			if (isset($activity[$game['ParentGameID']])){
-				$game['firstplay']=$activity[$game['ParentGameID']]['firstplay'];
-				$game['firstplaysort']=strtotime($activity[$game['ParentGameID']]['firstplay']);
-				$game['lastplay']=$activity[$game['ParentGameID']]['lastplay'];
-				$game['lastplaySort']=strtotime($activity[$game['ParentGameID']]['lastplay']);
-				$game['Achievements']=$activity[$game['ParentGameID']]['Achievements'];
-				$game['Status']=$activity[$game['ParentGameID']]['Status'];
-				$game['Review']=$activity[$game['ParentGameID']]['Review'];
-				$game['LastBeat']=$activity[$game['ParentGameID']]['LastBeat'];
-				$game['totalHrs']=$activity[$game['ParentGameID']]['totalHrs'];
-				$game['GrandTotal']=$activity[$game['ParentGameID']]['GrandTotal'];
-			} 
-			*/
-			
 			if (isset($activity[$game['Game_ID']])){
 				$game['firstPlayDateTime']=$activity[$game['Game_ID']]['firstPlayDateTime'];
 				$game['firstplay']=$activity[$game['Game_ID']]['firstplay'];
@@ -106,11 +75,10 @@ function getCalculations($gameID="",$connection=false,$start=false,$end=false){
 			if (isset($gameIndex[$game['ParentGameID']])){
 				$game['ParentGame']=$games[$gameIndex[$game['ParentGameID']]]['Title'];
 			} else {
-				$game['ParentGame']="Not Found";
+				$game['ParentGame']="Not Found"; //@codeCoverageIgnore
 			}
 			
 			if ($game['SteamAchievements']=="") {$game['SteamAchievements']=0;}
-			//var_dump($game['SteamAchievements']); echo " - "; var_dump($game['Achievements']); echo "<br>";
 			$game['AchievementsLeft']=$game['SteamAchievements']-$game['Achievements'];
 			$game['AchievementsPct']=0;
 			if($game['SteamAchievements']<>0){
@@ -144,8 +112,6 @@ function getCalculations($gameID="",$connection=false,$start=false,$end=false){
 			
 			$game['PrintBundles']="";
 			$game['Platforms']="";
-			//$game['PurchaseDate']=0;
-			//$game['PrintPurchaseDate']="";
 			$game['Paid']=0;
 			$game['Inactive']=false;
 			$game['Key']="";
@@ -156,11 +122,6 @@ function getCalculations($gameID="",$connection=false,$start=false,$end=false){
 			$game['OtherLibrary']=true;
 
 			if (isset($itemsbyGame[$game['Game_ID']])){
-				/* DEBUG * /
-				if ($game['Game_ID'] == 20) {
-					echo "<pre>"; var_dump ($itemsbyGame[$game['Game_ID']]); echo "</pre>";
-				}
-				/* END Debug */
 				foreach($itemsbyGame[$game['Game_ID']] as $record){
 					if(!isset($game['Bundles'][$record['TransID']])){
 						if(isset($purchases[$purchaseIndex[$record['TransID']]])){
@@ -170,21 +131,10 @@ function getCalculations($gameID="",$connection=false,$start=false,$end=false){
 								$game['TopBundleIDs'][$useBundleID]=$useBundleID;
 								$game['PurchaseDateTime']=$purchases[$purchaseIndex[$record['TransID']]]['PurchaseDateTime'];
 								
-								/* DEBUG * /
-								if ($game['Game_ID'] == 20) {
-									echo "<b>DEBUG:</b><br>";
-									echo "Game ID: " . $game['Game_ID'] . " (" . $game['Title'] . ")<br>";
-									echo "Paid: " . $game['Paid'] . "<br>";
-									echo "Bundle Paid: " . $purchases[$purchaseIndex[$useBundleID]]['Paid'] . "<br>";
-									echo "<hr>";
-								}
-								/* END DEBUG */
-								
 								if($game['PrintBundles']==""){
 									//$game['PrintBundles'] .= "(" . $useBundleID .") ";
 									$game['PrintBundles'] .= $purchases[$purchaseIndex[$useBundleID]]['Title'];
 									$game['BundlePrice']=sprintf("%.2f",$purchases[$purchaseIndex[$useBundleID]]['Paid']);
-									//DONE: change Paid calculation to use only the first bundle ****PAID**** -- Fixed in getPurchases.inc.php & getallitems|utility.inc.php
 									$game['Paid'] +=$purchases[$purchaseIndex[$useBundleID]]['Paid'];
 								} else {
 									$game['PrintBundles'] .= "<span class='duplicate'>";
@@ -197,9 +147,11 @@ function getCalculations($gameID="",$connection=false,$start=false,$end=false){
 								$game['PrintBundles'] .= "| ";
 							}
 						} else {
+							//@codeCoverageIgnoreStart
 							$useBundleID=null;
 							$game['PrintBundles']="Not Found";
 							$game['BundlePrice']="N/A";
+							//@codeCoverageIgnoreEnd
 						}
 					}
 					$game['Bundles'][$record['TransID']] = $record['TransID'];
@@ -240,40 +192,34 @@ function getCalculations($gameID="",$connection=false,$start=false,$end=false){
 					}
 					
 					$game['AddedDateTime']=$record['AddedDateTime'];
-					
-					//if($game['PurchaseDate']==0 OR $record['AddedTimeStamp'] < $game['PurchaseDate']) {
-						//$game['PurchaseDate']=$record['AddedTimeStamp'];
-						//$game['PrintPurchaseDate']=$record['PrintAddedTimeStamp'];
-					//}
 				}
 				$game['Platforms']=trim($game['Platforms'] ,"\n\r, ");
 				$game['PrintBundles']=trim($game['PrintBundles'] ,"\n\r| ");
 				$game['Paid']=sprintf("%.2f",$game['Paid']);
-				//$game['Bundles']=print_r($itemsbyGame[$game['Game_ID']],true);
-				//$game['Platforms']=print_r($itemsbyGame[$game['Game_ID']],true);
-				//$game['PurchaseDate']=print_r($itemsbyGame[$game['Game_ID']],true);
 			} else {
+				//@codeCoverageIgnoreStart
 				$game['PrintBundles']="Not Found";
 				$game['Platforms']="Not Found";
-				//$game['PurchaseDate']="Not Found";
-				//$game['PrintPurchaseDate']="Not Found";
+				//@codeCoverageIgnoreEnd
 			}
 			
 			if($game['totalHrs']==0 && isset($historyByGame[$game['ParentGameID']])){
 				foreach ($historyByGame[$game['ParentGameID']] as $parentgame){
 					if(strtotime($parentgame['Timestamp'])>=$game['PurchaseDateTime']->getTimestamp() //strtotime($game['PrintPurchaseDate']) 
 						&& $parentgame['FinalCountHours']==true){
-						//$game['totalHrs']+=$parentgame['Elapsed'];
 						
 						if($parentgame['Elapsed']=="") {$parentgame['Elapsed']=0;}
-						//var_dump($game['GrandTotal']); echo " += "; var_dump($parentgame['Elapsed']); echo "<br>";
 						$game['GrandTotal']+=$parentgame['Elapsed'];
 					}
 				}
 			}
 			
-			//if(!is_numeric($game['PurchaseDate'])) {$game['PurchaseDate']=0;}
-			$game['DaysSincePurchaseDate']=daysSinceDate($game['PurchaseDateTime']->getTimestamp());
+			//TODO: Lots of code freaks out for games without and associated item entry (should never happen any way but needs graceful failure)
+			if(isset($game['PurchaseDateTime'])) {
+				$game['DaysSincePurchaseDate']=daysSinceDate($game['PurchaseDateTime']->getTimestamp());
+			} else {
+				$game['DaysSincePurchaseDate']=0; //@codeCoverageIgnore
+			}
 
 			$game['SalePrice']=0;
 			$game['SalePriceFormula']="";
@@ -292,59 +238,24 @@ function getCalculations($gameID="",$connection=false,$start=false,$end=false){
 					}
 				}
 			}
-			
-			$game['LaunchVariancePct']  =getVariancePct($game['LaunchPrice'] ,$game['MSRP']);
-			$game['LaunchVariance']     =getVariance   ($game['LaunchPrice'] ,$game['MSRP']);
-			$game['HistoricVariancePct']=getVariancePct($game['HistoricLow'] ,$game['MSRP']);
-			$game['HistoricVariance']   =getVariance   ($game['HistoricLow'] ,$game['MSRP']);
-			$game['SaleVariancePct']    =getVariancePct($game['SalePrice']   ,$game['MSRP']);
-			$game['SaleVariance']       =getVariance   ($game['SalePrice']   ,$game['MSRP']);
-			$game['AltSaleVariancePct'] =getVariancePct($game['AltSalePrice'],$game['MSRP']);
-			$game['AltSaleVariance']    =getVariance   ($game['AltSalePrice'],$game['MSRP']);
-			$game['PaidVariancePct']    =getVariancePct($game['Paid']        ,$game['MSRP']);
-			$game['PaidVariance']       =getVariance   ($game['Paid']        ,$game['MSRP']);
-
 		}
 		unset ($game);
 		
 		foreach ($games as &$game) {
 			$game['LaunchPriceObj']= new PriceCalculation($game['LaunchPrice'], $game['GrandTotal'], $game['TimeToBeat'], $game['MSRP']);
 			$game['MSRPPriceObj']= new PriceCalculation($game['MSRP'], $game['GrandTotal'], $game['TimeToBeat'], $game['MSRP']);
+			$game['CurrentPriceObj']= new PriceCalculation($game['CurrentMSRP'], $game['GrandTotal'], $game['TimeToBeat'], $game['MSRP']);
+			$game['HistoricPriceObj']= new PriceCalculation($game['HistoricLow'], $game['GrandTotal'], $game['TimeToBeat'], $game['MSRP']);
 			$game['SalePriceObj']= new PriceCalculation($game['SalePrice'], $game['GrandTotal'], $game['TimeToBeat'], $game['MSRP']);
 			$game['AltPriceObj']= new PriceCalculation($game['AltSalePrice'], $game['GrandTotal'], $game['TimeToBeat'], $game['MSRP']);
 			$game['PaidPriceObj']= new PriceCalculation($game['Paid'], $game['GrandTotal'], $game['TimeToBeat'], $game['MSRP']);
-			$game['HistoricPriceObj']= new PriceCalculation($game['HistoricLow'], $game['GrandTotal'], $game['TimeToBeat'], $game['MSRP']);
-			
-			$game['Launchperhrbeat']  =getPriceperhour($game['LaunchPrice'] ,$game['TimeToBeat']*60*60);
-			$game['MSRPperhrbeat']    =getPriceperhour($game['MSRP']        ,$game['TimeToBeat']*60*60);
-			$game['Saleperhrbeat']    =getPriceperhour($game['SalePrice']   ,$game['TimeToBeat']*60*60);
-			$game['Altperhrbeat']     =getPriceperhour($game['AltSalePrice'],$game['TimeToBeat']*60*60);
-			$game['Paidperhrbeat']    =getPriceperhour($game['Paid']        ,$game['TimeToBeat']*60*60);
-			$game['Historicperhrbeat']=getPriceperhour($game['HistoricLow'] ,$game['TimeToBeat']*60*60);
-
-			$game['Launchperhr']  =getPriceperhour($game['LaunchPrice'],$game['GrandTotal']);
-			$game['MSRPperhr']    =getPriceperhour($game['MSRP']       ,$game['GrandTotal']);
-			$game['Currentperhr'] =getPriceperhour($game['CurrentMSRP'],$game['GrandTotal']);
-			$game['Historicperhr']=getPriceperhour($game['HistoricLow'],$game['GrandTotal']);
-			$game['Paidperhr']    =getPriceperhour($game['Paid']       ,$game['GrandTotal']);
-			$game['Saleperhr']    =getPriceperhour($game['SalePrice']  ,$game['GrandTotal']);
-			$game['Altperhr']     =getPriceperhour($game['AltSalePrice']  ,$game['GrandTotal']);
-			
-			$game['LaunchLess1']  =getLessXhour($game['LaunchPrice'],$game['GrandTotal'],$settings['XhourGet']);
-			$game['MSRPLess1']    =getLessXhour($game['MSRP']       ,$game['GrandTotal'],$settings['XhourGet']);
-			$game['CurrentLess1'] =getLessXhour($game['CurrentMSRP'],$game['GrandTotal'],$settings['XhourGet']);
-			$game['HistoricLess1']=getLessXhour($game['HistoricLow'],$game['GrandTotal'],$settings['XhourGet']);
-			$game['PaidLess1']    =getLessXhour($game['Paid']       ,$game['GrandTotal'],$settings['XhourGet']);
-			$game['SaleLess1']    =getLessXhour($game['SalePrice']  ,$game['GrandTotal'],$settings['XhourGet']);
-			$game['AltLess1']     =getLessXhour($game['AltSalePrice']  ,$game['GrandTotal'],$settings['XhourGet']);
-
-			$game['LaunchLess2']  =getHourstoXless($game['LaunchPrice'],$game['GrandTotal'],$settings['LessStat']);
-			$game['MSRPLess2']    =getHourstoXless($game['MSRP']       ,$game['GrandTotal'],$settings['LessStat']);
-			$game['CurrentLess2'] =getHourstoXless($game['CurrentMSRP'],$game['GrandTotal'],$settings['LessStat']);
-			$game['HistoricLess2']=getHourstoXless($game['HistoricLow'],$game['GrandTotal'],$settings['LessStat']);
-			$game['PaidLess2']    =getHourstoXless($game['Paid']       ,$game['GrandTotal'],$settings['LessStat']);
-			$game['SaleLess2']    =getHourstoXless($game['SalePrice']  ,$game['GrandTotal'],$settings['LessStat']);
-			$game['AltLess2']     =getHourstoXless($game['AltSalePrice']  ,$game['GrandTotal'],$settings['LessStat']);
+			unset($game['LaunchPrice']);
+			unset($game['MSRP']);
+			unset($game['CurrentMSRP']);
+			unset($game['HistoricLow']);
+			unset($game['SalePrice']);
+			unset($game['AltSalePrice']);
+			unset($game['Paid']);
 			
 			$game['TimeLeftToBeat']=getTimeLeft($game['TimeToBeat'],$game['GrandTotal'],$game['Status']);
 			/*
@@ -354,7 +265,11 @@ function getCalculations($gameID="",$connection=false,$start=false,$end=false){
 			}
 			*/
 			
-			$game['LastPlayORPurchaseValue']=max($game['lastplaySort'],$game['AddedDateTime']->getTimestamp());
+			if(isset($game['AddedDateTime'])) {
+				$game['LastPlayORPurchaseValue']=max($game['lastplaySort'],$game['AddedDateTime']->getTimestamp());
+			} else {
+				$game['LastPlayORPurchaseValue']=max($game['lastplaySort'],0);
+			}
 			$game['LastPlayORPurchase']=getCleanStringDate($game['LastPlayORPurchaseValue']);
 			$game['DaysSinceLastPlay']=daysSinceDate($game['lastplaySort']);
 			$game['DaysSinceLastPlayORPurchase']=daysSinceDate($game['LastPlayORPurchaseValue']);
@@ -375,194 +290,132 @@ function getCalculations($gameID="",$connection=false,$start=false,$end=false){
 		}
 		unset ($game);
 		
-		$sortbyLaunch=array_unique(getSortArray($games,'Launchperhr'));
-		array_multisort($sortbyLaunch, SORT_DESC );
-		$sortbyMSRP=array_unique(getSortArray($games,'MSRPperhr'));
-		array_multisort($sortbyMSRP, SORT_DESC );
-		$sortbyCurrent=array_unique(getSortArray($games,'Currentperhr'));
-		array_multisort($sortbyCurrent, SORT_DESC );
-		$sortbyHistoric=array_unique(getSortArray($games,'Historicperhr'));
-		array_multisort($sortbyHistoric, SORT_DESC );
-		$sortbyPaid=array_unique(getSortArray($games,'Paidperhr'));
-		array_multisort($sortbyPaid, SORT_DESC );
-		$sortbySale=array_unique(getSortArray($games,'Saleperhr'));
-		array_multisort($sortbySale, SORT_DESC );
-		$sortbyAlt=array_unique(getSortArray($games,'Altperhr'));
-		array_multisort($sortbyAlt, SORT_DESC );
-		
-		$sortbyActiveLaunch=array_unique(getActiveSortArray($games,'Launchperhr'));
-		array_multisort($sortbyActiveLaunch, SORT_DESC );
-		$sortbyActiveMSRP=array_unique(getActiveSortArray($games,'MSRPperhr'));
-		array_multisort($sortbyActiveMSRP, SORT_DESC );
-		$sortbyActiveCurrent=array_unique(getActiveSortArray($games,'Currentperhr'));
-		array_multisort($sortbyActiveCurrent, SORT_DESC );
-		$sortbyActiveHistoric=array_unique(getActiveSortArray($games,'Historicperhr'));
-		array_multisort($sortbyActiveHistoric, SORT_DESC );
-		$sortbyActivePaid=array_unique(getActiveSortArray($games,'Paidperhr'));
-		array_multisort($sortbyActivePaid, SORT_DESC );
-		$sortbyActiveSale=array_unique(getActiveSortArray($games,'Saleperhr'));
-		array_multisort($sortbyActiveSale, SORT_DESC );
-		$sortbyActiveAlt=array_unique(getActiveSortArray($games,'Altperhr'));
-		array_multisort($sortbyActiveAlt, SORT_DESC );
+		$sortbyLaunch=getPriceSort($games,'LaunchPriceObj');
+		$sortbyMSRP=getPriceSort($games,'MSRPPriceObj');
+		$sortbyCurrent=getPriceSort($games,'CurrentPriceObj');
+		$sortbyHistoric=getPriceSort($games,'HistoricPriceObj');
+		$sortbyPaid=getPriceSort($games,'PaidPriceObj');
+		$sortbySale=getPriceSort($games,'SalePriceObj');
+		$sortbyAlt=getPriceSort($games,'AltPriceObj');
+
+		$sortbyActiveLaunch=getPriceSort($games,'LaunchPriceObj',true);
+		$sortbyActiveMSRP=getPriceSort($games,'MSRPPriceObj',true);
+		$sortbyActiveCurrent=getPriceSort($games,'CurrentPriceObj',true);
+		$sortbyActiveHistoric=getPriceSort($games,'HistoricPriceObj',true);
+		$sortbyActivePaid=getPriceSort($games,'PaidPriceObj',true);
+		$sortbyActiveSale=getPriceSort($games,'SalePriceObj',true);
+		$sortbyActiveAlt=getPriceSort($games,'AltPriceObj',true);
 		
 		foreach ($games as &$game) {
-			$game['LaunchHrsNext1']  =getHrsNextPosition($game['LaunchPrice']  ,$sortbyLaunch  ,$game['GrandTotal']);
-			$game['MSRPHrsNext1']    =getHrsNextPosition($game['MSRP']         ,$sortbyMSRP    ,$game['GrandTotal']);
-			$game['CurrentHrsNext1'] =getHrsNextPosition($game['CurrentMSRP']  ,$sortbyCurrent ,$game['GrandTotal']);
-			$game['HistoricHrsNext1']=getHrsNextPosition($game['HistoricLow']  ,$sortbyHistoric,$game['GrandTotal']);
-			$game['PaidHrsNext1']    =getHrsNextPosition($game['Paid']         ,$sortbyPaid    ,$game['GrandTotal']);
-			$game['SaleHrsNext1']    =getHrsNextPosition($game['SalePrice']    ,$sortbySale    ,$game['GrandTotal']);
-			$game['AltHrsNext1']     =getHrsNextPosition($game['AltSalePrice'] ,$sortbyAlt  ,$game['GrandTotal']);
+			$game['LaunchHrsNext1']  =getHrsNextPosition($game['LaunchPriceObj']->getPrice()  ,$sortbyLaunch  ,$game['GrandTotal']);
+			$game['MSRPHrsNext1']    =getHrsNextPosition($game['MSRPPriceObj']->getPrice()         ,$sortbyMSRP    ,$game['GrandTotal']);
+			$game['CurrentHrsNext1'] =getHrsNextPosition($game['CurrentPriceObj']->getPrice()  ,$sortbyCurrent ,$game['GrandTotal']);
+			$game['HistoricHrsNext1']=getHrsNextPosition($game['HistoricPriceObj']->getPrice()  ,$sortbyHistoric,$game['GrandTotal']);
+			$game['PaidHrsNext1']    =getHrsNextPosition($game['PaidPriceObj']->getPrice()         ,$sortbyPaid    ,$game['GrandTotal']);
+			$game['SaleHrsNext1']    =getHrsNextPosition($game['SalePriceObj']->getPrice()    ,$sortbySale    ,$game['GrandTotal']);
+			$game['AltHrsNext1']     =getHrsNextPosition($game['AltPriceObj']->getPrice() ,$sortbyAlt  ,$game['GrandTotal']);
 			
-			$game['LaunchHrsNext2']  =getHrsNextPosition($game['LaunchPrice']  ,$sortbyActiveLaunch  ,$game['GrandTotal']);
-			$game['MSRPHrsNext2']    =getHrsNextPosition($game['MSRP']         ,$sortbyActiveMSRP    ,$game['GrandTotal']);
-			$game['CurrentHrsNext2'] =getHrsNextPosition($game['CurrentMSRP']  ,$sortbyActiveCurrent ,$game['GrandTotal']);
-			$game['HistoricHrsNext2']=getHrsNextPosition($game['HistoricLow']  ,$sortbyActiveHistoric,$game['GrandTotal']);
-			$game['PaidHrsNext2']    =getHrsNextPosition($game['Paid']         ,$sortbyActivePaid    ,$game['GrandTotal']);
-			$game['SaleHrsNext2']    =getHrsNextPosition($game['SalePrice']    ,$sortbyActiveSale    ,$game['GrandTotal']);
-			$game['AltHrsNext2']     =getHrsNextPosition($game['AltSalePrice'] ,$sortbyActiveAlt  ,$game['GrandTotal']);
+			$game['LaunchHrsNext2']  =getHrsNextPosition($game['LaunchPriceObj']->getPrice()  ,$sortbyActiveLaunch  ,$game['GrandTotal']);
+			$game['MSRPHrsNext2']    =getHrsNextPosition($game['MSRPPriceObj']->getPrice()         ,$sortbyActiveMSRP    ,$game['GrandTotal']);
+			$game['CurrentHrsNext2'] =getHrsNextPosition($game['CurrentPriceObj']->getPrice()  ,$sortbyActiveCurrent ,$game['GrandTotal']);
+			$game['HistoricHrsNext2']=getHrsNextPosition($game['HistoricPriceObj']->getPrice()  ,$sortbyActiveHistoric,$game['GrandTotal']);
+			$game['PaidHrsNext2']    =getHrsNextPosition($game['PaidPriceObj']->getPrice()         ,$sortbyActivePaid    ,$game['GrandTotal']);
+			$game['SaleHrsNext2']    =getHrsNextPosition($game['SalePriceObj']->getPrice()    ,$sortbyActiveSale    ,$game['GrandTotal']);
+			$game['AltHrsNext2']     =getHrsNextPosition($game['AltPriceObj']->getPrice() ,$sortbyActiveAlt  ,$game['GrandTotal']);
+			/*
+			$game['LaunchHrs5']  =getHrsToTarget($game['LaunchPriceObj']->getPrice(),  $game['GrandTotal']  ,5);
+			$game['MSRPHrs3']    =getHrsToTarget($game['MSRPPriceObj']->getPrice(),         $game['GrandTotal']  ,3);
+			$game['PaidHrs3']    =getHrsToTarget($game['PaidPriceObj']->getPrice(),         $game['GrandTotal']  ,3);
+			$game['HistoricHrs3']=getHrsToTarget($game['HistoricPriceObj']->getPrice(),  $game['GrandTotal']  ,.3);
+			$game['AltHrs3']	 =getHrsToTarget($game['AltPriceObj']->getPrice(), $game['GrandTotal']  ,3);
+			$game['SaleHrs3']	 =getHrsToTarget($game['SalePriceObj']->getPrice(),    $game['GrandTotal']  ,3);
+			*/
+		}
+		
+		foreach ($games as &$game) {
+			$game['DIVIDER']  ="---------------- Below fields are only present for backward compatability ----------------";
+
+			$game['LaunchPrice'] = $game['LaunchPriceObj']->getPrice();
+			$game['MSRP']= $game['MSRPPriceObj']->getPrice();
+			$game['CurrentMSRP']= $game['CurrentPriceObj']->getPrice();
+			$game['HistoricLow']= $game['HistoricPriceObj']->getPrice();
+			$game['SalePrice']= $game['SalePriceObj']->getPrice();
+			$game['AltSalePrice']= $game['AltPriceObj']->getPrice();
+			$game['Paid']= $game['PaidPriceObj']->getPrice();
 			
-			$game['LaunchHrs5']  =getHrsToTarget($game['LaunchPrice'],  $game['GrandTotal']  ,5);
-			$game['MSRPHrs3']    =getHrsToTarget($game['MSRP'],         $game['GrandTotal']  ,3);
-			$game['PaidHrs3']    =getHrsToTarget($game['Paid'],         $game['GrandTotal']  ,3);
-			$game['HistoricHrs3']=getHrsToTarget($game['HistoricLow'],  $game['GrandTotal']  ,.3);
-			$game['AltHrs3']	 =getHrsToTarget($game['AltSalePrice'], $game['GrandTotal']  ,3);
-			$game['SaleHrs3']	 =getHrsToTarget($game['SalePrice'],    $game['GrandTotal']  ,3);
+			$game['LaunchVariance']  = $game['LaunchPriceObj']->getVarianceFromMSRP();
+			$game['HistoricVariance']= $game['HistoricPriceObj']->getVarianceFromMSRP();
+			$game['PaidVariance']    = $game['PaidPriceObj']->getVarianceFromMSRP();
+			$game['SaleVariance']    = $game['SalePriceObj']->getVarianceFromMSRP();
+			$game['AltSaleVariance']     = $game['AltPriceObj']->getVarianceFromMSRP();
+
+			$game['LaunchVariancePct']  = $game['LaunchPriceObj']->getVarianceFromMSRPpct();
+			$game['HistoricVariancePct']= $game['HistoricPriceObj']->getVarianceFromMSRPpct();
+			$game['PaidVariancePct']    = $game['PaidPriceObj']->getVarianceFromMSRPpct();
+			$game['SaleVariancePct']    = $game['SalePriceObj']->getVarianceFromMSRPpct();
+			$game['AltSaleVariancePct']     = $game['AltPriceObj']->getVarianceFromMSRPpct();
+
+			$game['Launchperhrbeat']  = $game['LaunchPriceObj']->getPricePerHourOfTimeToBeat();
+			$game['MSRPperhrbeat']    = $game['MSRPPriceObj']->getPricePerHourOfTimeToBeat();
+			$game['Currentperhr'] = $game['CurrentPriceObj']->getPricePerHourOfTimeToBeat();
+			$game['Historicperhrbeat']= $game['HistoricPriceObj']->getPricePerHourOfTimeToBeat();
+			$game['Paidperhrbeat']    = $game['PaidPriceObj']->getPricePerHourOfTimeToBeat();
+			$game['Saleperhrbeat']    = $game['SalePriceObj']->getPricePerHourOfTimeToBeat();
+			$game['Altperhrbeat']     = $game['AltPriceObj']->getPricePerHourOfTimeToBeat();
+
+			$game['Launchperhr']  = $game['LaunchPriceObj']->getPricePerHourOfTimePlayed();
+			$game['MSRPperhr']    = $game['MSRPPriceObj']->getPricePerHourOfTimePlayed();
+			$game['Currentperhr'] = $game['CurrentPriceObj']->getPricePerHourOfTimePlayed();
+			$game['Historicperhr']= $game['HistoricPriceObj']->getPricePerHourOfTimePlayed();
+			$game['Paidperhr']    = $game['PaidPriceObj']->getPricePerHourOfTimePlayed();
+			$game['Saleperhr']    = $game['SalePriceObj']->getPricePerHourOfTimePlayed();
+			$game['Altperhr']     = $game['AltPriceObj']->getPricePerHourOfTimePlayed();
+
+			$game['LaunchLess1']  = $game['LaunchPriceObj']->getPricePerHourOfTimePlayedReducedAfter1Hour();
+			$game['MSRPLess1']    = $game['MSRPPriceObj']->getPricePerHourOfTimePlayedReducedAfter1Hour();
+			$game['CurrentLess1'] = $game['CurrentPriceObj']->getPricePerHourOfTimePlayedReducedAfter1Hour();
+			$game['HistoricLess1']= $game['HistoricPriceObj']->getPricePerHourOfTimePlayedReducedAfter1Hour();
+			$game['PaidLess1']    = $game['PaidPriceObj']->getPricePerHourOfTimePlayedReducedAfter1Hour();
+			$game['SaleLess1']    = $game['SalePriceObj']->getPricePerHourOfTimePlayedReducedAfter1Hour();
+			$game['AltLess1']     = $game['AltPriceObj']->getPricePerHourOfTimePlayedReducedAfter1Hour();
+
+			$game['LaunchLess2']  = $game['LaunchPriceObj']->getHoursTo01LessPerHour();
+			$game['MSRPLess2']    = $game['MSRPPriceObj']->getHoursTo01LessPerHour();
+			$game['CurrentLess2'] = $game['CurrentPriceObj']->getHoursTo01LessPerHour();
+			$game['HistoricLess2']= $game['HistoricPriceObj']->getHoursTo01LessPerHour();
+			$game['PaidLess2']    = $game['PaidPriceObj']->getHoursTo01LessPerHour();
+			$game['SaleLess2']    = $game['SalePriceObj']->getHoursTo01LessPerHour();
+			$game['AltLess2']     = $game['AltPriceObj']->getHoursTo01LessPerHour();
+			
+			$game['LaunchHrs5']  =$game['LaunchPriceObj']->getHoursToDollarPerHour(5);
+			$game['MSRPHrs3']    =$game['MSRPPriceObj']->getHoursToDollarPerHour(3);
+			$game['PaidHrs3']    =$game['PaidPriceObj']->getHoursToDollarPerHour(3);
+			$game['HistoricHrs3']=$game['HistoricPriceObj']->getHoursToDollarPerHour(3);
+			$game['AltHrs3']	 =$game['AltPriceObj']->getHoursToDollarPerHour(3);
+			$game['SaleHrs3']	 =$game['SalePriceObj']->getHoursToDollarPerHour(3);
+			
 		}
 		
 		$GLOBALS["CALCULATIONS"] = $games;
-		//const CALCULATIONS = 1; //$games;
-		
 		return $games;
 	}
 }
 
-
-class PriceCalculation {
-    public $price; 	//Currency
-
-	private $MSRP;
-	private $HoursPlayed;
-	private $HoursToBeat;
-
-    public function __construct($price, $HoursPlayed, $HoursToBeat=null, $MSRP=null )
-    {
-        $this->price = $price;
-        $this->MSRP = $MSRP;
-        $this->HoursPlayed = $HoursPlayed;
-        $this->HoursToBeat = $HoursToBeat;
-    }
-
-    public function getPrice($printformat=false)
-	{return $printformat ? $this->printCurrencyFormat($this->price) : $this->price;}
-	
-    public function getVarianceFromMSRP($printformat=false)
-    {
-		$output=$this->getVariance($this->price ,$this->MSRP);
-		return $printformat ? $this->printCurrencyFormat($output) : $output;
-	}
-	
-    public function getVarianceFromMSRPpct($printformat=false)
-    {
-		$output=$this->getVariancePct($this->price ,$this->MSRP);
-		return $printformat ?  $this->printPercentFormat($output) : $output;
-	}
-	
-    public function getPricePerHourOfTimeToBeat($printformat=false)
-    {
-		$output=$this->getPriceperhour($this->price, $this->HoursToBeat*60*60);
-		return $printformat ? $this->printCurrencyFormat($output) : $output;
-	}
-	
-    public function getPricePerHourOfTimePlayed($printformat=false)
-    {
-		$output=$this->getPriceperhour($this->price, $this->HoursPlayed);
-		return $printformat ? $this->printCurrencyFormat($output) : $output;
-	}
-	
-    public function getPricePerHourOfTimePlayedReducedAfter1Hour($printformat=false)
-    {
-		$output=$this->getLessXhour($this->price, $this->HoursPlayed,1);
-		return $printformat ? $this->printCurrencyFormat($output) : $output;
-	}
-
-    public function getHoursTo01LessPerHour($printformat=false)
-    {
-		$output=$this->getHourstoXless($this->price, $this->HoursPlayed,0.01);
-		return $printformat ? $this->printDurationFormat($output) : $output;
-	}
-	
-	
-	private function getVariance($price,$msrp) {
-		$variance=0;
-		if($msrp<>0){
-			$variance=$price-$msrp;
-		}
-		return $variance;
-	}
-
-	private function getVariancePct($price,$msrp) {
-		$variance=0;
-		if($msrp<>0){
-			$variance=(1-($price/$msrp))*100;
-		}
-		return $variance;
-	}
-	
-	private function getPriceperhour($price,$hours){
-		if(($hours/60/60)<1){
-			$priceperhour=$price;
+function getPriceSort($SourceArray,$SortObject,$onlyActive=false){
+	foreach ($SourceArray as $key => $row){
+		if($onlyActive==true) {
+			if($row['Active']==true){
+				$SortArray[$key] = $row[$SortObject]->getPricePerHourOfTimePlayed();
+			}
 		} else {
-			$priceperhour=$price/($hours/60/60);
+			$SortArray[$key] = $row[$SortObject]->getPricePerHourOfTimePlayed();
 		}
-		return $priceperhour;
 	}
-
-	private function getLessXhour($price,$time,$xhour=1){
-		$hours=$time/60/60;
-		if($hours<1){
-			$priceperhour=$price;
-		} else {
-			$priceperhour=$price/$hours;
-		}
-		
-		if($xhour+$hours==0) {
-			$LessXhour=0;
-		} else {
-			$LessXhour=$priceperhour-($price/(max($xhour,$hours)+$xhour));
-		}
-		
-		return $LessXhour;
-	}
-
-	private function getHourstoXless($price,$time,$xless=.01){
-		$priceperhour=getPriceperhour($price,$time);
-		$hoursxless=getHrsToTarget($price,$time,$priceperhour-$xless);
-		
-		return $hoursxless;
-	}
-
-	private function getHrsToTarget($CalcValue,$time,$target){
-		if($target>0){
-			$hourstotarget= $CalcValue/$target-$time/60/60;
-		} else {
-			$hourstotarget=0;
-		}
-		
-		return $hourstotarget;
-	}
+	$SortArray=array_unique($SortArray);
+	array_multisort($SortArray, SORT_DESC );
 	
-	private function printCurrencyFormat($price) 
-	{return sprintf("$%.2f", $price);}
-	private function printPercentFormat($price) 
-	{return sprintf("%.2f%%", $price);}
-	private function printDurationFormat($price) 
-	{return timeduration($price,"hours");}
-
+	return $SortArray;
 }
-
-
-
 
 if (basename($_SERVER["SCRIPT_NAME"], '.php') == "getCalculations.inc") {
 	$GLOBALS['rootpath']="..";

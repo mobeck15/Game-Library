@@ -1,5 +1,5 @@
 <?php
-$GLOBALS['rootpath']=".";
+$GLOBALS['rootpath']=$GLOBALS['rootpath'] ?? ".";
 require_once $GLOBALS['rootpath']."/inc/php.ini.inc.php";
 require_once $GLOBALS['rootpath']."/inc/functions.inc.php";
 
@@ -122,7 +122,7 @@ if($result = $conn->query($sql)) {
 		<td class="numeric">$<?php echo sprintf("%.2f",round($row['runningEarned'],2)); ?></td>
 		<td class="numeric">$<?php echo sprintf("%.2f",round($row['runningSpent'],2)); ?></td>
 		<td class="numeric">$<?php echo sprintf("%.2f",round($row['runningTotal'],2)); ?></td>
-		<td class="hidden numeric">$<?php echo $row['debug']; ?></td>
+		<td class="hidden numeric">$<?php //echo $row['debug']; ?></td>
 		</tr>
 	<?php } ?>
 	</tbody>
@@ -180,40 +180,3 @@ if($result = $conn->query($sql)) {
 	<?php echo combinedate($Transaction['lastcard']['PurchaseDate'],$Transaction['lastcard']['PurchaseTime'],$Transaction['lastcard']['Sequence']); ?>
 	
 <?php echo Get_Footer();
-
-function findgaps($sql,$conn,$idname) {
-	//TODO: Reports values that are not gaps.
-	$stats=array();
-	if($result = $conn->query($sql)){
-		$stats['max']=0;
-		$stats['count']=0;
-		$stats['gaps']=array();
-		$stats['gapsText']="";
-		$index=0;
-		if ($result->num_rows > 0){
-			while($row = $result->fetch_assoc()){
-				$stats['count']++;
-				$stats['max']=$row[$idname];
-				if($row[$idname]<>$index){
-					while($row[$idname]<>$index){
-						$stats['gaps'][]=$index;
-						$stats['gapsText'] .= $index . ", ";
-						$index++;
-					}
-					$stats['gaps'][]=$index;
-					$stats['gapsText'] .= $index . ", ";
-				}
-				$index++;
-				$stats['lastrow']=$row;
-				if($idname=="TransID" AND (0+$row['Credit Used'])<0){
-					$stats['lastcard']=$row;
-				}
-				if($idname=="ItemID" AND $row['ProductID']==null){
-					$stats['lastcard']=$row;
-				}
-			}
-		}
-	}
-	return $stats;
-}
- ?>

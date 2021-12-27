@@ -1,6 +1,7 @@
 <?php
 $time_start = microtime(true);
-require_once 'inc/functions.inc.php';
+$GLOBALS['rootpath']=$GLOBALS['rootpath'] ?? ".";
+require_once $GLOBALS['rootpath']."/inc/functions.inc.php";
 $title="Index";
 echo Get_Header($title);
 ?>
@@ -117,7 +118,7 @@ function dirToArray($dir) {
 function readFileLines($file,$key,$path=".") {
 	//echo "path: [[". $path."]] key: [[".$key."]] file: [["; var_dump($file);echo "]]<br>";//DEBUG
 	//If it is a file or directory, proceed
-	if(is_array($file) OR in_array(pathinfo($file)['extension'],array("php","css"))) { 
+	if(is_array($file) OR in_array((pathinfo($file)['extension'] ?? []),array("php","css"))) { 
 	//echo "use path: [[". $path."]] key: [[".$key."]] file: [["; var_dump($file);echo "]]<br>";//DEBUG
 		if(is_array($file)) {
 			//echo "<hr> **Array**<br>";//DEBUG

@@ -1,5 +1,5 @@
 <?php
-//DONE: add control function to prevent loading multiple times.
+// @codeCoverageIgnoreStart
 if(isset($GLOBALS[__FILE__])){
 	trigger_error("File already included once ".__FILE__.". ");
 }
@@ -11,5 +11,5 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 //ini_set('memory_limit' , '512M')
-ini_set('memory_limit' , '1G')
-?>
+ini_set('memory_limit' , '1G');
+// @codeCoverageIgnoreEnd

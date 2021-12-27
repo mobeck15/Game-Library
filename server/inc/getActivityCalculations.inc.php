@@ -1,29 +1,28 @@
 <?php
-/*
- *  GL5 Version - Need to re-work for GL6
- */
- 
 if(isset($GLOBALS[__FILE__])){
 	trigger_error("File already included once ".__FILE__.". ");
 }
 $GLOBALS[__FILE__]=1;
 
+$GLOBALS['rootpath']=$GLOBALS['rootpath'] ?? "..";
+require_once $GLOBALS['rootpath']."/inc/utility.inc.php";
+
 function getActivityCalculations($gameID="",$historytable="",$connection=false){
-	//This function is getting called twice from viewgame.php
+	//TODO: This function is getting called twice from viewgame.php
 	if($connection==false){
-		require $GLOBALS['rootpath']."/inc/auth.inc.php";
-		$conn = new mysqli($servername, $username, $password, $dbname);
+		$conn=get_db_connection();
 	} else {
 		$conn = $connection;
 	}
 	
 	$settings=getsettings($conn);
-	if($historytable=="") {
+	if($historytable==="") {
+		require_once $GLOBALS['rootpath']."/inc/getHistoryCalculations.inc.php";
 		$historytable=getHistoryCalculations($gameID,$conn);
 	}
 	if($connection==false){
 		$conn->close();	
-	}	
+	}
 	
 	if($historytable<>false){
 		foreach ($historytable as $row) {
@@ -60,13 +59,9 @@ function getActivityCalculations($gameID="",$historytable="",$connection=false){
 						
 					}
 					
-					//echo "<br>totalhrs: ";
-					//var_dump($totals[$value['GameID']]['totalHrs']);
-					//echo "elapsed: ";
-					//var_dump($value['Elapsed']);
-					
 					if($value['Elapsed'] == "") {$value['Elapsed']=0;}
 					$totals[$value['GameID']]['totalHrs'] += $value['Elapsed'];
+					//TODO: update to take injectable time values
 					if(strtotime($value['Timestamp']) >= strtotime("-7 Days Midnight")) {
 						$totals[$value['GameID']]['weekPlay'] += $value['Elapsed'];
 					}
@@ -81,7 +76,6 @@ function getActivityCalculations($gameID="",$historytable="",$connection=false){
 				if(!isset($totals[$value['GameID']]['Achievements'])) {$totals[$value['GameID']]['Achievements']=0;}
 				if ($value['Achievements']<>"" && $totals[$value['GameID']]['Achievements'] != $value['Achievements']) {
 					if(strtotime($value['Timestamp']) >= strtotime("-7 Days Midnight")) {
-						//var_dump($totals[$value['GameID']]['WeekAchievements']); echo " += "; var_dump($value['Achievements']); echo " - "; var_dump($totals[$value['GameID']]['Achievements']); echo "<br>";
 						$totals[$value['GameID']]['WeekAchievements'] += $value['Achievements'] - $totals[$value['GameID']]['Achievements'];
 					}
 					if(strtotime($value['Timestamp']) >= strtotime("-1 month Midnight")) {
@@ -143,7 +137,6 @@ function getActivityCalculations($gameID="",$historytable="",$connection=false){
 }
 
 if (basename($_SERVER["SCRIPT_NAME"], '.php') == "getActivityCalculations.inc") {
-	$GLOBALS['rootpath']="..";
 	require_once $GLOBALS['rootpath']."/inc/php.ini.inc.php";
 	require_once $GLOBALS['rootpath']."/inc/functions.inc.php";
 	

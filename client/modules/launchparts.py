@@ -10,7 +10,7 @@ def get_config(configpath=""):
     config.read(configpath)
     if len(config['DEFAULT']) == 0:
         #create default config
-        config['DEFAULT']['path'] = r'D:\Python\game-library\data\data.json'
+        config['DEFAULT']['path'] = r'D:\Python\game-library\client\data\data.json'
         config['DEFAULT']['default_message'] = 'Hey! help me!!!'   # create
         with open(configpath, 'w') as configfile:    # save
             config.write(configfile)

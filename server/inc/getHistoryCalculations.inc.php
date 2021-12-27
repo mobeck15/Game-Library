@@ -1,6 +1,4 @@
 <?php
-
-//DONE: add control function to prevent loading multiple times.
 if(isset($GLOBALS[__FILE__])){
 	trigger_error("File already included once ".__FILE__.". ");
 }
@@ -14,8 +12,9 @@ function getHistoryCalculations($gameID="",$connection=false,$start=false,$end=f
 	} else {
 		$conn = $connection;
 	}
-	$settings=getsettings($conn);
 	
+	require_once $GLOBALS['rootpath']."/inc/getsettings.inc.php";
+	$settings=getSettings($conn);
 	
 	$sql = "select `HistoryID`,`Timestamp`,`Title` as 'Game', `System`, `Data`, `Time`, `Notes`, `Achievements`, `AchievementType`, `Levels`, `LevelType`, `Status`, `Review`, `BaseGame`, `RowType`, `kwMinutes`, `kwIdle`, `kwCardFarming`, `kwCheating`, `kwBeatGame`, `kwShare`, `GameID`, `ParentGameID`, `LaunchDate`, `RowType` ";
 	$sql .= " from `gl_history` ";
@@ -95,11 +94,7 @@ function getHistoryCalculations($gameID="",$connection=false,$start=false,$end=f
 				}
 				if($row['kwBeatGame']==1) {$row['KeyWords'] .= "Beat Game";}
 				
-				
-				///////////////////////
-				
 				$row['LaunchDate']= date("n/j/Y",strtotime($row['LaunchDate']));
-				
 				
 				if ($row['Status']<>""){
 					$final_Status[$row['GameID']]=$row['Status'];
@@ -173,7 +168,7 @@ function getHistoryCalculations($gameID="",$connection=false,$start=false,$end=f
 								$exclude[$row['UseGame']][$row['System']] += ($date - $prevstart[$row['GameID']]);
 							}
 						} else {
-							$row['Elapsed']="";
+							$row['Elapsed']=0;
 							$row['prevTotSys']= $total[$row['UseGame']][$row['System']];
 						}
 						break;
@@ -217,8 +212,6 @@ function getHistoryCalculations($gameID="",$connection=false,$start=false,$end=f
 					}
 					$firstpair[$row['GameID']]=false;
 				}
-				
-
 			}
 		} else {
 			$activity = false;
@@ -243,6 +236,8 @@ if (basename($_SERVER["SCRIPT_NAME"], '.php') == "getHistoryCalculations.inc") {
 	$title="History Calculations Inc Test";
 	echo Get_Header($title);
 	
+	//TODO: lookup by game is not appropriate. 
+	//TODO: ID entered is not the ID displayed (Sorting issue?)
 	$lookupgame=lookupTextBox("History", "HistoryID", "id", "History", $GLOBALS['rootpath']."/ajax/search.ajax.php");
 	echo $lookupgame["header"];
 	if (!(isset($_GET['id']) && is_numeric($_GET['id']))) {

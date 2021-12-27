@@ -1,5 +1,5 @@
 <?php
-$GLOBALS['rootpath']=".";
+$GLOBALS['rootpath']=$GLOBALS['rootpath'] ?? ".";
 require_once $GLOBALS['rootpath']."/inc/php.ini.inc.php";
 require_once $GLOBALS['rootpath']."/inc/functions.inc.php";
 
@@ -126,7 +126,7 @@ $resultarray=GetOwnedGames();
 			<td></td>
 		<?php } ?>
 		
-		<td class="hidden"><?php print_r($thisgamedata); ?> </td>
+		<td class="hidden"><?php print_r(($thisgamedata ?? null)); ?> </td>
 		</tr>
 	<?php } ?>
 	

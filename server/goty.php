@@ -1,7 +1,7 @@
 <?php
 //TODO: Based on Chartdata.php, Update this to show top played games for each year.
 
-$GLOBALS['rootpath']=".";
+$GLOBALS['rootpath']=$GLOBALS['rootpath'] ?? ".";
 require_once $GLOBALS['rootpath']."/inc/php.ini.inc.php";
 require_once $GLOBALS['rootpath']."/inc/functions.inc.php";
 
@@ -21,12 +21,14 @@ $settings=getsettings($conn);
 	<input type="radio" id="Year" name="group" value="year"
 	<?php if (isset($_GET['group']) && $_GET['group']=="year") { echo " CHECKED"; } ?>
 	>
-	<label for="Year">Year</label>
+	<label for="Year">Year</label><?php if($settings['CountFree']==1) { ?>
 	|
 	Hide Free Games: <label class="switch"><input type="checkbox" name="CountFree" value='0'<?php 
 	if($settings['CountFree']==0) { echo " CHECKED "; }
 	?>><span class="slider round"></span></label>
-	<?php if (isset($_GET['detail'])) { ?>
+	<?php }
+
+	if (isset($_GET['detail'])) { ?>
 	<input type="hidden" id="Detail" name="detail" value="<?php echo $_GET['detail']; ?>">
 	<?php } ?>
 	<input type="submit">
@@ -165,7 +167,7 @@ echo "<th style='top:77px;'>This Month</th>";
 	//$settings=getsettings($conn);
 	$calculations=getCalculations("",$conn);
 	foreach($calculations as $key => $row) {
-		$key=date($dateformat, strtotime($row['PrintPurchaseDate']));
+		$key=date($dateformat, $row['PurchaseDateTime']->getTimestamp());
 		if($row['CountGame']==true && $row['Playable']==true
 		  && (0+$row['Paid']>0 OR $settings['CountFree']==true)){
 			
@@ -374,7 +376,7 @@ echo "<th style='top:77px;'>This Month</th>";
 		<td class="hidden"><?php echo $row['Year']; ?></td>
 		<?php if(!isset($row['Date']) || $row['Date']=="") {$row['Date']="Blank";}
 		$countparm="";
-		if(isset($_GET['CountFree'])) {$countparm="&CountFree=".$_GET['CountFree'];}
+		if(isset($_GET['CountFree'])) {$countparm="&CountFree=0";}
 		?>
 		<td class="numeric"><a href='<?php echo $_SERVER['PHP_SELF'];?>?detail=<?php 
 			if($groupbyyear==true){
@@ -382,8 +384,10 @@ echo "<th style='top:77px;'>This Month</th>";
 			} else {
 				echo $key.$countparm;
 			} 
+			//DONE: Update this to read the settings value instead of _GET
+			//settings is respected but you can't turn it off and override with the switch.
 			if(isset($_GET['CountFree'])) {
-				echo "&CountFree=".$_GET['CountFree'];
+				echo "&CountFree=0";
 			}
 			?>'><?php echo $row['Date'];?></a></td>
 		<td class="numeric">$<?php echo number_format($row['Spending'], 2); ?></td>

@@ -3,11 +3,19 @@ if(isset($GLOBALS[__FILE__])){
 	trigger_error("File already included once ".__FILE__.". ",E_USER_WARNING  );
 }
 $GLOBALS[__FILE__]=1;
+require_once $GLOBALS['rootpath']."/inc/getCalculations.inc.php";
+require_once $GLOBALS['rootpath']."/inc/getGames.inc.php";
+require_once $GLOBALS['rootpath']."/inc/utility.inc.php";
+require_once $GLOBALS['rootpath']."/inc/getsettings.inc.php";
+require_once $GLOBALS['rootpath']."/inc/getHistoryCalculations.inc.php";
+require_once $GLOBALS['rootpath']."/inc/getActivityCalculations.inc.php";
+require_once $GLOBALS['rootpath']."/inc/getPurchases.inc.php";
+
 
 
 function makeStatTable($MetaFilter,$filter){
 	$output="";
-	$output .= "<table width=110%>";
+	$output .= "<table width=100%>";
 	$output .= "<thead>";
 	$output .= "<tr>";
 	$output .= "<th></th>";
@@ -376,8 +384,8 @@ function methodTranslator($statname, $usekey, $row) {
 function printStatRow2($stats){
 	$calculations=reIndexArray(getCalculations(),"Game_ID");
 	
-	if($stats['Print']['Total'] == "") {
-		return "";
+	if(($stats['Print']['Total'] ?? "") == "") {
+		return ""; //@codeCoverageIgnore
 	}
 	
 	//Total
@@ -553,8 +561,10 @@ function makeDetailTable($filter,$statname){
 	$dataset=makeStatDataSet($filter,$statname);
 	$statrow=getStatRow($filter,$statname);
 	
-	echo DetailDataTable($dataset,$statrow);
-	echo arrayTable($statrow);
+	$output = DetailDataTable($dataset,$statrow);
+	$output .= arrayTable($statrow);
+	
+	return $output;
 	
 }
 
@@ -567,26 +577,8 @@ function getStatRow($filter,$statname){
 		
 		$row['Title']=$statname;
 		
-		if($statname==null) {
-			$row['HarMean']=null; //.00001;
-			$row['Median']=null; //.00001;
-			$row['Total']=.00001;
-			$row['Average']=null; //.00001;
-			$row['Mode']=null; //.00001;
-			$row['Max1']=null; //.00001;
-			$row['Max2']=null; //.00001;
-			$row['Min1']=null; //.00001;
-			$row['Min2']=null; //.00001;
-
-			$row['MedianGameID']=null; //.00001;
-			$row['TotalGameID']=null;
-			$row['AverageGameID']=null; //.00001;
-			$row['ModeGameID']=null; //.00001;
-			$row['Max1GameID']=null; //.00001;
-			$row['Max2GameID']=null; //.00001;
-			$row['Min1GameID']=null; //.00001;
-			$row['Min2GameID']=null; //.00001;
-		} else {
+		//Always true?
+		if($statname<>null) {
 			$dataset=makeStatDataSet($filter,$statname);
 			$val=getOnlyValues($dataset,$statname);
 			//var_dump($val); echo "<br>\n";
@@ -598,8 +590,11 @@ function getStatRow($filter,$statname){
 
 			//Average (Mean)
 			//var_dump($row); echo "<br>\n";
-			if($row['Total']==0) {echo $statname . " Total not set<br>\n";}
-			$row['Average']=$row['Sum']/$row['Total'];
+			if($row['Total']==0) {
+				trigger_error($statname . " Total not set");
+			} else {
+				$row['Average']=$row['Sum']/$row['Total'];
+			}
 			
 			//Median
 			$middleVal = floor(($row['Total'] - 1) / 2);
@@ -740,15 +735,15 @@ function getStatRow($filter,$statname){
 			case "lastPlayDateTime":
 			case "firstPlayDateTime":
 				$row['Print']['Total']=number_format($row['Total'],0);
-				$row['Print']['Average']=date('Y-m-d', $row['Average']);
+				$row['Print']['Average']=date('Y&#8209;m&#8209;d', $row['Average']);
 				//$row['Print']['HarMean']=date('Y-m-d', $row['HarMean']);
 				$row['Print']['HarMean']=null;
-				$row['Print']['Median']=date('Y-m-d', $row['Median']);
-				$row['Print']['Mode']=date('Y-m-d', $row['Mode']);
-				$row['Print']['Max1']=date('Y-m-d', $row['Max1']);
-				$row['Print']['Max2']=date('Y-m-d', $row['Max2']);
-				$row['Print']['Min1']=date('Y-m-d', $row['Min1']);
-				$row['Print']['Min2']=date('Y-m-d', $row['Min2']);
+				$row['Print']['Median']=date('Y&#8209;m&#8209;d', $row['Median']);
+				$row['Print']['Mode']=date('Y&#8209;m&#8209;d', $row['Mode']);
+				$row['Print']['Max1']=date('Y&#8209;m&#8209;d', $row['Max1']);
+				$row['Print']['Max2']=date('Y&#8209;m&#8209;d', $row['Max2']);
+				$row['Print']['Min1']=date('Y&#8209;m&#8209;d', $row['Min1']);
+				$row['Print']['Min2']=date('Y&#8209;m&#8209;d', $row['Min2']);
 				break;
 			//Integers
 			case "SteamAchievements":
@@ -881,6 +876,7 @@ function getStatRow($filter,$statname){
 				$row['Print']['Min2']=timeduration($row['Min2'],"hours");
 				break;
 			default:
+				/* UNREACHABLE */
 				$row['Print']['Total']=null;
 				$row['Print']['Average']=null;
 				$row['Print']['HarMean']=null;
@@ -891,6 +887,7 @@ function getStatRow($filter,$statname){
 				$row['Print']['Min1']=null;
 				$row['Print']['Min2']=null;
 				break;
+				/* */
 		}
 		
 		$GLOBALS["METASTATS"][$statname] = $row;

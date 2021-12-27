@@ -1,17 +1,17 @@
 <?php
-/*
- *  GL5 Version - Need to re-work for GL6
- */
-
-//DONE: add control function to prevent loading multiple times.
 if(isset($GLOBALS[__FILE__])){
 	trigger_error("File already included once ".__FILE__.". ");
 }
 $GLOBALS[__FILE__]=1;
+$GLOBALS['rootpath']= $GLOBALS['rootpath'] ?? "..";
+require_once $GLOBALS['rootpath']."/inc/utility.inc.php";
+require_once $GLOBALS['rootpath']."/inc/getGames.inc.php";
+require_once $GLOBALS['rootpath']."/inc/getActivityCalculations.inc.php";
+require_once $GLOBALS['rootpath']."/inc/getsettings.inc.php";
 
 function getPurchases($transID="",$connection=false,$items=false,$games=false){
 	if($connection==false){
-		include "auth.inc.php";
+		require $GLOBALS['rootpath']."/inc/auth.inc.php";
 		$conn = new mysqli($servername, $username, $password, $dbname);
 	} else {
 		$conn = $connection;
@@ -29,9 +29,11 @@ function getPurchases($transID="",$connection=false,$items=false,$games=false){
 	//TODO: sometimes Totalweight is zero? Investigate.
 	$totalWeight=$settings['WeightMSRP']+$settings['WeightPlay']+$settings['WeightWant'];
 	if($totalWeight==0) {
+		// @codeCoverageIgnoreStart
 		$useWeightMSRP=0;
 		$useWeightPlay=0;
 		$useWeightWant=0;
+		// @codeCoverageIgnoreEnd
 	} else {
 		$useWeightMSRP=$settings['WeightMSRP']/$totalWeight;
 		$useWeightPlay=$settings['WeightPlay']/$totalWeight;
@@ -39,24 +41,17 @@ function getPurchases($transID="",$connection=false,$items=false,$games=false){
 	}
 	
 	$sql="SELECT * FROM `gl_transactions`";
+	/*
+	//Filtering by one transaction ID breaks later calculations.
 	if ($transID <> "" ) {
 		$sql .= " where TransID = " . $transID ;
 		$sql .= " OR BundleID = " . $transID ;
 	}
-	$sql .= "order by `PurchaseDate` ASC, `PurchaseTime` ASC, `Sequence` ASC" ;
+	*/
+	$sql .= " order by `PurchaseDate` ASC, `PurchaseTime` ASC, `Sequence` ASC" ;
 	//$sql .= " Limit 50" ;
 	if($result = $conn->query($sql)){
-		//$cpi=getAllCpi();
-		//$items=regroupArray(getAllItems(),"TransID");
-
 		while($row = $result->fetch_assoc()) {
-			/* * /
-			if ($row['BundleID']==57) {
-				echo "<b>Bundle</b>";
-				print_r($row);
-				echo "<br>";
-			}
-			/* */
 			if($row['Tier']==0){$row['Tier']="";}
 			
 			$date=strtotime($row['PurchaseDate']);
@@ -73,12 +68,7 @@ function getPurchases($transID="",$connection=false,$items=false,$games=false){
 				$row['PurchaseTime']= date("H:i:s",$time) ;
 			}
 			
-			$row['PurchaseTimeStamp']=strtotime($row['PurchaseDate'] . " " . $row['PurchaseTime'])+$row['Sequence'];
-			if(date("H:i:s",$row['PurchaseTimeStamp']) == "00:00:00") {
-				$row['PrintPurchaseTimeStamp']= date("n/j/Y",$row['PurchaseTimeStamp']);
-			} else {
-				$row['PrintPurchaseTimeStamp']= date("n/j/Y H:i:s",$row['PurchaseTimeStamp']) ;
-			}
+			$row['PrintPurchaseTimeStamp']=combinedate($row['PurchaseDate'], $row['PurchaseTime'], $row['Sequence']);
 			
 			$row['PurchaseDateTime'] = new DateTime($row['PurchaseDate'] . " " . $row['PurchaseTime']);
 			
@@ -112,19 +102,14 @@ function getPurchases($transID="",$connection=false,$items=false,$games=false){
 			$row['TotalHrs']=0;
 			
 			$row['TotalMSRPFormula']="0";
-			/*
-			if ($row['TransID']==61 OR $row['TransID']==57) {
-				echo "<b>Bundle</b>";
-				echo "<pre>".print_r($row,true)."</pre>";
-			}
-			*/
-			
 			
 			$purchases[]=$row;
 		}
 	} else {
+		// @codeCoverageIgnoreStart
 		$purchases = false;
 		trigger_error("SQL Query Failed: " . mysqli_error($conn) . "</br>Query: ". $sql);
+		// @codeCoverageIgnoreEnd
 	}
 	
 	if($connection==false){
@@ -132,10 +117,6 @@ function getPurchases($transID="",$connection=false,$items=false,$games=false){
 	}	
 
 	$ParentBundleIndex=makeIndex($purchases,"TransID");
-
-
-	//$itemsbyBundle=regroupArray($items,"TransID");
-	//var_dump($settings);
 	
 	$max_loop=5;
 	foreach ($items as $key => $value) {
@@ -151,23 +132,25 @@ function getPurchases($transID="",$connection=false,$items=false,$games=false){
 			$parentbundle=$ParentBundleIndex[$bundleID];
 			
 			if(!isset($ParentBundleIndex[$bundleID])){
+		// @codeCoverageIgnoreStart
 				trigger_error("No parent bundle found");
 				var_dump($value);
+		// @codeCoverageIgnoreEnd
 			}
 			
 			while($purchases[$parentbundle]['BundleID']<>$bundleID){
 				$bundleID=$purchases[$ParentBundleIndex[$bundleID]]['BundleID'];
 				if($n>=$max_loop) {
+		// @codeCoverageIgnoreStart
 					trigger_error("Exceeded maximum parent bundles (" . $n . ")");
 					break;
+		// @codeCoverageIgnoreEnd
 				}
 				$n++;
 			}		
 			$itemsbyBundle[$bundleID][]=$value;
 		}
 	}
-
-	
 	
 	foreach ($purchases as &$row) {
 		$n=0;
@@ -176,7 +159,10 @@ function getPurchases($transID="",$connection=false,$items=false,$games=false){
 		while($purchases[$ParentBundleIndex[$row['TopBundleID']]]['BundleID']<>$row['TopBundleID']){
 			$row['TopBundleID']=$purchases[$ParentBundleIndex[$row['TopBundleID']]]['BundleID'];
 			if($n>=$max_loop) {
+		// @codeCoverageIgnoreStart
+				trigger_error("Exceeded maximum parent bundles (" . $n . ")");
 				break;
+		// @codeCoverageIgnoreEnd
 			}
 			$n++;
 		}
@@ -184,8 +170,10 @@ function getPurchases($transID="",$connection=false,$items=false,$games=false){
 			$row['TopBundleID']  = $row['TopBundleID'];
 			$row['TopBundle'] = $purchases[$ParentBundleIndex[$row['TopBundleID']]]['Title'];
 		} else {
+		// @codeCoverageIgnoreStart
 			$row['TopBundle']="Not Found";
 			$row['TopBundleID']=null;
+		// @codeCoverageIgnoreEnd
 		}
 		
 		$row['BundlePrice'] = sprintf("%.2f",$purchases[$ParentBundleIndex[$row['TopBundleID']]]['Paid']);
@@ -374,10 +362,11 @@ SELECT `Game_ID`,`Title`,`MSRP` FROM `gl_products` join `gl_items` on `gl_produc
 }
 
 
+// @codeCoverageIgnoreStart
 function getAllPurchases($transID=""){
 	trigger_error("FUNCTION getAllPurchases() IS DEPRICATED IN ".__FILE__.". ");
 	
-	include "auth.inc.php";
+	require $GLOBALS['rootpath']."/inc/auth.inc.php";
 	$conn = new mysqli($servername, $username, $password, $dbname);
 	$sql="SELECT * FROM `gl_transactions`";
 	if ($transID <> "" ) {
@@ -493,7 +482,6 @@ function getAllPurchases($transID=""){
 }
 
 if (basename($_SERVER["SCRIPT_NAME"], '.php') == "getPurchases.inc") {
-	$GLOBALS['rootpath']="..";
 	require_once $GLOBALS['rootpath']."/inc/php.ini.inc.php";
 	require_once $GLOBALS['rootpath']."/inc/functions.inc.php";
 	
@@ -533,5 +521,6 @@ if (basename($_SERVER["SCRIPT_NAME"], '.php') == "getPurchases.inc") {
 	}
 	echo Get_Footer();
 }
+// @codeCoverageIgnoreEnd
 
 ?>

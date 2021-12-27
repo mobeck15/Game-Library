@@ -3,7 +3,7 @@
  * Based on code from https://jqueryui.com/autocomplete/
  * and https://www.codeproject.com/Articles/152558/jQuery-UI-Autocomplete-with-ID
  */
-$GLOBALS['rootpath']="..";
+$GLOBALS['rootpath']=$GLOBALS['rootpath'] ?? "..";
 require_once $GLOBALS['rootpath']."/inc/php.ini.inc.php";
 require_once $GLOBALS['rootpath']."/inc/functions.inc.php";
 

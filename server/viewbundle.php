@@ -1,5 +1,5 @@
 <?php
-$GLOBALS['rootpath']=".";
+$GLOBALS['rootpath']=$GLOBALS['rootpath'] ?? ".";
 require_once $GLOBALS['rootpath']."/inc/php.ini.inc.php";
 require_once $GLOBALS['rootpath']."/inc/functions.inc.php";
 
@@ -278,7 +278,7 @@ array(25) {
 		<th>Purchase Date/Time</th>
 		<td>
 		<?php if ($edit_mode === true) { ?>
-		<input type="datetime-local" name="purchasetime" value="<?php echo date("Y-m-d\TH:i:s",$purchases[$purchaseIndex[$_GET['id']]]['PurchaseTimeStamp']); ?>">
+		<input type="datetime-local" name="purchasetime" value="<?php echo date("Y-m-d\TH:i:s",$purchases[$purchaseIndex[$_GET['id']]]['PurchaseDateTime']->gettimestamp()); ?>">
 		<br>Sequence: <input type="number" name="Sequence" min="1" max="999" step="1" value="<?php echo $purchases[$purchaseIndex[$_GET['id']]]['Sequence']; ?>">
 		<?php } else { 
 			echo $purchases[$purchaseIndex[$_GET['id']]]['PrintPurchaseTimeStamp']; } 
