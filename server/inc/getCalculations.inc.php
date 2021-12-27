@@ -218,7 +218,7 @@ function getCalculations($gameID="",$connection=false,$start=false,$end=false){
 			if(isset($game['PurchaseDateTime'])) {
 				$game['DaysSincePurchaseDate']=daysSinceDate($game['PurchaseDateTime']->getTimestamp());
 			} else {
-				$game['DaysSincePurchaseDate']=0;
+				$game['DaysSincePurchaseDate']=0; //@codeCoverageIgnore
 			}
 
 			$game['SalePrice']=0;

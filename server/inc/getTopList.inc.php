@@ -102,7 +102,7 @@ function getTopList($group,$connection=false,$calc=false,$minGroupSize=2){
 						if(isset($row['PurchaseDateTime'])){
 							$getPurchaseTime=$row['PurchaseDateTime']->getTimestamp();
 						} else {
-							$getPurchaseTime=0;
+							$getPurchaseTime=0; //@codeCoverageIgnore
 						}
 						if($getPurchaseTime<$top['None']['PurchaseDate']){
 							$top['None']['PurchaseDate']=$getPurchaseTime; //@codeCoverageIgnore
@@ -146,7 +146,7 @@ function getTopList($group,$connection=false,$calc=false,$minGroupSize=2){
 				if(isset($row['PurchaseDateTime'])){
 					$getPurchaseTime=$row['PurchaseDateTime']->getTimestamp();
 				} else {
-					$getPurchaseTime=0;
+					$getPurchaseTime=0; //@codeCoverageIgnore
 				}
 				if($getPurchaseTime<$top[$keyID]['PurchaseDate']){
 					$top[$keyID]['PurchaseDate']=$getPurchaseTime;
@@ -195,7 +195,7 @@ function getTopList($group,$connection=false,$calc=false,$minGroupSize=2){
 					if(isset($row['PurchaseDateTime'])){
 						$getPurchaseTime=$row['PurchaseDateTime']->getTimestamp();
 					} else {
-						$getPurchaseTime=0;
+						$getPurchaseTime=0; //@codeCoverageIgnore
 					}
 					if($getPurchaseTime<$top['None']['PurchaseDate']){
 						$top['None']['PurchaseDate']=$getPurchaseTime;
