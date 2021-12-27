@@ -16,8 +16,7 @@ require_once $GLOBALS['rootpath']."/inc/getPurchases.inc.php";
 
 function getTopList($group,$connection=false,$calc=false,$minGroupSize=2){
 	if($connection==false){
-		require $GLOBALS['rootpath']."/inc/auth.inc.php";
-		$conn = new mysqli($servername, $username, $password, $dbname);
+		$conn = get_db_connection();
 	} else {
 		$conn = $connection;
 	}

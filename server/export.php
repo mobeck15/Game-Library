@@ -3,17 +3,12 @@ $GLOBALS['rootpath']=$GLOBALS['rootpath'] ?? ".";
 require_once $GLOBALS['rootpath']."/inc/php.ini.inc.php";
 require_once $GLOBALS['rootpath']."/inc/functions.inc.php";
 require_once $GLOBALS['rootpath']."/inc/export.inc.php";
-require $GLOBALS['rootpath']."/inc/auth.inc.php";
 
 $title="Export";
 
 //from https://stackoverflow.com/questions/22195493/export-mysql-database-using-php-only
 
 //ENTER THE RELEVANT INFO BELOW
-$mysqlUserName      = $username;
-$mysqlPassword      = $password;
-$mysqlHostName      = $servername;
-$DbName             = $dbname;
 //$backup_name        = "mybackup.sql";
 //$tables             = "Your tables";
 //$tables             = array('gl_history','gl_items','gl_keywords','gl_products','gl_settings','gl_status','gl_transactions','gl_cpi');
@@ -29,7 +24,7 @@ $tables             = array('gl_history','gl_items','gl_keywords','gl_products',
 //TODO: Add Import functions.
 
 if(isset($_GET['export'])) {
-Export_Database($mysqlHostName,$mysqlUserName,$mysqlPassword,$DbName,  $tables, $backup_name=false );
+Export_Database($tables, $backup_name=false );
 } else {
 	echo Get_Header($title);
 	?>

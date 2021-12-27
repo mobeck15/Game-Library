@@ -8,8 +8,6 @@ echo Get_Header($title);
 
 $conn=get_db_connection();
 
-include "inc/auth.inc.php";
-
 $hitory=getHistoryCalculations("",$conn);
 $games=getCalculations("",$conn);
 $steamindex=makeIndex($games,"SteamID");

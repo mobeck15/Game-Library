@@ -11,8 +11,7 @@ require_once $GLOBALS['rootpath']."/inc/getsettings.inc.php";
 
 function getPurchases($transID="",$connection=false,$items=false,$games=false){
 	if($connection==false){
-		require $GLOBALS['rootpath']."/inc/auth.inc.php";
-		$conn = new mysqli($servername, $username, $password, $dbname);
+		$conn = get_db_connection();
 	} else {
 		$conn = $connection;
 	}
@@ -366,8 +365,7 @@ SELECT `Game_ID`,`Title`,`MSRP` FROM `gl_products` join `gl_items` on `gl_produc
 function getAllPurchases($transID=""){
 	trigger_error("FUNCTION getAllPurchases() IS DEPRICATED IN ".__FILE__.". ");
 	
-	require $GLOBALS['rootpath']."/inc/auth.inc.php";
-	$conn = new mysqli($servername, $username, $password, $dbname);
+	$conn = get_db_connection();
 	$sql="SELECT * FROM `gl_transactions`";
 	if ($transID <> "" ) {
 		$sql .= " where TransID = " . $transID ;

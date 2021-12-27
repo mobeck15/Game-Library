@@ -132,8 +132,7 @@ function makeIndex($array,$indexKey){
 
 function getAllItems($gameID="",$connection=false){
 	if($connection==false){
-		require $GLOBALS['rootpath']."/inc/auth.inc.php";
-		$conn = new mysqli($servername, $username, $password, $dbname);
+		$conn = get_db_connection();
 	} else {
 		$conn = $connection;
 	}
@@ -215,8 +214,7 @@ function getAllItems($gameID="",$connection=false){
 
 function getKeywords($gameID="",$connection=false){
 	if($connection==false){
-		require $GLOBALS['rootpath']."/inc/auth.inc.php";
-		$conn = new mysqli($servername, $username, $password, $dbname);
+		$conn = get_db_connection();
 	} else {
 		$conn = $connection;
 	}
@@ -301,8 +299,7 @@ function reIndexArray($array,$indexKey){
 
 function getGameDetail($gameID,$connection=false){
 	if($connection==false){
-		require $GLOBALS['rootpath']."/inc/auth.inc.php";
-		$conn = new mysqli($servername, $username, $password, $dbname);
+		$conn = get_db_connection();
 	} else {
 		$conn = $connection;
 	}

@@ -95,6 +95,7 @@ final class getActivityCalculations_Test extends TestCase
    }
 
 	/**
+	 * @dbconnect
 	 * @group fast
 	 * @small
 	 * @covers getActivityCalculations
@@ -112,6 +113,7 @@ final class getActivityCalculations_Test extends TestCase
    }
    
 	/**
+	 * @dbconnect
 	 * @group fast
 	 * @small
 	 * @covers getActivityCalculations

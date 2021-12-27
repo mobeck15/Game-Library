@@ -27,6 +27,7 @@ class testajax extends TestCase {
     }
 
 	/**
+	 * @dbconnect
 	 * @group untimed
 	 * @small
 	 * Time

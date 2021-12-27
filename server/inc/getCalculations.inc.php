@@ -17,8 +17,7 @@ function getCalculations($gameID="",$connection=false,$start=false,$end=false){
 		return $GLOBALS["CALCULATIONS"];
 	} else {
 		if($connection==false){
-			include "auth.inc.php";
-			$conn = new mysqli($servername, $username, $password, $dbname);
+			$conn = get_db_connection();
 		} else {
 			$conn = $connection;
 		}
