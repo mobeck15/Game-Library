@@ -7,6 +7,7 @@ class SteamAPI
 	private $SteamAPIwebkey=null;
 	private $SteamProfileID=null;
 	private $steamGameID=null;
+	private $curlHandle=null;
 	
 	private $GetOwnedGamesURL=null;
 	private $GetRecentlyPlayedGamesURL=null;
@@ -17,8 +18,9 @@ class SteamAPI
 	private $GetAppDetailsURL=null;
 	private $GetSteamPICSURL=null;
 
-    public function __construct($steamGameID=null) {
+    public function __construct($steamGameID=null,$curlHandle=null) {
 		$this->steamGameID=$steamGameID;
+		$this->curlHandle = $curlHandle ?? new CurlRequest("");
 		
 		$this->setAuth();
 		$this->setApiUrls();
@@ -46,50 +48,54 @@ class SteamAPI
 		}
 	}
 
-	public function GetSteamAPI($APIname,$curlHandle=null){
+	public function GetSteamAPI($APIname){
 		switch ($APIname) {
 			case "GetOwnedGames":
-				return $this->CallAPI($this->GetOwnedGamesURL,$curlHandle);
+				return $this->CallAPI($this->GetOwnedGamesURL);
 			case "GetRecentlyPlayedGames":
-				return $this->CallAPI($this->GetRecentlyPlayedGamesURL,$curlHandle);
+				return $this->CallAPI($this->GetRecentlyPlayedGamesURL);
 			case "GetPlayerAchievements":
-				return $this->CallAPI($this->GetPlayerAchievementsURL,$curlHandle);
+				return $this->CallAPI($this->GetPlayerAchievementsURL);
 			case "GetUserStatsForGame":
-				return $this->CallAPI($this->GetUserStatsForGameURL,$curlHandle);
+				return $this->CallAPI($this->GetUserStatsForGameURL);
 			case "GetGameNews":
-				return $this->CallAPI($this->GetGameNewsURL,$curlHandle);
+				return $this->CallAPI($this->GetGameNewsURL);
 			case "GetSchemaForGame":
-				return $this->CallAPI($this->GetSchemaForGameURL,$curlHandle);
+				return $this->CallAPI($this->GetSchemaForGameURL);
 			case "GetAppDetails":
-				return $this->CallAPI($this->GetAppDetailsURL,$curlHandle);
+				return $this->CallAPI($this->GetAppDetailsURL);
 			case "GetSteamPICS":
-				return $this->CallAPI($this->GetSteamPICSURL,$curlHandle);
+				return $this->CallAPI($this->GetSteamPICSURL);
 			default:
 				return null;
 		}
 	}
 	
-	private function CallAPI($url,$curlHandle=null){
+	private function CallAPI($url){
 		if($url===null) {
 			return null;
 		}
-		$curlHandle = $curlHandle ?? new CurlRequest("");
+		//$curlHandle = $curlHandle ?? new CurlRequest("");
 
 		//Follow HTML redirects
-		$curlHandle->setOption(CURLOPT_FOLLOWLOCATION, true); 
+		$this->curlHandle->setOption(CURLOPT_FOLLOWLOCATION, true); 
 		// set cookie for age verification
-		$curlHandle->setOption(CURLOPT_COOKIE, "birthtime=28801; path=/; domain=store.steampowered.com"); 
+		$this->curlHandle->setOption(CURLOPT_COOKIE, "birthtime=28801; path=/; domain=store.steampowered.com"); 
 		// Disable SSL verification
-		$curlHandle->setOption(CURLOPT_SSL_VERIFYPEER, false); 
+		$this->curlHandle->setOption(CURLOPT_SSL_VERIFYPEER, false); 
 		// Will return the response, if false it print the response
-		$curlHandle->setOption(CURLOPT_RETURNTRANSFER, true); 
-		$curlHandle->setOption(CURLOPT_URL, $url); 
-		$result = $curlHandle->execute();
-		$curlHandle->close();
+		$this->curlHandle->setOption(CURLOPT_RETURNTRANSFER, true); 
+		$this->curlHandle->setOption(CURLOPT_URL, $url); 
+		$result = $this->curlHandle->execute();
+		//$curlHandle->close();
 
 		$resultarray=json_decode($result, true);
 		unset($result);
 		
 		return $resultarray;
+	}
+	
+	function __destruct() {
+		$this->curlHandle->close();
 	}
 }

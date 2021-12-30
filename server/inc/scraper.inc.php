@@ -233,7 +233,6 @@ function getPageTitle($source){
 }
 
 function parse_game_description($source){
-
 	//class="game_description_snippet"
 	$pattern='/game_description_snippet">\s*(.*?)\s*<\/div>/';
 	$description= preg_match($pattern,$source,$matches);
