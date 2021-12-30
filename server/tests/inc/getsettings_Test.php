@@ -19,6 +19,7 @@ final class getsettings_Test extends TestCase
 	 * @group fast
 	 * @small
 	 * @covers getsettings
+	 * @uses get_db_connection
 	 * Time: 00:00.244, Memory: 48.00 MB
 	 * (1 test, 2 assertions)
 	 */
@@ -48,6 +49,7 @@ final class getsettings_Test extends TestCase
 	 * @group fast
 	 * @small
 	 * @covers getsettings
+	 * @uses get_db_connection
 	 * Time: 00:00.239, Memory: 48.00 MB
 	 * (1 test, 2 assertions)
 	 */

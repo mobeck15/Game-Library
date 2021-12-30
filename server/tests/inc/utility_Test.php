@@ -277,6 +277,7 @@ final class Utility_Test extends TestCase
 	 * @group fast
 	 * @small
 	 * @covers getKeywords
+	 * @uses get_db_connection
 	 * Time: 00:00.241, Memory: 48.00 MB
 	 * (1 test, 1 assertion)
 	 */

@@ -55,6 +55,7 @@ final class getCalculations_Test extends TestCase
 	 * @uses makeIndex
 	 * @uses regroupArray
 	 * @uses timeduration
+	 * @uses get_db_connection
 	 * Time: 00:00.307, Memory: 48.00 MB
 	 * (1 test, 2 assertions)
 	 */

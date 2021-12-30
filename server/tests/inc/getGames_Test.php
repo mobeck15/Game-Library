@@ -54,6 +54,7 @@ final class getGames_Test extends TestCase
 	 * @small
 	 * @covers getGames
 	 * @uses getsettings
+	 * @uses get_db_connection
 	 * Time: 00:00.234, Memory: 48.00 MB
 	 * (1 test, 1 assertion)
 	 */
