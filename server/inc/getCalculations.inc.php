@@ -128,7 +128,9 @@ function getCalculations($gameID="",$connection=false,$start=false,$end=false){
 							if(!isset($game['TopBundleIDs'][$useBundleID])){
 								$game['FirstBundle']=$useBundleID;
 								$game['TopBundleIDs'][$useBundleID]=$useBundleID;
+								//TODO: PurchaseDateTime records the last purchase, should record the first.
 								$game['PurchaseDateTime']=$purchases[$purchaseIndex[$record['TransID']]]['PurchaseDateTime'];
+								//$game['PurchaseDateTime']=$purchases[$purchaseIndex[$useBundleID]]['PurchaseDateTime'];
 								
 								if($game['PrintBundles']==""){
 									//$game['PrintBundles'] .= "(" . $useBundleID .") ";
@@ -264,6 +266,7 @@ function getCalculations($gameID="",$connection=false,$start=false,$end=false){
 			}
 			*/
 			
+			//TODO: LastPlayORPurchaseValue includes duplicate purchases when it should only take the max of first purchase or last played.
 			if(isset($game['AddedDateTime'])) {
 				$game['LastPlayORPurchaseValue']=max($game['lastplaySort'],$game['AddedDateTime']->getTimestamp());
 			} else {
