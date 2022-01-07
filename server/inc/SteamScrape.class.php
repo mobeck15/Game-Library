@@ -6,22 +6,24 @@ class SteamScrape
 {
 	private $pageExists=true;
 	private $steamGameID;
+	private $curlHandle;
 	private $rawPageText;
 	private $pageTitle;
 	private $description;
-	private $keywords;
-	private $details;
+	private $keywords=array();
+	private $details=array();
 	private $review;
 	private $developer;
 	private $publisher;
 	private $releaseDate;
-	private $genre;
+	private $genre=array();
 	
     public function __construct($steamGameID=null) {
+		//$this->curlHandle = $curlHandle ?? new CurlRequest("");
 		$this->steamGameID=$steamGameID;
 	}
 
-	public function getStorePage($curlHandle=null) {
+	public function getStorePage() {
 		if($this->steamGameID===null) {
 			return null;
 		}
@@ -32,7 +34,7 @@ class SteamScrape
 		//Steam Store Page
 		$url="http://store.steampowered.com/app/".$this->steamGameID;
 		
-		$result = $this->getPage($url,$curlHandle);
+		$result = $this->getPage($url);
 		
 		$this->rawPageText=$result;
 		
@@ -45,23 +47,23 @@ class SteamScrape
 		return $result;
 	}
 	
-	private function getPage($url,$curlHandle=null){
+	private function getPage($url){
 		if($url===null) {
 			return null;
 		}
-		$curlHandle = $curlHandle ?? new CurlRequest("");
+		$this->curlHandle = $this->curlHandle ?? new CurlRequest("");
 
 		//Follow HTML redirects
-		$curlHandle->setOption(CURLOPT_FOLLOWLOCATION, true); 
+		$this->curlHandle->setOption(CURLOPT_FOLLOWLOCATION, true); 
 		// set cookie for age verification
-		$curlHandle->setOption(CURLOPT_COOKIE, "birthtime=28801; path=/; domain=store.steampowered.com"); 
+		$this->curlHandle->setOption(CURLOPT_COOKIE, "birthtime=28801; path=/; domain=store.steampowered.com"); 
 		// Disable SSL verification
-		$curlHandle->setOption(CURLOPT_SSL_VERIFYPEER, false); 
+		$this->curlHandle->setOption(CURLOPT_SSL_VERIFYPEER, false); 
 		// Will return the response, if false it print the response
-		$curlHandle->setOption(CURLOPT_RETURNTRANSFER, true); 
-		$curlHandle->setOption(CURLOPT_URL, $url); 
-		$result = $curlHandle->execute();
-		$curlHandle->close();
+		$this->curlHandle->setOption(CURLOPT_RETURNTRANSFER, true); 
+		$this->curlHandle->setOption(CURLOPT_URL, $url); 
+		$result = $this->curlHandle->execute();
+		$this->curlHandle->close();
 
 		return $result;
 	}
@@ -118,6 +120,7 @@ class SteamScrape
 		$pattern="/\t+([^\t].*?)\t+</";
 		$taglistmatches= preg_match_all ($pattern,$rawtaglist,$matches);
 		
+		$allkeywordarray=array();
 		foreach($matches[1] as $steamkeyword){
 			$allkeywordarray[strtolower($steamkeyword)]=$steamkeyword;
 		}
@@ -140,6 +143,7 @@ class SteamScrape
 		$pattern="/\"label\">(.+?)</";
 		$featurematches= preg_match_all ($pattern,$this->rawPageText,$matches);
 		
+		$allkeywordarray=array();
 		foreach($matches[1] as $steamfeature){
 			$allkeywordarray[strtolower($steamfeature)]=$steamfeature;
 		}
@@ -222,7 +226,11 @@ class SteamScrape
 		
 		$pattern="/<b>Release Date:<\/b>\s*(.*?)<br>/";
 		$Datematch= preg_match ($pattern,$this->rawPageText,$matches);
-		$PubDate=$matches[1];
+		if(isset($matches[1])){
+			$PubDate=$matches[1];
+		} else {
+			$PubDate="";
+		}
 		$this->releaseDate=$PubDate;
 		return $PubDate;
 	}
@@ -235,17 +243,14 @@ class SteamScrape
 			return $this->genre;
 		}
 		
-		$pattern="/Genre:(?:.*?)<a(?:.*?)\">(.*?)<\/a>/";
-		$genrematch= preg_match ($pattern,$this->rawPageText,$matches);
-		if(isset($matches[1])){
-			foreach($matches[1] as $steamgenre){
-				$allkeywordarray[strtolower($steamgenre)]=$steamgenre;
-			}
-			//$allkeywordarray[strtolower($matches[1])]=$matches[1];
-		} else {
-			trigger_error("No data found for : Steam Genre",E_USER_NOTICE);
+		$pattern='/408">(.+?)<\/a/';
+		$genrematches= preg_match_all ($pattern,$this->rawPageText,$matches);
+		
+		$allkeywordarray=array();
+		foreach($matches[1] as $steamgenre){
+			$allkeywordarray[strtolower($steamgenre)]=$steamgenre;
 		}
-		$this->genre=$allkeywordarray;
+		$this->details=$allkeywordarray;
 		return $allkeywordarray;
 	}
 	

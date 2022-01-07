@@ -354,26 +354,48 @@ function parse_releasedate($source){
 }
 
 function parse_genre($source){
+	/*
 	$pattern1="/Genre:(?:.*?)<a(?:.*?)\">(.*?)<\/a>/";
 	$genrematch= preg_match ($pattern1,$source,$matches);
 	$pattern2="/\">(.*?)<\/a>/";
 	if(isset($matches[1])){
-		//$genrematch= preg_match_all ($pattern2,$matches1[1],$matches);
+		$genrematch= preg_match_all ($pattern2,$matches[1],$matches2);
+		$matches=$matches2;
 		$GenreArray=$matches[1];
 		$steamgenrelist="";
 		$allkeywordarray=array();
-		/*
+		/* * /
 		foreach($matches[1] as $steamgenre){
 			if($steamgenrelist<>"") {$steamgenrelist.=", ";}
 			$steamgenrelist.=$steamgenre;
 			$allkeywordarray[strtolower($steamgenre)]=$steamgenre;
 		}
-		*/
-		$steamgenrelist.=$matches[1];
-		$allkeywordarray[strtolower($matches[1])]=$matches[1];
+		/* * /
+		//$steamgenrelist.=$matches[1];
+		//$allkeywordarray[strtolower($matches[1])]=$matches[1];
 	} else {
 		trigger_error("No data found for : Steam Genre");
 	}
+	*/
+	$pattern='/408">(.+?)<\/a/';
+	$featurematches= preg_match_all ($pattern,$source,$matches);
+	
+	$steamfeaturearray=$matches[1];
+	$steamgenrelist="";
+	$steamfeature=array();
+	$allkeywordarray=array();
+	foreach($matches[1] as $steamfeature){
+		if($steamgenrelist<>"") {$steamgenrelist.=", ";}
+		$steamgenrelist.=$steamfeature;
+		$allkeywordarray[strtolower($steamfeature)]=$steamfeature;
+	}
+	unset($matches);
+
+	return array(
+		"list" =>$steamgenrelist,
+		"all"=>$allkeywordarray
+	);
+	
 	unset($matches);
 	
 	return array(

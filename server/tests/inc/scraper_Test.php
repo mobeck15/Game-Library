@@ -407,6 +407,7 @@ final class Scraper_Test extends TestCase
 	public function test_parse_genre(): void
     {
 		$source='<b>Genre:</b> <span data-panel="{&quot;flow-children&quot;:&quot;row&quot;}"><a href="https://store.steampowered.com/genre/Strategy/?snr=1_5_9__408">Strategy</a></span><br>';
+		$sourcex='<b>Genre:</b> <span data-panel="{&quot;flow-children&quot;:&quot;row&quot;}"><a href="https://store.steampowered.com/genre/Action/?snr=1_5_9__408">Action</a>, <a href="https://store.steampowered.com/genre/Adventure/?snr=1_5_9__408">Adventure</a>, <a href="https://store.steampowered.com/genre/Casual/?snr=1_5_9__408">Casual</a>, <a href="https://store.steampowered.com/genre/RPG/?snr=1_5_9__408">RPG</a>, <a href="https://store.steampowered.com/genre/Simulation/?snr=1_5_9__408">Simulation</a>, <a href="https://store.steampowered.com/genre/Strategy/?snr=1_5_9__408">Strategy</a></span><br>';
 		
 		//$source=scrapeSteamStore(289070,new CurlRequest(""));
 		
@@ -414,6 +415,16 @@ final class Scraper_Test extends TestCase
 		$expected=array(
 			"list" => "Strategy",
 			"all" => array(
+				"strategy"=> "Strategy"
+			)
+		);
+		
+		$expectedx=array(
+			"list" => "Action,Casual,Simulation,Strategy",
+			"all" => array(
+				"action"=> "Action",
+				"casual"=> "Casual",
+				"simulation"=> "Simulation",
 				"strategy"=> "Strategy"
 			)
 		);
