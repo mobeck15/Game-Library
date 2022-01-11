@@ -167,7 +167,7 @@ echo "<th style='top:77px;'>This Month</th>";
 	//$settings=getsettings($conn);
 	$calculations=getCalculations("",$conn);
 	foreach($calculations as $key => $row) {
-		$key=date($dateformat, $row['PurchaseDateTime']->getTimestamp());
+		$key=date($dateformat, $row['AddedDateTime']->getTimestamp());
 		if($row['CountGame']==true && $row['Playable']==true
 		  && (0+$row['Paid']>0 OR $settings['CountFree']==true)){
 			

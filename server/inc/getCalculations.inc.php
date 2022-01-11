@@ -126,11 +126,12 @@ function getCalculations($gameID="",$connection=false,$start=false,$end=false){
 						if(isset($purchases[$purchaseIndex[$record['TransID']]])){
 							$useBundleID=$purchases[$purchaseIndex[$record['TransID']]]['TopBundleID'];
 							if(!isset($game['TopBundleIDs'][$useBundleID])){
-								$game['FirstBundle']=$useBundleID;
 								$game['TopBundleIDs'][$useBundleID]=$useBundleID;
-								//TODO: PurchaseDateTime records the last purchase, should record the first.
-								$game['PurchaseDateTime']=$purchases[$purchaseIndex[$record['TransID']]]['PurchaseDateTime'];
-								//$game['PurchaseDateTime']=$purchases[$purchaseIndex[$useBundleID]]['PurchaseDateTime'];
+								if(!isset($game['AddedDateTime']) OR $game['AddedDateTime'] > $record['AddedDateTime']) {
+									$game['FirstBundle']=$useBundleID;
+									$game['AddedDateTime']=$record['AddedDateTime'];
+									$game['PurchaseDateTime']=$purchases[$purchaseIndex[$record['TransID']]]['PurchaseDateTime'];
+								}
 								
 								if($game['PrintBundles']==""){
 									//$game['PrintBundles'] .= "(" . $useBundleID .") ";
@@ -191,8 +192,6 @@ function getCalculations($gameID="",$connection=false,$start=false,$end=false){
 						$game['Inactive']=true;
 						$game['Key']=$record['ActivationKey'];
 					}
-					
-					$game['AddedDateTime']=$record['AddedDateTime'];
 				}
 				$game['Platforms']=trim($game['Platforms'] ,"\n\r, ");
 				$game['PrintBundles']=trim($game['PrintBundles'] ,"\n\r| ");
