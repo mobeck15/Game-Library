@@ -1,6 +1,7 @@
 <?php
 //if(!isset($GLOBALS['rootpath'])) {$GLOBALS['rootpath']="..";}
 require_once $GLOBALS['rootpath']."/inc/CurlRequest.class.php";
+require_once $GLOBALS['rootpath']."/ext/simple_html_dom.php";
 
 class SteamScrape
 {
@@ -8,6 +9,7 @@ class SteamScrape
 	private $steamGameID;
 	private $curlHandle;
 	private $rawPageText;
+	private $htmldom;
 	private $pageTitle;
 	private $description;
 	private $keywords=array();
@@ -23,6 +25,13 @@ class SteamScrape
 		$this->steamGameID=$steamGameID;
 	}
 
+	public function getdom() {
+		if($this->htmldom === null) {
+			$this->htmldom = str_get_html($this->getStorePage());
+		}
+		return $this->htmldom;
+	}
+	
 	public function getStorePage() {
 		if($this->steamGameID===null) {
 			return null;
@@ -37,6 +46,7 @@ class SteamScrape
 		$result = $this->getPage($url);
 		
 		$this->rawPageText=$result;
+		$this->htmldom=file_get_html($url, false);
 		
 		if($this->getPageTitle()=="Welcome to Steam"){
 			$this->pageExists=false;
@@ -51,6 +61,8 @@ class SteamScrape
 		if($url===null) {
 			return null;
 		}
+		
+		/* */
 		$this->curlHandle = $this->curlHandle ?? new CurlRequest("");
 
 		//Follow HTML redirects
@@ -64,7 +76,8 @@ class SteamScrape
 		$this->curlHandle->setOption(CURLOPT_URL, $url); 
 		$result = $this->curlHandle->execute();
 		$this->curlHandle->close();
-
+		/* */
+		//$result = file_get_html($url, false)->outertext;
 		return $result;
 	}
 	
@@ -75,7 +88,7 @@ class SteamScrape
 		if($this->pageTitle <> null) {
 			return $this->pageTitle;
 		}
-		
+		/* */
 		$pattern='/<title>(.*)<\/title>/';
 		$pageTitle= preg_match($pattern,$this->rawPageText,$matches);
 		if(isset($matches[1])){
@@ -84,7 +97,11 @@ class SteamScrape
 			$pageTitle="";
 		}
 		$this->pageTitle=$pageTitle;
-		return $pageTitle;
+		/* */
+		//$search_results = $this->htmldom->find("title");
+		//$this->pageTitle = $search_results[0]->innertext;
+		
+		return $this->pageTitle;
 	}
 	
 	public function getDescription(){
@@ -107,13 +124,22 @@ class SteamScrape
 	}
 	
 	public function getTags(){
-		if($this->rawPageText === null) {
-			$this->getStorePage();
-		}
+		//if($this->rawPageText === null) {
+		//	$this->getStorePage();
+		//}
 		if(count($this->keywords) > 0) {
 			return $this->keywords;
 		}
+
+		$tags=array();
+		$search_results = $this->getdom()->find(".glance_tags a");
+		foreach ($search_results as $result) {
+			$tags[strtolower(trim($result->innertext))] = trim($result->innertext);
+		}
+		$this->keywords=$tags;
+		return $this->keywords;
 		
+		/*
 		$start=strpos($this->rawPageText,'class="glance_tags popular_tags"');
 		$stop=strpos($this->rawPageText,'class="app_tag add_button"');
 		$rawtaglist=substr($this->rawPageText,$start,$stop-$start);
@@ -126,6 +152,7 @@ class SteamScrape
 		}
 		$this->keywords=$allkeywordarray;
 		return $allkeywordarray;
+		*/
 	}
 	
 	public function getTagList() {
@@ -156,64 +183,65 @@ class SteamScrape
 	}
 	
 	function getReview(){
-		if($this->rawPageText === null) {
-			$this->getStorePage();
-		}
 		if($this->review <> null) {
 			return $this->review;
 		}
 		
-		$pattern="/user_reviews_summary_row.+\"([0-9]*)\%/";
-		$ratingmatches= preg_match ($pattern,$this->rawPageText,$matches);
-		if(isset($matches[1])) {
-			$newsteamrating=$matches[1];
+		$search_results = $this->getdom()->find(".responsive_reviewdesc");
+		if(isset($search_results[1])) {
+			$review = $search_results[1]->innertext;
+		} elseif (isset($search_results[0])) {
+			$review = $search_results[0]->innertext;
 		} else {
-			$newsteamrating="";
+			$review = "";
 		}
-		$this->review=$newsteamrating;
-		return $newsteamrating;
+		
+		$this->review = trim(substr(trim($review),1,strpos(trim($review),"%")-1));
+		return $this->review;
 	}
 
 	function getDeveloper(){
-		if($this->rawPageText === null) {
-			$this->getStorePage();
-		}
 		if($this->developer <> null) {
 			return $this->developer;
 		}
-		
 		//TODO: Update to read multiple developer entries.
-		$pattern="/\/developer\/(?:.*?)>(.*?)<\/a>/";
-		$Devmatch= preg_match ($pattern,$this->rawPageText,$matches);
-		if(isset($matches[1])) {
-			$Developer=$matches[1];
-		} else {
-			$Developer="";
+		
+		$developers=array();
+		$this->developer="";
+		$search_results = $this->getdom()->find("#developers_list a");
+		foreach ($search_results as $result) {
+			$developers[] = trim($result->innertext);
+		}
+		$this->developer=implode(", ",$developers);
+		if (count($developers)==0) {
 			trigger_error("No data found for : Developer",E_USER_NOTICE );
 		}
-		$this->developer=$Developer;
-		return $Developer;
+		return $this->developer;
 	}
 
 	function getPublisher(){
-		if($this->rawPageText === null) {
-			$this->getStorePage();
-		}
 		if($this->publisher <> null) {
 			return $this->publisher;
 		}
-		
-		//TODO: Update to read multiple publisher entries.
-		$pattern="/\/publisher\/(?:.*?)>(.*?)<\/a>/";
-		$Pubmatch= preg_match ($pattern,$this->rawPageText,$matches);
-		if(isset($matches[1])){
-			$Publisher=$matches[1];
-		} else {
-			$Publisher="";
+
+		$eles = $this->getdom()->find('*');
+		$i=0;
+		$publishers=array();
+		$this->publisher="";
+		foreach($eles as $e) {
+			if($e->innertext == 'Publisher:') {
+				$search_results = $e->parent->find("a");
+				foreach ($search_results as $result) {
+					$publishers[] = trim($result->innertext);
+				}
+				break;
+			}
+		}
+		$this->publisher=implode(", ",$publishers);
+		if (count($publishers)==0) {
 			trigger_error("No data found for : Publisher",E_USER_NOTICE );
 		}
-		$this->publisher=$Publisher;
-		return $Publisher;
+		return $this->publisher;
 	}
 
 	function getReleaseDate(){
@@ -236,22 +264,26 @@ class SteamScrape
 	}
 
 	function getGenre(){
-		if($this->rawPageText === null) {
-			$this->getStorePage();
-		}
 		if(count($this->genre) > 0) {
 			return $this->genre;
 		}
 		
-		$pattern='/408">(.+?)<\/a/';
-		$genrematches= preg_match_all ($pattern,$this->rawPageText,$matches);
-		
-		$allkeywordarray=array();
-		foreach($matches[1] as $steamgenre){
-			$allkeywordarray[strtolower($steamgenre)]=$steamgenre;
+		$eles = $this->getdom()->find('*');
+		$i=0;
+		$genres=array();
+		foreach($eles as $e) {
+			if($e->innertext == 'Genre:') {
+				$search_results = $e->parent->find(" span a");
+				foreach ($search_results as $result) {
+					$genres[strtolower(trim($result->innertext))] = trim($result->innertext);
+				}
+				break;
+				echo "<br>";
+			}
 		}
-		$this->details=$allkeywordarray;
-		return $allkeywordarray;
+
+		$this->genre=$genres; 
+		return $this->genre;
 	}
 	
 	public function getGenreList() {

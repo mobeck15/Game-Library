@@ -95,7 +95,7 @@ final class SteamScrape_Test extends TestCase
         $stub = $this->createStub(CurlRequest::class);
         // Configure the stub.
         $stub->method('execute')
-             ->willReturn(' <title>Welcome to Steam</title> ');
+             ->willReturn(file_get_contents($GLOBALS['rootpath']."/tests/testdata/steam.htm"));
 
 		$property = $this->getPrivateProperty( 'SteamScrape', 'curlHandle' );
 		$property->setValue( $this->SteamScrape_obj, $stub );
@@ -115,7 +115,8 @@ final class SteamScrape_Test extends TestCase
         $stub = $this->createStub(CurlRequest::class);
         // Configure the stub.
         $stub->method('execute')
-             ->willReturn(' <title>Welcome to Steam</title> ');
+             //->willReturn(' <title>Welcome to Steam</title> ');
+			 ->willReturn(file_get_contents($GLOBALS['rootpath']."/tests/testdata/steam.htm"));
 
 		$property = $this->getPrivateProperty( 'SteamScrape', 'curlHandle' );
 		$property->setValue( $this->SteamScrape_obj, $stub );
@@ -137,7 +138,7 @@ final class SteamScrape_Test extends TestCase
         $stub = $this->createStub(CurlRequest::class);
         // Configure the stub.
         $stub->method('execute')
-             ->willReturn(' <title>Welcome to Steam</title> ');
+             ->willReturn(file_get_contents($GLOBALS['rootpath']."/tests/testdata/steam.htm"));
 
 		$property = $this->getPrivateProperty( 'SteamScrape', 'curlHandle' );
 		$property->setValue( $this->SteamScrape_obj, $stub );
@@ -161,7 +162,7 @@ final class SteamScrape_Test extends TestCase
         $stub = $this->createStub(CurlRequest::class);
         // Configure the stub.
         $stub->method('execute')
-             ->willReturn(' <title>Welcome to Steam</title> ');
+             ->willReturn(file_get_contents($GLOBALS['rootpath']."/tests/testdata/steam.htm"));
 
 		$property = $this->getPrivateProperty( 'SteamScrape', 'curlHandle' );
 		$property->setValue( $this->SteamScrape_obj, $stub );
@@ -210,14 +211,15 @@ final class SteamScrape_Test extends TestCase
         $stub = $this->createStub(CurlRequest::class);
         // Configure the stub.
         $stub->method('execute')
-             ->willReturn('<div class="game_description_snippet">	Game description text	</div>');
+             //->willReturn('<div class="game_description_snippet">	Game description text	</div>');
+			 ->willReturn(file_get_contents($GLOBALS['rootpath']."/tests/testdata/steam17390.htm"));
 
 		$property = $this->getPrivateProperty( 'SteamScrape', 'curlHandle' );
 		$property->setValue( $this->SteamScrape_obj, $stub );
 
 		$result=$this->SteamScrape_obj->getDescription();
 		$this->assertisString($result);
-		$this->assertEquals("Game description text",$result);
+		$this->assertEquals("Be the architect of your own universe with Spore, an exciting single-player adventure. From Single Cell to Galactic God, evolve your creature in a universe of your own creations.",$result);
     }
 	
 	/**
@@ -230,7 +232,7 @@ final class SteamScrape_Test extends TestCase
 	 */
     public function test_getDescription_blank() {
 		$property = $this->getPrivateProperty( 'SteamScrape', 'rawPageText' );
-		$property->setValue( $this->SteamScrape_obj, "Game description text" );
+		$property->setValue( $this->SteamScrape_obj, file_get_contents($GLOBALS['rootpath']."/tests/testdata/steam.htm") );
 
 		$result=$this->SteamScrape_obj->getDescription();
 		$this->assertisString($result);
@@ -264,6 +266,7 @@ final class SteamScrape_Test extends TestCase
 	 * @uses SteamScrape::getStorePage
 	 * @uses SteamScrape::getPage
 	 * @uses SteamScrape::getPageTitle	 
+	 * @uses SteamScrape::getdom
 	 * Time: 
 	 */
     public function test_getTags_base() {
@@ -271,6 +274,7 @@ final class SteamScrape_Test extends TestCase
         $stub = $this->createStub(CurlRequest::class);
         // Configure the stub.
         $stub->method('execute')
+		/*
              ->willReturn('<div class="glance_tags_label">Popular user-defined tags for this product:</div>
 										<div class="glance_tags popular_tags" data-appid="17390">
 											<a href="https://store.steampowered.com/tags/en/God%20Game/?snr=1_5_9__409" class="app_tag" style="display: none;">
@@ -279,11 +283,34 @@ final class SteamScrape_Test extends TestCase
 												Casual	</a><div class="app_tag add_button" data-panel="{&quot;focusable&quot;:true,&quot;clickOnActivate&quot;:true}" onclick="ShowAppTagModal( 17390 )">+</div>
 										</div>
 									</div>');
+									*/
+			 ->willReturn(file_get_contents($GLOBALS['rootpath']."/tests/testdata/steam17390.htm"));
 
 		$property = $this->getPrivateProperty( 'SteamScrape', 'curlHandle' );
 		$property->setValue( $this->SteamScrape_obj, $stub );
 		
-		$expected=array("open world"=>"Open World","exploration"=>"Exploration","casual"=>"Casual");
+		//$expected=array("open world"=>"Open World","exploration"=>"Exploration","casual"=>"Casual");
+		$expected=array(
+			'god game' => 'God Game',
+			'open world' => 'Open World',
+			'exploration' => 'Exploration',
+			'casual' => 'Casual',
+			'colony sim' => 'Colony Sim',
+			'cute' => 'Cute',
+			'sandbox' => 'Sandbox',
+			'simulation' => 'Simulation',
+			'space' => 'Space',
+			'science' => 'Science',
+			'funny' => 'Funny',
+			'sci-fi' => 'Sci-fi',
+			'aliens' => 'Aliens',
+			'colorful' => 'Colorful',
+			'cartoony' => 'Cartoony',
+			'family friendly' => 'Family Friendly',
+			'adventure' => 'Adventure',
+			'comedy' => 'Comedy',
+			'resource management' => 'Resource Management',
+			'cartoon' => 'Cartoon');
 		
 		$result=$this->SteamScrape_obj->getTags();
 		$this->assertisArray($result);
@@ -296,11 +323,12 @@ final class SteamScrape_Test extends TestCase
 	 * @covers SteamScrape::getTags
 	 * @uses SteamScrape::__construct
 	 * @uses SteamScrape::getStorePage
+	 * @uses SteamScrape::getdom
 	 * Time: 
 	 */
     public function test_getTags_blank() {
 		$property = $this->getPrivateProperty( 'SteamScrape', 'rawPageText' );
-		$property->setValue( $this->SteamScrape_obj, "Open World, Exploration, Casual" );
+		$property->setValue( $this->SteamScrape_obj, file_get_contents($GLOBALS['rootpath']."/tests/testdata/steam.htm") );
 
 		$result=$this->SteamScrape_obj->getTags();
 		$this->assertisArray($result);
@@ -366,7 +394,8 @@ final class SteamScrape_Test extends TestCase
         $stub = $this->createStub(CurlRequest::class);
         // Configure the stub.
         $stub->method('execute')
-             ->willReturn('<a class="game_area_details_specs_ctn" data-panel="{&quot;flow-children&quot;:&quot;column&quot;}" href="https://store.steampowered.com/search/?category2=2&snr=1_5_9__423"><div class="icon"><img class="category_icon" src="https://store.akamai.steamstatic.com/public/images/v6/ico/ico_singlePlayer.png"></div><div class="label">Single-player</div></a><a class="game_area_details_specs_ctn" data-panel="{&quot;flow-children&quot;:&quot;column&quot;}" href="https://store.steampowered.com/search/?category2=29&snr=1_5_9__423"><div class="icon"><img class="category_icon" src="https://store.akamai.steamstatic.com/public/images/v6/ico/ico_cards.png"></div><div class="label">Steam Trading Cards</div></a>');
+             //->willReturn('<a class="game_area_details_specs_ctn" data-panel="{&quot;flow-children&quot;:&quot;column&quot;}" href="https://store.steampowered.com/search/?category2=2&snr=1_5_9__423"><div class="icon"><img class="category_icon" src="https://store.akamai.steamstatic.com/public/images/v6/ico/ico_singlePlayer.png"></div><div class="label">Single-player</div></a><a class="game_area_details_specs_ctn" data-panel="{&quot;flow-children&quot;:&quot;column&quot;}" href="https://store.steampowered.com/search/?category2=29&snr=1_5_9__423"><div class="icon"><img class="category_icon" src="https://store.akamai.steamstatic.com/public/images/v6/ico/ico_cards.png"></div><div class="label">Steam Trading Cards</div></a>');
+			 ->willReturn(file_get_contents($GLOBALS['rootpath']."/tests/testdata/steam17390.htm"));
 
 		$property = $this->getPrivateProperty( 'SteamScrape', 'curlHandle' );
 		$property->setValue( $this->SteamScrape_obj, $stub );
@@ -388,7 +417,7 @@ final class SteamScrape_Test extends TestCase
 	 */
     public function test_getDetails_blank() {
 		$property = $this->getPrivateProperty( 'SteamScrape', 'rawPageText' );
-		$property->setValue( $this->SteamScrape_obj, "Single-player, Steam Trading Cards" );
+		$property->setValue( $this->SteamScrape_obj, file_get_contents($GLOBALS['rootpath']."/tests/testdata/steam.htm") );
 
 		$result=$this->SteamScrape_obj->getDetails();
 		$this->assertisArray($result);
@@ -447,6 +476,7 @@ final class SteamScrape_Test extends TestCase
 	 * @uses SteamScrape::getStorePage
 	 * @uses SteamScrape::getPage
 	 * @uses SteamScrape::getPageTitle	 
+	 * @uses SteamScrape::getdom
 	 * Time: 
 	 */
     public function test_getGenre_base() {
@@ -454,7 +484,8 @@ final class SteamScrape_Test extends TestCase
         $stub = $this->createStub(CurlRequest::class);
         // Configure the stub.
         $stub->method('execute')
-             ->willReturn('<b>Genre:</b> <span data-panel="{&quot;flow-children&quot;:&quot;row&quot;}"><a href="https://store.steampowered.com/genre/Action/?snr=1_5_9__408">Action</a>, <a href="https://store.steampowered.com/genre/Adventure/?snr=1_5_9__408">Adventure</a>, <a href="https://store.steampowered.com/genre/Casual/?snr=1_5_9__408">Casual</a>, <a href="https://store.steampowered.com/genre/RPG/?snr=1_5_9__408">RPG</a>, <a href="https://store.steampowered.com/genre/Simulation/?snr=1_5_9__408">Simulation</a>, <a href="https://store.steampowered.com/genre/Strategy/?snr=1_5_9__408">Strategy</a></span><br>');
+             //->willReturn('<b>Genre:</b> <span data-panel="{&quot;flow-children&quot;:&quot;row&quot;}"><a href="https://store.steampowered.com/genre/Action/?snr=1_5_9__408">Action</a>, <a href="https://store.steampowered.com/genre/Adventure/?snr=1_5_9__408">Adventure</a>, <a href="https://store.steampowered.com/genre/Casual/?snr=1_5_9__408">Casual</a>, <a href="https://store.steampowered.com/genre/RPG/?snr=1_5_9__408">RPG</a>, <a href="https://store.steampowered.com/genre/Simulation/?snr=1_5_9__408">Simulation</a>, <a href="https://store.steampowered.com/genre/Strategy/?snr=1_5_9__408">Strategy</a></span><br>');
+			 ->willReturn(file_get_contents($GLOBALS['rootpath']."/tests/testdata/steam17390.htm"));
 
 		$property = $this->getPrivateProperty( 'SteamScrape', 'curlHandle' );
 		$property->setValue( $this->SteamScrape_obj, $stub );
@@ -472,11 +503,12 @@ final class SteamScrape_Test extends TestCase
 	 * @covers SteamScrape::getGenre
 	 * @uses SteamScrape::__construct
 	 * @uses SteamScrape::getStorePage
+	 * @uses SteamScrape::getdom
 	 * Time: 
 	 */
     public function test_getGenre_blank() {
 		$property = $this->getPrivateProperty( 'SteamScrape', 'rawPageText' );
-		$property->setValue( $this->SteamScrape_obj, "Action,Casual,Simulation,Strategy,Adventure,RPG" );
+		$property->setValue( $this->SteamScrape_obj, file_get_contents($GLOBALS['rootpath']."/tests/testdata/steam.htm") );
 
 		$result=$this->SteamScrape_obj->getGenre();
 		$this->assertisArray($result);
@@ -535,6 +567,7 @@ final class SteamScrape_Test extends TestCase
 	 * @uses SteamScrape::getStorePage
 	 * @uses SteamScrape::getPage
 	 * @uses SteamScrape::getPageTitle	 
+	 * @uses SteamScrape::getdom
 	 * Time: 
 	 */
     public function test_getReview_base() {
@@ -542,7 +575,8 @@ final class SteamScrape_Test extends TestCase
         $stub = $this->createStub(CurlRequest::class);
         // Configure the stub.
         $stub->method('execute')
-             ->willReturn('<div class="user_reviews_summary_row" onclick="window.location=\'#app_reviews_hash\'" style="cursor: pointer;" data-tooltip-html="91% of the 37,281 user reviews for this game are positive." itemprop="aggregateRating" itemscope itemtype="http://schema.org/AggregateRating"><div class="subtitle column all">All Reviews:</div>');
+             //->willReturn('<div class="user_reviews_summary_row" onclick="window.location=\'#app_reviews_hash\'" style="cursor: pointer;" data-tooltip-html="91% of the 37,281 user reviews for this game are positive." itemprop="aggregateRating" itemscope itemtype="http://schema.org/AggregateRating"><div class="subtitle column all">All Reviews:</div>');
+			 ->willReturn(file_get_contents($GLOBALS['rootpath']."/tests/testdata/steam17390.htm"));
 
 		$property = $this->getPrivateProperty( 'SteamScrape', 'curlHandle' );
 		$property->setValue( $this->SteamScrape_obj, $stub );
@@ -558,15 +592,34 @@ final class SteamScrape_Test extends TestCase
 	 * @covers SteamScrape::getReview
 	 * @uses SteamScrape::__construct
 	 * @uses SteamScrape::getStorePage
+	 * @uses SteamScrape::getdom
 	 * Time: 
 	 */
     public function test_getReview_blank() {
 		$property = $this->getPrivateProperty( 'SteamScrape', 'rawPageText' );
-		$property->setValue( $this->SteamScrape_obj, "Game review missing" );
+		$property->setValue( $this->SteamScrape_obj, file_get_contents($GLOBALS['rootpath']."/tests/testdata/steam.htm") );
 
 		$result=$this->SteamScrape_obj->getReview();
 		$this->assertisString($result);
 		$this->assertEquals("",$result);
+    }
+	
+	/**
+	 * @group fast
+	 * @small
+	 * @covers SteamScrape::getReview
+	 * @uses SteamScrape::__construct
+	 * @uses SteamScrape::getStorePage
+	 * @uses SteamScrape::getdom
+	 * Time: 
+	 */
+    public function test_getReview_1entry() {
+		$property = $this->getPrivateProperty( 'SteamScrape', 'rawPageText' );
+		$property->setValue( $this->SteamScrape_obj, file_get_contents($GLOBALS['rootpath']."/tests/testdata/steam10110.htm") );
+
+		$result=$this->SteamScrape_obj->getReview();
+		$this->assertisString($result);
+		$this->assertEquals("84",$result);
     }
 	
 	/**
@@ -603,7 +656,8 @@ final class SteamScrape_Test extends TestCase
         $stub = $this->createStub(CurlRequest::class);
         // Configure the stub.
         $stub->method('execute')
-             ->willReturn('<b>Release Date:</b> Dec 19, 2008<br>');
+             //->willReturn('<b>Release Date:</b> Dec 19, 2008<br>');
+			 ->willReturn(file_get_contents($GLOBALS['rootpath']."/tests/testdata/steam17390.htm"));
 
 		$property = $this->getPrivateProperty( 'SteamScrape', 'curlHandle' );
 		$property->setValue( $this->SteamScrape_obj, $stub );
@@ -623,7 +677,7 @@ final class SteamScrape_Test extends TestCase
 	 */
     public function test_getReleaseDate_blank() {
 		$property = $this->getPrivateProperty( 'SteamScrape', 'rawPageText' );
-		$property->setValue( $this->SteamScrape_obj, "Game date missing" );
+		$property->setValue( $this->SteamScrape_obj, file_get_contents($GLOBALS['rootpath']."/tests/testdata/steam.htm") );
 
 		$result=$this->SteamScrape_obj->getReleaseDate();
 		$this->assertisString($result);
@@ -657,6 +711,7 @@ final class SteamScrape_Test extends TestCase
 	 * @uses SteamScrape::getStorePage
 	 * @uses SteamScrape::getPage
 	 * @uses SteamScrape::getPageTitle	 
+	 * @uses SteamScrape::getdom
 	 * Time: 
 	 */
     public function test_getDeveloper_base() {
@@ -664,7 +719,8 @@ final class SteamScrape_Test extends TestCase
         $stub = $this->createStub(CurlRequest::class);
         // Configure the stub.
         $stub->method('execute')
-             ->willReturn('<div class="dev_row"><b>Developer:</b><a href="https://store.steampowered.com/developer/EA?snr=1_5_9__408">Maxis™</a></div>');
+             //->willReturn('<div class="dev_row"><b>Developer:</b><a href="https://store.steampowered.com/developer/EA?snr=1_5_9__408">Maxis™</a></div>');
+			 ->willReturn(file_get_contents($GLOBALS['rootpath']."/tests/testdata/steam17390.htm"));
 
 		//TODO: Test data should also include scenatios for /curator/ and others. Regex looks for developer in the URL when it should look for the <b> tag preceeding.
 		
@@ -682,11 +738,12 @@ final class SteamScrape_Test extends TestCase
 	 * @covers SteamScrape::getDeveloper
 	 * @uses SteamScrape::__construct
 	 * @uses SteamScrape::getStorePage
+	 * @uses SteamScrape::getdom
 	 * Time: 
 	 */
     public function test_getDeveloper_blank() {
 		$property = $this->getPrivateProperty( 'SteamScrape', 'rawPageText' );
-		$property->setValue( $this->SteamScrape_obj, "developer missing" );
+		$property->setValue( $this->SteamScrape_obj, file_get_contents($GLOBALS['rootpath']."/tests/testdata/steam.htm") );
 
 		try {
 			$result=$this->SteamScrape_obj->getDeveloper();
@@ -716,6 +773,7 @@ final class SteamScrape_Test extends TestCase
 		$this->assertisString($result);
 		$this->assertEquals("Maxis™",$result);
     }
+	
 	/**
 	 * @group fast
 	 * @small
@@ -724,6 +782,7 @@ final class SteamScrape_Test extends TestCase
 	 * @uses SteamScrape::getStorePage
 	 * @uses SteamScrape::getPage
 	 * @uses SteamScrape::getPageTitle	 
+	 * @uses SteamScrape::getdom
 	 * Time: 
 	 */
     public function test_getPublisher_base() {
@@ -731,7 +790,8 @@ final class SteamScrape_Test extends TestCase
         $stub = $this->createStub(CurlRequest::class);
         // Configure the stub.
         $stub->method('execute')
-             ->willReturn('<div class="dev_row"><b>Publisher:</b><a href="https://store.steampowered.com/publisher/EA?snr=1_5_9__408">Maxis™</a></div>');
+             //->willReturn('<div class="dev_row"><b>Publisher:</b><a href="https://store.steampowered.com/publisher/EA?snr=1_5_9__408">Maxis™</a></div>');
+			 ->willReturn(file_get_contents($GLOBALS['rootpath']."/tests/testdata/steam17390.htm"));
 
 		//TODO: Test data should also include scenatios for /curator/ and others. Regex looks for publisher in the URL when it should look for the <b> tag preceeding.
 		
@@ -740,7 +800,7 @@ final class SteamScrape_Test extends TestCase
 
 		$result=$this->SteamScrape_obj->getPublisher();
 		$this->assertisString($result);
-		$this->assertEquals("Maxis™",$result);
+		$this->assertEquals("Electronic Arts",$result);
     }
 	
 	/**
@@ -749,20 +809,24 @@ final class SteamScrape_Test extends TestCase
 	 * @covers SteamScrape::getPublisher
 	 * @uses SteamScrape::__construct
 	 * @uses SteamScrape::getStorePage
+	 * @uses SteamScrape::getdom
 	 * Time: 
 	 */
     public function test_getPublisher_blank() {
 		$property = $this->getPrivateProperty( 'SteamScrape', 'rawPageText' );
-		$property->setValue( $this->SteamScrape_obj, "publisher missing" );
+		//$property->setValue( $this->SteamScrape_obj, "publisher missing" );
+		$property->setValue( $this->SteamScrape_obj, file_get_contents($GLOBALS['rootpath']."/tests/testdata/steam.htm") );
 
+		$result="";
 		try {
 			$result=$this->SteamScrape_obj->getPublisher();
 		} catch (Exception $ex) {
 			$this->assertEquals("No data found for : Publisher",$ex->getMessage());
 		}
 		
-		//$this->assertisString($result);
-		//$this->assertEquals("",$result);
+		$this->assertisString($result);
+		$this->assertEquals(0,strlen($result));
+		$this->assertEquals("",$result);
     }
 	
 	/**
@@ -777,7 +841,8 @@ final class SteamScrape_Test extends TestCase
 		$property->setValue( $this->SteamScrape_obj, "Maxis™" );
 
 		$property = $this->getPrivateProperty( 'SteamScrape', 'rawPageText' );
-		$property->setValue( $this->SteamScrape_obj, "Game description text" );
+		$property->setValue( $this->SteamScrape_obj, file_get_contents($GLOBALS['rootpath']."/tests/testdata/steam17390.htm") );
+		//$property->setValue( $this->SteamScrape_obj, "Game description text" );
 
 		$result=$this->SteamScrape_obj->getPublisher();
 		$this->assertisString($result);
