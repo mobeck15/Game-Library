@@ -118,8 +118,10 @@ def captureendtime(start,mintime=120,verbose=True):
 
         if elapsed<mintime:
             #recapture = prompt_for_recapture()
-            recapture = input("Less than two minutes logged, Y to re-capture end time, any key to keep. ")
-            if recapture.lower() not in  ('y', 'ye', 'yes'):
+            recapture = input("Less than two minutes logged, Y to keep or any key to re-capture end time. ")
+            if recapture == '':
+                recapture = 'no'
+            if recapture.lower() in ('yes'):
                 break
         else: 
             break
@@ -154,7 +156,7 @@ def getstatus():
             status = 'Broken'
         elif status.lower() in ('never'):
             status = 'Never'
-        if status not in ('Active', 'Done', 'Inactive', 'OnHold', 'Unplayed', 'Broken', 'Never'):
+        if status =='' or status not in ('Active', 'Done', 'Inactive', 'OnHold', 'Unplayed', 'Broken', 'Never'):
             print('---Invalid response---')
         else:
             break
@@ -189,7 +191,7 @@ def saverecord(appdata,elapsedmin,datatype,notes,status,rating):
     }
     
     upload_data=input("Save data online? (blank or 'yes' will upload) ")
-    if upload_data.lower() in  ('yes') or upload_data.lower() == '':
+    if upload_data.lower() in ('yes') or upload_data.lower() == '':
         x = requests.post(url, data = PostArgs, auth = (secrets['username'], secrets['password']))
         search=x.text.find('Record updated successfully')
     else:

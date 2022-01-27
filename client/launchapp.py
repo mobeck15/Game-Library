@@ -41,7 +41,7 @@ def mainlaunchapp(id,datafile,launchtype=""):
 
     write_log_data(logfilename,"Stop ",end,appdata['name'],appdata['id'],appdata['platform'],notes,rating,status)
 
-    write_log_data(logfilename,datatype,end,appdata['name'],appdata['id'],appdata['platform'],str(round(elapsedmin,6)) + " Minutes Elapsed || " + notes,rating,status)
+    write_log_data(logfilename,"Time ",end,appdata['name'],appdata['id'],appdata['platform'],str(round(elapsedmin,6)) + " Minutes Elapsed || " + notes,rating,status)
 
     print(saverecord(appdata,elapsedmin,datatype,notes,status,rating))
 
