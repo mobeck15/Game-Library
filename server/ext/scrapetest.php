@@ -60,6 +60,13 @@ if(isset($search_results[1])) {
 echo trim(substr(trim($review),1,strpos(trim($review),"%")-1));
 echo "<hr>\n\n";
 
+echo "RELEASE DATE: ";
+$search_results = $html->find(".date");
+$date = $search_results[0]->innertext;
+echo $date;
+echo "<hr>\n\n";
+
+
 echo "DEVELOPER: ";
 $search_results = $html->find("#developers_list a");
 foreach ($search_results as $result) {

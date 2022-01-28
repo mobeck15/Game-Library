@@ -46,11 +46,12 @@ class SteamScrape
 		$result = $this->getPage($url);
 		
 		$this->rawPageText=$result;
-		$this->htmldom=file_get_html($url, false);
+		$this->htmldom=str_get_html($this->rawPageText);
 		
 		if($this->getPageTitle()=="Welcome to Steam"){
 			$this->pageExists=false;
 			$this->rawPageText=false;
+			$this->htmldom=false;
 			return false;
 		}
 		
@@ -82,51 +83,34 @@ class SteamScrape
 	}
 	
 	public function getPageTitle(){
-		if($this->rawPageText === null) {
-			$this->getStorePage();
-		}
 		if($this->pageTitle <> null) {
 			return $this->pageTitle;
 		}
-		/* */
-		$pattern='/<title>(.*)<\/title>/';
-		$pageTitle= preg_match($pattern,$this->rawPageText,$matches);
-		if(isset($matches[1])){
-			$pageTitle=$matches[1];
-		} else {
-			$pageTitle="";
+		
+		$this->pageTitle="";
+		$search_results = $this->getdom()->find("title");
+		if (isset($search_results[0])) {
+			$this->pageTitle = $search_results[0]->innertext;
 		}
-		$this->pageTitle=$pageTitle;
-		/* */
-		//$search_results = $this->htmldom->find("title");
-		//$this->pageTitle = $search_results[0]->innertext;
 		
 		return $this->pageTitle;
 	}
 	
 	public function getDescription(){
-		if($this->rawPageText === null) {
-			$this->getStorePage();
-		}
 		if($this->description <> null) {
 			return $this->description;
 		}
 		
-		$pattern='/game_description_snippet">\s*(.*?)\s*<\/div>/';
-		$description= preg_match($pattern,$this->rawPageText,$matches);
-		if(isset($matches[1])){
-			$description=$matches[1];
-		} else {
-			$description="";
+		$this->description = "";
+		$search_results = $this->getdom()->find(".game_description_snippet");
+		if(isset($search_results[0])){
+			$this->description = trim($search_results[0]->innertext);
 		}
-		$this->description=$description;
-		return $description;
+
+		return $this->description;
 	}
 	
 	public function getTags(){
-		//if($this->rawPageText === null) {
-		//	$this->getStorePage();
-		//}
 		if(count($this->keywords) > 0) {
 			return $this->keywords;
 		}
@@ -138,21 +122,6 @@ class SteamScrape
 		}
 		$this->keywords=$tags;
 		return $this->keywords;
-		
-		/*
-		$start=strpos($this->rawPageText,'class="glance_tags popular_tags"');
-		$stop=strpos($this->rawPageText,'class="app_tag add_button"');
-		$rawtaglist=substr($this->rawPageText,$start,$stop-$start);
-		$pattern="/\t+([^\t].*?)\t+</";
-		$taglistmatches= preg_match_all ($pattern,$rawtaglist,$matches);
-		
-		$allkeywordarray=array();
-		foreach($matches[1] as $steamkeyword){
-			$allkeywordarray[strtolower($steamkeyword)]=$steamkeyword;
-		}
-		$this->keywords=$allkeywordarray;
-		return $allkeywordarray;
-		*/
 	}
 	
 	public function getTagList() {
@@ -160,22 +129,18 @@ class SteamScrape
 	}
 	
 	function getDetails(){
-		if($this->rawPageText === null) {
-			$this->getStorePage();
-		}
 		if(count($this->details) > 0) {
 			return $this->details;
 		}
 		
-		$pattern="/\"label\">(.+?)</";
-		$featurematches= preg_match_all ($pattern,$this->rawPageText,$matches);
-		
-		$allkeywordarray=array();
-		foreach($matches[1] as $steamfeature){
-			$allkeywordarray[strtolower($steamfeature)]=$steamfeature;
+		$details=array();
+		$search_results = $this->getdom()->find(".game_area_details_specs_ctn .label");
+		foreach ($search_results as $result) {
+			$details[strtolower(trim($result->innertext))] = trim($result->innertext);
 		}
-		$this->details=$allkeywordarray;
-		return $allkeywordarray;
+		$this->details=$details;
+
+		return $this->details;
 	}
 
 	public function getDetailList() {
@@ -204,7 +169,7 @@ class SteamScrape
 		if($this->developer <> null) {
 			return $this->developer;
 		}
-		//TODO: Update to read multiple developer entries.
+		//TODO: Update to read multiple developer entries and return an array.
 		
 		$developers=array();
 		$this->developer="";
@@ -245,22 +210,17 @@ class SteamScrape
 	}
 
 	function getReleaseDate(){
-		if($this->rawPageText === null) {
-			$this->getStorePage();
-		}
 		if($this->releaseDate <> null) {
 			return $this->releaseDate;
 		}
 		
-		$pattern="/<b>Release Date:<\/b>\s*(.*?)<br>/";
-		$Datematch= preg_match ($pattern,$this->rawPageText,$matches);
-		if(isset($matches[1])){
-			$PubDate=$matches[1];
-		} else {
-			$PubDate="";
+		$search_results = $this->getdom()->find(".date");
+		$this->releaseDate = "";
+		if (isset($search_results[0])) {
+			$this->releaseDate = $search_results[0]->innertext;
 		}
-		$this->releaseDate=$PubDate;
-		return $PubDate;
+		
+		return $this->releaseDate;
 	}
 
 	function getGenre(){
