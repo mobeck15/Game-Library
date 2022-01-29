@@ -3,6 +3,10 @@ $GLOBALS['rootpath']=$GLOBALS['rootpath'] ?? ".";
 require_once $GLOBALS['rootpath']."/inc/php.ini.inc.php";
 require_once $GLOBALS['rootpath']."/inc/functions.inc.php";
 
+require_once $GLOBALS['rootpath']."/inc/SteamFormat.class.php";
+require_once $GLOBALS['rootpath']."/inc/SteamScrape.class.php";
+require_once $GLOBALS['rootpath']."/inc/SteamAPI.class.php";
+
 //$ShowSteamThings=false; // Steam scraping is broken for now.
 $ShowSteamThings=true;
 
@@ -262,55 +266,74 @@ if (!(isset($_GET['id']) && is_numeric($_GET['id']))) {
 		/*
 		 * Steam scraping code goes here
 		 */
+		$SteamPage = new SteamScrape($game['SteamID']);
+		$steamAPI= new SteamAPI($game['SteamID']);
+		$steamformat = new SteamFormat();
 		 
-		$userstatsarray=GetUserStatsForGame($game['SteamID']);
-
-		$resultarray=GetSchemaForGame($game['SteamID']);
+		//$userstatsarray=GetUserStatsForGame($game['SteamID']);
+		$userstatsarray=$steamAPI->GetSteamAPI("GetUserStatsForGame");
+		
+		//$resultarray=GetSchemaForGame($game['SteamID']);
+		$resultarray=$steamAPI->GetSteamAPI("GetSchemaForGame");
 
 		$showAppDetails=true;
 		//$showAppDetails=false;
 		if($showAppDetails){
-			$appdetails=GetAppDetails($game['SteamID']);
+			//$appdetails=GetAppDetails($game['SteamID']);
+			$appdetails=$steamAPI->GetSteamAPI("GetAppDetails");
 		}
 
-		$showSteamPics=false;
+		//$showSteamPics=false;
 		/* //Currently offline (1/23/2020) * /
 		if($showSteamPics){
 			$steampics=GetSteamPICS($game['SteamID']);
 		}
 		/* */
 		
-		$result=scrapeSteamStore($game['SteamID']);
+		//$result=scrapeSteamStore($game['SteamID']);
 
-		if($result!=false) {
-			$description=parse_game_description($result);
+		//if($result!=false) {
+		if($SteamPage->pageExists) {
+			//$description=parse_game_description($result);
+			$description=$SteamPage->getDescription();
 
-			$matches=parse_tags($result);
-			$steamkeywordlist=$matches['list'];
-			$allkeywordarray=$matches['all'];
-			unset($matches);
+			$allkeywordarray=array();
+			//$matches=parse_tags($result);
+			//$steamkeywordlist=$matches['list'];
+			//$allkeywordarray=$matches['all'];
+			//unset($matches);
+			$steamkeywordlist=$SteamPage->getTagList();
+			$allkeywordarray=array_merge($allkeywordarray,$SteamPage->getTags());
 			
-			$matches=parse_details($result);
-			$steamfeaturelist=$matches['list'];
-			$allkeywordarray=array_merge($allkeywordarray,$matches['all']);
-			unset($matches);
+			//$matches=parse_details($result);
+			//$steamfeaturelist=$matches['list'];
+			//$allkeywordarray=array_merge($allkeywordarray,$matches['all']);
+			//unset($matches);
+			$steamfeaturelist=$SteamPage->getDetailList();
+			$allkeywordarray=array_merge($allkeywordarray,$SteamPage->getDetails());
 			
-			$newsteamrating=parse_reviews($result);
+			//$newsteamrating=parse_reviews($result);
+			$newsteamrating=$SteamPage->getReview();
 			if($game['SteamRating']==0 && isset($newsteamrating) && $newsteamrating>0){
 				$game['SteamRating']=$newsteamrating;
 			}
 			
-			$Developer=parse_developer($result);
-			$Publisher=parse_publisher($result);
-			$PubDate=parse_releasedate($result);
+			//$Developer=parse_developer($result);
+			$Developer=$SteamPage->getDeveloper();
+			//$Publisher=parse_publisher($result);
+			$Publisher=$SteamPage->getPublisher();
+			//$PubDate=parse_releasedate($result);
+			$PubDate=$SteamPage->getReleaseDate();
 			if(($game['LaunchDate']==null OR $game['LaunchDate']->getTimestamp()==0) && isset($PubDate)){
 				$game['LaunchDate']=new DateTime($PubDate);
 			}
 
-			$matches=parse_genre($result);
-			$steamgenrelist=$matches['list'];
-			$allkeywordarray=array_merge($allkeywordarray,$matches['all']);
-			unset($matches);
+			//$matches=parse_genre($result);
+			//$steamgenrelist=$matches['list'];
+			//$allkeywordarray=array_merge($allkeywordarray,$matches['all']);
+			//unset($matches);
+			$steamgenrelist=$SteamPage->getGenreList();
+			$allkeywordarray=array_merge($allkeywordarray,$SteamPage->getGenre());
 		}
 		?>
 		<td rowspan=12 width=800 valign=top>
@@ -323,32 +346,36 @@ if (!(isset($_GET['id']) && is_numeric($_GET['id']))) {
 		if($showAppDetails){ ?>
 		<details>
 		<summary>AppDetails</summary>
-		<?php echo formatAppDetails($appdetails[$game['SteamID']],false);?>
+		<?php echo $steamformat->formatAppDetails($appdetails[$game['SteamID']],false);?>
 		</details>
 		<?php } 
 		
+		/*
 		//@codeCoverageIgnoreStart
 		if($showSteamPics){ ?>
 			<details>
 			<summary>steampics</summary>
-			<?php echo formatSteamPics($steampics['apps'][$game['SteamID']]);
+			<?php echo $steamformat->formatSteamPics($steampics['apps'][$game['SteamID']]);
 			//var_dump($steampics); ?>
 			</details>
 		<?php }
 		//@codeCoverageIgnoreEnd
+		*/
 		
 		//TODO: Check for API data even if there is no store page. Currently skipps if steam redirects to home page.
-		if($result!=false) { ?>
+		//if($result!=false) { 
+		if($SteamPage->pageExists) { 
+		?>
 			<details>
 			<summary>Steam API</summary>
 			<img src='http://cdn.akamai.steamstatic.com/steam/apps/<?php echo $game['SteamID']; ?>/header.jpg'>
 			<br>
 			<?php echo $description; 
-			echo formatSteamAPI($resultarray,$userstatsarray); ?>
+			echo $steamformat->formatSteamAPI($resultarray,$userstatsarray); ?>
 			</details>
 		<?php } ?>
 		
-		<?php echo formatSteamLinks($game['SteamID'],$settings['LinkSteam']); ?>
+		<?php echo $steamformat->formatSteamLinks($game['SteamID'],$settings['LinkSteam']); ?>
 		</td>
 		<?php } ?>
 	</tr>
@@ -1235,15 +1262,16 @@ if (!(isset($_GET['id']) && is_numeric($_GET['id']))) {
 	</form>
 
 <?php
-	$steamformat = new SteamFormat();
-	$newscount=5;
-	$length=500;
-	$newsarray=GetGameNews($game['SteamID'],$newscount,$length);
-	if(isset($newsarray['appnews']['newsitems'])){
-		echo $steamformat->formatnews($newsarray);
+	if($game['SteamID']>0 and $ShowSteamThings){
+		//$newscount=5;
+		//$length=500;
+		//$newsarray=GetGameNews($game['SteamID'],$newscount,$length);
+		
+		$newsarray=$steamAPI->GetSteamAPI("GetGameNews"); 
+		if(isset($newsarray['appnews']['newsitems'])){
+			echo $steamformat->formatnews($newsarray);
+		}
 	}
-	
-	//DONE: Something is wrong here, when running on uniserver the following bracket needs to be commented or unexpected end of file? - some ?tags did not have PHP (works on dreamhost)
 }
 
 echo Get_Footer(); ?>

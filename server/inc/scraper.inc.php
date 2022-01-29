@@ -11,6 +11,8 @@ if(!isset($GLOBALS['rootpath'])) {$GLOBALS['rootpath']="..";}
 require_once $GLOBALS['rootpath']."/inc/CurlRequest.class.php";
 
 function GetOwnedGames($ch=null) {
+	trigger_error("function no longer used.", E_DEPRECATED );
+
 	$ch = $ch ?? new CurlRequest("");
 	require $GLOBALS['rootpath']."/inc/authapi.inc.php";
 	//GetOwnedGames
@@ -30,6 +32,8 @@ function GetOwnedGames($ch=null) {
 }
 
 function GetRecentlyPlayedGames($ch=null) {
+	trigger_error("function no longer used.", E_DEPRECATED );
+
 	$ch = $ch ?? new CurlRequest("");
 	require $GLOBALS['rootpath']."/inc/authapi.inc.php";
 
@@ -51,6 +55,8 @@ function GetRecentlyPlayedGames($ch=null) {
 }
 
 function GetPlayerAchievements($steamgameid,$ch=null) {
+	trigger_error("function no longer used.", E_DEPRECATED );
+
 	$ch = $ch ?? new CurlRequest("");
 	require $GLOBALS['rootpath']."/inc/authapi.inc.php";
 	
@@ -73,6 +79,8 @@ function GetPlayerAchievements($steamgameid,$ch=null) {
 }
 
 function GetUserStatsForGame($steamgameid,$ch=null) {
+	trigger_error("function no longer used.", E_DEPRECATED );
+
 	$ch = $ch ?? new CurlRequest("");
 	require $GLOBALS['rootpath']."/inc/authapi.inc.php";
 	
@@ -95,6 +103,8 @@ function GetUserStatsForGame($steamgameid,$ch=null) {
 }
 
 function GetGameNews($steamgameid,$newscount=5,$length=500,$ch=null) {
+	trigger_error("function no longer used.", E_DEPRECATED );
+
 	$ch = $ch ?? new CurlRequest("");
 	
 	//Get Game News
@@ -116,6 +126,8 @@ function GetGameNews($steamgameid,$newscount=5,$length=500,$ch=null) {
 }
 
 function GetSchemaForGame($steamgameid, $ch=null) {
+	trigger_error("function no longer used.", E_DEPRECATED );
+
 	$ch = $ch ?? new CurlRequest("");
 
 	require $GLOBALS['rootpath']."/inc/authapi.inc.php";
@@ -138,6 +150,8 @@ function GetSchemaForGame($steamgameid, $ch=null) {
 }
 
 function GetAppDetails($steamgameid,$ch=null) {
+	trigger_error("function no longer used.", E_DEPRECATED );
+
 	$ch = $ch ?? new CurlRequest("");
 
 	//unoficial app id information
@@ -161,6 +175,8 @@ function GetAppDetails($steamgameid,$ch=null) {
 }
 
 function GetSteamPICS($steamgameid,$ch=null) {
+	trigger_error("function no longer used.", E_DEPRECATED );
+
 	$ch = $ch ?? new CurlRequest("");
 
 	//https://github.com/DoctorMcKay/steam-pics-api
@@ -183,6 +199,8 @@ function GetSteamPICS($steamgameid,$ch=null) {
 }
 
 function scrapeSteamStore($steamgameid,$ch=null) {
+	trigger_error("function no longer used.", E_DEPRECATED );
+
 	$ch = $ch ?? new CurlRequest("");
 
 	//Simulate steam down
@@ -222,6 +240,8 @@ function scrapeSteamStore($steamgameid,$ch=null) {
 }
 
 function getPageTitle($source){
+	trigger_error("function no longer used.", E_DEPRECATED );
+
 	$pattern='/<title>(.*)<\/title>/';
 	$description= preg_match($pattern,$source,$matches);
 	if(isset($matches[1])){
@@ -233,6 +253,8 @@ function getPageTitle($source){
 }
 
 function parse_game_description($source){
+	trigger_error("function no longer used.", E_DEPRECATED );
+
 	//class="game_description_snippet"
 	$pattern='/game_description_snippet">\s*(.*?)\s*<\/div>/';
 	$description= preg_match($pattern,$source,$matches);
@@ -247,6 +269,8 @@ function parse_game_description($source){
 }
 
 function parse_tags($source){
+	trigger_error("function no longer used.", E_DEPRECATED );
+
 	//Searching for:
 	//class="glance_tags popular_tags"
 	$start=strpos($source,'class="glance_tags popular_tags"');
@@ -272,6 +296,8 @@ function parse_tags($source){
 }
 
 function parse_details($source){
+	trigger_error("function no longer used.", E_DEPRECATED );
+
 	//Searching for:
 	//class="game_area_details_specs"
 	$pattern="/game_area_details_specs.*?name.*?>(.+?)</";
@@ -296,6 +322,8 @@ function parse_details($source){
 }
 
 function parse_reviews($source){
+	trigger_error("function no longer used.", E_DEPRECATED );
+
 	//Regular expression to find user reviews on Steam Store page.
 	//$pattern="/([0-9]+)% of the [0-9,]+ user reviews for/"; //Old pattern stopped working
 	$pattern="/user_reviews_summary_row.+\"([0-9]*)\%/";
@@ -313,6 +341,8 @@ function parse_reviews($source){
 }
 
 function parse_developer($source){
+	trigger_error("function no longer used.", E_DEPRECATED );
+
 	//TODO: Update to read multiple developer entries.
 	//class="details_block"
 	$pattern="/Developer:<\/b>\s*<.*?>(.*?)<\/a>/";
@@ -330,6 +360,8 @@ function parse_developer($source){
 }
 
 function parse_publisher($source){
+	trigger_error("function no longer used.", E_DEPRECATED );
+
 	$pattern="/Publisher:<\/b>\s*<.*?>(.*?)<\/a>/";
 	$pattern="/\/publisher\/(?:.*?)>(.*?)<\/a>/";
 	$Pubmatch= preg_match ($pattern,$source,$matches);
@@ -345,6 +377,8 @@ function parse_publisher($source){
 }
 
 function parse_releasedate($source){
+	trigger_error("function no longer used.", E_DEPRECATED );
+
 	$pattern="/<b>Release Date:<\/b>\s*(.*?)<br>/";
 	$Datematch= preg_match ($pattern,$source,$matches);
 	$PubDate=$matches[1];
@@ -354,6 +388,8 @@ function parse_releasedate($source){
 }
 
 function parse_genre($source){
+	trigger_error("function no longer used.", E_DEPRECATED );
+	
 	/*
 	$pattern1="/Genre:(?:.*?)<a(?:.*?)\">(.*?)<\/a>/";
 	$genrematch= preg_match ($pattern1,$source,$matches);
@@ -404,7 +440,10 @@ function parse_genre($source){
 	);
 }
 
+/*
 function formatAppDetails($appdetails,$verbose=true){
+	trigger_error("formatnews no longer used.", E_DEPRECATED );
+	
 	//var_dump($appdetails);
 	
 	$output  = "Type: " . $appdetails['data']['type'] . "<br>";
@@ -580,6 +619,8 @@ function formatAppDetails($appdetails,$verbose=true){
 }
 
 function formatSteamPics($steampics){
+	trigger_error("formatnews no longer used.", E_DEPRECATED );
+	
 	// @codeCoverageIgnoreStart
 	//function is unused and has been since 2020
 	$output  = "ID: ". $steampics['apps'][$game['SteamID']]['appid']."<br>";
@@ -670,6 +711,8 @@ function formatSteamPics($steampics){
 }
 
 function formatSteamAPI($resultarray,$userstatsarray){
+	trigger_error("formatnews no longer used.", E_DEPRECATED );
+	
 	//echo "000-DEBUG-000";
 	//var_dump($resultarray); //GetSchemaForGame
 	//var_dump($userstatsarray); //GetUserStatsForGame
@@ -753,6 +796,8 @@ function formatSteamAPI($resultarray,$userstatsarray){
 }
 
 function formatSteamLinks($gameid,$profileid){
+	trigger_error("formatnews no longer used.", E_DEPRECATED );
+	
 	$output  = "<ul>";
 	if($gameid<>"") {
 		$output .= "<li><a href='http://astats.astats.nl/astats/Steam_Game_Info.php?AppID=".$gameid."'>Stats</a></li>";
@@ -827,7 +872,7 @@ function formatSteamLinks($gameid,$profileid){
 	return $output;
 }
 
-/*
+/* 
 function formatnews($newsarray){
 	trigger_error("formatnews no longer used.", E_DEPRECATED );
 

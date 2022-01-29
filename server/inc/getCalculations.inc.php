@@ -269,7 +269,9 @@ function getCalculations($gameID="",$connection=false,$start=false,$end=false){
 			if(isset($game['AddedDateTime'])) {
 				$game['LastPlayORPurchaseValue']=max($game['lastplaySort'],$game['AddedDateTime']->getTimestamp());
 			} else {
+				//@codeCoverageIgnoreStart
 				$game['LastPlayORPurchaseValue']=max($game['lastplaySort'],0);
+				//@codeCoverageIgnoreEnd
 			}
 			$game['LastPlayORPurchase']=getCleanStringDate($game['LastPlayORPurchaseValue']);
 			$game['DaysSinceLastPlay']=daysSinceDate($game['lastplaySort']);

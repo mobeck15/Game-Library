@@ -7,7 +7,7 @@ require_once $GLOBALS['rootpath']."/ext/simple_html_dom.php";
 
 class SteamScrape
 {
-	private $pageExists=true;
+	public $pageExists=true;
 	private $steamGameID;
 	private $curlHandle;
 	private $rawPageText;

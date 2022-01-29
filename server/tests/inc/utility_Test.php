@@ -730,6 +730,21 @@ final class Utility_Test extends TestCase
 	 * @uses boolText
 	 * Time: 00:00.231, Memory: 48.00 MB
 	 * (2 tests, 4 assertions)
+	 *
+	 * Sometimes fails for no reason?
+	 
+1) Utility_Test::test_arrayTable
+Failed asserting that two strings are equal.
+--- Expected
++++ Actual
+@@ @@
+-'<table><tr><th>0</th><td>string (8)</td><td>a string</td></tr><tr><th>1</th><td>integer</td><td>667667</td></tr><tr><th>2</th><td>array</td><td><table><tr><th>0</th><td>string (18)</td><td>sub array (string)</td></tr><tr><th>1</th><td>integer</td><td>88888</td></tr></table></td></tr><tr><th>3</th><td>double</td><td>15.7</td></tr><tr><th>4</th><td>boolean</td><td>FALSE</td></tr><tr><th>5</th><td>object (DateTime)</td><td>631148400 (1990-01-01  12:00:00 AM)</td></tr><tr><th>6</th><td>object (stdClass)</td><td>stdClass Object\n
++'<table><tr><th>0</th><td>string (8)</td><td>a string</td></tr><tr><th>1</th><td>integer</td><td>667667</td></tr><tr><th>2</th><td>array</td><td><table><tr><th>0</th><td>string (18)</td><td>sub array (string)</td></tr><tr><th>1</th><td>integer</td><td>88888</td></tr></table></td></tr><tr><th>3</th><td>double</td><td>15.7</td></tr><tr><th>4</th><td>boolean</td><td>FALSE</td></tr><tr><th>5</th><td>object (DateTime)</td><td>631180800 (1990-01-01  12:00:00 AM)</td></tr><tr><th>6</th><td>object (stdClass)</td><td>stdClass Object\n
+ (\n
+     [0] => 1\n
+ )\n
+ </td></tr></table>'
+ 
 	 */
 	public function test_arrayTable() {
 		$array=array(

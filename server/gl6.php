@@ -10,7 +10,8 @@ echo Get_Header($title);
 <hr>
 <?php 
 $settings=getsettings();
-echo formatSteamLinks("",$settings['LinkSteam']); 
+$steamformat = new SteamFormat();
+echo $steamformat->formatSteamLinks("",$settings['LinkSteam']); 
 ?>
 <hr>
 

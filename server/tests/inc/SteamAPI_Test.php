@@ -179,39 +179,27 @@ final class SteamAPI_Test extends TestCase
 	 * @uses SteamAPI::setApiUrls
 	 * @uses SteamAPI::setAuth
 	 * @uses SteamAPI::__destruct
+	 * @testWith ["GetOwnedGames"]
+	 *           ["GetRecentlyPlayedGames"]
+	 *           ["GetPlayerAchievements"]
+	 *           ["GetUserStatsForGame"]
+	 *           ["GetGameNews"]
+	 *           ["GetSchemaForGame"]
+	 *           ["GetAppDetails"]
+	 *           ["GetSteamPICS"]
 	 * Time
 	 */
-	public function test_GetSteamAPI() {
+	public function test_GetSteamAPI($APIname) {
         // Create a stub for the SomeClass class.
         $stub = $this->createStub(CurlRequest::class);
         // Configure the stub.
         $stub->method('execute')
              ->willReturn('{"foo": "bar"}');
+		//$stub=null;
 			 
 		$api = new SteamAPI(4088,$stub);
 		
-		$result = $api->GetSteamAPI("GetOwnedGames");
-		$this->assertisArray($result);
-		
-		$result = $api->GetSteamAPI("GetRecentlyPlayedGames");
-		$this->assertisArray($result);
-		
-		$result = $api->GetSteamAPI("GetPlayerAchievements");
-		$this->assertisArray($result);
-		
-		$result = $api->GetSteamAPI("GetUserStatsForGame");
-		$this->assertisArray($result);
-		
-		$result = $api->GetSteamAPI("GetGameNews");
-		$this->assertisArray($result);
-		
-		$result = $api->GetSteamAPI("GetSchemaForGame");
-		$this->assertisArray($result);
-		
-		$result = $api->GetSteamAPI("GetAppDetails");
-		$this->assertisArray($result);
-		
-		$result = $api->GetSteamAPI("GetSteamPICS");
+		$result = $api->GetSteamAPI($APIname);
 		$this->assertisArray($result);
 	}
 
@@ -224,9 +212,11 @@ final class SteamAPI_Test extends TestCase
 	 * @uses SteamAPI::setApiUrls
 	 * @uses SteamAPI::setAuth
 	 * @uses SteamAPI::__destruct
+	 * @testWith ["GetOwnedGames"]
+	 *           ["GetRecentlyPlayedGames"]
 	 * Time
 	 */
-	public function test_GetSteamAPI_Null() {
+	public function test_GetSteamAPI_Nullarray($APIname) {
         // Create a stub for the SomeClass class.
         $stub = $this->createStub(CurlRequest::class);
         // Configure the stub.
@@ -235,31 +225,38 @@ final class SteamAPI_Test extends TestCase
 
 		$api = new SteamAPI(null,$stub);
 		
-		$result = $api->GetSteamAPI("GetOwnedGames");
+		$result = $api->GetSteamAPI($APIname);
 		$this->assertisArray($result);
+	}
+	
+	/**
+	 * @group fast
+	 * @small
+	 * @covers SteamAPI::GetSteamAPI
+	 * @uses SteamAPI::CallAPI
+	 * @uses SteamAPI::__construct
+	 * @uses SteamAPI::setApiUrls
+	 * @uses SteamAPI::setAuth
+	 * @uses SteamAPI::__destruct
+	 * @testWith ["GetPlayerAchievements"]
+	 *           ["GetUserStatsForGame"]
+	 *           ["GetGameNews"]
+	 *           ["GetSchemaForGame"]
+	 *           ["GetAppDetails"]
+	 *           ["GetSteamPICS"]
+	 *           ["other"]
+	 * Time
+	 */
+	public function test_GetSteamAPI_Null($APIname) {
+        // Create a stub for the SomeClass class.
+        $stub = $this->createStub(CurlRequest::class);
+        // Configure the stub.
+        $stub->method('execute')
+             ->willReturn('{"foo": "bar"}');
+
+		$api = new SteamAPI(null,$stub);
 		
-		$result = $api->GetSteamAPI("GetRecentlyPlayedGames");
-		$this->assertisArray($result);
-		
-		$result = $api->GetSteamAPI("GetPlayerAchievements");
-		$this->assertNull($result);
-		
-		$result = $api->GetSteamAPI("GetUserStatsForGame");
-		$this->assertNull($result);
-		
-		$result = $api->GetSteamAPI("GetGameNews");
-		$this->assertNull($result);
-		
-		$result = $api->GetSteamAPI("GetSchemaForGame");
-		$this->assertNull($result);
-		
-		$result = $api->GetSteamAPI("GetAppDetails");
-		$this->assertNull($result);
-		
-		$result = $api->GetSteamAPI("GetSteamPICS");
-		$this->assertNull($result);
-		
-		$result = $api->GetSteamAPI("other");
+		$result = $api->GetSteamAPI($APIname);
 		$this->assertNull($result);
 	}
 		

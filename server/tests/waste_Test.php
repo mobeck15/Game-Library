@@ -18,6 +18,7 @@ class testwaste extends TestCase {
 	/**
 	 * @group long
 	 * @medium
+	 * @covers waste.php
 	 * Time: 00:07.232, Memory: 276.00 MB
 	 * (1 test, 1 assertion)
 	 */

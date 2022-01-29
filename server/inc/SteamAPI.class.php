@@ -1,4 +1,7 @@
 <?php
+//https://steamcommunity.com/dev/apiterms
+//You are limited to one hundred thousand (100,000) calls to the Steam Web API per day. 
+
 //if(!isset($GLOBALS['rootpath'])) {$GLOBALS['rootpath']="..";}
 require_once $GLOBALS['rootpath']."/inc/CurlRequest.class.php";
 

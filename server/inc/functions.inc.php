@@ -26,7 +26,7 @@ include_once $GLOBALS['rootpath']."/inc/getPurchases.inc.php";
 include_once $GLOBALS['rootpath']."/inc/getActivityCalculations.inc.php";
 include_once $GLOBALS['rootpath']."/inc/getHistoryCalculations.inc.php";
 include_once $GLOBALS['rootpath']."/inc/getCalculations.inc.php";
-include_once $GLOBALS['rootpath']."/inc/scraper.inc.php";
+//include_once $GLOBALS['rootpath']."/inc/scraper.inc.php";
 include_once $GLOBALS['rootpath']."/inc/getTopList.inc.php";
 
 //DONE: add control function to prevent loading multiple times.

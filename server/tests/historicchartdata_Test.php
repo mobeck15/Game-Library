@@ -16,6 +16,7 @@ class testHistoricChartData extends TestCase {
     }
 
 	/**
+	 * @covers historicchartdata.php
 	 * @group slow
 	 * @medium
 	 * Time: 00:01.250, Memory: 96.00 MB
