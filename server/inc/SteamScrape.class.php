@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 //if(!isset($GLOBALS['rootpath'])) {$GLOBALS['rootpath']="..";}
 require_once $GLOBALS['rootpath']."/inc/CurlRequest.class.php";
 require_once $GLOBALS['rootpath']."/ext/simple_html_dom.php";
@@ -158,10 +160,14 @@ class SteamScrape
 		} elseif (isset($search_results[0])) {
 			$review = $search_results[0]->innertext;
 		} else {
-			$review = "";
+			$this->review="";
+			return $this->review;
 		}
+		$review=trim($review);
+		$pctpos=strpos($review,"%");
+		$review=substr($review,1,$pctpos-1);
 		
-		$this->review = trim(substr(trim($review),1,strpos(trim($review),"%")-1));
+		$this->review = trim($review);
 		return $this->review;
 	}
 

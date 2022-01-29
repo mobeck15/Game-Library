@@ -827,7 +827,10 @@ function formatSteamLinks($gameid,$profileid){
 	return $output;
 }
 
+/*
 function formatnews($newsarray){
+	trigger_error("formatnews no longer used.", E_DEPRECATED );
+
 	$output  = "<b>News:</b>";
 	foreach($newsarray['appnews']['newsitems'] as $news){
 		$output .= "<p>";
@@ -846,3 +849,4 @@ function formatnews($newsarray){
 	
 	return $output;
 }
+*/

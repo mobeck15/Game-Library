@@ -15,17 +15,38 @@ final class SteamScrape_Test extends TestCase
 {
 	private $SteamScrape_obj;
 	
-	protected function setUp(): void
-    {
+	protected function setUp(): void {
 		//807120 = Iratus: Lord of the Dead (Developer not loading)
 		//17390 = Spore (all good)
 		
         $this->SteamScrape_obj = new SteamScrape(17390);
     }	
 	
-    protected function tearDown(): void
-    {
+    protected function tearDown(): void {
         unset($this->SteamScrape_obj);
+    }
+
+	/**
+	 * @group fast
+	 * @small
+	 * @covers SteamScrape::getdom
+	 * @uses SteamScrape::__construct
+	 * @uses SteamScrape::getPage
+	 * @uses SteamScrape::getPageTitle
+	 * @uses SteamScrape::getStorePage
+	 */
+    public function test_getdom_base() {
+        $stub = $this->createStub(CurlRequest::class);
+        $stub->method('execute')
+             ->willReturn('steam website code...');
+		
+		$property = $this->getPrivateProperty( 'SteamScrape', 'curlHandle' );
+		$property->setValue( $this->SteamScrape_obj, $stub );
+
+		$output=$this->SteamScrape_obj->getdom()->plaintext;
+
+		$this->assertisString($output);
+		$this->assertEquals('steam website code...',$output);
     }
 	
 	/**
@@ -181,6 +202,22 @@ final class SteamScrape_Test extends TestCase
 		$result=$this->SteamScrape_obj->getPageTitle();
 		$this->assertisString($result);
 		$this->assertEquals("",$result);
+    }
+	
+	/**
+	 * @group fast
+	 * @small
+	 * @covers SteamScrape::getPageTitle
+	 * @uses SteamScrape::__construct
+	 * Time: 
+	 */
+    public function test_getPageTitle_exists() {
+		$property = $this->getPrivateProperty( 'SteamScrape', 'pageTitle' );
+		$property->setValue( $this->SteamScrape_obj, 'Existing Title' );
+
+		$result=$this->SteamScrape_obj->getPageTitle();
+		$this->assertisString($result);
+		$this->assertEquals('Existing Title',$result);
     }
 	
 	/**
@@ -707,8 +744,8 @@ final class SteamScrape_Test extends TestCase
     }
 	
 	/**
-	 * @group fast
-	 * @small
+	 * @group medium
+	 * @medium
 	 * @covers SteamScrape::getPublisher
 	 * @uses SteamScrape::__construct
 	 * @uses SteamScrape::getStorePage
@@ -733,8 +770,8 @@ final class SteamScrape_Test extends TestCase
     }
 	
 	/**
-	 * @group fast
-	 * @small
+	 * @group medium
+	 * @medium
 	 * @covers SteamScrape::getPublisher
 	 * @uses SteamScrape::__construct
 	 * @uses SteamScrape::getStorePage

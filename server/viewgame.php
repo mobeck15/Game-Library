@@ -1235,12 +1235,12 @@ if (!(isset($_GET['id']) && is_numeric($_GET['id']))) {
 	</form>
 
 <?php
-
+	$steamformat = new SteamFormat();
 	$newscount=5;
 	$length=500;
 	$newsarray=GetGameNews($game['SteamID'],$newscount,$length);
 	if(isset($newsarray['appnews']['newsitems'])){
-		echo formatnews($newsarray);
+		echo $steamformat->formatnews($newsarray);
 	}
 	
 	//DONE: Something is wrong here, when running on uniserver the following bracket needs to be commented or unexpected end of file? - some ?tags did not have PHP (works on dreamhost)

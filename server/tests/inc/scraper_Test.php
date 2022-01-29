@@ -706,7 +706,7 @@ final class Scraper_Test extends TestCase
 	 * @covers formatnews
 	 * Time: 00:00.221, Memory: 46.00 MB
 	 * (1 test, 2 assertions)
-	 */
+	 * /
 	public function test_formatnews(): void
     {
 		$source=array(
@@ -752,6 +752,6 @@ final class Scraper_Test extends TestCase
         $this->assertisString($output);
 		$this->assertEquals($expected,$output);
     }
-
+	/* */
 
 }
