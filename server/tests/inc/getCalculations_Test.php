@@ -2,13 +2,9 @@
 declare(strict_types=1);
 use PHPUnit\Framework\TestCase;
 
-// We require the file we need to test.
-// Relative path to the current working dir (root of xampp)
 $GLOBALS['rootpath'] = $GLOBALS['rootpath'] ?? "htdocs\Game-Library\server";
 require_once $GLOBALS['rootpath']."\inc\getCalculations.inc.php";
 
-//Time: 00:37.892, Memory: 264.00 MB
-//(3 tests, 5 assertions)
 /**
  * @group include
  */
