@@ -5,6 +5,7 @@ $GLOBALS['rootpath'] = $GLOBALS['rootpath'] ?? "htdocs\Game-Library\server";
 
 /**
  * @group page
+ * @coversNothing
  */
 class testviewitem extends TestCase {
 
@@ -16,10 +17,7 @@ class testviewitem extends TestCase {
     }
 
 	/**
-	 * @group long
 	 * @medium
-	 * Time: 00:01.378, Memory: 144.00 MB
-	 * (1 test, 1 assertion) 
 	 */
     public function test_viewitem_Load() {
         $args = array();
@@ -27,9 +25,7 @@ class testviewitem extends TestCase {
     }
 
 	/**
-	 * @group long
 	 * @medium
-	 * Time 
 	 */
     public function test_viewitem_itemid() {
         $args = array('id'=>13);
@@ -37,9 +33,7 @@ class testviewitem extends TestCase {
     }
 
 	/**
-	 * @group long
 	 * @medium
-	 * Time 
 	 */
     public function test_viewitem_edit() {
         $args = array('id'=>14,'edit'=>1);

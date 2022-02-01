@@ -5,6 +5,7 @@ $GLOBALS['rootpath'] = $GLOBALS['rootpath'] ?? "htdocs\Game-Library\server";
 
 /**
  * @group page
+ * @coversNothing
  */
 class testgoty extends TestCase {
 
@@ -16,10 +17,7 @@ class testgoty extends TestCase {
     }
 
 	/**
-	 * @group slow
 	 * @medium
-	 * Time: 00:06.173, Memory: 276.00 MB
-	 * (1 test, 1 assertion)
 	 */
     public function test_goty_Load() {
         $args = array();
@@ -27,9 +25,7 @@ class testgoty extends TestCase {
     }
 
 	/**
-	 * @group untimed
 	 * @medium
-	 * Time
 	 */
     public function test_goty_year() {
         $args = array('group'=>"year");
@@ -37,9 +33,7 @@ class testgoty extends TestCase {
     }
 
 	/**
-	 * @group untimed
 	 * @medium
-	 * Time
 	 */
     public function test_goty_detail() {
         $args = array('group'=>"month",'countfree'=>0,'detail'=>"2010-5");

@@ -2,28 +2,21 @@
 declare(strict_types=1);
 use PHPUnit\Framework\TestCase;
 
-// We require the file we need to test.
-// Relative path to the current working dir (root of xampp)
 $GLOBALS['rootpath'] = $GLOBALS['rootpath'] ?? "htdocs\Game-Library\server";
 require_once $GLOBALS['rootpath']."\inc\getGames.inc.php";
 
-//Time: 00:00.979, Memory: 58.00 MB
-//(4 tests, 8 assertions)
 /**
  * @group include
  */
 final class getGames_Test extends TestCase
 {
 	/**
-	 * @group fast
 	 * @small
 	 * @covers getGames
 	 * @uses get_db_connection
 	 * @uses CalculateGameRow
 	 * @uses getAllCpi
 	 * @uses timeduration
-	 * Time: 00:00.610, Memory: 70.00 MB
-	 * (1 test, 3 assertions)
 	 */
     public function test_getGames_base() {
         $this->assertisArray(getGames());
@@ -33,15 +26,12 @@ final class getGames_Test extends TestCase
 	}
 	
 	/**
-	 * @group fast
 	 * @small
 	 * @covers getGames
 	 * @uses CalculateGameRow
 	 * @uses getAllCpi
 	 * @uses get_db_connection
 	 * @uses timeduration
-	 * Time: 00:00.571, Memory: 70.00 MB
-	 * (1 test, 1 assertion)
 	 */
     public function test_getGames_conn() {
 		$conn=get_db_connection();
@@ -50,13 +40,10 @@ final class getGames_Test extends TestCase
 	}
 	
 	/**
-	 * @group fast
 	 * @small
 	 * @covers getGames
 	 * @uses getsettings
 	 * @uses get_db_connection
-	 * Time: 00:00.234, Memory: 48.00 MB
-	 * (1 test, 1 assertion)
 	 */
     public function test_getGames_error() {
         $this->expectNotice();
@@ -64,14 +51,11 @@ final class getGames_Test extends TestCase
 	}
 
 	/**
-	 * @group fast
 	 * @small
 	 * @covers CalculateGameRow
 	 * @uses getAllCpi
 	 * @uses getGames
 	 * @uses timeduration
-	 * Time: 00:00.221, Memory: 46.00 MB
-	 * (1 test, 3 assertions)
 	 */
     public function test_CalculateGameRow() {
 		$gamerow=array(

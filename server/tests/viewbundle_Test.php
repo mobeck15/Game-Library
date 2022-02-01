@@ -5,6 +5,7 @@ $GLOBALS['rootpath'] = $GLOBALS['rootpath'] ?? "htdocs\Game-Library\server";
 
 /**
  * @group page
+ * @coversNothing
  */
 class testviewbundle extends TestCase {
 
@@ -16,10 +17,7 @@ class testviewbundle extends TestCase {
     }
 
 	/**
-	 * @group long
 	 * @medium
-	 * Time: 00:01.337, Memory: 144.00 MB
-	 * (1 test, 1 assertion)
 	 */
     public function test_viewbundle_Load() {
         $args = array();
@@ -27,10 +25,7 @@ class testviewbundle extends TestCase {
     }
 
 	/**
-	 * @group long
 	 * @medium
-	 * Time: 00:01.337, Memory: 144.00 MB
-	 * (1 test, 1 assertion)
 	 */
     public function test_viewbundle_bundleid() {
 		//Skyrim bundle
@@ -43,10 +38,7 @@ class testviewbundle extends TestCase {
     }
 
 	/**
-	 * @group long
 	 * @medium
-	 * Time: 00:01.337, Memory: 144.00 MB
-	 * (1 test, 1 assertion)
 	 */
     public function test_viewbundle_edit() {
         $args = array('id'=>11,'edit'=>1);

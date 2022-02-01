@@ -15,7 +15,6 @@ require_once $GLOBALS['rootpath']."\inc\getCalculations.inc.php";
 final class getCalculations_Test extends TestCase
 {
 	/**
-	 * @group fast
 	 * @small
 	 * @covers getCalculations
 	 * Time: 00:00.307, Memory: 48.00 MB
@@ -30,8 +29,7 @@ final class getCalculations_Test extends TestCase
 	}
 
 	/**
-	 * @group fast
-	 * @small
+	 * @medium
 	 * @covers getCalculations
 	 * @uses CalculateGameRow
 	 * @uses PriceCalculation
@@ -65,7 +63,6 @@ final class getCalculations_Test extends TestCase
 	} /* */
 	
 	/**
-	 * @group slow
 	 * @large
 	 * @covers getCalculations
 	 * @uses get_db_connection
@@ -101,7 +98,6 @@ final class getCalculations_Test extends TestCase
 	}
 	
 	/**
-	 * @group fast
 	 * @small
 	 * @covers getPriceSort
 	 * @uses PriceCalculation

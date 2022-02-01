@@ -5,6 +5,7 @@ $GLOBALS['rootpath'] = $GLOBALS['rootpath'] ?? "htdocs\Game-Library\server";
 
 /**
  * @group page
+ * @coversNothing
  */
 class testcalculations extends TestCase {
 
@@ -16,11 +17,8 @@ class testcalculations extends TestCase {
     }
 
 	/**
-	 * @group slow
 	 * @medium
 	 * @uses PriceCalculation 
-	 * Time: 00:05.895, Memory: 272.00 MB
-	 * (1 test, 1 assertion)
 	 */
     public function test_calculations_Load() {
         $args = array();
@@ -28,11 +26,8 @@ class testcalculations extends TestCase {
     }
 
 	/**
-	 * @group slow
 	 * @medium
 	 * @uses PriceCalculation 
-	 * Time: 00:06.559, Memory: 294.00 MB
-	 * (1 test, 1 assertion)
 	 */
     public function test_calculations_Fave() {
         $args = array('fav'=>"default");
@@ -40,11 +35,8 @@ class testcalculations extends TestCase {
     }
 
 	/**
-	 * @group slow
 	 * @medium
 	 * @uses PriceCalculation 
-	 * Time: 00:05.746, Memory: 268.00 MB
-	 * (1 test, 1 assertion)
 	 */
     public function test_calculations_Custom() {
         $args = array('fav'=>"Custom",'col'=>"Title,Type",'Sortby' => "PurchaseDate",'SortDir' => SORT_DESC);

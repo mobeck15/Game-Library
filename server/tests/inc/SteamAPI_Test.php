@@ -2,8 +2,6 @@
 declare(strict_types=1);
 use PHPUnit\Framework\TestCase;
 
-// We require the file we need to test.
-// Relative path to the current working dir (root of xampp)
 $GLOBALS['rootpath'] = "htdocs\Game-Library\server";
 require_once $GLOBALS['rootpath']."\inc\SteamAPI.class.php";
 
@@ -14,14 +12,12 @@ require_once $GLOBALS['rootpath']."\inc\SteamAPI.class.php";
 final class SteamAPI_Test extends TestCase
 {
 	/**
-	 * @group fast
 	 * @small
 	 * @covers SteamAPI::__construct
 	 * @covers SteamAPI::__destruct
 	 * @uses SteamAPI::setApiUrls
 	 * @uses SteamAPI::setAuth
 	 * @uses CurlRequest::__construct
-	 * Time
 	 */
     public function test_construct() {
 		$api = new SteamAPI(4088);
@@ -32,14 +28,12 @@ final class SteamAPI_Test extends TestCase
     }
 
 	/**
-	 * @group fast
 	 * @small
 	 * @covers SteamAPI::setAuth
 	 * @uses SteamAPI::__construct
 	 * @uses SteamAPI::setApiUrls
 	 * @uses CurlRequest::__construct
 	 * @uses SteamAPI::__destruct
-	 * Time
 	 */
 	public function test_setAuth() {
 		$api = new SteamAPI(4088);
@@ -52,21 +46,27 @@ final class SteamAPI_Test extends TestCase
 	}
 
 	/**
-	 * @group fast
 	 * @small
 	 * @covers SteamAPI::setApiUrls
 	 * @uses SteamAPI::__construct
 	 * @uses SteamAPI::setAuth
 	 * @uses CurlRequest::__construct
 	 * @uses SteamAPI::__destruct
-	 * Time
+	 * @testWith ["GetOwnedGamesURL"]
+	 *           ["GetRecentlyPlayedGamesURL"]
+	 *           ["GetPlayerAchievementsURL"]
+	 *           ["GetSchemaForGameURL"]
+	 *           ["GetGameNewsURL"]
+	 *           ["GetSchemaForGameURL"]
+	 *           ["GetAppDetailsURL"]
+	 *           ["GetSteamPICSURL"]
 	 */
-	public function test_setApiUrls() {
+	public function test_setApiUrls($urlname) {
 		$api = new SteamAPI(4088);
 		
-		$property = $this->getPrivateProperty( 'SteamAPI', 'GetOwnedGamesURL' );
+		$property = $this->getPrivateProperty( 'SteamAPI', $urlname );
 		$this->assertNotNull($property->getValue( $api ));
-
+		/*
 		$property = $this->getPrivateProperty( 'SteamAPI', 'GetRecentlyPlayedGamesURL' );
 		$this->assertNotNull($property->getValue( $api ));
 
@@ -87,24 +87,29 @@ final class SteamAPI_Test extends TestCase
 
 		$property = $this->getPrivateProperty( 'SteamAPI', 'GetSteamPICSURL' );
 		$this->assertNotNull($property->getValue( $api ));
+		*/
 	}
 
 	/**
-	 * @group fast
 	 * @small
 	 * @covers SteamAPI::setApiUrls
 	 * @uses SteamAPI::__construct
 	 * @uses SteamAPI::setAuth
 	 * @uses CurlRequest::__construct
 	 * @uses SteamAPI::__destruct
-	 * Time
+	 * @testWith ["GetPlayerAchievementsURL"]
+	 *           ["GetUserStatsForGameURL"]
+	 *           ["GetGameNewsURL"]
+	 *           ["GetSchemaForGameURL"]
+	 *           ["GetAppDetailsURL"]
+	 *           ["GetSteamPICSURL"]
 	 */
-	public function test_setApiUrls_Null() {
+	public function test_setApiUrls_Null($urlname) {
 		$api = new SteamAPI();
 		
-		$property = $this->getPrivateProperty( 'SteamAPI', 'GetPlayerAchievementsURL' );
+		$property = $this->getPrivateProperty( 'SteamAPI', $urlname );
 		$this->assertNull($property->getValue( $api ));
-
+		/*
 		$property = $this->getPrivateProperty( 'SteamAPI', 'GetUserStatsForGameURL' );
 		$this->assertNull($property->getValue( $api ));
 
@@ -119,17 +124,16 @@ final class SteamAPI_Test extends TestCase
 
 		$property = $this->getPrivateProperty( 'SteamAPI', 'GetSteamPICSURL' );
 		$this->assertNull($property->getValue( $api ));
+		*/
 	}
 	
 	/**
-	 * @group fast
 	 * @small
 	 * @covers SteamAPI::CallAPI
 	 * @uses SteamAPI::__construct
 	 * @uses SteamAPI::setApiUrls
 	 * @uses SteamAPI::setAuth
 	 * @uses SteamAPI::__destruct
-	 * Time
 	 */
 	public function test_CallAPI() {
         // Create a stub for the SomeClass class.
@@ -145,14 +149,12 @@ final class SteamAPI_Test extends TestCase
 	}
 	
 	/**
-	 * @group fast
 	 * @small
 	 * @covers SteamAPI::CallAPI
 	 * @uses SteamAPI::__construct
 	 * @uses SteamAPI::setApiUrls
 	 * @uses SteamAPI::setAuth
 	 * @uses SteamAPI::__destruct
-	 * Time
 	 */
 	public function test_CallAPI_null() {
         // Create a stub for the SomeClass class.
@@ -171,7 +173,6 @@ final class SteamAPI_Test extends TestCase
 	}
 	
 	/**
-	 * @group fast
 	 * @small
 	 * @covers SteamAPI::GetSteamAPI
 	 * @uses SteamAPI::CallAPI
@@ -187,7 +188,6 @@ final class SteamAPI_Test extends TestCase
 	 *           ["GetSchemaForGame"]
 	 *           ["GetAppDetails"]
 	 *           ["GetSteamPICS"]
-	 * Time
 	 */
 	public function test_GetSteamAPI($APIname) {
         // Create a stub for the SomeClass class.
@@ -204,7 +204,6 @@ final class SteamAPI_Test extends TestCase
 	}
 
 	/**
-	 * @group fast
 	 * @small
 	 * @covers SteamAPI::GetSteamAPI
 	 * @uses SteamAPI::CallAPI
@@ -214,7 +213,6 @@ final class SteamAPI_Test extends TestCase
 	 * @uses SteamAPI::__destruct
 	 * @testWith ["GetOwnedGames"]
 	 *           ["GetRecentlyPlayedGames"]
-	 * Time
 	 */
 	public function test_GetSteamAPI_Nullarray($APIname) {
         // Create a stub for the SomeClass class.
@@ -230,7 +228,6 @@ final class SteamAPI_Test extends TestCase
 	}
 	
 	/**
-	 * @group fast
 	 * @small
 	 * @covers SteamAPI::GetSteamAPI
 	 * @uses SteamAPI::CallAPI
@@ -245,7 +242,6 @@ final class SteamAPI_Test extends TestCase
 	 *           ["GetAppDetails"]
 	 *           ["GetSteamPICS"]
 	 *           ["other"]
-	 * Time
 	 */
 	public function test_GetSteamAPI_Null($APIname) {
         // Create a stub for the SomeClass class.

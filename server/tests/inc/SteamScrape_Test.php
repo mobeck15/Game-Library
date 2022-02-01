@@ -27,7 +27,6 @@ final class SteamScrape_Test extends TestCase
     }
 
 	/**
-	 * @group fast
 	 * @small
 	 * @covers SteamScrape::getdom
 	 * @uses SteamScrape::__construct
@@ -50,14 +49,12 @@ final class SteamScrape_Test extends TestCase
     }
 	
 	/**
-	 * @group fast
 	 * @small
 	 * @covers SteamScrape::getStorePage
 	 * @uses SteamScrape::__construct
 	 * @uses SteamScrape::getPage
 	 * @uses SteamScrape::getPageTitle
 	 * @uses SteamScrape::getdom
-	 * Time: 
 	 */
     public function test_getStorePage_base() {
         $stub = $this->createStub(CurlRequest::class);
@@ -74,11 +71,9 @@ final class SteamScrape_Test extends TestCase
     }
 	
 	/**
-	 * @group fast
 	 * @small
 	 * @covers SteamScrape::getStorePage
 	 * @covers SteamScrape::__construct
-	 * Time: 
 	 */
     public function test_getStorePage_null() {
 		$scrapeobj=new SteamScrape();
@@ -86,11 +81,9 @@ final class SteamScrape_Test extends TestCase
     }
 	
 	/**
-	 * @group fast
 	 * @small
 	 * @covers SteamScrape::getStorePage
 	 * @uses SteamScrape::__construct
-	 * Time: 
 	 */
     public function test_getStorePage_pagetext() {
 		$scrapeobj=new SteamScrape(17390);
@@ -102,14 +95,12 @@ final class SteamScrape_Test extends TestCase
     }
 	
 	/**
-	 * @group fast
 	 * @small
 	 * @covers SteamScrape::getStorePage
 	 * @uses SteamScrape::__construct
 	 * @uses SteamScrape::getPage
 	 * @uses SteamScrape::getPageTitle	 
 	 * @uses SteamScrape::getdom
-	 * Time: 
 	 */
     public function test_getStorePage_title() {
         $stub = $this->createStub(CurlRequest::class);
@@ -123,11 +114,9 @@ final class SteamScrape_Test extends TestCase
     }
 	
 	/**
-	 * @group fast
 	 * @small
 	 * @covers SteamScrape::getPage
 	 * @uses SteamScrape::__construct
-	 * Time: 
 	 */
     public function test_getPage_base() {
         $stub = $this->createStub(CurlRequest::class);
@@ -143,11 +132,9 @@ final class SteamScrape_Test extends TestCase
     }
 	
 	/**
-	 * @group fast
 	 * @small
 	 * @covers SteamScrape::getPage
 	 * @uses SteamScrape::__construct
-	 * Time: 
 	 */
     public function test_getPage_null() {
         $stub = $this->createStub(CurlRequest::class);
@@ -163,14 +150,12 @@ final class SteamScrape_Test extends TestCase
     }
 
 	/**
-	 * @group fast
 	 * @small
 	 * @covers SteamScrape::getPageTitle
 	 * @uses SteamScrape::__construct
 	 * @uses SteamScrape::getStorePage
 	 * @uses SteamScrape::getPage
 	 * @uses SteamScrape::getdom
-	 * Time: 
 	 */
     public function test_getPageTitle_base() {
         $stub = $this->createStub(CurlRequest::class);
@@ -186,14 +171,12 @@ final class SteamScrape_Test extends TestCase
     }
 	
 	/**
-	 * @group fast
 	 * @small
 	 * @covers SteamScrape::getPageTitle
 	 * @uses SteamScrape::__construct
 	 * @uses SteamScrape::getStorePage
 	 * @uses SteamScrape::getPage
 	 * @uses SteamScrape::getdom
-	 * Time: 
 	 */
     public function test_getPageTitle_blank() {
 		$property = $this->getPrivateProperty( 'SteamScrape', 'rawPageText' );
@@ -205,11 +188,9 @@ final class SteamScrape_Test extends TestCase
     }
 	
 	/**
-	 * @group fast
 	 * @small
 	 * @covers SteamScrape::getPageTitle
 	 * @uses SteamScrape::__construct
-	 * Time: 
 	 */
     public function test_getPageTitle_exists() {
 		$property = $this->getPrivateProperty( 'SteamScrape', 'pageTitle' );
@@ -221,7 +202,6 @@ final class SteamScrape_Test extends TestCase
     }
 	
 	/**
-	 * @group fast
 	 * @small
 	 * @covers SteamScrape::getDescription
 	 * @uses SteamScrape::__construct
@@ -229,7 +209,6 @@ final class SteamScrape_Test extends TestCase
 	 * @uses SteamScrape::getPage
 	 * @uses SteamScrape::getPageTitle	 
 	 * @uses SteamScrape::getdom
-	 * Time: 
 	 */
     public function test_getDescription_base() {
         $stub = $this->createStub(CurlRequest::class);
@@ -245,13 +224,11 @@ final class SteamScrape_Test extends TestCase
     }
 	
 	/**
-	 * @group fast
 	 * @small
 	 * @covers SteamScrape::getDescription
 	 * @uses SteamScrape::__construct
 	 * @uses SteamScrape::getStorePage
 	 * @uses SteamScrape::getdom
-	 * Time: 
 	 */
     public function test_getDescription_blank() {
 		$property = $this->getPrivateProperty( 'SteamScrape', 'rawPageText' );
@@ -263,11 +240,9 @@ final class SteamScrape_Test extends TestCase
     }
 	
 	/**
-	 * @group fast
 	 * @small
 	 * @covers SteamScrape::getDescription
 	 * @uses SteamScrape::__construct
-	 * Time: 
 	 */
     public function test_getDescription_exists() {
 		$property = $this->getPrivateProperty( 'SteamScrape', 'description' );
@@ -279,7 +254,6 @@ final class SteamScrape_Test extends TestCase
     }
 	
 	/**
-	 * @group fast
 	 * @small
 	 * @covers SteamScrape::getTags
 	 * @uses SteamScrape::__construct
@@ -287,7 +261,6 @@ final class SteamScrape_Test extends TestCase
 	 * @uses SteamScrape::getPage
 	 * @uses SteamScrape::getPageTitle	 
 	 * @uses SteamScrape::getdom
-	 * Time: 
 	 */
     public function test_getTags_base() {
         $stub = $this->createStub(CurlRequest::class);
@@ -325,13 +298,11 @@ final class SteamScrape_Test extends TestCase
     }
 	
 	/**
-	 * @group fast
 	 * @small
 	 * @covers SteamScrape::getTags
 	 * @uses SteamScrape::__construct
 	 * @uses SteamScrape::getStorePage
 	 * @uses SteamScrape::getdom
-	 * Time: 
 	 */
     public function test_getTags_blank() {
 		$property = $this->getPrivateProperty( 'SteamScrape', 'rawPageText' );
@@ -343,7 +314,7 @@ final class SteamScrape_Test extends TestCase
     }
 	
 	/**
-	 * @group fast
+
 	 * @small
 	 * @covers SteamScrape::getTags
 	 * @uses SteamScrape::__construct
@@ -361,12 +332,10 @@ final class SteamScrape_Test extends TestCase
     }
 	
 	/**
-	 * @group fast
 	 * @small
 	 * @covers SteamScrape::getTagList
 	 * @uses SteamScrape::getTags
 	 * @uses SteamScrape::__construct
-	 * Time: 
 	 */
     public function test_getTagList() {
 		$source=array("open world"=>"Open World","exploration"=>"Exploration","casual"=>"Casual");
@@ -381,7 +350,6 @@ final class SteamScrape_Test extends TestCase
     }
 	
 	/**
-	 * @group fast
 	 * @small
 	 * @covers SteamScrape::getDetails
 	 * @uses SteamScrape::__construct
@@ -389,7 +357,6 @@ final class SteamScrape_Test extends TestCase
 	 * @uses SteamScrape::getPage
 	 * @uses SteamScrape::getPageTitle	 
 	 * @uses SteamScrape::getdom
-	 * Time: 
 	 */
     public function test_getDetails_base() {
         $stub = $this->createStub(CurlRequest::class);
@@ -407,13 +374,11 @@ final class SteamScrape_Test extends TestCase
     }
 	
 	/**
-	 * @group fast
 	 * @small
 	 * @covers SteamScrape::getDetails
 	 * @uses SteamScrape::__construct
 	 * @uses SteamScrape::getStorePage
 	 * @uses SteamScrape::getdom
-	 * Time: 
 	 */
     public function test_getDetails_blank() {
 		$property = $this->getPrivateProperty( 'SteamScrape', 'rawPageText' );
@@ -425,11 +390,9 @@ final class SteamScrape_Test extends TestCase
     }
 	
 	/**
-	 * @group fast
 	 * @small
 	 * @covers SteamScrape::getDetails
 	 * @uses SteamScrape::__construct
-	 * Time: 
 	 */
     public function test_getDetails_exists() {
 		$expected=array("single-player"=>"Single-player","steam trading cards"=>"Steam Trading Cards");
@@ -443,12 +406,10 @@ final class SteamScrape_Test extends TestCase
     }
 	
 	/**
-	 * @group fast
 	 * @small
 	 * @covers SteamScrape::getDetailList
 	 * @uses SteamScrape::getDetails
 	 * @uses SteamScrape::__construct
-	 * Time: 
 	 */
     public function test_getDetailList() {
 		$source=array("single-player"=>"Single-player","steam trading cards"=>"Steam Trading Cards");
@@ -463,7 +424,6 @@ final class SteamScrape_Test extends TestCase
     }
 	
 	/**
-	 * @group fast
 	 * @small
 	 * @covers SteamScrape::getGenre
 	 * @uses SteamScrape::__construct
@@ -471,7 +431,6 @@ final class SteamScrape_Test extends TestCase
 	 * @uses SteamScrape::getPage
 	 * @uses SteamScrape::getPageTitle	 
 	 * @uses SteamScrape::getdom
-	 * Time: 
 	 */
     public function test_getGenre_base() {
         $stub = $this->createStub(CurlRequest::class);
@@ -489,13 +448,11 @@ final class SteamScrape_Test extends TestCase
     }
 	
 	/**
-	 * @group fast
-	 * @small
+	 * @medium
 	 * @covers SteamScrape::getGenre
 	 * @uses SteamScrape::__construct
 	 * @uses SteamScrape::getStorePage
 	 * @uses SteamScrape::getdom
-	 * Time: 
 	 */
     public function test_getGenre_blank() {
 		$property = $this->getPrivateProperty( 'SteamScrape', 'rawPageText' );
@@ -507,11 +464,9 @@ final class SteamScrape_Test extends TestCase
     }
 	
 	/**
-	 * @group fast
 	 * @small
 	 * @covers SteamScrape::getGenre
 	 * @uses SteamScrape::__construct
-	 * Time: 
 	 */
     public function test_getGenre_exists() {
 		$expected=array("action"=>"Action","casual"=>"Casual","simulation"=>"Simulation","strategy"=>"Strategy","adventure"=>"Adventure","rpg"=>"RPG",);
@@ -525,12 +480,10 @@ final class SteamScrape_Test extends TestCase
     }
 	
 	/**
-	 * @group fast
 	 * @small
 	 * @covers SteamScrape::getGenreList
 	 * @uses SteamScrape::getGenre
 	 * @uses SteamScrape::__construct
-	 * Time: 
 	 */
     public function test_getGenreList() {
 		$source=array("action"=>"Action","casual"=>"Casual","simulation"=>"Simulation","strategy"=>"Strategy","adventure"=>"Adventure","rpg"=>"RPG",);
@@ -545,7 +498,6 @@ final class SteamScrape_Test extends TestCase
     }
 	
 	/**
-	 * @group fast
 	 * @small
 	 * @covers SteamScrape::getReview
 	 * @uses SteamScrape::__construct
@@ -553,7 +505,6 @@ final class SteamScrape_Test extends TestCase
 	 * @uses SteamScrape::getPage
 	 * @uses SteamScrape::getPageTitle	 
 	 * @uses SteamScrape::getdom
-	 * Time: 
 	 */
     public function test_getReview_base() {
         $stub = $this->createStub(CurlRequest::class);
@@ -569,13 +520,11 @@ final class SteamScrape_Test extends TestCase
     }
 	
 	/**
-	 * @group fast
 	 * @small
 	 * @covers SteamScrape::getReview
 	 * @uses SteamScrape::__construct
 	 * @uses SteamScrape::getStorePage
 	 * @uses SteamScrape::getdom
-	 * Time: 
 	 */
     public function test_getReview_blank() {
 		$property = $this->getPrivateProperty( 'SteamScrape', 'rawPageText' );
@@ -587,13 +536,11 @@ final class SteamScrape_Test extends TestCase
     }
 	
 	/**
-	 * @group fast
 	 * @small
 	 * @covers SteamScrape::getReview
 	 * @uses SteamScrape::__construct
 	 * @uses SteamScrape::getStorePage
 	 * @uses SteamScrape::getdom
-	 * Time: 
 	 */
     public function test_getReview_1entry() {
 		$property = $this->getPrivateProperty( 'SteamScrape', 'rawPageText' );
@@ -605,11 +552,9 @@ final class SteamScrape_Test extends TestCase
     }
 	
 	/**
-	 * @group fast
 	 * @small
 	 * @covers SteamScrape::getReview
 	 * @uses SteamScrape::__construct
-	 * Time: 
 	 */
     public function test_getReview_exists() {
 		$property = $this->getPrivateProperty( 'SteamScrape', 'review' );
@@ -621,7 +566,6 @@ final class SteamScrape_Test extends TestCase
     }
 	
 	/**
-	 * @group fast
 	 * @small
 	 * @covers SteamScrape::getReleaseDate
 	 * @uses SteamScrape::__construct
@@ -629,7 +573,6 @@ final class SteamScrape_Test extends TestCase
 	 * @uses SteamScrape::getPage
 	 * @uses SteamScrape::getPageTitle	 
 	 * @uses SteamScrape::getdom
-	 * Time: 
 	 */
     public function test_getReleaseDate_base() {
         $stub = $this->createStub(CurlRequest::class);
@@ -645,13 +588,11 @@ final class SteamScrape_Test extends TestCase
     }
 	
 	/**
-	 * @group fast
 	 * @small
 	 * @covers SteamScrape::getReleaseDate
 	 * @uses SteamScrape::__construct
 	 * @uses SteamScrape::getStorePage
 	 * @uses SteamScrape::getdom
-	 * Time: 
 	 */
     public function test_getReleaseDate_blank() {
 		$property = $this->getPrivateProperty( 'SteamScrape', 'rawPageText' );
@@ -663,11 +604,9 @@ final class SteamScrape_Test extends TestCase
     }
 	
 	/**
-	 * @group fast
 	 * @small
 	 * @covers SteamScrape::getReleaseDate
 	 * @uses SteamScrape::__construct
-	 * Time: 
 	 */
     public function test_getReleaseDate_exists() {
 		$property = $this->getPrivateProperty( 'SteamScrape', 'releaseDate' );
@@ -679,7 +618,6 @@ final class SteamScrape_Test extends TestCase
     }
 	
 	/**
-	 * @group fast
 	 * @small
 	 * @covers SteamScrape::getDeveloper
 	 * @uses SteamScrape::__construct
@@ -689,7 +627,6 @@ final class SteamScrape_Test extends TestCase
 	 * @uses SteamScrape::getdom
 	 * @testWith ["steam17390.htm", "Maxis™"]
 	 *           ["steam1807120.htm", "Unfrozen"]
-	 * Time: 
 	 */
     public function test_getDeveloper_base(string $testfilename, string $expecteddev) {
         $stub = $this->createStub(CurlRequest::class);
@@ -705,13 +642,11 @@ final class SteamScrape_Test extends TestCase
     }
 	
 	/**
-	 * @group fast
 	 * @small
 	 * @covers SteamScrape::getDeveloper
 	 * @uses SteamScrape::__construct
 	 * @uses SteamScrape::getStorePage
 	 * @uses SteamScrape::getdom
-	 * Time: 
 	 */
     public function test_getDeveloper_blank() {
 		$property = $this->getPrivateProperty( 'SteamScrape', 'rawPageText' );
@@ -728,11 +663,9 @@ final class SteamScrape_Test extends TestCase
     }
 	
 	/**
-	 * @group fast
 	 * @small
 	 * @covers SteamScrape::getDeveloper
 	 * @uses SteamScrape::__construct
-	 * Time: 
 	 */
     public function test_getDeveloper_exists() {
 		$property = $this->getPrivateProperty( 'SteamScrape', 'developer' );
@@ -744,7 +677,6 @@ final class SteamScrape_Test extends TestCase
     }
 	
 	/**
-	 * @group medium
 	 * @medium
 	 * @covers SteamScrape::getPublisher
 	 * @uses SteamScrape::__construct
@@ -754,7 +686,6 @@ final class SteamScrape_Test extends TestCase
 	 * @uses SteamScrape::getdom
 	 * @testWith ["steam17390.htm", "Electronic Arts"]
 	 *           ["steam1807120.htm", "Daedalic Entertainment"]
-	 * Time: 
 	 */
     public function test_getPublisher_base(string $testfilename, string $expectedpub) {
         $stub = $this->createStub(CurlRequest::class);
@@ -770,13 +701,11 @@ final class SteamScrape_Test extends TestCase
     }
 	
 	/**
-	 * @group medium
 	 * @medium
 	 * @covers SteamScrape::getPublisher
 	 * @uses SteamScrape::__construct
 	 * @uses SteamScrape::getStorePage
 	 * @uses SteamScrape::getdom
-	 * Time: 
 	 */
     public function test_getPublisher_blank() {
 		$property = $this->getPrivateProperty( 'SteamScrape', 'rawPageText' );
@@ -795,11 +724,9 @@ final class SteamScrape_Test extends TestCase
     }
 	
 	/**
-	 * @group fast
 	 * @small
 	 * @covers SteamScrape::getPublisher
 	 * @uses SteamScrape::__construct
-	 * Time: 
 	 */
     public function test_getPublisher_exists() {
 		$property = $this->getPrivateProperty( 'SteamScrape', 'publisher' );

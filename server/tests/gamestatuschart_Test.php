@@ -5,6 +5,7 @@ $GLOBALS['rootpath'] = $GLOBALS['rootpath'] ?? "htdocs\Game-Library\server";
 
 /**
  * @group page
+ * @coversNothing
  */
 class testgamestatuschart extends TestCase {
 
@@ -16,10 +17,7 @@ class testgamestatuschart extends TestCase {
     }
 
 	/**
-	 * @group slow
 	 * @medium
-	 * Time: 00:06.662, Memory: 364.00 MB
-	 * (1 test, 1 assertion)
 	 */
     public function test_gamestatuschart_Load() {
         $args = array();

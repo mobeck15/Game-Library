@@ -5,8 +5,9 @@ $GLOBALS['rootpath'] = $GLOBALS['rootpath'] ?? "htdocs\Game-Library\server";
 
 /**
  * @group page
+ * @coversNothing
  */
-class testajax extends TestCase {
+class ajax_Test extends TestCase {
 
     private function _execute(array $params = array()) {
         $_GET = $params;
@@ -16,10 +17,7 @@ class testajax extends TestCase {
     }
 
 	/**
-	 * @group fast
 	 * @small
-	 * Time: 00:00.027, Memory: 26.00 MB
-	 * (1 test, 1 assertion)
 	 */
     public function test_ajax_Load() {
         $args = array();
@@ -27,10 +25,8 @@ class testajax extends TestCase {
     }
 
 	/**
-	 * @dbconnect
-	 * @group untimed
+	 * @group dbconnect
 	 * @small
-	 * Time
 	 */
     public function test_ajax_term() {
         $args = array('term'=>"stealth");

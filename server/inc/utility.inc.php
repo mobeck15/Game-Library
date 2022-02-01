@@ -630,6 +630,11 @@ function getHourstoXless($price,$time,$xless=.01){
 	
 	return $hoursxless;
 }
+
+function phpfile(){
+	//function present for code coverage warnings
+	return true;
+}
 // @codeCoverageIgnoreEnd
 //REMOVE END
 ?>

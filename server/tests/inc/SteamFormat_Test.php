@@ -21,12 +21,9 @@ final class SteamFormat_Test extends TestCase
     }
 	
 	/**
-	 * @group fast
 	 * @small
 	 * @covers SteamFormat::formatAppDetails
 	 * @uses boolText
-	 * Time: 00:00.223, Memory: 46.00 MB
-	 * (1 test, 1 assertion)
 	 */
 	public function test_formatAppDetails_recsingle(): void
     {
@@ -134,12 +131,9 @@ final class SteamFormat_Test extends TestCase
     }
 	
 	/**
-	 * @group fast
 	 * @small
 	 * @covers SteamFormat::formatAppDetails
 	 * @uses boolText
-	 * Time: 00:00.223, Memory: 46.00 MB
-	 * (1 test, 1 assertion)
 	 */
 	public function test_formatAppDetails_recarray(): void
     {
@@ -258,12 +252,9 @@ final class SteamFormat_Test extends TestCase
     } /* */
 	
 	/**
-	 * @group fast
 	 * @small
 	 * @covers SteamFormat::formatSteamAPI
 	 * @uses regroupArray
-	 * Time: 00:00.219, Memory: 46.00 MB
-	 * (1 test, 1 assertion)
 	 */
 	public function test_formatSteamAPI(): void
     {
@@ -382,11 +373,8 @@ final class SteamFormat_Test extends TestCase
     }
 
 	/**
-	 * @group fast
 	 * @small
 	 * @covers SteamFormat::formatSteamLinks
-	 * Time: 00:00.217, Memory: 46.00 MB
-	 * (1 test, 1 assertion)
 	 */
 	public function test_formatSteamLinks(): void
     {
@@ -395,11 +383,8 @@ final class SteamFormat_Test extends TestCase
     }
 	
 	/**
-	 * @group fast
 	 * @small
 	 * @covers SteamFormat::formatnews
-	 * Time: 00:00.221, Memory: 46.00 MB
-	 * (1 test, 2 assertions)
 	 */
 	public function test_formatnews(): void
     {

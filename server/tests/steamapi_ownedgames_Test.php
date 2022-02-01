@@ -5,6 +5,7 @@ $GLOBALS['rootpath'] = $GLOBALS['rootpath'] ?? "htdocs\Game-Library\server";
 
 /**
  * @group page
+ * @coversNothing
  */
 class teststeamapi_ownedgames extends TestCase {
 
@@ -16,10 +17,7 @@ class teststeamapi_ownedgames extends TestCase {
     }
 
 	/**
-	 * @group slow
 	 * @medium
-	 * Time: 00:06.684, Memory: 342.00 MB
-	 * (1 test, 1 assertion)
 	 */
     public function test_steamapi_ownedgames_Load() {
         $args = array();

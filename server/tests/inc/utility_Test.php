@@ -15,7 +15,6 @@ require_once $GLOBALS['rootpath']."\inc\utility.inc.php";
 final class Utility_Test extends TestCase
 {
 	/**
-	 * @group fast
 	 * @small
 	 * @covers timeduration
 	 * @testWith ["-1:00:00", -1, "hours"]
@@ -25,45 +24,24 @@ final class Utility_Test extends TestCase
 	 *           ["1:30:00", 90, "minutes"]
 	 *           ["0:01:00", 60, "seconds"]
 	 *           ["0:01:30", 90, "seconds"]
-	 * Time: 00:00.240, Memory: 46.00 MB
-	 * (7 tests, 7 assertions))
 	 */
     public function test_timeduration($expected, $time, $unit) {
         $this->assertEquals($expected, timeduration($time,$unit));
-		/*
-        $this->assertEquals("-1:00:00", timeduration(-1,"hours"));
-        $this->assertEquals("1:00:00", timeduration(1,"hours"));
-        $this->assertEquals("1:30:00", timeduration(1.5,"hours"));
-        $this->assertEquals("1:00:00", timeduration(60,"minutes"));
-        $this->assertEquals("1:30:00", timeduration(90,"minutes"));
-        $this->assertEquals("0:01:00", timeduration(60,"seconds"));
-        $this->assertEquals("0:01:30", timeduration(90,"seconds"));
-		*/
     }
 
 	/**
-	 * @group fast
 	 * @small
 	 * @covers boolText
 	 * @testWith ["TRUE", true]
 	 *           ["FALSE", false]
 	 *           ["TRUE", 1]
 	 *           ["FALSE", 0]
-	 * Time: 00:00.231, Memory: 46.00 MB
-	 * (4 tests, 4 assertions)
 	 */
 	public function test_boolText($expected,$input) {
 		$this->assertEquals($expected, boolText($input));
-		/*
-		$this->assertEquals('TRUE', boolText(true));
-		$this->assertEquals('FALSE', boolText(false));
-		$this->assertEquals('TRUE', boolText(1));
-		$this->assertEquals('FALSE', boolText(0));
-		*/
 	}
 
 	/**
-	 * @group fast
 	 * @small
 	 * @covers read_memory_usage
 	 * @testWith ["64 b", 64]
@@ -71,40 +49,24 @@ final class Utility_Test extends TestCase
 	 *           ["1 mb", 1048576]
 	 *           ["1.1 mb", 1148576]
 	 *           ["1.01 mb", 1058576]
-	 * Time: 00:00.240, Memory: 46.00 MB
-	 * (5 tests, 5 assertions)
 	 */
 	public function test_read_memory_usage_data($expected, $input) {
 		$output=read_memory_usage($input);
 		$this->assertEquals($expected, $output);
-		/*
-		$this->assertisString(read_memory_usage(false));
-		$this->assertEquals('64 b', read_memory_usage(64));
-		$this->assertEquals('1 kb', read_memory_usage(1024));
-		$this->assertEquals('1 mb', read_memory_usage(1048576));
-		$this->assertEquals('1.1 mb', read_memory_usage(1148576));
-		$this->assertEquals('1.01 mb', read_memory_usage(1058576));
-		*/
 	}
 
 	/**
-	 * @group fast
 	 * @small
 	 * @covers read_memory_usage
-	 * Time: 00:00.219, Memory: 46.00 MB
-	 * (1 test, 1 assertion)
 	 */
 	public function test_read_memory_usage_null() {
 		$this->assertisString(read_memory_usage(false));
 	}
 	
 	/**
-	 * @group fast
 	 * @small
 	 * @covers getAllCpi
 	 * @uses get_db_connection
-	 * Time: 00:00.255, Memory: 46.00 MB
-	 * (1 test, 2 assertions)
 	 */
 	public function test_getAllCpi() {
 		//TODO: Add more functional tests for getAllCpi
@@ -116,11 +78,8 @@ final class Utility_Test extends TestCase
 	}
 
 	/**
-	 * @group fast
 	 * @small
 	 * @covers get_db_connection
-	 * Time: 00:00.249, Memory: 46.00 MB
-	 * (1 test, 1 assertion)
 	 */
 	public function test_get_db_connection() {
 		//TODO: Add more functional tests for get_db_connection
@@ -128,11 +87,8 @@ final class Utility_Test extends TestCase
 	}
 
 	/**
-	 * @group fast
 	 * @small
 	 * @covers makeIndex
-	 * Time: 00:00.219, Memory: 46.00 MB
-	 * (1 test, 2 assertions)
 	 */
 	public function test_makeIndex_base() {
 		//Arrange
@@ -168,11 +124,8 @@ final class Utility_Test extends TestCase
 	}
 
 	/**
-	 * @group fast
 	 * @small
 	 * @covers makeIndex
-	 * Time: 00:00.218, Memory: 46.00 MB
-	 * (1 test, 2 assertions)
 	 */
 	public function test_makeIndexError() {
 		//Arrange
@@ -207,12 +160,9 @@ final class Utility_Test extends TestCase
 	}
 	
 	/**
-	 * @group fast
 	 * @small
 	 * @covers getAllItems
 	 * @uses get_db_connection
-	 * Time: 00:00.957, Memory: 66.00 MB
-	 * (1 test, 2 assertions)
 	 */
 	public function test_getAllItems_base() {
 		//TODO: Add more functional tests for getAllItems
@@ -224,31 +174,21 @@ final class Utility_Test extends TestCase
 	}
 	
 	/**
-	 * @group fast
 	 * @small
 	 * @covers getAllItems
 	 * @uses get_db_connection
 	 * @testWith ["262"]
 	 *           ["999999999"]
-	 * Time: 00:00.258, Memory: 48.00 MB
-	 * (2 tests, 2 assertions)
 	 */
 	public function test_getAllItems_data($input) {
 		//TODO: Add more functional tests for getAllItems
 		$this->assertIsArray(getAllItems($input));
-		/*
-		$this->assertIsArray(getAllItems("262"));
-		$this->assertIsArray(getAllItems("999999999"));
-		*/
 	}
 
 	/**
-	 * @group fast
 	 * @small
 	 * @covers getAllItems
 	 * @uses get_db_connection
-	 * Time: 00:00.243, Memory: 48.00 MB
-	 * (1 test, 1 assertion)
 	 */
 	public function test_getAllItemsError() {
 		$this->expectNotice();
@@ -256,12 +196,9 @@ final class Utility_Test extends TestCase
 	}
 
 	/**
-	 * @group fast
 	 * @small
 	 * @covers getKeywords
 	 * @uses get_db_connection
-	 * Time: 00:00.448, Memory: 52.00 MB
-	 * (1 test, 3 assertions)
 	 */
 	public function test_getKeywords_base() {
 		//TODO: Add more functional tests for getKeywords
@@ -274,12 +211,9 @@ final class Utility_Test extends TestCase
 	}
 
 	/**
-	 * @group fast
 	 * @small
 	 * @covers getKeywords
 	 * @uses get_db_connection
-	 * Time: 00:00.241, Memory: 48.00 MB
-	 * (1 test, 1 assertion)
 	 */
 	public function test_getKeywordsError() {
 		$this->expectNotice();
@@ -287,11 +221,8 @@ final class Utility_Test extends TestCase
 	}
 
 	/**
-	 * @group fast
 	 * @small
 	 * @covers regroupArray
-	 * Time: 00:00.220, Memory: 48.00 MB
-	 * (1 test, 3 assertions)
 	 */
 	public function test_regroupArray() {
 		//Arrange
@@ -358,11 +289,8 @@ final class Utility_Test extends TestCase
 	}
 
 	/**
-	 * @group fast
 	 * @small
 	 * @covers getSortArray
-	 * Time: 00:00.221, Memory: 48.00 MB
-	 * (1 test, 2 assertions)
 	 */
 	public function test_getSortArray() {
 		//Arrange
@@ -405,11 +333,8 @@ final class Utility_Test extends TestCase
 	}
 
 	/**
-	 * @group fast
 	 * @small
 	 * @covers getActiveSortArray
-	 * Time: 00:00.223, Memory: 48.00 MB
-	 * (1 test, 2 assertions)
 	 */
 	public function test_getActiveSortArray() {
 		//Arrange
@@ -451,12 +376,9 @@ final class Utility_Test extends TestCase
 	}
 
 	/**
-	 * @group fast
 	 * @small
 	 * @covers getNextPosition
 	 * @uses getPriceperhour
-	 * Time: 00:00.220, Memory: 48.00 MB
-	 * (1 test, 3 assertions)
 	 */
 	public function test_getNextPosition() {
 		$sortedArray = array(20,15,10,5,3,1,0);
@@ -472,14 +394,11 @@ final class Utility_Test extends TestCase
 	}
 
 	/**
-	 * @group fast
 	 * @small
 	 * @covers getHrsNextPosition
 	 * @uses getHrsToTarget
 	 * @uses getNextPosition
 	 * @uses getPriceperhour
-	 * Time: 00:00.224, Memory: 48.00 MB
-	 * (1 test, 2 assertions)
 	 */
 	public function test_getHrsNextPosition() {
 		$sortedArray = array(20,15,10,5,3,1,0);
@@ -492,11 +411,8 @@ final class Utility_Test extends TestCase
 	}
 
 	/**
-	 * @group fast
 	 * @small
 	 * @covers reIndexArray
-	 * Time: 00:00.219, Memory: 48.00 MB
-	 * (1 test, 3 assertions)
 	 */
 	public function test_reIndexArray() {
 		//Arrange
@@ -538,7 +454,6 @@ final class Utility_Test extends TestCase
 	}
 
 	/**
-	 * @group fast
 	 * @small
 	 * @covers getGameDetail
 	 * @uses CalculateGameRow
@@ -549,8 +464,6 @@ final class Utility_Test extends TestCase
 	 * @uses getsettings
 	 * @uses timeduration
 	 * @uses get_db_connection
-	 * Time: 00:00.464, Memory: 48.00 MB
-	 * (1 test, 2 assertions)
 	 */
 	public function test_getGameDetail() {
 		$conn=get_db_connection();
@@ -562,12 +475,9 @@ final class Utility_Test extends TestCase
 	}
 
 	/**
-	 * @group fast
 	 * @small
 	 * @covers combinedate
 	 * @uses getCleanStringDate
-	 * Time: 00:00.221, Memory: 48.00 MB
-	 * (1 test, 6 assertions)
 	 */
 	public function test_combinedate() {
 		//"" is 1/1/1970 , " " is todays date
@@ -582,11 +492,8 @@ final class Utility_Test extends TestCase
 	}
 
 	/**
-	 * @group fast
 	 * @small
 	 * @covers RatingsChartData
-	 * Time: 00:00.220, Memory: 48.00 MB
-	 * (1 test, 9 assertions)
 	 */
 	public function test_RatingsChartData() {
 		//TODO: Cleanup variables to make tests more intuative.
@@ -666,11 +573,8 @@ final class Utility_Test extends TestCase
 	}
 
 	/**
-	 * @group fast
 	 * @small
 	 * @covers getCleanStringDate
-	 * Time: 00:00.221, Memory: 48.00 MB
-	 * (1 test, 3 assertions)
 	 */
 	public function test_getCleanStringDate() {
 		//Arrange
@@ -689,11 +593,8 @@ final class Utility_Test extends TestCase
 	}
 
 	/**
-	 * @group fast
 	 * @small
 	 * @covers daysSinceDate
-	 * Time: 00:00.222, Memory: 48.00 MB
-	 * (1 test, 3 assertions)
 	 */
 	public function test_daysSinceDate() {
 		//TODO: Add mock for Time() function in daysSinceDate()
@@ -711,11 +612,8 @@ final class Utility_Test extends TestCase
 	}
 
 	/**
-	 * @group fast
 	 * @small
 	 * @covers getTimeLeft
-	 * Time: 00:00.220, Memory: 48.00 MB
-	 * (1 test, 3 assertions)
 	 */
 	public function test_getTimeLeft() {
 		$this->assertEquals(15,getTimeLeft(55,40*60*60,"Active"));
@@ -724,12 +622,9 @@ final class Utility_Test extends TestCase
 	}
 
 	/**
-	 * @group fast
 	 * @small
 	 * @covers arrayTable
 	 * @uses boolText
-	 * Time: 00:00.231, Memory: 48.00 MB
-	 * (2 tests, 4 assertions)
 	 *
 	 * Sometimes fails for no reason?
 	 
@@ -767,13 +662,10 @@ Failed asserting that two strings are equal.
 	}
 
 	/**
-	 * @group fast
 	 * @small
 	 * @covers arrayTable
 	 * @uses PriceCalculation
 	 * @uses timeduration
-	 * Time: 00:00.223, Memory: 48.00 MB
-	 * (1 test, 2 assertions)
 	 */
 	public function test_arrayTablePrice() {
 		require_once $GLOBALS['rootpath']."\inc\PriceCalculation.class.php";
@@ -793,11 +685,8 @@ Failed asserting that two strings are equal.
 	}
 	
 	/**
-	 * @group fast
 	 * @small
 	 * @covers getPriceperhour
-	 * Time: 00:00.219, Memory: 48.00 MB
-	 * (1 test, 2 assertions)
 	 */
 	public function test_getPriceperhour_utility() {
 
@@ -809,11 +698,8 @@ Failed asserting that two strings are equal.
 	}
 
 	/**
-	 * @group fast
 	 * @small
 	 * @covers getHrsToTarget
-	 * Time: 00:00.223, Memory: 48.00 MB
-	 * (1 test, 3 assertions)
 	 */
 	public function test_getHrsToTarget_utility() {
 		$result = getHrsToTarget( 10 , 0 , 5);
@@ -827,11 +713,8 @@ Failed asserting that two strings are equal.
 	}
 
 	/**
-	 * @group fast
 	 * @small
 	 * @covers getHrsToTarget
-	 * Time: 00:00.225, Memory: 48.00 MB
-	 * (1 test, 3 assertions)
 	 */
 	public function test_getHrsToTarget_base() {
 		$value = 10;		$seconds = 0;		$targetvalue = 5;
@@ -845,11 +728,8 @@ Failed asserting that two strings are equal.
 	}
 	
 	/**
-	 * @group fast
 	 * @small
 	 * @covers lookupTextBox
-	 * Time: 00:00.220, Memory: 48.00 MB
-	 * (1 test, 3 assertions)
 	 */
 	public function test_lookupTextBox() {
 		$output = lookupTextBox(1, 2, "inputidxyz", "Game", "./ajax/search.ajax.php");
@@ -878,12 +758,9 @@ Failed asserting that two strings are equal.
 	}
 	
 	/**
-	 * @group short
 	 * @small
 	 * @covers findgaps
 	 * @uses get_db_connection
-	 * Time: 00:00.051, Memory: 26.00 MB
-	 * (1 test, 4 assertions)
 	 */
 	public function test_findgaps() {
 		//ARRANGE

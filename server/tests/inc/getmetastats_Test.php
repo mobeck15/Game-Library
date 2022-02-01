@@ -2,24 +2,17 @@
 declare(strict_types=1);
 use PHPUnit\Framework\TestCase;
 
-// We require the file we need to test.
-// Relative path to the current working dir (root of xampp)
 $GLOBALS['rootpath'] = $GLOBALS['rootpath'] ?? "htdocs\Game-Library\server";
 require_once $GLOBALS['rootpath']."\inc\getmetastats.inc.php";
 
-//Time: 03:49.664, Memory: 264.00 MB
-//(18 tests, 48 assertions)
 /**
  * @group include
  */
 final class getmetastats_Test extends TestCase
 {
 	/**
-	 * @group fast
 	 * @small
 	 * @covers getmetastats
-	 * Time: 00:00.221, Memory: 46.00 MB
-	 * (1 test, 2 assertions)
 	 */
     public function test_getmetastats_global() {
 		//ARRANGE
@@ -44,12 +37,9 @@ final class getmetastats_Test extends TestCase
 	}
 	
 	/**
-	 * @group fast
 	 * @small
 	 * @covers getmetastats
 	 * @uses getStatRow
-	 * Time: 00:00.221, Memory: 46.00 MB
-	 * (1 test, 1 assertion)
 	 */
     public function test_getmetastats_main() {
 		//ARRANGE
@@ -84,7 +74,6 @@ final class getmetastats_Test extends TestCase
 	}
 	
 	/**
-	 * @group fast
 	 * @small
 	 * @covers makeDetailTable
 	 * @uses DetailDataTable
@@ -97,8 +86,6 @@ final class getmetastats_Test extends TestCase
 	 * @uses methodTranslator
 	 * @uses objectTranslator
 	 * @uses reIndexArray
-	 * Time: 00:00.221, Memory: 46.00 MB
-	 * (1 test, 1 assertion)
 	 */
     public function test_makeDetailTable() {
 		//Arrange
@@ -152,7 +139,6 @@ final class getmetastats_Test extends TestCase
 	}
 
 	/**
-	 * @group fast
 	 * @small
 	 * @covers objectTranslator
 	 * @testWith ["LaunchPriceObj", "LaunchVariance"]
@@ -162,15 +148,12 @@ final class getmetastats_Test extends TestCase
 	 *           ["SalePriceObj", "SaleVariance"]
 	 *           ["AltPriceObj", "AltLess2"]
 	 *           ["someothervalue", "someothervalue"]
-	 * Time: 00:00.240, Memory: 46.00 MB
-	 * OK (7 tests, 7 assertions)
 	 */
     public function test_objectTranslator(string $objectname,string $statname) {
 		$this->assertEquals($objectname,objectTranslator($statname));
 	}
 	
 	/**
-	 * @group fast
 	 * @small
 	 * @covers methodTranslator
 	 * @uses PriceCalculation
@@ -182,8 +165,6 @@ final class getmetastats_Test extends TestCase
 	 *           [1.0004454454454454, "AltLess2", "statRowKey"]
 	 *           [123, "someothervalue", "alternateStatkey"]
 	 *           [null, "someothervalue", "missingkey"]
-	 * Time: 00:00.244, Memory: 46.00 MB
-	 * (8 tests, 8 assertions)
 	 */
     public function test_methodTranslator($expected, string $Statname, string $key) {
 		//ARRANGE
@@ -201,7 +182,6 @@ final class getmetastats_Test extends TestCase
 	}
 	
 	/**
-	 * @group fast
 	 * @small
 	 * @covers countrow
 	 * @uses getSettings
@@ -209,8 +189,6 @@ final class getmetastats_Test extends TestCase
 	 *           [false, "Active", true, false]
 	 *           [true, "Broken", true, false]
 	 *           [true, "Active", false, false]
-	 * Time: 00:00.231, Memory: 46.00 MB
-	 * OK (4 tests, 4 assertions)
 	 */
     public function test_countrow($countfree,$status,$playable,$expected) {
 		//ARRANGE
@@ -228,7 +206,6 @@ final class getmetastats_Test extends TestCase
 	}
 
 	/**
-	 * @group slow
 	 * @large
 	 * @covers getStatRow
 	 * @uses CalculateGameRow
@@ -259,26 +236,23 @@ final class getmetastats_Test extends TestCase
 	 * @uses objectTranslator
 	 * @uses regroupArray
 	 * @uses timeduration
-	 * Time: 00:19.653, Memory: 262.00 MB
-	 * (1 test, 7 assertions)
+	 * @testWith ["firstPlayDateTime"]
+	 *           ["AltHrs3"]
+	 *           ["Review"]
+	 *           ["Altperhrbeat"]
+	 *           ["AchievementsPct"]
+	 *           ["TimeLeftToBeat"]
 	 */
-    public function test_getStatRow_main() {
+    public function test_getStatRow_main($stat) {
 		
-        $this->assertisArray(getStatRow("All",'firstPlayDateTime'));
-        $this->assertisArray(getStatRow("All",'firstPlayDateTime'));
-        $this->assertisArray(getStatRow("All",'AltHrs3'));
-        $this->assertisArray(getStatRow("All",'Review'));
-        $this->assertisArray(getStatRow("All",'Altperhrbeat'));
-        $this->assertisArray(getStatRow("All",'AchievementsPct'));
-        $this->assertisArray(getStatRow("All",'TimeLeftToBeat'));
-		
+        $this->assertisArray(getStatRow("All",$stat));
+
 		//Total not set?
         //$this->assertisArray(getStatRow("All",'othervalue'));
         //$this->assertisArray(getStatRow("All",'launchhrsavg'));
 	}
 	
 	/**
-	 * @group slow
 	 * @large
 	 * @covers getStatRow
 	 * @uses CalculateGameRow
@@ -309,8 +283,6 @@ final class getmetastats_Test extends TestCase
 	 * @uses objectTranslator
 	 * @uses regroupArray
 	 * @uses timeduration
-	 * Time: 00:18.917, Memory: 262.00 MB
-	 * (1 test, 2 assertions)
 	 */
     public function test_getStatRow_error() {
 		$this->expectNotice();
@@ -320,7 +292,6 @@ final class getmetastats_Test extends TestCase
 	}	
 
 	/**
-	 * @group slow
 	 * @large
 	 * @covers countgames
 	 * @uses CalculateGameRow
@@ -347,15 +318,12 @@ final class getmetastats_Test extends TestCase
 	 * @uses makeIndex
 	 * @uses regroupArray
 	 * @uses timeduration
-	 * Time: 00:18.778, Memory: 262.00 MB
-	 * (1 test, 1 assertion)
 	 */
     public function test_countgames() {
         $this->assertisNumeric(countgames("All"));
 	}	
 	
 	/**
-	 * @group slow
 	 * @large
 	 * @covers makeStatTable
 	 * @uses CalculateGameRow
@@ -394,8 +362,6 @@ final class getmetastats_Test extends TestCase
 	 * @uses reIndexArray
 	 * @uses regroupArray
 	 * @uses timeduration
-	 * Time: 00:30.697, Memory: 262.00 MB
-	 * (1 test, 1 assertion)
 	 */
     public function test_makeStatTable() {
 		$_GET['filter']="All";
@@ -404,7 +370,6 @@ final class getmetastats_Test extends TestCase
 	}
 	
 	/**
-	 * @group slow
 	 * @large
 	 * @covers makeGameCountRow
 	 * @uses CalculateGameRow
@@ -432,15 +397,12 @@ final class getmetastats_Test extends TestCase
 	 * @uses makeIndex
 	 * @uses regroupArray
 	 * @uses timeduration
-	 * Time: 00:18.599, Memory: 262.00 MB
-	 * (1 test, 1 assertion)
 	 */
     public function test_makeGameCountRow() {
         $this->assertisString(makeGameCountRow("both","blue1"));
 	}
 	
 	/**
-	 * @group slow
 	 * @large
 	 * @covers makeStatRow
 	 * @uses CalculateGameRow
@@ -475,8 +437,6 @@ final class getmetastats_Test extends TestCase
 	 * @uses reIndexArray
 	 * @uses regroupArray
 	 * @uses timeduration
-	 * Time: 00:30.205, Memory: 262.00 MB
-	 * (1 test, 1 assertion)
 	 */
     public function test_makeStatRow() {
 		$_GET['filter']="All";
@@ -485,18 +445,14 @@ final class getmetastats_Test extends TestCase
 	}	
 
 	/**
-	 * @group fast
 	 * @small
 	 * @covers makeHeaderRow
-	 * Time: 00:00.219, Memory: 46.00 MB
-	 * (1 test, 1 assertion)
 	 */
     public function test_makeHeaderRow() {
         $this->assertEquals("<tr><th colspan=100><hr>Some header</th></tr>",makeHeaderRow("Some header"));
-	}	
+	}
 
 	/**
-	 * @group slow
 	 * @large
 	 * @covers makeStatDataSet
 	 * @uses CalculateGameRow
@@ -525,36 +481,26 @@ final class getmetastats_Test extends TestCase
 	 * @uses objectTranslator
 	 * @uses regroupArray
 	 * @uses timeduration
-	 * Time: 00:18.707, Memory: 262.00 MB
-	 * (1 test, 1 assertion)
 	 */
     public function test_makeStatDataSet() {
         $this->assertisArray(makeStatDataSet("All",'Review'));
 	}	
 
 	/**
-	 * @group fast
 	 * @small
 	 * @covers valueTranslator
 	 * @uses PriceCalculation
 	 * @uses objectTranslator
 	 * @uses methodTranslator
-	 * Time: 00:00.227, Memory: 46.00 MB
-	 * (1 test, 2 assertions)
+	 * @testWith [10,2,4,20,"LaunchVariance",-10]
+	 *           [10,2,4,20,"MSRPVariancePct",null]
 	 */
-    public function test_valueTranslator() {
-		$price=10;
-		$HoursPlayed=2;
-		$HoursToBeat=4;
-		$MSRP=20;
-		
+    public function test_valueTranslator($price,$HoursPlayed,$HoursToBeat,$MSRP,$value,$expected) {
 		$row["LaunchPriceObj"]=new PriceCalculation($price,$HoursPlayed,$HoursToBeat,$MSRP);
-        $this->assertEquals(-10,valueTranslator($row, "LaunchVariance"));
-        $this->assertEquals(null,valueTranslator($row, "MSRPVariancePct"));
-	}	
+        $this->assertEquals($expected,valueTranslator($row, $value));
+	}
 
 	/**
-	 * @group slow
 	 * @large
 	 * @covers printStatRow2
 	 * @uses CalculateGameRow
@@ -587,8 +533,6 @@ final class getmetastats_Test extends TestCase
 	 * @uses reIndexArray
 	 * @uses regroupArray
 	 * @uses timeduration
-	 * Time: 00:18.734, Memory: 262.00 MB
-	 * (1 test, 1 assertion)
 	 */
     public function test_printStatRow2() {
 		$statrow=getStatRow("All",'SteamRating');
@@ -596,7 +540,6 @@ final class getmetastats_Test extends TestCase
 	}	
 
 	/**
-	 * @group slow
 	 * @large
 	 * @covers DetailDataTable
 	 * @uses CalculateGameRow
@@ -629,23 +572,17 @@ final class getmetastats_Test extends TestCase
 	 * @uses reIndexArray
 	 * @uses regroupArray
 	 * @uses timeduration
-	 * Time: 00:19.394, Memory: 262.00 MB
-	 * (1 test, 2 assertions)
+	 * @testWith ["firstPlayDateTime"]
+	 *           ["Review"]
 	 */
-    public function test_DetailDataTable() {
-		$dataset=makeStatDataSet("All",'AltHrs3');
-		$statrow=getStatRow("All",'AltHrs3');
-		
-        $this->assertisString(DetailDataTable($dataset,$statrow));
-
-		$dataset=makeStatDataSet("All",'firstPlayDateTime');
-		$statrow=getStatRow("All",'firstPlayDateTime');
+    public function test_DetailDataTable($stat) {
+		$dataset=makeStatDataSet("All",'$stat');
+		$statrow=getStatRow("All",'$stat');
 		
         $this->assertisString(DetailDataTable($dataset,$statrow));
 	}
 
 	/**
-	 * @group slow
 	 * @large
 	 * @covers getOnlyValues
 	 * @uses CalculateGameRow
@@ -675,23 +612,14 @@ final class getmetastats_Test extends TestCase
 	 * @uses objectTranslator
 	 * @uses regroupArray
 	 * @uses timeduration
-	 * Time: 00:19.246, Memory: 262.00 MB
-	 * (1 test, 5 assertions)
+	 * @testWith ["firstPlayDateTime"]
+	 *           ["Review"]
+	 *           ["Altperhrbeat"]
+	 *           ["AltHrs3"]
+	 *           ["AchievementsPct"]
 	 */
-    public function test_getOnlyValues() {
-		$statrow=makeStatDataSet("All",'firstPlayDateTime');
-        $this->assertisArray(getOnlyValues($statrow,'firstPlayDateTime'));
-		
-		$statrow=makeStatDataSet("All",'Review');
-        $this->assertisArray(getOnlyValues($statrow,'Review'));
-		
-		$statrow=makeStatDataSet("All",'Altperhrbeat');
-        $this->assertisArray(getOnlyValues($statrow,'Altperhrbeat'));
-		
-		$statrow=makeStatDataSet("All",'AltHrs3');
-        $this->assertisArray(getOnlyValues($statrow,'AltHrs3'));
-		
-		$statrow=makeStatDataSet("All",'AchievementsPct');
-        $this->assertisArray(getOnlyValues($statrow,'AchievementsPct'));
+    public function test_getOnlyValues($stat) {
+		$statrow=makeStatDataSet("All",$stat);
+        $this->assertisArray(getOnlyValues($statrow,$stat));
 	}	
 }

@@ -17,21 +17,16 @@ class testexportinc extends TestCase {
     }
 
 	/**
-	 * @group untimed
 	 * @small
 	 * @coversNothing
 	 * @doesNotPerformAssertions
-	 * Time
 	 */
     public function test_Create_Export_placeholder() {
 		//TODO: Export function is exporting all data even if a single table is requested.
     }
 	
 	/**
-	 * @group fast
 	 * @small
-	 * Time: 00:00.017, Memory: 26.00 MB
-	 * (1 test, 1 assertion)
 	 * /
     public function test_export_Load() {
         $args = array();
@@ -39,9 +34,7 @@ class testexportinc extends TestCase {
     }
 
 	/**
-	 * @group untimed
 	 * @small
-	 * Time
 	 * /
     public function test_export_export() {
         $args = array('export'=>"Export");
@@ -49,9 +42,7 @@ class testexportinc extends TestCase {
     }
 	
 	/**
-	 * @group untimed
 	 * @small
-	 * Time
 	 * /
     public function test_export_function() {
 		require_once $GLOBALS['rootpath']."/inc/export.inc.php";
@@ -65,9 +56,7 @@ class testexportinc extends TestCase {
 	/* */
 
 	/**
-	 * @group untimed
 	 * @small
-	 * Time
 	 * /
     public function test_Create_Export() {
 		require $GLOBALS['rootpath'].'\inc\auth.inc.php';

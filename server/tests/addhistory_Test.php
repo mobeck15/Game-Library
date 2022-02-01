@@ -5,6 +5,7 @@ $GLOBALS['rootpath'] = $GLOBALS['rootpath'] ?? "htdocs\Game-Library\server";
 
 /**
  * @group page
+ * @coversNothing
  */
 class testaddhistory extends TestCase {
 
@@ -17,10 +18,7 @@ class testaddhistory extends TestCase {
     }
 
 	/**
-	 * @group fast
 	 * @small
-	 * Time: 00:00.045, Memory: 26.00 MB
-	 * (1 test, 1 assertion)
 	 */
     public function test_addhistory_Load() {
         $args = array();
@@ -28,11 +26,8 @@ class testaddhistory extends TestCase {
     }
 
 	/**
-	 * @group slow
 	 * @medium
 	 * @group steamapi
-	 * Time: 00:06.858, Memory: 306.00 MB
-	 * (1 test, 1 assertion)
 	 */
     public function test_addhistory_Steam() {
         $args = array("mode"=>"steam");
