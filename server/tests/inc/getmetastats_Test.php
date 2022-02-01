@@ -573,11 +573,11 @@ final class getmetastats_Test extends TestCase
 	 * @uses regroupArray
 	 * @uses timeduration
 	 * @testWith ["firstPlayDateTime"]
-	 *           ["Review"]
+	 *           ["AltHrs3"]
 	 */
     public function test_DetailDataTable($stat) {
-		$dataset=makeStatDataSet("All",'$stat');
-		$statrow=getStatRow("All",'$stat');
+		$dataset=makeStatDataSet("All",$stat);
+		$statrow=getStatRow("All",$stat);
 		
         $this->assertisString(DetailDataTable($dataset,$statrow));
 	}
