@@ -10,7 +10,7 @@ require_once $GLOBALS['rootpath']."/inc/utility.inc.php";
 require_once $GLOBALS['rootpath']."/inc/getsettings.inc.php";
 require_once $GLOBALS['rootpath']."/inc/getHistoryCalculations.inc.php";
 require_once $GLOBALS['rootpath']."/inc/getActivityCalculations.inc.php";
-require_once $GLOBALS['rootpath']."/inc/getPurchases.inc.php";
+require_once $GLOBALS['rootpath']."/inc/getPurchases.class.php";
 
 function getGames($gameID="",$connection=false){
 	if($connection==false){

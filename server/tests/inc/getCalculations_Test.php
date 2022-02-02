@@ -7,6 +7,7 @@ require_once $GLOBALS['rootpath']."\inc\getCalculations.inc.php";
 
 /**
  * @group include
+ * @group purchases
  */
 final class getCalculations_Test extends TestCase
 {

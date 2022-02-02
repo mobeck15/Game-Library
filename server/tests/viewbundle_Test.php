@@ -6,6 +6,7 @@ $GLOBALS['rootpath'] = $GLOBALS['rootpath'] ?? "htdocs\Game-Library\server";
 /**
  * @group page
  * @coversNothing
+ * @group purchases
  */
 class testviewbundle extends TestCase {
 

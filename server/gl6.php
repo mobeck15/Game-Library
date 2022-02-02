@@ -2,6 +2,7 @@
 $time_start = microtime(true);
 $GLOBALS['rootpath']=$GLOBALS['rootpath'] ?? ".";
 require_once $GLOBALS['rootpath']."/inc/functions.inc.php";
+require_once $GLOBALS['rootpath']."/inc/SteamFormat.class.php";
 $title="Index";
 echo Get_Header($title);
 ?>

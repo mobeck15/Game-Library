@@ -66,28 +66,6 @@ final class SteamAPI_Test extends TestCase
 		
 		$property = $this->getPrivateProperty( 'SteamAPI', $urlname );
 		$this->assertNotNull($property->getValue( $api ));
-		/*
-		$property = $this->getPrivateProperty( 'SteamAPI', 'GetRecentlyPlayedGamesURL' );
-		$this->assertNotNull($property->getValue( $api ));
-
-		$property = $this->getPrivateProperty( 'SteamAPI', 'GetPlayerAchievementsURL' );
-		$this->assertNotNull($property->getValue( $api ));
-
-		$property = $this->getPrivateProperty( 'SteamAPI', 'GetUserStatsForGameURL' );
-		$this->assertNotNull($property->getValue( $api ));
-
-		$property = $this->getPrivateProperty( 'SteamAPI', 'GetGameNewsURL' );
-		$this->assertNotNull($property->getValue( $api ));
-
-		$property = $this->getPrivateProperty( 'SteamAPI', 'GetSchemaForGameURL' );
-		$this->assertNotNull($property->getValue( $api ));
-
-		$property = $this->getPrivateProperty( 'SteamAPI', 'GetAppDetailsURL' );
-		$this->assertNotNull($property->getValue( $api ));
-
-		$property = $this->getPrivateProperty( 'SteamAPI', 'GetSteamPICSURL' );
-		$this->assertNotNull($property->getValue( $api ));
-		*/
 	}
 
 	/**
@@ -109,22 +87,6 @@ final class SteamAPI_Test extends TestCase
 		
 		$property = $this->getPrivateProperty( 'SteamAPI', $urlname );
 		$this->assertNull($property->getValue( $api ));
-		/*
-		$property = $this->getPrivateProperty( 'SteamAPI', 'GetUserStatsForGameURL' );
-		$this->assertNull($property->getValue( $api ));
-
-		$property = $this->getPrivateProperty( 'SteamAPI', 'GetGameNewsURL' );
-		$this->assertNull($property->getValue( $api ));
-
-		$property = $this->getPrivateProperty( 'SteamAPI', 'GetSchemaForGameURL' );
-		$this->assertNull($property->getValue( $api ));
-
-		$property = $this->getPrivateProperty( 'SteamAPI', 'GetAppDetailsURL' );
-		$this->assertNull($property->getValue( $api ));
-
-		$property = $this->getPrivateProperty( 'SteamAPI', 'GetSteamPICSURL' );
-		$this->assertNull($property->getValue( $api ));
-		*/
 	}
 	
 	/**
