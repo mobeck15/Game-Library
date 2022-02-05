@@ -186,105 +186,89 @@ class Purchases
 	}
 	
 	private function itemRowBundles2($item, $row) {
+		$row['GamesinBundle'][$item['ProductID']]['Altwant']=$this->divzero($row['TotalWant'] <> 0,$row['GamesinBundle'][$item['ProductID']]['Want'],$row['TotalWant']*$row['Paid']);
 		
-		if(isset($this->gameIndex[$item['ProductID']])){
-			if(!in_array($item['ProductID'],$this->gamesList)){
-				$this->gamesList[]=$item['ProductID'];
-				
-				$row['GamesinBundle'][$item['ProductID']]['Altwant']=$this->divzero($row['TotalWant'] <> 0,$row['GamesinBundle'][$item['ProductID']]['Want'],$row['TotalWant']*$row['Paid']);
-				
-				$row['GamesinBundle'][$item['ProductID']]['Althrs']=
-					$this->setvalue(isset($this->activity[$item['ProductID']]),
-					$this->divzero(($this->activity[$item['ProductID']]['totalHrs'] ?? 0),$row['TotalHrs']*$row['Paid']));
-				
-				//$debug1=
-				//	"SalePrice: " .
-				//	"MSRP(".$row['GamesinBundle'][$item['ProductID']]['MSRP'] . 
-				//	")/TotalMSRP(" . $row['TotalMSRP'] . 
-				//	")*Paid(" . $row['Paid'] . 
-				//	")=" . $row['GamesinBundle'][$item['ProductID']]['MSRP']/$row['TotalMSRP']*$row['Paid'] . "<br>";
-				//$row['GamesinBundle'][$item['ProductID']]['Debug'] .= $debug1;
-				
-				if($row['TotalMSRP'] <> 0) {
-					$row['GamesinBundle'][$item['ProductID']]['SalePrice']=$row['GamesinBundle'][$item['ProductID']]['MSRP']/$row['TotalMSRP']*$row['Paid'];
-					$row['GamesinBundle'][$item['ProductID']]['SalePriceFormula']="(" . $row['GamesinBundle'][$item['ProductID']]['MSRP'] . " / " . $row['TotalMSRP'] . ") * " . $row['Paid'];
-				} else {
-					$row['GamesinBundle'][$item['ProductID']]['SalePrice']=0;
-					$row['GamesinBundle'][$item['ProductID']]['SalePriceFormula']="0";
-				}
-				
-				//TODO: Can't use divzero function because Paid is sometimes zero and makes things weird.
-				//$row['GamesinBundle'][$item['ProductID']]['SalePrice']=$this->divzero($row['GamesinBundle'][$item['ProductID']]['MSRP'],$row['TotalMSRP']*$row['Paid']);
-				$row['GamesinBundle'][$item['ProductID']]['SalePriceFormula']=$this->setvalue(($row['TotalMSRP'] <> 0),"(" . $row['GamesinBundle'][$item['ProductID']]['MSRP'] . " / " . $row['TotalMSRP'] . ") * " . $row['Paid']);
-				
-				/* */
-				$totalWeight=0;
-				if($row['GamesinBundle'][$item['ProductID']]['Altwant']>0) {
-					$totalWeight+=$this->settings['WeightWant'];
-				}
-				if($row['GamesinBundle'][$item['ProductID']]['Althrs']>0) {
-					$totalWeight+=$this->settings['WeightPlay'];
-				}
-				if($row['GamesinBundle'][$item['ProductID']]['SalePrice']<>0){
-					$totalWeight+=$this->settings['WeightMSRP'];
-				}
-				if($totalWeight==0){
-					$totalWeight=1;
-				}
-				//$totalWeight=$this->settings['WeightMSRP']+$this->settings['WeightPlay']+$this->settings['WeightWant'];
-				$useWeightMSRP=$this->settings['WeightMSRP']/$totalWeight;
-				$useWeightPlay=$this->settings['WeightPlay']/$totalWeight;
-				$useWeightWant=$this->settings['WeightWant']/$totalWeight;
-				/* */
-				
-				//TODO: Alt paid needs some corrections in the calculation for when games have zero hours.
-				//TODO: Alt paid needs some corrections in the calculation for when a bundle has zero total hours.
-
-				$row['GamesinBundle'][$item['ProductID']]['AltSalePrice']=
-					$row['GamesinBundle'][$item['ProductID']]['Altwant']  *$useWeightWant +
-					$row['GamesinBundle'][$item['ProductID']]['Althrs']   *$useWeightPlay +
-					$row['GamesinBundle'][$item['ProductID']]['SalePrice']*$useWeightMSRP ;
-
-				/*
-				$row['GamesinBundle'][$item['ProductID']]['Debug'].=
-					"TotalWeight = " . $totalWeight . " " .
-					"AltSalePrice: AltWant (".
-					(0+$row['GamesinBundle'][$item['ProductID']]['Altwant']) .
-					" * (".$this->settings['WeightWant']."/".$totalWeight."=".(0+round($useWeightWant,2)).")=".($row['GamesinBundle'][$item['ProductID']]['Altwant']  *$useWeightWant).") + Althrs (".
-					(0+$row['GamesinBundle'][$item['ProductID']]['Althrs']) .
-					" * (".$this->settings['WeightPlay']."/".$totalWeight."=".(0+round($useWeightPlay,2)).")=".($row['GamesinBundle'][$item['ProductID']]['Althrs']   *$useWeightPlay).") + SalePrice (".
-					(0+$row['GamesinBundle'][$item['ProductID']]['SalePrice']).
-					" * (".$this->settings['WeightMSRP']."/".$totalWeight."=".(0+round($useWeightMSRP,2)).")=".($row['GamesinBundle'][$item['ProductID']]['SalePrice']*$useWeightMSRP).") = ".
-					(0+$row['GamesinBundle'][$item['ProductID']]['AltSalePrice'])."<br>";
-				*/
-				/*
-				HurtWorld:
-				SalePrice: MSRP(24.99)/TotalMSRP(24.99)*Paid(12.00)=12
-				TotalWeight = 100 
-				AltSalePrice: 
-					AltWant   (12 * (30/100=0.3)=3.6) + 
-					Althrs    (0  * (20/100=0.2)=0) + 
-					SalePrice (12 * (50/100=0.5)=6) = 9.6
-
-				HurtWorld:
-				SalePrice: MSRP(24.99)/TotalMSRP(24.99)*Paid(12.00)=12
-				TotalWeight = 80 
-				AltSalePrice: 
-					AltWant   (12 * (30/80=0.38)=4.5) + 
-					Althrs    (0  * (20/80=0.25)=0) + 
-					SalePrice (12 * (50/80=0.63)=7.5) = 12
-				
-				HurtWorld:
-				SalePrice: MSRP(24.99)/TotalMSRP(24.99)*Paid(12.00)=12
-				TotalWeight = 60 
-				AltSalePrice: 
-					AltWant   (12 * (30/60=0.5 )=6) + 
-					Althrs    (0  * (20/60=0.33)=0) + 
-					SalePrice (12 * (50/60=0.83)=10) = 16
-
-				*/
-			}
+		$row['GamesinBundle'][$item['ProductID']]['Althrs']=
+			$this->setvalue(isset($this->activity[$item['ProductID']]),
+			$this->divzero(($this->activity[$item['ProductID']]['totalHrs'] ?? 0),$row['TotalHrs']*$row['Paid']));
+		
+		//$debug1=
+		//	"SalePrice: " .
+		//	"MSRP(".$row['GamesinBundle'][$item['ProductID']]['MSRP'] . 
+		//	")/TotalMSRP(" . $row['TotalMSRP'] . 
+		//	")*Paid(" . $row['Paid'] . 
+		//	")=" . $row['GamesinBundle'][$item['ProductID']]['MSRP']/$row['TotalMSRP']*$row['Paid'] . "<br>";
+		//$row['GamesinBundle'][$item['ProductID']]['Debug'] .= $debug1;
+		
+		$row['GamesinBundle'][$item['ProductID']]['SalePrice']=($this->divzero($row['GamesinBundle'][$item['ProductID']]['MSRP'],$row['TotalMSRP'])*$row['Paid']);
+		$row['GamesinBundle'][$item['ProductID']]['SalePriceFormula']=$this->setvalue(($row['TotalMSRP'] <> 0),"(" . $row['GamesinBundle'][$item['ProductID']]['MSRP'] . " / " . $row['TotalMSRP'] . ") * " . $row['Paid']);
+		
+		/* */
+		$totalWeight=0;
+		if($row['GamesinBundle'][$item['ProductID']]['Altwant']>0) {
+			$totalWeight+=$this->settings['WeightWant'];
 		}
+		if($row['GamesinBundle'][$item['ProductID']]['Althrs']>0) {
+			$totalWeight+=$this->settings['WeightPlay'];
+		}
+		if($row['GamesinBundle'][$item['ProductID']]['SalePrice']<>0){
+			$totalWeight+=$this->settings['WeightMSRP'];
+		}
+		if($totalWeight==0){
+			$totalWeight=1;
+		}
+		//$totalWeight=$this->settings['WeightMSRP']+$this->settings['WeightPlay']+$this->settings['WeightWant'];
+		$useWeightMSRP=$this->settings['WeightMSRP']/$totalWeight;
+		$useWeightPlay=$this->settings['WeightPlay']/$totalWeight;
+		$useWeightWant=$this->settings['WeightWant']/$totalWeight;
+		/* */
+		
+		//TODO: Alt paid needs some corrections in the calculation for when games have zero hours.
+		//TODO: Alt paid needs some corrections in the calculation for when a bundle has zero total hours.
+
+		$row['GamesinBundle'][$item['ProductID']]['AltSalePrice']=
+			$row['GamesinBundle'][$item['ProductID']]['Altwant']  *$useWeightWant +
+			$row['GamesinBundle'][$item['ProductID']]['Althrs']   *$useWeightPlay +
+			$row['GamesinBundle'][$item['ProductID']]['SalePrice']*$useWeightMSRP ;
+
+		/*
+		$row['GamesinBundle'][$item['ProductID']]['Debug'].=
+			"TotalWeight = " . $totalWeight . " " .
+			"AltSalePrice: AltWant (".
+			(0+$row['GamesinBundle'][$item['ProductID']]['Altwant']) .
+			" * (".$this->settings['WeightWant']."/".$totalWeight."=".(0+round($useWeightWant,2)).")=".($row['GamesinBundle'][$item['ProductID']]['Altwant']  *$useWeightWant).") + Althrs (".
+			(0+$row['GamesinBundle'][$item['ProductID']]['Althrs']) .
+			" * (".$this->settings['WeightPlay']."/".$totalWeight."=".(0+round($useWeightPlay,2)).")=".($row['GamesinBundle'][$item['ProductID']]['Althrs']   *$useWeightPlay).") + SalePrice (".
+			(0+$row['GamesinBundle'][$item['ProductID']]['SalePrice']).
+			" * (".$this->settings['WeightMSRP']."/".$totalWeight."=".(0+round($useWeightMSRP,2)).")=".($row['GamesinBundle'][$item['ProductID']]['SalePrice']*$useWeightMSRP).") = ".
+			(0+$row['GamesinBundle'][$item['ProductID']]['AltSalePrice'])."<br>";
+		*/
+		/*
+		HurtWorld:
+		SalePrice: MSRP(24.99)/TotalMSRP(24.99)*Paid(12.00)=12
+		TotalWeight = 100 
+		AltSalePrice: 
+			AltWant   (12 * (30/100=0.3)=3.6) + 
+			Althrs    (0  * (20/100=0.2)=0) + 
+			SalePrice (12 * (50/100=0.5)=6) = 9.6
+
+		HurtWorld:
+		SalePrice: MSRP(24.99)/TotalMSRP(24.99)*Paid(12.00)=12
+		TotalWeight = 80 
+		AltSalePrice: 
+			AltWant   (12 * (30/80=0.38)=4.5) + 
+			Althrs    (0  * (20/80=0.25)=0) + 
+			SalePrice (12 * (50/80=0.63)=7.5) = 12
+		
+		HurtWorld:
+		SalePrice: MSRP(24.99)/TotalMSRP(24.99)*Paid(12.00)=12
+		TotalWeight = 60 
+		AltSalePrice: 
+			AltWant   (12 * (30/60=0.5 )=6) + 
+			Althrs    (0  * (20/60=0.33)=0) + 
+			SalePrice (12 * (50/60=0.83)=10) = 16
+
+		*/
 		return $row;
 	}
 	
@@ -360,7 +344,12 @@ class Purchases
 				
 				$this->gamesList=array();
 				foreach($itemsbyBundle[$row['TransID']] as $item){
-					$row=$this->itemRowBundles2($item,$row);
+					if(isset($this->gameIndex[$item['ProductID']])){
+						if(!in_array($item['ProductID'],$this->gamesList)){
+							$this->gamesList[]=$item['ProductID'];
+							$row=$this->itemRowBundles2($item,$row);
+						}
+					}
 				}
 			}
 		}
