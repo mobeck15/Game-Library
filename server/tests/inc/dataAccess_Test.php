@@ -55,6 +55,18 @@ final class dataAccess_Test extends TestCase
 	}
 
 	/**
+	 * @covers dataAccess::getPurchases
+	 * @uses dataAccess::__construct
+	 * @uses dataAccess::getConnection
+	 */
+	public function test_getPurchases_One() {
+		$dataobject= new dataAccess();
+		$statement=$dataobject->getPurchases(111);
+		$this->assertisObject($statement);
+		$this->assertInstanceOf(PDOStatement::class, $statement);
+	}
+	
+	/**
 	 * @covers dataAccess::getAllRows
 	 * @uses dataAccess::getPurchases
 	 * @uses dataAccess::__construct

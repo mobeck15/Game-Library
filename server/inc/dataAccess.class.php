@@ -3,10 +3,11 @@ $GLOBALS['rootpath']= $GLOBALS['rootpath'] ?? "..";
 
 class dataAccess {
 	private $dbConnection;
-	
+	// @codeCoverageIgnoreStart
 	function __construct($conn=null) {
 		
 	}
+	// @codeCoverageIgnoreEnd
 	
 	public function getConnection(){
 		if(isset($this->dbConnection)) {
@@ -17,9 +18,11 @@ class dataAccess {
 		
 		try{
 			$this->dbConnection=new PDO("mysql:host=$servername;dbname=$dbname;charset=utf8",$username, $password);
+		// @codeCoverageIgnoreStart
 		} catch (exception $e){
 			trigger_error("Database connection failed: ". $e->getMessage() . "\n"); // @codeCoverageIgnore
 		}
+		// @codeCoverageIgnoreEnd
 		
 		return $this->dbConnection;
 	}

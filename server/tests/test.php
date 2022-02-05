@@ -21,6 +21,7 @@ $purchases=reIndexArray(getPurchases("",$conn), "TransID");
 <tr><td>Count Duplicates Setting: </td><td><?php echo $settings["CountDupes"]; ?></td>
 <?php 
 $useproductid=30; //Wizardry 7
+//$useproductid=2269; //Darksiders 2 Deathinitive edition
 echo "<td>Purchase Date: </td><td>". $calculations[$useproductid]["PurchaseDateTime"]->format("Y-m-d h:i:s") . "</td></tr>";
 echo "<tr><td>ID: </td><td><a href='../viewgame.php?id=" . $calculations[$useproductid]["Game_ID"] . "'>" . $calculations[$useproductid]["Game_ID"] . "</a></td>";
 echo "<td>Game: </td><td>" . $calculations[$useproductid]["Title"] . "</td></tr>";

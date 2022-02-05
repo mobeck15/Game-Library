@@ -55,6 +55,7 @@ class Purchases
 		
 	}
 	
+	//TODO: groupItemsByBundle Belongs in the item class
 	private function groupItemsByBundle($items){
 		$itemsbyBundle=array();
 		foreach ($items as $value) {
@@ -70,19 +71,19 @@ class Purchases
 				$parentbundle=$this->ParentBundleIndex[$bundleID];
 				
 				if(!isset($this->ParentBundleIndex[$bundleID])){
-			// @codeCoverageIgnoreStart
+					// @codeCoverageIgnoreStart
 					trigger_error("No parent bundle found");
 					var_dump($value);
-			// @codeCoverageIgnoreEnd
+					// @codeCoverageIgnoreEnd
 				}
 				
 				while($this->purchases[$parentbundle]['BundleID']<>$bundleID){
 					$bundleID=$this->purchases[$this->ParentBundleIndex[$bundleID]]['BundleID'];
 					if($n>=$this->max_loop) {
-			// @codeCoverageIgnoreStart
+						// @codeCoverageIgnoreStart
 						trigger_error("Exceeded maximum parent bundles (" . $n . ")");
 						break;
-			// @codeCoverageIgnoreEnd
+						// @codeCoverageIgnoreEnd
 					}
 					$n++;
 				}		
@@ -93,42 +94,28 @@ class Purchases
 	}
 	
 	private function purchaseRowFirstPass($row){
-		if($row['Tier']==0){
-			$row['Tier']="";
-		}
+		$row['Tier']=$this->setvalue($row['Tier']==0,"",$row['Tier']);
 		
 		$date=strtotime($row['PurchaseDate']);
-		if(strtotime($row['PurchaseDate']) == 0) {
-			$row['PurchaseDate'] = "";
-		} else {
-			$row['PurchaseDate'] = date("n/j/Y",$date);
-		}
+		$row['PurchaseDate']=$this->setvalue(strtotime($row['PurchaseDate']) == 0,"",date("n/j/Y",$date));
 		
 		$time = strtotime($row['PurchaseTime']);
-		if(date("H:i:s",$time) == "00:00:00" OR date("H:i:s",$time) == "01:00:00") {
-			$row['PurchaseTime']= "";
-		} else {
-			$row['PurchaseTime']= date("H:i:s",$time) ;
-		}
+		//TODO: 00:00:00 OR 01:00:00 might have something to do with setting the system time zone.
+		$row['PurchaseTime']=$this->setvalue((date("H:i:s",$time) == "00:00:00" OR date("H:i:s",$time) == "01:00:00"),"",date("H:i:s",$time));
 		
 		$row['PrintPurchaseTimeStamp']=combinedate($row['PurchaseDate'], $row['PurchaseTime'], $row['Sequence']);
 		
 		$row['PurchaseDateTime'] = new DateTime($row['PurchaseDate'] . " " . $row['PurchaseTime']);
 		
-		if($row['Sequence']==0){$row['Sequence']="";}
+		$row['Sequence']=$this->setvalue($row['Sequence']==0,"",$row['Sequence']);
 		
 		$row['Price'] = sprintf("%.2f",$row['Price']);
-		if($row['Fees']<>0) {
-			$row['Fees'] = sprintf("%.2f",$row['Fees']);
-		} else {
-			$row['Fees']="";
-		}
+
+		$row['Fees']=$this->setvalue($row['Fees']<>0,sprintf("%.2f",$row['Fees']),"");
+		
 		$row['Paid'] = sprintf("%.2f",$row['Paid']);
-		if($row['Credit Used']<>0) {
-			$row['Credit Used'] = sprintf("%.2f",$row['Credit Used']);
-		} else {
-			$row['Credit Used']="";
-		}
+
+		$row['Credit Used']=$this->setvalue($row['Credit Used']<>0,sprintf("%.2f",$row['Credit Used']),"");
 		
 		$row['BundleURL']=$row['Bundle Link'];
 		if($row['Bundle Link']<>""){
@@ -150,10 +137,9 @@ class Purchases
 	}
 	
 	private function itemRowBundles($item, $row) {
-		//FIX: Returns undefined index: GameID
-		$row['itemsinBundle'][$item['ItemID']]=$item['ItemID'];
-		if(!in_array($item['ProductID'],$this->gamesList) && $item['ProductID']<>null){
-			$this->gamesList[]=$item['ProductID'];
+		//$row['itemsinBundle'][$item['ItemID']]=$item['ItemID'];
+		//if(!in_array($item['ProductID'],$this->gamesList) && $item['ProductID']<>null){
+			//$this->gamesList[]=$item['ProductID'];
 			
 			$row['ProductsinBunde'][$item['ProductID']]=$item['ProductID'];
 		
@@ -180,22 +166,22 @@ class Purchases
 				$row['GamesinBundle'][$item['ProductID']]['HistoricLow']=$this->games[$this->gameIndex[$item['ProductID']]]['HistoricLow'];
 				
 				if(isset($this->activity[$item['ProductID']]) && $this->settings['status'][$this->activity[$item['ProductID']]['Status']]['Count']==1){
-					//var_dump($this->settings['status'][$this->activity[$item['ProductID']]['Status']]['Count']);
-					//var_dump($this->activity[$item['ProductID']]);
 					$row['TotalMSRP']+=$this->games[$this->gameIndex[$item['ProductID']]]['MSRP'];
 					$row['TotalMSRPFormula'] .= " + " . $this->games[$this->gameIndex[$item['ProductID']]]['MSRP'];
 					$row['TotalWant']+=$this->games[$this->gameIndex[$item['ProductID']]]['Want'];
 					
 					//May need to use $this->activity[$item['ProductID']]['GrandTotal'] intead of 'totalHrs'
 					$row['TotalHrs']+=$this->activity[$item['ProductID']]['totalHrs'];
-					//var_dump($this->activity[$item['ProductID']]);	
 				} elseif (!isset($this->activity[$item['ProductID']])){
 					$row['TotalMSRP']+=$this->games[$this->gameIndex[$item['ProductID']]]['MSRP'];
 					$row['TotalMSRPFormula'] .= " + " . $this->games[$this->gameIndex[$item['ProductID']]]['MSRP'];
 					$row['TotalWant']+=$this->games[$this->gameIndex[$item['ProductID']]]['Want'];
-				}
+				} //else {  //Use this to discover scenarios for testing.
+					//var_dump($item['ProductID']); //1162
+					//var_dump($this->activity[$item['ProductID']]); 
+				//}
 			}
-		}
+		//}
 		return $row;
 	}
 	
@@ -219,7 +205,16 @@ class Purchases
 				//	")=" . $row['GamesinBundle'][$item['ProductID']]['MSRP']/$row['TotalMSRP']*$row['Paid'] . "<br>";
 				//$row['GamesinBundle'][$item['ProductID']]['Debug'] .= $debug1;
 				
-				$row['GamesinBundle'][$item['ProductID']]['SalePrice']=$this->divzero($row['GamesinBundle'][$item['ProductID']]['MSRP'],$row['TotalMSRP']*$row['Paid']);
+				if($row['TotalMSRP'] <> 0) {
+					$row['GamesinBundle'][$item['ProductID']]['SalePrice']=$row['GamesinBundle'][$item['ProductID']]['MSRP']/$row['TotalMSRP']*$row['Paid'];
+					$row['GamesinBundle'][$item['ProductID']]['SalePriceFormula']="(" . $row['GamesinBundle'][$item['ProductID']]['MSRP'] . " / " . $row['TotalMSRP'] . ") * " . $row['Paid'];
+				} else {
+					$row['GamesinBundle'][$item['ProductID']]['SalePrice']=0;
+					$row['GamesinBundle'][$item['ProductID']]['SalePriceFormula']="0";
+				}
+				
+				//TODO: Can't use divzero function because Paid is sometimes zero and makes things weird.
+				//$row['GamesinBundle'][$item['ProductID']]['SalePrice']=$this->divzero($row['GamesinBundle'][$item['ProductID']]['MSRP'],$row['TotalMSRP']*$row['Paid']);
 				$row['GamesinBundle'][$item['ProductID']]['SalePriceFormula']=$this->setvalue(($row['TotalMSRP'] <> 0),"(" . $row['GamesinBundle'][$item['ProductID']]['MSRP'] . " / " . $row['TotalMSRP'] . ") * " . $row['Paid']);
 				
 				/* */
@@ -356,7 +351,11 @@ class Purchases
 
 				$this->gamesList=array();
 				foreach($itemsbyBundle[$row['TransID']] as $item){
-					$row=$this->itemRowBundles($item,$row);
+					$row['itemsinBundle'][$item['ItemID']]=$item['ItemID'];
+					if(!in_array($item['ProductID'],$this->gamesList) && $item['ProductID']<>null){
+						$this->gamesList[]=$item['ProductID'];
+						$row=$this->itemRowBundles($item,$row);
+					}
 				}
 				
 				$this->gamesList=array();

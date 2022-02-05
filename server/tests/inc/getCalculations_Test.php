@@ -14,8 +14,6 @@ final class getCalculations_Test extends TestCase
 	/**
 	 * @small
 	 * @covers getCalculations
-	 * Time: 00:00.307, Memory: 48.00 MB
-	 * (1 test, 2 assertions)
 	 */
     public function test_getCalculations_Global() {
 		$GLOBALS["CALCULATIONS"]=array("preset calculations");
@@ -51,13 +49,11 @@ final class getCalculations_Test extends TestCase
 	 * @uses regroupArray
 	 * @uses timeduration
 	 * @uses get_db_connection
-	 * Time: 00:00.307, Memory: 48.00 MB
-	 * (1 test, 2 assertions)
 	 */
     public function test_getCalculations_Base() {
 		$output=getCalculations();
         $this->assertisArray($output);
-	} /* */
+	} 
 	
 	/**
 	 * @large
@@ -85,8 +81,6 @@ final class getCalculations_Test extends TestCase
 	 * @uses makeIndex
 	 * @uses regroupArray
 	 * @uses timeduration
-	 * Time: 00:18.758, Memory: 262.00 MB
-	 * (1 test, 1 assertion)
 	 */
 	public function test_getCalculations_Connection() {
 		$conn=get_db_connection();
@@ -98,8 +92,6 @@ final class getCalculations_Test extends TestCase
 	 * @small
 	 * @covers getPriceSort
 	 * @uses PriceCalculation
-	 * Time: 00:00.224, Memory: 46.00 MB
-	 * (1 test, 2 assertions)
 	 */
 	public function test_getPriceSort() {
 		
@@ -125,6 +117,43 @@ final class getCalculations_Test extends TestCase
 		
         $this->assertisArray(getPriceSort($sourceArray,"PriceObject"));
         $this->assertisArray(getPriceSort($sourceArray,"PriceObject",true));
+	}
+
+	/**
+	 * @group integration
+	 * @medium
+	 * @coversNothing
+	 * @testWith [30]
+	 *           [2269]
+	 * 30   = Wizardry 7
+	 * 2269 = Darksiders 2 Deathinitive edition
+	 */
+	public function test_multiplebundles($useproductid) {
+		$conn=get_db_connection();
+		$settings=getsettings($conn);
+		$calculations=reIndexArray(getCalculations("",$conn),"Game_ID");
+		$purchases=reIndexArray(getPurchases("",$conn), "TransID");
+		
+		foreach ($calculations[$useproductid]["TopBundleIDs"] as $bundle) {
+			$totalMSRP=0;
+			$totalSale=0;
+			foreach ($purchases[$bundle]["GamesinBundle"] as $gamein){
+				if($settings["status"][$calculations[$gamein["GameID"]]["Status"]]["Count"] == 1) {
+					$totalMSRP+=$calculations[$gamein["GameID"]]["MSRP"];
+					$totalSale+=$calculations[$gamein["GameID"]]["SalePrice"];
+				}				
+			}
+			
+			$totalExpectedSale=0;
+			foreach ($purchases[$bundle]["GamesinBundle"] as $gamein){
+				$expectedSale=($calculations[$gamein["GameID"]]["MSRP"]/$totalMSRP)*$purchases[$bundle]["Paid"];
+				if($settings["status"][$calculations[$gamein["GameID"]]["Status"]]["Count"] == 1) {
+					$totalExpectedSale += $expectedSale;
+				}
+				$this->assertEquals($expectedSale,$calculations[$gamein["GameID"]]["SalePrice"]);
+			}
+			$this->assertEquals($totalExpectedSale,$totalSale);
+		}
 	}
 
 }
