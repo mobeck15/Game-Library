@@ -194,7 +194,7 @@ class SteamScrape
 		if($this->publisher <> null) {
 			return $this->publisher;
 		}
-
+		//TODO: This getPublisher loop take way too long (2 seconds) and may be making viewgame.php take up to 30 seconds to load.
 		$eles = $this->getdom()->find('*');
 		$i=0;
 		$publishers=array();
@@ -233,7 +233,7 @@ class SteamScrape
 		if(count($this->genre) > 0) {
 			return $this->genre;
 		}
-		
+		//TODO: This getGenre loop take way too long (2 seconds) and may be making viewgame.php take up to 30 seconds to load.
 		$eles = $this->getdom()->find('*');
 		$i=0;
 		$genres=array();

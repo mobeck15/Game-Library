@@ -186,11 +186,11 @@ class Purchases
 	}
 	
 	private function itemRowBundles2($item, $row) {
-		$row['GamesinBundle'][$item['ProductID']]['Altwant']=$this->divzero($row['TotalWant'] <> 0,$row['GamesinBundle'][$item['ProductID']]['Want'],$row['TotalWant']*$row['Paid']);
+		$row['GamesinBundle'][$item['ProductID']]['Altwant']=$this->divzero($row['GamesinBundle'][$item['ProductID']]['Want'],$row['TotalWant'])*$row['Paid'];
 		
 		$row['GamesinBundle'][$item['ProductID']]['Althrs']=
 			$this->setvalue(isset($this->activity[$item['ProductID']]),
-			$this->divzero(($this->activity[$item['ProductID']]['totalHrs'] ?? 0),$row['TotalHrs']*$row['Paid']));
+			$this->divzero(($this->activity[$item['ProductID']]['totalHrs'] ?? 0),$row['TotalHrs'])*$row['Paid']);
 		
 		//$debug1=
 		//	"SalePrice: " .
@@ -288,8 +288,9 @@ class Purchases
 		}
 	}
 	
-	public function getPurchases($transID="",$connection=false,$items=false,$games=false){
+	public function getPurchases(){
 		//TODO: sometimes Totalweight is zero? Investigate.
+		/* is this even needed? */
 		$totalWeight=$this->settings['WeightMSRP']+$this->settings['WeightPlay']+$this->settings['WeightWant'];
 		if($totalWeight==0) {
 			// @codeCoverageIgnoreStart
@@ -302,6 +303,7 @@ class Purchases
 			$useWeightPlay=$this->settings['WeightPlay']/$totalWeight;
 			$useWeightWant=$this->settings['WeightWant']/$totalWeight;
 		}
+		/* */
 
 		$itemsbyBundle=$this->groupItemsByBundle($this->items);
 		
@@ -356,8 +358,7 @@ class Purchases
 		
 		return $this->purchases;
 	}
-}
-
+	
 /* ----------------------------------------------------------------------------------- */
 
 function getPurchases($transID="",$connection=false,$items=false,$games=false) {

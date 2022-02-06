@@ -118,42 +118,4 @@ final class getCalculations_Test extends TestCase
         $this->assertisArray(getPriceSort($sourceArray,"PriceObject"));
         $this->assertisArray(getPriceSort($sourceArray,"PriceObject",true));
 	}
-
-	/**
-	 * @group integration
-	 * @medium
-	 * @coversNothing
-	 * @testWith [30]
-	 *           [2269]
-	 * 30   = Wizardry 7
-	 * 2269 = Darksiders 2 Deathinitive edition
-	 */
-	public function test_multiplebundles($useproductid) {
-		$conn=get_db_connection();
-		$settings=getsettings($conn);
-		$calculations=reIndexArray(getCalculations("",$conn),"Game_ID");
-		$purchases=reIndexArray(getPurchases("",$conn), "TransID");
-		
-		foreach ($calculations[$useproductid]["TopBundleIDs"] as $bundle) {
-			$totalMSRP=0;
-			$totalSale=0;
-			foreach ($purchases[$bundle]["GamesinBundle"] as $gamein){
-				if($settings["status"][$calculations[$gamein["GameID"]]["Status"]]["Count"] == 1) {
-					$totalMSRP+=$calculations[$gamein["GameID"]]["MSRP"];
-					$totalSale+=$calculations[$gamein["GameID"]]["SalePrice"];
-				}				
-			}
-			
-			$totalExpectedSale=0;
-			foreach ($purchases[$bundle]["GamesinBundle"] as $gamein){
-				$expectedSale=($calculations[$gamein["GameID"]]["MSRP"]/$totalMSRP)*$purchases[$bundle]["Paid"];
-				if($settings["status"][$calculations[$gamein["GameID"]]["Status"]]["Count"] == 1) {
-					$totalExpectedSale += $expectedSale;
-				}
-				$this->assertEquals($expectedSale,$calculations[$gamein["GameID"]]["SalePrice"]);
-			}
-			$this->assertEquals($totalExpectedSale,$totalSale);
-		}
-	}
-
 }
