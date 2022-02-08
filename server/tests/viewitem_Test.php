@@ -33,7 +33,7 @@ class testviewitem extends TestCase {
     }
 
 	/**
-	 * @medium
+	 * @large
 	 */
     public function test_viewitem_edit() {
         $args = array('id'=>14,'edit'=>1);

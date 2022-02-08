@@ -17,7 +17,7 @@ class testgoty extends TestCase {
     }
 
 	/**
-	 * @medium
+	 * @large
 	 */
     public function test_goty_Load() {
         $args = array();
@@ -25,7 +25,7 @@ class testgoty extends TestCase {
     }
 
 	/**
-	 * @medium
+	 * @large
 	 */
     public function test_goty_year() {
         $args = array('group'=>"year");
@@ -33,7 +33,7 @@ class testgoty extends TestCase {
     }
 
 	/**
-	 * @medium
+	 * @large
 	 */
     public function test_goty_detail() {
         $args = array('group'=>"month",'countfree'=>0,'detail'=>"2010-5");

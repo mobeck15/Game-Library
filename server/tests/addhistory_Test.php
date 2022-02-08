@@ -26,7 +26,7 @@ class testaddhistory extends TestCase {
     }
 
 	/**
-	 * @medium
+	 * @large
 	 * @group steamapi
 	 */
     public function test_addhistory_Steam() {

@@ -17,7 +17,7 @@ class testtotals extends TestCase {
     }
 
 	/**
-	 * @medium
+	 * @large
 	 */
     public function test_totals_Load() {
         $args = array();

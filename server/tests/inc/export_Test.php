@@ -6,8 +6,9 @@ require_once $GLOBALS['rootpath'].'\inc\export.inc.php';
 
 /**
  * @group include
+ * @testdox Exporting the database
  */
-class testexportinc extends TestCase {
+class export_Test extends TestCase {
 
     private function _execute(array $params = array()) {
         $_GET = $params;
@@ -17,6 +18,7 @@ class testexportinc extends TestCase {
     }
 
 	/**
+	 * @testdox saves a file
 	 * @small
 	 * @coversNothing
 	 * @doesNotPerformAssertions

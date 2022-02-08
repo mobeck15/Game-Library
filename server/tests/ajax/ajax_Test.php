@@ -4,6 +4,7 @@ use PHPUnit\Framework\TestCase;
 $GLOBALS['rootpath'] = $GLOBALS['rootpath'] ?? "htdocs\Game-Library\server";
 
 /**
+ * @testdox Calling search.ajax.php with an Ajax request
  * @group page
  * @coversNothing
  */
@@ -17,6 +18,7 @@ class ajax_Test extends TestCase {
     }
 
 	/**
+	 * @testdox with no parameters
 	 * @small
 	 */
     public function test_ajax_Load() {
@@ -25,39 +27,22 @@ class ajax_Test extends TestCase {
     }
 
 	/**
+	 * @testWith ["stealth","Game"]
+	 *           ["stealth","Trans"]
+	 *           ["steam","DRM"]
+	 *           ["Windows","OS"]
+	 *           ["steam","Library"]
+	 *           ["stealth","Series"]
+	 *           ["game","Type"]
+	 *           ["valve","Developer"]
+	 *           ["valve","Publisher"]
+	 *           ["steam","Store"]
+	 * @testdox serching for $type containing "$term"
 	 * @group dbconnect
 	 * @small
 	 */
-    public function test_ajax_term() {
-        $args = array('term'=>"stealth");
+    public function test_ajax_term($term,$type) {
+        $args = array('term'=>$term,'querytype'=>$type);
         $this->assertisString($this->_execute($args));
-
-        $args = array('term'=>"stealth",'querytype'=>"Trans");
-        $this->assertisString($this->_execute($args));
-
-        $args = array('term'=>"steam",'querytype'=>"DRM");
-        $this->assertisString($this->_execute($args));
-
-        $args = array('term'=>"Windows",'querytype'=>"OS");
-        $this->assertisString($this->_execute($args));
-
-        $args = array('term'=>"steam",'querytype'=>"Library");
-        $this->assertisString($this->_execute($args));
-
-        $args = array('term'=>"stealth",'querytype'=>"Series");
-        $this->assertisString($this->_execute($args));
-
-        $args = array('term'=>"game",'querytype'=>"Type");
-        $this->assertisString($this->_execute($args));
-
-        $args = array('term'=>"valve",'querytype'=>"Developer");
-        $this->assertisString($this->_execute($args));
-
-        $args = array('term'=>"valve",'querytype'=>"Publisher");
-        $this->assertisString($this->_execute($args));
-
-        $args = array('term'=>"steam",'querytype'=>"Store");
-        $this->assertisString($this->_execute($args));
-
     }
 }

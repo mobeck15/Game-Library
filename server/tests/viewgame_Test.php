@@ -25,7 +25,7 @@ class testviewgame extends TestCase {
     }
 
 	/**
-	 * @medium
+	 * @large
 	 */
     public function test_viewgame_nonsteam() {
         $args = array('id'=>17);
@@ -33,7 +33,7 @@ class testviewgame extends TestCase {
     }
 
 	/**
-	 * @medium
+	 * @large
 	 */
     public function test_viewgame_steamgame() {
         $args = array('id'=>515);
@@ -41,7 +41,7 @@ class testviewgame extends TestCase {
     }
 
 	/**
-	 * @medium
+	 * @large
 	 */
     public function test_viewgame_edit() {
         $args = array('id'=>17,'edit'=>1);

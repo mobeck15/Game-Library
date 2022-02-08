@@ -17,7 +17,7 @@ class testtoplevel extends TestCase {
     }
 
 	/**
-	 * @medium
+	 * @large
 	 */
     public function test_toplevel_Load() {
         $args = array();

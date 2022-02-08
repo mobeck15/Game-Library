@@ -203,9 +203,9 @@ final class getPurchases_Test extends TestCase
 	
 	/**
 	 * @medium
-	 * @covers Purchases::itemRowBundles2
+	 * @covers Purchases::calculateSalePrice
 	 */
-	public function test_itemRowBundles2_base() {
+	public function test_calculateSalePrice_base() {
 		$purchasObject=new Purchases();
 		
 		$row=array(
@@ -225,7 +225,7 @@ final class getPurchases_Test extends TestCase
 		$property = $this->getPrivateProperty( 'Purchases', 'items' );
 		$items = $property->getValue( $purchasObject );
 		
-		$method = $this->getPrivateMethod( 'Purchases', 'itemRowBundles2' );
+		$method = $this->getPrivateMethod( 'Purchases', 'calculateSalePrice' );
 		$result = $method->invokeArgs($purchasObject, array( $items[2547],$row ) );
 		
 		$this->assertisArray($result);
@@ -233,9 +233,39 @@ final class getPurchases_Test extends TestCase
 	
 	/**
 	 * @medium
-	 * @covers Purchases::itemRowBundles2
+	 * @covers Purchases::calculateAltSalePrice
 	 */
-	public function test_itemRowBundles2_zeroweight() {
+	public function test_calculateAltSalePrice_base() {
+		$purchasObject=new Purchases();
+		
+		$row=array(
+		"TotalMSRP"=>1,
+		"TotalWant"=>1,
+		"TotalHrs"=>1,
+		"GamesinBundle"=>array(
+			1162=>array(
+				"Want"=>1,
+				"MSRP"=>1
+			)
+		),
+		"TotalMSRPFormula"=>"x",
+		"Paid"=>1
+		);
+		
+		$property = $this->getPrivateProperty( 'Purchases', 'items' );
+		$items = $property->getValue( $purchasObject );
+		
+		$method = $this->getPrivateMethod( 'Purchases', 'calculateAltSalePrice' );
+		$result = $method->invokeArgs($purchasObject, array( $items[2547],$row ) );
+		
+		$this->assertisArray($result);
+	}
+	
+	/**
+	 * @medium
+	 * @covers Purchases::calculateAltSalePrice
+	 */
+	public function test_calculateAltSalePrice_zeroweight() {
 		$GLOBALS["SETTINGS"]=array(
 		"status"=>array(
 			"Done"=>    array( "Active"=>"0", "Count"=>"1" ),
@@ -276,7 +306,7 @@ final class getPurchases_Test extends TestCase
 		$property = $this->getPrivateProperty( 'Purchases', 'items' );
 		$items = $property->getValue( $purchasObject );
 		
-		$method = $this->getPrivateMethod( 'Purchases', 'itemRowBundles2' );
+		$method = $this->getPrivateMethod( 'Purchases', 'calculateAltSalePrice' );
 		$result = $method->invokeArgs($purchasObject, array( $items[2547],$row ) );
 		
 		$this->assertisArray($result);

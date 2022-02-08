@@ -17,7 +17,7 @@ class testcalculations extends TestCase {
     }
 
 	/**
-	 * @medium
+	 * @large
 	 * @uses PriceCalculation 
 	 */
     public function test_calculations_Load() {
@@ -26,7 +26,7 @@ class testcalculations extends TestCase {
     }
 
 	/**
-	 * @medium
+	 * @large
 	 * @uses PriceCalculation 
 	 */
     public function test_calculations_Fave() {
@@ -35,7 +35,7 @@ class testcalculations extends TestCase {
     }
 
 	/**
-	 * @medium
+	 * @large
 	 * @uses PriceCalculation 
 	 */
     public function test_calculations_Custom() {

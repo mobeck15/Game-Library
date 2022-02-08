@@ -17,7 +17,7 @@ class testgamestatuschart extends TestCase {
     }
 
 	/**
-	 * @medium
+	 * @large
 	 */
     public function test_gamestatuschart_Load() {
         $args = array();

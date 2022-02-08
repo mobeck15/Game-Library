@@ -17,7 +17,7 @@ class testplaynext extends TestCase {
     }
 
 	/**
-	 * @medium
+	 * @large
 	 */
     public function test_playnext_Load() {
         $args = array();

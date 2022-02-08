@@ -26,7 +26,7 @@ class testviewbundle extends TestCase {
     }
 
 	/**
-	 * @medium
+	 * @large
 	 */
     public function test_viewbundle_bundleid() {
 		//Skyrim bundle

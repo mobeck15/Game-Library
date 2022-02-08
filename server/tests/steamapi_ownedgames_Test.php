@@ -17,7 +17,8 @@ class teststeamapi_ownedgames extends TestCase {
     }
 
 	/**
-	 * @medium
+	 * @large
+	 * @group steamapi
 	 */
     public function test_steamapi_ownedgames_Load() {
         $args = array();

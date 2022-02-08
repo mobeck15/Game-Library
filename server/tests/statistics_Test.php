@@ -25,7 +25,7 @@ class teststatistics extends TestCase {
     }
 
 	/**
-	 * @medium
+	 * @large
 	 */
     public function test_statistics_fullpage() {
         $args = array('filter'=>"All",'meta'=>"both");

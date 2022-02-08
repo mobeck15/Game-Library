@@ -16,7 +16,6 @@ class Purchases
 	private $items;
 	private $games;
 	private $purchases;
-	private $gamesList=array();
 
 	public function __construct($transID="",$connection=false,$items=false,$games=false) {
 		if($connection==false){
@@ -67,7 +66,6 @@ class Purchases
 			
 			if($count) {
 				$bundleID=$value['TransID'];
-				$n=0;
 				$parentbundle=$this->ParentBundleIndex[$bundleID];
 				
 				if(!isset($this->ParentBundleIndex[$bundleID])){
@@ -77,6 +75,7 @@ class Purchases
 					// @codeCoverageIgnoreEnd
 				}
 				
+				$n=0;
 				while($this->purchases[$parentbundle]['BundleID']<>$bundleID){
 					$bundleID=$this->purchases[$this->ParentBundleIndex[$bundleID]]['BundleID'];
 					if($n>=$this->max_loop) {
@@ -137,138 +136,73 @@ class Purchases
 	}
 	
 	private function itemRowBundles($item, $row) {
-		//$row['itemsinBundle'][$item['ItemID']]=$item['ItemID'];
-		//if(!in_array($item['ProductID'],$this->gamesList) && $item['ProductID']<>null){
-			//$this->gamesList[]=$item['ProductID'];
+		$row['ProductsinBunde'][$item['ProductID']]=$item['ProductID'];
+		if(isset($this->gameIndex[$item['ProductID']])){
+			$row['GamesinBundle'][$item['ProductID']]['GameID']=$item['ProductID'];
+			$row['GamesinBundle'][$item['ProductID']]['Type']=$this->games[$this->gameIndex[$item['ProductID']]]['Type'];
+			$row['GamesinBundle'][$item['ProductID']]['Playable']=$this->games[$this->gameIndex[$item['ProductID']]]['Playable'];
+			$row['GamesinBundle'][$item['ProductID']]['MSRP']=$this->games[$this->gameIndex[$item['ProductID']]]['MSRP'];
+			$row['GamesinBundle'][$item['ProductID']]['Want']=$this->games[$this->gameIndex[$item['ProductID']]]['Want'];
+			$row['GamesinBundle'][$item['ProductID']]['HistoricLow']=$this->games[$this->gameIndex[$item['ProductID']]]['HistoricLow'];
 			
-			$row['ProductsinBunde'][$item['ProductID']]=$item['ProductID'];
-		
-			/*
-			if($row['TransID']==57 AND $item['ProductID']==0){
-				echo "<b>Item</b>";
-				echo "<pre>".print_r($item,true)."</pre>";
-			}
-			
-			VVVVVV:
-			57  ProductID:381 :: MSRP(4.99)/TotalMSRP(29.94)*Paid(5.00)=0.83333333333333
-			300 ProductID:381 :: MSRP(4.99)/TotalMSRP(79.9)*Paid(1.00)=0.062453066332916
-			773 ProductID:381 :: MSRP(4.99)/TotalMSRP(331.68)*Paid(4.74)=0.071311505065123
-			SELECT `Game_ID`,`Title`,`MSRP` FROM `gl_products` join `gl_items` on `gl_products`.`Game_ID`=`gl_items`.`ProductID` where `gl_items`.`TransID`=300
-			*/
-			
-			//var_dump($this->gameIndex[$item['ProductID']]);
-			if(isset($this->gameIndex[$item['ProductID']])){
-				$row['GamesinBundle'][$item['ProductID']]['GameID']=$item['ProductID'];
-				$row['GamesinBundle'][$item['ProductID']]['Type']=$this->games[$this->gameIndex[$item['ProductID']]]['Type'];
-				$row['GamesinBundle'][$item['ProductID']]['Playable']=$this->games[$this->gameIndex[$item['ProductID']]]['Playable'];
-				$row['GamesinBundle'][$item['ProductID']]['MSRP']=$this->games[$this->gameIndex[$item['ProductID']]]['MSRP'];
-				$row['GamesinBundle'][$item['ProductID']]['Want']=$this->games[$this->gameIndex[$item['ProductID']]]['Want'];
-				$row['GamesinBundle'][$item['ProductID']]['HistoricLow']=$this->games[$this->gameIndex[$item['ProductID']]]['HistoricLow'];
+			if(isset($this->activity[$item['ProductID']]) && $this->settings['status'][$this->activity[$item['ProductID']]['Status']]['Count']==1){
+				$row['TotalMSRP']+=$this->games[$this->gameIndex[$item['ProductID']]]['MSRP'];
+				$row['TotalMSRPFormula'] .= " + " . $this->games[$this->gameIndex[$item['ProductID']]]['MSRP'];
+				$row['TotalWant']+=$this->games[$this->gameIndex[$item['ProductID']]]['Want'];
 				
-				if(isset($this->activity[$item['ProductID']]) && $this->settings['status'][$this->activity[$item['ProductID']]['Status']]['Count']==1){
-					$row['TotalMSRP']+=$this->games[$this->gameIndex[$item['ProductID']]]['MSRP'];
-					$row['TotalMSRPFormula'] .= " + " . $this->games[$this->gameIndex[$item['ProductID']]]['MSRP'];
-					$row['TotalWant']+=$this->games[$this->gameIndex[$item['ProductID']]]['Want'];
-					
-					//May need to use $this->activity[$item['ProductID']]['GrandTotal'] intead of 'totalHrs'
-					$row['TotalHrs']+=$this->activity[$item['ProductID']]['totalHrs'];
-				} elseif (!isset($this->activity[$item['ProductID']])){
-					$row['TotalMSRP']+=$this->games[$this->gameIndex[$item['ProductID']]]['MSRP'];
-					$row['TotalMSRPFormula'] .= " + " . $this->games[$this->gameIndex[$item['ProductID']]]['MSRP'];
-					$row['TotalWant']+=$this->games[$this->gameIndex[$item['ProductID']]]['Want'];
-				} //else {  //Use this to discover scenarios for testing.
-					//var_dump($item['ProductID']); //1162
-					//var_dump($this->activity[$item['ProductID']]); 
-				//}
-			}
-		//}
+				//May need to use $this->activity[$item['ProductID']]['GrandTotal'] intead of 'totalHrs'
+				$row['TotalHrs']+=$this->activity[$item['ProductID']]['totalHrs'];
+			} elseif (!isset($this->activity[$item['ProductID']])){
+				$row['TotalMSRP']+=$this->games[$this->gameIndex[$item['ProductID']]]['MSRP'];
+				$row['TotalMSRPFormula'] .= " + " . $this->games[$this->gameIndex[$item['ProductID']]]['MSRP'];
+				$row['TotalWant']+=$this->games[$this->gameIndex[$item['ProductID']]]['Want'];
+			} //else {  //Use this to discover scenarios for testing.
+				//var_dump($item['ProductID']); //1162
+				//var_dump($this->activity[$item['ProductID']]); 
+		}
 		return $row;
 	}
 	
-	private function itemRowBundles2($item, $row) {
-		$row['GamesinBundle'][$item['ProductID']]['Altwant']=$this->divzero($row['GamesinBundle'][$item['ProductID']]['Want'],$row['TotalWant'])*$row['Paid'];
-		
-		$row['GamesinBundle'][$item['ProductID']]['Althrs']=
-			$this->setvalue(isset($this->activity[$item['ProductID']]),
-			$this->divzero(($this->activity[$item['ProductID']]['totalHrs'] ?? 0),$row['TotalHrs'])*$row['Paid']);
-		
-		//$debug1=
-		//	"SalePrice: " .
-		//	"MSRP(".$row['GamesinBundle'][$item['ProductID']]['MSRP'] . 
-		//	")/TotalMSRP(" . $row['TotalMSRP'] . 
-		//	")*Paid(" . $row['Paid'] . 
-		//	")=" . $row['GamesinBundle'][$item['ProductID']]['MSRP']/$row['TotalMSRP']*$row['Paid'] . "<br>";
-		//$row['GamesinBundle'][$item['ProductID']]['Debug'] .= $debug1;
-		
+	private function calculateSalePrice($item, $row) {
 		$row['GamesinBundle'][$item['ProductID']]['SalePrice']=($this->divzero($row['GamesinBundle'][$item['ProductID']]['MSRP'],$row['TotalMSRP'])*$row['Paid']);
 		$row['GamesinBundle'][$item['ProductID']]['SalePriceFormula']=$this->setvalue(($row['TotalMSRP'] <> 0),"(" . $row['GamesinBundle'][$item['ProductID']]['MSRP'] . " / " . $row['TotalMSRP'] . ") * " . $row['Paid']);
-		
-		/* */
-		$totalWeight=0;
-		if($row['GamesinBundle'][$item['ProductID']]['Altwant']>0) {
-			$totalWeight+=$this->settings['WeightWant'];
+
+		return $row;
+	}
+	
+	private function calculateAltSalePrice($item, $row){
+		$totalWeight=$this->settings['WeightWant']+$this->settings['WeightPlay']+$this->settings['WeightMSRP'];
+		if($totalWeight==0) {
+			$totalWeight = 1;
 		}
-		if($row['GamesinBundle'][$item['ProductID']]['Althrs']>0) {
-			$totalWeight+=$this->settings['WeightPlay'];
-		}
-		if($row['GamesinBundle'][$item['ProductID']]['SalePrice']<>0){
-			$totalWeight+=$this->settings['WeightMSRP'];
-		}
-		if($totalWeight==0){
-			$totalWeight=1;
-		}
-		//$totalWeight=$this->settings['WeightMSRP']+$this->settings['WeightPlay']+$this->settings['WeightWant'];
 		$useWeightMSRP=$this->settings['WeightMSRP']/$totalWeight;
 		$useWeightPlay=$this->settings['WeightPlay']/$totalWeight;
 		$useWeightWant=$this->settings['WeightWant']/$totalWeight;
-		/* */
 		
-		//TODO: Alt paid needs some corrections in the calculation for when games have zero hours.
-		//TODO: Alt paid needs some corrections in the calculation for when a bundle has zero total hours.
-
+		$payRatio=$this->divzero($row['GamesinBundle'][$item['ProductID']]['MSRP'],$row['TotalMSRP']);
+		$wantRatio=$this->divzero($row['GamesinBundle'][$item['ProductID']]['Want'],$row['TotalWant']);
+		$hoursRatio=$this->divzero(($this->activity[$item['ProductID']]['totalHrs'] ?? 0),$row['TotalHrs']);
+		//echo $item['ProductID']. " ";
+		
+		$row['GamesinBundle'][$item['ProductID']]['Altwant']=($wantRatio*$useWeightWant*$row['Paid']);
+		$row['GamesinBundle'][$item['ProductID']]['Althrs']=($hoursRatio*$useWeightPlay*$row['Paid']);
+		$row['GamesinBundle'][$item['ProductID']]['AltPrice']=($payRatio*$useWeightMSRP*$row['Paid']);
+		
 		$row['GamesinBundle'][$item['ProductID']]['AltSalePrice']=
-			$row['GamesinBundle'][$item['ProductID']]['Altwant']  *$useWeightWant +
-			$row['GamesinBundle'][$item['ProductID']]['Althrs']   *$useWeightPlay +
-			$row['GamesinBundle'][$item['ProductID']]['SalePrice']*$useWeightMSRP ;
-
+			$row['GamesinBundle'][$item['ProductID']]['Altwant']
+			+$row['GamesinBundle'][$item['ProductID']]['Althrs']
+			+$row['GamesinBundle'][$item['ProductID']]['AltPrice'];
+			
+		//([Game Price]/[Bundle Total]*[Price Weight]*[Bundle Price])
+		//+([Game Want]/[Bundle Want]*[Want Weight]*[Bundle Price])
+		//+([Game Hours]/[Bundle Hours]*[Play Weight]*[Bundle Price])
 		/*
-		$row['GamesinBundle'][$item['ProductID']]['Debug'].=
-			"TotalWeight = " . $totalWeight . " " .
-			"AltSalePrice: AltWant (".
-			(0+$row['GamesinBundle'][$item['ProductID']]['Altwant']) .
-			" * (".$this->settings['WeightWant']."/".$totalWeight."=".(0+round($useWeightWant,2)).")=".($row['GamesinBundle'][$item['ProductID']]['Altwant']  *$useWeightWant).") + Althrs (".
-			(0+$row['GamesinBundle'][$item['ProductID']]['Althrs']) .
-			" * (".$this->settings['WeightPlay']."/".$totalWeight."=".(0+round($useWeightPlay,2)).")=".($row['GamesinBundle'][$item['ProductID']]['Althrs']   *$useWeightPlay).") + SalePrice (".
-			(0+$row['GamesinBundle'][$item['ProductID']]['SalePrice']).
-			" * (".$this->settings['WeightMSRP']."/".$totalWeight."=".(0+round($useWeightMSRP,2)).")=".($row['GamesinBundle'][$item['ProductID']]['SalePrice']*$useWeightMSRP).") = ".
-			(0+$row['GamesinBundle'][$item['ProductID']]['AltSalePrice'])."<br>";
-		*/
-		/*
-		HurtWorld:
-		SalePrice: MSRP(24.99)/TotalMSRP(24.99)*Paid(12.00)=12
-		TotalWeight = 100 
-		AltSalePrice: 
-			AltWant   (12 * (30/100=0.3)=3.6) + 
-			Althrs    (0  * (20/100=0.2)=0) + 
-			SalePrice (12 * (50/100=0.5)=6) = 9.6
-
-		HurtWorld:
-		SalePrice: MSRP(24.99)/TotalMSRP(24.99)*Paid(12.00)=12
-		TotalWeight = 80 
-		AltSalePrice: 
-			AltWant   (12 * (30/80=0.38)=4.5) + 
-			Althrs    (0  * (20/80=0.25)=0) + 
-			SalePrice (12 * (50/80=0.63)=7.5) = 12
-		
-		HurtWorld:
-		SalePrice: MSRP(24.99)/TotalMSRP(24.99)*Paid(12.00)=12
-		TotalWeight = 60 
-		AltSalePrice: 
-			AltWant   (12 * (30/60=0.5 )=6) + 
-			Althrs    (0  * (20/60=0.33)=0) + 
-			SalePrice (12 * (50/60=0.83)=10) = 16
-
-		*/
+		$row['GamesinBundle'][$item['ProductID']]['Debug'] = 
+				"\nAltSale: " . $row['GamesinBundle'][$item['ProductID']]['AltSalePrice'] . " = ".
+				"\nWantPart (" . ($wantRatio*$useWeightWant*$row['Paid']) .") + ".
+				"HoursPart (" . ($hoursRatio*$useWeightPlay*$row['Paid']) . ") + ".
+				"MSRPpart (" . ($payRatio*$useWeightMSRP*$row['Paid']) . ")" ."\n";
+				*/
 		return $row;
 	}
 	
@@ -288,68 +222,53 @@ class Purchases
 		}
 	}
 	
-	public function getPurchases(){
-		//TODO: sometimes Totalweight is zero? Investigate.
-		/* is this even needed? */
-		$totalWeight=$this->settings['WeightMSRP']+$this->settings['WeightPlay']+$this->settings['WeightWant'];
-		if($totalWeight==0) {
-			// @codeCoverageIgnoreStart
-			$useWeightMSRP=0;
-			$useWeightPlay=0;
-			$useWeightWant=0;
-			// @codeCoverageIgnoreEnd
-		} else {
-			$useWeightMSRP=$this->settings['WeightMSRP']/$totalWeight;
-			$useWeightPlay=$this->settings['WeightPlay']/$totalWeight;
-			$useWeightWant=$this->settings['WeightWant']/$totalWeight;
+	private function getTopBundle($row){
+		$TopBundleID=$row['BundleID'];
+		$n=0;
+		while($this->purchases[$this->ParentBundleIndex[$TopBundleID]]['BundleID']<>$TopBundleID){
+			$TopBundleID=$this->purchases[$this->ParentBundleIndex[$TopBundleID]]['BundleID'];
+			if($n>=$this->max_loop) {
+				$TopBundleID=null;
+				trigger_error("Exceeded maximum parent bundles (" . $n . ")");
+				break;
+			}
+			$n++;
 		}
-		/* */
-
+		return $TopBundleID;
+	}
+	
+	public function getPurchases(){
 		$itemsbyBundle=$this->groupItemsByBundle($this->items);
 		
 		foreach ($this->purchases as &$row) {
-			$n=0;
-			$row['TopBundleID']=$row['BundleID'];
 			$row['Bundle']=$this->purchases[$this->ParentBundleIndex[$row['BundleID']]]['Title'];
-			while($this->purchases[$this->ParentBundleIndex[$row['TopBundleID']]]['BundleID']<>$row['TopBundleID']){
-				$row['TopBundleID']=$this->purchases[$this->ParentBundleIndex[$row['TopBundleID']]]['BundleID'];
-				if($n>=$this->max_loop) {
-					// @codeCoverageIgnoreStart
-					trigger_error("Exceeded maximum parent bundles (" . $n . ")");
-					break;
-					// @codeCoverageIgnoreEnd
-				}
-				$n++;
-			}
-			if(isset($this->purchases[$this->ParentBundleIndex[$row['TopBundleID']]]['Title'])){
-				$row['TopBundleID']  = $row['TopBundleID'];
-				$row['TopBundle'] = $this->purchases[$this->ParentBundleIndex[$row['TopBundleID']]]['Title'];
-			} else {
-				// @codeCoverageIgnoreStart
-				$row['TopBundle']="Not Found";
-				$row['TopBundleID']=null;
-				// @codeCoverageIgnoreEnd
-			}
+			
+			$row['TopBundleID']=$this->getTopBundle($row);
+			
+			$row['TopBundle']=$this->purchases[$this->ParentBundleIndex[$row['TopBundleID']]]['Title'] ?? "Not Found";
 			
 			$row['BundlePrice'] = sprintf("%.2f",$this->purchases[$this->ParentBundleIndex[$row['TopBundleID']]]['Paid']);
 
 			if (isset($itemsbyBundle[$row['TransID']])){
 
-				$this->gamesList=array();
+				//This first loop counts the totals for each bundle such as totalMSRP, totlaWant, and totalHours
+				$gamesList=array();
 				foreach($itemsbyBundle[$row['TransID']] as $item){
 					$row['itemsinBundle'][$item['ItemID']]=$item['ItemID'];
-					if(!in_array($item['ProductID'],$this->gamesList) && $item['ProductID']<>null){
-						$this->gamesList[]=$item['ProductID'];
+					if(!in_array($item['ProductID'],$gamesList) && $item['ProductID']<>null){
+						$gamesList[]=$item['ProductID'];
 						$row=$this->itemRowBundles($item,$row);
 					}
 				}
 				
-				$this->gamesList=array();
+				//The second loop uses totalMSRP, totlaWant, and totalHours to calculate saleprice and altsaleprice.
+				$gamesList=array();
 				foreach($itemsbyBundle[$row['TransID']] as $item){
 					if(isset($this->gameIndex[$item['ProductID']])){
-						if(!in_array($item['ProductID'],$this->gamesList)){
-							$this->gamesList[]=$item['ProductID'];
-							$row=$this->itemRowBundles2($item,$row);
+						if(!in_array($item['ProductID'],$gamesList)){
+							$gamesList[]=$item['ProductID'];
+							$row=$this->calculateAltSalePrice($item,$row);
+							$row=$this->calculateSalePrice($item,$row);
 						}
 					}
 				}
@@ -358,7 +277,7 @@ class Purchases
 		
 		return $this->purchases;
 	}
-	
+}
 /* ----------------------------------------------------------------------------------- */
 
 function getPurchases($transID="",$connection=false,$items=false,$games=false) {

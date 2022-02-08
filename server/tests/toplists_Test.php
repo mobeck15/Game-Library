@@ -17,7 +17,7 @@ class testtoplists extends TestCase {
     }
 
 	/**
-	 * @medium
+	 * @large
 	 */
     public function test_toplists_Load() {
         $args = array();

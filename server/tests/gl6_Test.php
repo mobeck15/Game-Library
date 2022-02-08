@@ -17,7 +17,7 @@ class testgl6 extends TestCase {
     }
 
 	/**
-	 * @medium
+	 * @large
 	 */
     public function test_gl6_Load() {
         $args = array();

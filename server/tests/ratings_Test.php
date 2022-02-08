@@ -17,7 +17,7 @@ class testratings extends TestCase {
     }
 
 	/**
-	 * @medium
+	 * @large
 	 */
     public function test_ratings_Load() {
         $args = array();

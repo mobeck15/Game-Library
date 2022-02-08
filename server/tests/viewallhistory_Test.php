@@ -25,7 +25,7 @@ class testviewallhistory extends TestCase {
     }
 
 	/**
-	 * @small
+	 * @medium
 	 */
     public function test_viewallhistory_history() {
         $args = array('num'=>30,'Sort'=>"Played");

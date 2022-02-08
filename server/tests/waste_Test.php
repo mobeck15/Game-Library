@@ -17,7 +17,7 @@ class testwaste extends TestCase {
     }
 
 	/**
-	 * @medium
+	 * @large
 	 */
     public function test_waste_Load() {
         $args = array();

@@ -11,7 +11,7 @@ require_once $GLOBALS['rootpath']."\inc\getHistoryCalculations.inc.php";
 final class getHistoryCalculations_Test extends TestCase
 {
 	/**
-	 * @small
+	 * @medium
 	 * @covers getHistoryCalculations
 	 * @uses get_db_connection
 	 * @uses getsettings

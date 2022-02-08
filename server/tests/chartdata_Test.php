@@ -17,7 +17,7 @@ class testchartdata extends TestCase {
     }
 
 	/**
-	 * @medium
+	 * @large
 	 */
     public function test_chartdata_Load() {
         $args = array();
@@ -25,7 +25,7 @@ class testchartdata extends TestCase {
     }
 
 	/**
-	 * @medium
+	 * @large
 	 */
     public function test_chartdata_year() {
         $args = array('group'=>"year");
@@ -33,7 +33,7 @@ class testchartdata extends TestCase {
     }
 
 	/**
-	 * @medium
+	 * @large
 	 */
     public function test_chartdata_detail() {
         $args = array('group'=>"month",'countfree'=>0,'detail'=>"2010-5");

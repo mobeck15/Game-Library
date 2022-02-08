@@ -677,7 +677,7 @@ final class SteamScrape_Test extends TestCase
     }
 	
 	/**
-	 * @medium
+	 * @small
 	 * @covers SteamScrape::getPublisher
 	 * @uses SteamScrape::__construct
 	 * @uses SteamScrape::getStorePage
