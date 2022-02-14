@@ -198,6 +198,7 @@ thead th {
 }
 
 .foot {
+	clear: both;
 	background-color: #ffcc66;
 	Color: Black;
 	box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.4);	
