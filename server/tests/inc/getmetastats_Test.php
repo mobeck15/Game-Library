@@ -289,8 +289,48 @@ final class getmetastats_Test extends TestCase
 		$this->expectNoticeMessage('othervalue Total not set');
 		
         $this->assertisArray(getStatRow("All",'othervalue'));
-	}	
+	}
 
+	/**
+	 * @large
+	 * @covers getStatRow
+	 * @uses CalculateGameRow
+	 * @uses PriceCalculation
+	 * @uses combinedate
+	 * @uses countrow
+	 * @uses daysSinceDate
+	 * @uses getActivityCalculations
+	 * @uses getAllCpi
+	 * @uses getAllItems
+	 * @uses getCalculations
+	 * @uses getCleanStringDate
+	 * @uses getGames
+	 * @uses getHistoryCalculations
+	 * @uses getHrsNextPosition
+	 * @uses getHrsToTarget
+	 * @uses getKeywords
+	 * @uses getNextPosition
+	 * @uses getOnlyValues
+	 * @uses getPriceSort
+	 * @uses getPriceperhour
+	 * @uses getPurchases
+	 * @uses getTimeLeft
+	 * @uses getsettings
+	 * @uses makeIndex
+	 * @uses makeStatDataSet
+	 * @uses methodTranslator
+	 * @uses objectTranslator
+	 * @uses regroupArray
+	 * @uses timeduration
+	 */
+    public function test_getStatRow_set() {
+		$GLOBALS["METASTATS"]['othervalue']=array("already set");
+		$output = getStatRow("All",'othervalue');
+        $this->assertisArray($output);
+        $this->assertEquals(array("already set"),$output);
+		
+	}
+	
 	/**
 	 * @large
 	 * @covers countgames

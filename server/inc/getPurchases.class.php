@@ -65,28 +65,7 @@ class Purchases
 			}
 			
 			if($count) {
-				$bundleID=$value['TransID'];
-				$parentbundle=$this->ParentBundleIndex[$bundleID];
-				
-				if(!isset($this->ParentBundleIndex[$bundleID])){
-					// @codeCoverageIgnoreStart
-					trigger_error("No parent bundle found");
-					var_dump($value);
-					// @codeCoverageIgnoreEnd
-				}
-				
-				$n=0;
-				while($this->purchases[$parentbundle]['BundleID']<>$bundleID){
-					$bundleID=$this->purchases[$this->ParentBundleIndex[$bundleID]]['BundleID'];
-					if($n>=$this->max_loop) {
-						// @codeCoverageIgnoreStart
-						trigger_error("Exceeded maximum parent bundles (" . $n . ")");
-						break;
-						// @codeCoverageIgnoreEnd
-					}
-					$n++;
-				}		
-				$itemsbyBundle[$bundleID][]=$value;
+				$itemsbyBundle[$this->getTopBundle($value['TransID'])][]=$value;
 			}
 		}
 		return $itemsbyBundle;
@@ -222,17 +201,16 @@ class Purchases
 		}
 	}
 	
-	private function getTopBundle($row){
-		$TopBundleID=$row['BundleID'];
+	private function getTopBundle($TopBundleID){
 		$n=0;
-		while($this->purchases[$this->ParentBundleIndex[$TopBundleID]]['BundleID']<>$TopBundleID){
+		while($this->purchases[$this->ParentBundleIndex[$TopBundleID]]['BundleID']<>$TopBundleID && $n<=$this->max_loop){ 
 			$TopBundleID=$this->purchases[$this->ParentBundleIndex[$TopBundleID]]['BundleID'];
-			if($n>=$this->max_loop) {
-				$TopBundleID=null;
-				trigger_error("Exceeded maximum parent bundles (" . $n . ")");
-				break;
-			}
 			$n++;
+		}
+		if($n>$this->max_loop) {
+			$TopBundleID=null;
+			//echo "\nTop bundle search stopped at $n loops\n";
+			trigger_error("Exceeded maximum parent bundles (" . $this->max_loop . ")");
 		}
 		return $TopBundleID;
 	}
@@ -243,7 +221,7 @@ class Purchases
 		foreach ($this->purchases as &$row) {
 			$row['Bundle']=$this->purchases[$this->ParentBundleIndex[$row['BundleID']]]['Title'];
 			
-			$row['TopBundleID']=$this->getTopBundle($row);
+			$row['TopBundleID']=$this->getTopBundle($row['BundleID']);
 			
 			$row['TopBundle']=$this->purchases[$this->ParentBundleIndex[$row['TopBundleID']]]['Title'] ?? "Not Found";
 			

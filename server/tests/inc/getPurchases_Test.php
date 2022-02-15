@@ -157,6 +157,208 @@ final class getPurchases_Test extends TestCase
 	
 	/**
 	 * @medium
+	 * @covers Purchases::getTopBundle
+	 * @uses CalculateGameRow
+	 * @uses Purchases
+	 * @uses combinedate
+	 * @uses dataAccess
+	 * @uses getActivityCalculations
+	 * @uses getAllCpi
+	 * @uses getAllItems
+	 * @uses getCleanStringDate
+	 * @uses getGames
+	 * @uses getHistoryCalculations
+	 * @uses get_db_connection
+	 * @uses getsettings
+	 * @uses makeIndex
+	 * @uses timeduration	 
+	 */
+	public function test_getTopBundle_base() {
+		$bundleid=111;
+		//$row=array('BundleID'=>$bundleid);
+		
+		$purchases[$bundleid]['BundleID']=$bundleid;
+		
+		$parentbundle[$bundleid]=$bundleid;
+		
+		$purchasObject=new Purchases();
+		
+		$property = $this->getPrivateProperty( 'Purchases', 'purchases' );
+		$items = $property->SetValue( $purchasObject, $purchases);
+		
+		$property = $this->getPrivateProperty( 'Purchases', 'ParentBundleIndex' );
+		$items = $property->SetValue( $purchasObject, $parentbundle);
+		
+		$method = $this->getPrivateMethod( 'Purchases', 'getTopBundle' );
+		$result = $method->invokeArgs($purchasObject, array( $bundleid ) );
+		
+		$this->assertisNumeric($result);
+		$this->assertEquals($bundleid,$result);
+	}
+	
+	/**
+	 * @medium
+	 * @covers Purchases::getTopBundle
+	 * @uses CalculateGameRow
+	 * @uses Purchases
+	 * @uses combinedate
+	 * @uses dataAccess
+	 * @uses getActivityCalculations
+	 * @uses getAllCpi
+	 * @uses getAllItems
+	 * @uses getCleanStringDate
+	 * @uses getGames
+	 * @uses getHistoryCalculations
+	 * @uses get_db_connection
+	 * @uses getsettings
+	 * @uses makeIndex
+	 * @uses timeduration	 
+	 */
+	public function test_getTopBundle_2() {
+		$bundleid=111;
+		//$row=array('BundleID'=>$bundleid);
+		
+		$purchases[$bundleid]['TransID']=$bundleid;
+		$purchases[$bundleid]['BundleID']=$bundleid+1;
+		$purchases[$bundleid+1]['TransID']=$bundleid+1;
+		$purchases[$bundleid+1]['BundleID']=$bundleid+1;
+
+		$parentbundle=makeIndex($purchases,"TransID");
+		
+		$purchasObject=new Purchases();
+		
+		$property = $this->getPrivateProperty( 'Purchases', 'purchases' );
+		$items = $property->SetValue( $purchasObject, $purchases);
+		
+		$property = $this->getPrivateProperty( 'Purchases', 'ParentBundleIndex' );
+		$items = $property->SetValue( $purchasObject, $parentbundle);
+		
+		$method = $this->getPrivateMethod( 'Purchases', 'getTopBundle' );
+		$result = $method->invokeArgs($purchasObject, array( $bundleid ) );
+		
+		$this->assertisNumeric($result);
+		$this->assertEquals($bundleid+1,$result);
+	}
+	
+	
+	/**
+	 * @medium
+	 * @covers Purchases::getTopBundle
+	 * @uses CalculateGameRow
+	 * @uses Purchases
+	 * @uses combinedate
+	 * @uses dataAccess
+	 * @uses getActivityCalculations
+	 * @uses getAllCpi
+	 * @uses getAllItems
+	 * @uses getCleanStringDate
+	 * @uses getGames
+	 * @uses getHistoryCalculations
+	 * @uses get_db_connection
+	 * @uses getsettings
+	 * @uses makeIndex
+	 * @uses timeduration	 
+	 */
+	public function test_getTopBundle_5() {
+		$bundleid=111;
+		//$row=array('BundleID'=>$bundleid);
+		
+		$purchases[$bundleid]['TransID']=$bundleid;
+		$purchases[$bundleid]['BundleID']=$bundleid+1;
+		$purchases[$bundleid+1]['TransID']=$bundleid+1;
+		$purchases[$bundleid+1]['BundleID']=$bundleid+2;
+		$purchases[$bundleid+2]['TransID']=$bundleid+2;
+		$purchases[$bundleid+2]['BundleID']=$bundleid+3;
+		$purchases[$bundleid+3]['TransID']=$bundleid+3;
+		$purchases[$bundleid+3]['BundleID']=$bundleid+4;
+		$purchases[$bundleid+4]['TransID']=$bundleid+4;
+		$purchases[$bundleid+4]['BundleID']=$bundleid+5;
+		$purchases[$bundleid+5]['TransID']=$bundleid+5;
+		$purchases[$bundleid+5]['BundleID']=$bundleid+5;
+
+		$parentbundle=makeIndex($purchases,"TransID");
+		
+		$purchasObject=new Purchases();
+		
+		$property = $this->getPrivateProperty( 'Purchases', 'purchases' );
+		$items = $property->SetValue( $purchasObject, $purchases);
+		
+		$property = $this->getPrivateProperty( 'Purchases', 'ParentBundleIndex' );
+		$items = $property->SetValue( $purchasObject, $parentbundle);
+		//$items = $property->getValue( $purchasObject );
+		//var_dump($items);
+		
+		$method = $this->getPrivateMethod( 'Purchases', 'getTopBundle' );
+		$result = $method->invokeArgs($purchasObject, array( $bundleid ) );
+		
+		$this->assertisNumeric($result);
+		$this->assertEquals($bundleid+5,$result);
+	}
+
+	/**
+	 * @medium
+	 * @covers Purchases::getTopBundle
+	 * @uses CalculateGameRow
+	 * @uses Purchases
+	 * @uses combinedate
+	 * @uses dataAccess
+	 * @uses getActivityCalculations
+	 * @uses getAllCpi
+	 * @uses getAllItems
+	 * @uses getCleanStringDate
+	 * @uses getGames
+	 * @uses getHistoryCalculations
+	 * @uses get_db_connection
+	 * @uses getsettings
+	 * @uses makeIndex
+	 * @uses timeduration	 
+	 */
+	public function test_getTopBundle_max() {
+		$bundleid=1001;
+		//$row=array('BundleID'=>$bundleid);
+		
+		$purchases[$bundleid]['TransID']=$bundleid;
+		$purchases[$bundleid]['BundleID']=$bundleid+1;
+		$purchases[$bundleid+1]['TransID']=$bundleid+1;
+		$purchases[$bundleid+1]['BundleID']=$bundleid+2;
+		$purchases[$bundleid+2]['TransID']=$bundleid+2;
+		$purchases[$bundleid+2]['BundleID']=$bundleid+3;
+		$purchases[$bundleid+3]['TransID']=$bundleid+3;
+		$purchases[$bundleid+3]['BundleID']=$bundleid+4;
+		$purchases[$bundleid+4]['TransID']=$bundleid+4;
+		$purchases[$bundleid+4]['BundleID']=$bundleid+5;
+		$purchases[$bundleid+5]['TransID']=$bundleid+5;
+		$purchases[$bundleid+5]['BundleID']=$bundleid+6;
+		$purchases[$bundleid+6]['TransID']=$bundleid+6;
+		$purchases[$bundleid+6]['BundleID']=$bundleid+6;
+		
+		$parentbundle=makeIndex($purchases,"TransID");
+		
+		$purchasObject=new Purchases();
+		
+		$property = $this->getPrivateProperty( 'Purchases', 'purchases' );
+		$items = $property->SetValue( $purchasObject, $purchases);
+		
+		$property = $this->getPrivateProperty( 'Purchases', 'ParentBundleIndex' );
+		$items = $property->SetValue( $purchasObject, $parentbundle);
+		
+		$property = $this->getPrivateProperty( 'Purchases', 'max_loop' );
+		//$items = $property->SetValue( $purchasObject, 2);
+		$maxloop = $property->getValue( $purchasObject);
+		
+		$this->expectNotice();
+		$this->expectNoticeMessage('Exceeded maximum parent bundles ('. ($maxloop) .')');
+
+		
+		$method = $this->getPrivateMethod( 'Purchases', 'getTopBundle' );
+		$result = $method->invokeArgs($purchasObject, array( $bundleid ) );
+		
+		$this->assertisNumeric($result);
+		$this->assertEquals($bundleid+6,$result);
+	}	
+	
+	/**
+	 * @medium
 	 * @covers Purchases::itemRowBundles
 	 */
 	public function test_itemRowBundles_nocount() {

@@ -16,8 +16,6 @@ class topx
 		$this->sortDir=$sortDir;
 	}
 	
-	
-	
 	public function displaytop($gameidList,$stat){
 		$output ="<div style='float:right; margin: 5px;'>";
 		$output .="<table>";
