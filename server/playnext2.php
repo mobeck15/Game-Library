@@ -16,7 +16,7 @@ $topxobj= new topx($calculations);
 //$filter = $topxobj->filterlist();
 
 $totalranks=array();
-
+$output2="";
 foreach ($topxobj->statlist() as $stat) {
 	$list = $topxobj->gettopx($stat);
 	foreach ($list as $key => $item){
@@ -24,13 +24,13 @@ foreach ($topxobj->statlist() as $stat) {
 		$sortranks[$item]=$totalranks[$item]["ranks"];
 		$totalranks[$item]["id"]=$item;
 	}
-	echo $topxobj->displaytop($list,$stat);
+	$output2 .= $topxobj->displaytop($list,$stat);
 }
 
 array_multisort($sortranks, SORT_DESC, $totalranks);		
 
-
-$output ="<table>";
+$output  ="";
+$output .="<table>";
 $output .="<thead><tr><th>Ranks</th><th>Title</th></tr></thead>";
 $output .="<tbody>";
 foreach($totalranks as $item){
@@ -43,7 +43,11 @@ foreach($totalranks as $item){
 $output .="</tbody>";
 $output .="</table>";
 
+echo "<table><tr><td width=300 valign=top>";
 echo $output;
+echo "</td><td valign=top>";
+echo $output2;
+echo "</td></tr></table>";
 
 echo Get_Footer(); 
 

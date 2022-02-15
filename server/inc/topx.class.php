@@ -8,17 +8,18 @@ class topx
 	private $calculations;
 	private $xvalue=3;
 	private $filter="Playable,eq,0,Status,eq,Never,Status,eq,Done,Status,eq,Broken,Review,eq,1,Review,eq,2";
-	private $sortdir=SORT_DESC;
+	private $sortDir=SORT_DESC;
 	
-	public function __construct($calculations=null,$xvalue=3){
+	public function __construct($calculations=null,$xvalue=3, $sortDir=SORT_DESC){
 		$this->calculations = $calculations;
 		$this->xvalue=$xvalue;
+		$this->sortDir=$sortDir;
 	}
 	
 	
 	
 	public function displaytop($gameidList,$stat){
-		$output ="<div style='float:right'>";
+		$output ="<div style='float:right; margin: 5px;'>";
 		$output .="<table>";
 		$output .="<thead><tr><th>Rank</th><th>Title</th><th>".$this->getHeaderText($stat)."</th></tr></thead>";
 		$output .="<tbody>";
@@ -90,7 +91,9 @@ class topx
 	}
 	
 	private function sortbystat($stat){
-		
+		//$sortDir=$sortDir ?? $this->sortDir;
+		$sortDir=$this->defaultSortDir($stat);
+
 		$calculations=$this->calculations;
 
 		switch($stat){
@@ -119,14 +122,14 @@ class topx
 				}
 				break;
 		}
-		array_multisort($Sortby1, SORT_DESC, $calculations);
+		array_multisort($Sortby1, $sortDir, $calculations);
 		return $calculations;
 	}
 	
 	public function gettopx($stat,$filter=null){
 		$calculations=$this->sortbystat($stat);
 		
-		$filter=$filter ?? $this->filter;
+		$filter=$filter ?? $this->defaultFilterString($stat);
 		$filter=$this->parseFilter($filter);		
 		
 		//$list = array(3372,4252,3143);
@@ -144,6 +147,51 @@ class topx
 		}
 		
 		return $list;
+	}
+	private function defaultFilterString($stat){
+		switch($stat){
+			case "GrandTotal":
+				return $this->filter;
+				break;
+			default:
+				return $this->filter.",$stat,eq,0";
+				break;
+		}
+	}
+	
+	private function defaultSortDir($stat){
+		switch($stat){
+			case "LastPlayORPurchase":
+			case "LaunchLess2":
+			case "MSRPLess2":
+			case "CurrentLess2":
+			case "HistoricLess2":
+			case "PaidLess2":
+			case "SaleLess2":
+			case "AltLess2":
+			case "LaunchHrsNext1":
+			case "MSRPHrsNext1":
+			case "CurrentHrsNext1":
+			case "HistoricHrsNext1":
+			case "PaidHrsNext1":
+			case "SaleHrsNext1":
+			case "AltHrsNext1":
+
+			case "LaunchHrsNext2":
+			case "MSRPHrsNext2":
+			case "CurrentHrsNext2":
+			case "HistoricHrsNext2":
+			case "PaidHrsNext2":
+			case "SaleHrsNext2":
+			case "AltHrsNext2":
+			case "TimeLeftToBeat":
+			case "GrandTotal":
+				return SORT_ASC;
+				break;
+			default:
+				return SORT_DESC;
+				break;
+		}
 	}
 	
 	public function statlist(){
