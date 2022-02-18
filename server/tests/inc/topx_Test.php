@@ -25,6 +25,8 @@ final class topx_Test extends TestCase
 	/**
 	 * @small
 	 * @covers topx::displaytop
+	 * @uses topx::__construct
+	 * @uses topx::getHeaderText
 	 */
 	public function test_displaytop() {
 		$calculations=array(
@@ -40,7 +42,51 @@ final class topx_Test extends TestCase
 	
 	/**
 	 * @small
+	 * @covers topx::sortbystat
+	 */
+	//public function test_sortbystat() {
+		
+	//}
+	
+	/**
+	 * @small
+	 * @covers topx::hideLoop
+	 * @uses topx::__construct
+	 * @testWith [2,"gt",1,true]
+	 *			 [1,"gt",2,false]
+	 *			 [1,"gt",1,true]
+	 *			 [2,"gte",1,true]
+	 *			 [1,"gte",2,false]
+	 *			 [1,"gte",1,false]
+	 *			 [2,"eq",1,true]
+	 *			 [1,"eq",2,true]
+	 *			 [1,"eq",1,false]
+	 *			 [2,"lte",1,false]
+	 *			 [1,"lte",2,true]
+	 *			 [1,"lte",1,false]
+	 *			 [2,"lt",1,false]
+	 *			 [1,"lt",2,true]
+	 *			 [1,"lt",1,true]
+	 *			 [2,"ne",1,false]
+	 *			 [1,"ne",2,false]
+	 *			 [1,"ne",1,true]
+	 */
+	public function test_hideLoop($filtervalue,$operator,$gamevalue,$expectedresult) {
+		$gamedata=array("LaunchDate"=>$gamevalue);
+		$filter=array(array("field"=>"LaunchDate","operator"=>$operator,"value"=>$filtervalue));
+		
+		$topxObject=new topx();
+		
+		$method = $this->getPrivateMethod( 'topx', 'hideLoop' );
+		$result = $method->invokeArgs($topxObject, array( $gamedata, $filter ) );
+		
+		$this->assertEquals($expectedresult,$result);
+	}
+	
+	/**
+	 * @small
 	 * @covers topx::parseFilter
+	 * @uses topx::__construct
 	 */
 	public function test_parseFilter() {
 		$filterstring="Playable,eq,0,Status,eq,Never,Status,eq,Done,Status,eq,Broken,Review,eq,1,Review,eq,2";
