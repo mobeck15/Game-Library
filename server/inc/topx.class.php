@@ -26,7 +26,7 @@ class topx
 			$output .="<tr class='".$this->calculations[$gameid]['Status']."'>";
 			$output .="<td>".$rank."</td>";
 			$output .="<td><a href='viewgame.php?id=".$gameid."'>".$this->calculations[$gameid]["Title"]."</a></td>";
-			$output .="<td>".$this->calculations[$gameid][$stat]."</td>";
+			$output .="<td>".$this->statformat($this->calculations[$gameid][$stat],$stat)."</td>";
 			
 			$output .="</tr>";
 		}
@@ -34,6 +34,60 @@ class topx
 		$output .="</table>";
 		$output .="</div>";
 		return $output;		
+	}
+	
+	private function statformat($value,$statname){
+		$output=$value;
+		switch($statname){
+			case "Launchperhr":
+			case "MSRPperhr":
+			case "Currentperhr":
+			case "Historicperhr":
+			case "Paidperhr":
+			case "Saleperhr":
+			case "Altperhr":
+			
+			case "LaunchLess1":
+			case "MSRPLess1":
+			case "CurrentLess1":
+			case "HistoricLess1":
+			case "PaidLess1":
+			case "SaleLess1":
+			case "AltLess1":
+				$output=sprintf("$%.2f",$value);
+				break;
+			case "LaunchLess2":
+			case "MSRPLess2":
+			case "CurrentLess2":
+			case "HistoricLess2":
+			case "PaidLess2":
+			case "SaleLess2":
+			case "AltLess2":
+
+			case "LaunchHrsNext1":
+			case "MSRPHrsNext1":
+			case "CurrentHrsNext1":
+			case "HistoricHrsNext1":
+			case "PaidHrsNext1":
+			case "SaleHrsNext1":
+			case "AltHrsNext1":
+
+			case "LaunchHrsNext2":
+			case "MSRPHrsNext2":
+			case "CurrentHrsNext2":
+			case "HistoricHrsNext2":
+			case "PaidHrsNext2":
+			case "SaleHrsNext2":
+			case "AltHrsNext2":
+			
+			case "TimeLeftToBeat":
+				$output=timeduration($value,"hours");
+				break;
+			case "GrandTotal":
+				$output=timeduration($value,"seconds");
+				break;
+		}
+		return $output;
 	}
 	
 	private function parseFilter($filterstring){
@@ -88,9 +142,9 @@ class topx
 		return $showgame;
 	}
 	
-	private function sortbystat($stat){
+	private function sortbystat($stat, $sortDir=null){
 		//$sortDir=$sortDir ?? $this->sortDir;
-		$sortDir=$this->defaultSortDir($stat);
+		$sortDir=$sortDir ?? $this->defaultSortDir($stat);
 
 		$calculations=$this->calculations;
 
@@ -146,6 +200,23 @@ class topx
 		
 		return $list;
 	}
+	
+	public function setfilter($filterstring){
+		$this->filter=$filterstring;
+	}
+	
+	public function setxvalue($xvalue){
+		$this->xvalue=$xvalue;
+	}
+	
+	public function gettopx2($stat,$metastat){
+		$calculations=$this->sortbystat($stat,SORT_ASC);
+		
+		
+		$filter=$this->parseFilter($this->defaultFilterString($stat));
+		
+	}
+	
 	private function defaultFilterString($stat){
 		switch($stat){
 			case "GrandTotal":

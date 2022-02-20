@@ -28,15 +28,20 @@ function timeduration($time,$inputunit="hours"){
 		case "seconds":
 	}
 
+	$ms=$time-floor($time);
+	$printms=sprintf("%03d",floor($ms*1000));
 	$s=$time % 60;
     $m=(($time-$s) / 60) % 60;
     $h=floor($time / 3600);
-	if($positive){
-		return $h.":".substr("0".$m,-2).":".substr("0".$s,-2);
-	} else {
-		return "-".$h.":".substr("0".$m,-2).":".substr("0".$s,-2);
 
+	$output=$h.":".substr("0".$m,-2).":".substr("0".$s,-2);
+	if($time<1 and $time<>0){
+		$output .= " ".$printms;
 	}
+	if($positive==false){
+		$output = "-".$output;
+	}
+	return $output;
 }
 
 /* 

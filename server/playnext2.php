@@ -20,7 +20,8 @@ $output2="";
 foreach ($topxobj->statlist() as $stat) {
 	$list = $topxobj->gettopx($stat);
 	foreach ($list as $key => $item){
-		$totalranks[$item]["ranks"] = ($totalranks[$item]["ranks"] ?? 0) + count($list)-$key;
+		//$totalranks[$item]["ranks"] = ($totalranks[$item]["ranks"] ?? 0) + count($list)-$key;
+		$totalranks[$item]["ranks"] = ($totalranks[$item]["ranks"] ?? 0) + (count($list)-$key)/count($list);
 		$sortranks[$item]=$totalranks[$item]["ranks"];
 		$totalranks[$item]["id"]=$item;
 	}
@@ -36,7 +37,7 @@ $output .="<tbody>";
 foreach($totalranks as $item){
 	$output .="<tr>";
 	$output .="<tr class='".$calculations[$item["id"]]['Status']."'>";
-	$output .="<td>".$item["ranks"]."</td>";
+	$output .="<td>".round($item["ranks"],1)."</td>";
 	$output .="<td><a href='viewgame.php?id=".$item["id"]."'>".$calculations[$item["id"]]["Title"]."</a></td>";
 	$output .="</tr>";
 }
