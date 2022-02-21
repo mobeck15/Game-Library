@@ -27,6 +27,7 @@ final class topx_Test extends TestCase
 	 * @covers topx::displaytop
 	 * @uses topx::__construct
 	 * @uses topx::getHeaderText
+	 * @uses topx::statformat
 	 */
 	public function test_displaytop() {
 		$calculations=array(
