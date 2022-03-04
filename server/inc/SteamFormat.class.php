@@ -183,6 +183,7 @@ class SteamFormat
 		return($output);		
 	}
 	
+	/*
 	public function formatSteamPics($steampics){
 		// @codeCoverageIgnoreStart
 		//function is unused and has been since 2020
@@ -272,26 +273,51 @@ class SteamFormat
 		return $output;
 		// @codeCoverageIgnoreEnd
 	}
+	*/
+	
+	private function formatDetailStat($label,$value){
+		if($value == null or $value == "") {
+			return "";
+		}
+		
+		$output = $label . ": " . $value . "<br>";
+		
+		return $output;
+	}
+	
+	private function formatListStat($label,$valueArray){
+		if(!is_array($valueArray) or count($valueArray)==0) {
+			return "";
+		}
+		
+		$output = "<ul>$label: ";
+		foreach($valueArray as $value){
+			$output .= "<li>$value</li>";
+		}
+		$output .= "</ul>";
+		
+		return $output;
+	}
+	
+	private function formatStat($label,$value){
+		if($value == null) {
+			return "";
+		}
+		
+		if(is_array($value)){
+			return $this->formatListStat($label,$value);
+		}
+		
+		return $this->formatDetailStat($label,$value);
+	}
 	
 	public function formatAppDetails($appdetails,$verbose=true){
-		//var_dump($appdetails);
-		
-		$output  = "Type: " . $appdetails['data']['type'] . "<br>";
-		$output .= "Name: " . $appdetails['data']['name'] . "<br>";
-		$output .= "Required Age: " . $appdetails['data']['required_age'] . "<br>";
-		$output .= "Free Game: " . boolText($appdetails['data']['is_free']) . "<br>";
-		
-		if(isset($appdetails['data']['controller_support'])){
-			$output .= "Controller Support: " . $appdetails['data']['controller_support'] . "<br>";
-		} 
-		
-		if(isset($appdetails['data']['dlc'])){
-			$output .= "<ul>DLC: ";
-			foreach($appdetails['data']['dlc'] as $dlc){
-				$output .= "<li>$dlc</li>";
-			}
-			$output .= "</ul>";
-		}
+		$output  = $this->formatStat("Type",$appdetails['data']['type']);
+		$output .= $this->formatStat("Name",$appdetails['data']['required_age']);
+		$output .= $this->formatStat("Required Age",$appdetails['data']['required_age']);
+		$output .= $this->formatStat("Free Game",boolText($appdetails['data']['is_free']));
+		$output .= $this->formatStat("Controller Support",($appdetails['data']['controller_support'] ?? null));
+		$output .= $this->formatStat("DLC",($appdetails['data']['dlc'] ?? null));
 		
 		if($verbose==true) {
 			$output .= "Description: " . $appdetails['data']['detailed_description'] . "<br>";
@@ -299,38 +325,21 @@ class SteamFormat
 				$output .= "Description: " . $appdetails['data']['about_the_game'] . "<br>";
 			} 
 		}
-		$output .= "Supported Languages: " . $appdetails['data']['supported_languages'] . "<br>";
-		if(isset($appdetails['data']['reviews'])) { $output .= "Reviews: " . $appdetails['data']['reviews'] . "<br>"; }
+		$output .= $this->formatStat("Supported Languages",$appdetails['data']['supported_languages']);
+		$output .= $this->formatStat("Reviews",($appdetails['data']['reviews'] ?? null));
+
 		if($verbose==true) {
-			$output .= "Header Image: <img src='" . $appdetails['data']['header_image'] . "'><br>";
+			$output .= $this->formatStat("Header Image","<img src='" . $appdetails['data']['header_image'] . "'>");
 		}
-		$output .= "Web Site: <a href='" . $appdetails['data']['website'] . "'>" . $appdetails['data']['website'] . "</a><br>";
-		foreach($appdetails['data']['pc_requirements'] as $level => $req){
-			$output .= "PC Requirements ($level): $req<br>";
-		} 
-		unset($req);
-		unset($level);
+		$output .= $this->formatStat("Web Site","<a href='" . $appdetails['data']['website'] . "'>" . $appdetails['data']['website'] . "</a>");
+
+		//TODO: add CSS for all elements to make DIV containters for each and spacing.
+		$output .= $this->formatStat("PC Requirements",$appdetails['data']['pc_requirements']);
+		$output .= $this->formatStat("Mac Requirements",$appdetails['data']['mac_requirements']);
+		$output .= $this->formatStat("Linux Requirements",$appdetails['data']['linux_requirements']);
 		
-		foreach($appdetails['data']['mac_requirements'] as $level => $req){
-			$output .= "Mac Requirements ($level): $req<br>";
-		}
-		unset($req);
-		unset($level); 
-		
-		foreach($appdetails['data']['linux_requirements'] as $level => $req){ 
-			//TODO: add CSS for all elements to make DIV containters for each and spacing.
-			$output .= "<div style='padding-bottom: 20px;'>Linux Requirements ($level): $req</div>";
-		}
-		unset($req);
-		unset($level);
-		
-		$output .= "Legal Notice: " . $appdetails['data']['legal_notice'] . "<br>";
-		
-		$output .= "<ul>Publishers: ";
-		foreach($appdetails['data']['publishers'] as $pub){
-			$output .= "<li>$pub</li>";
-		}
-		$output .= "</ul>";
+		$output .= $this->formatStat("Legal Notice",$appdetails['data']['legal_notice']);
+		$output .= $this->formatStat("Publishers",$appdetails['data']['publishers']);
 		
 		if(isset($appdetails['data']['demos'])){
 			$output .= "<ul>Demos: ";
@@ -351,6 +360,8 @@ class SteamFormat
 			$output .= "<br>";
 		}
 		
+		$output .= $this->formatStat("Packages",$appdetails['data']['packages']);
+		/*
 		if(isset($appdetails['data']['packages'])){
 			$output .= "<ul>Packages: ";
 			foreach($appdetails['data']['packages'] as $package){
@@ -358,6 +369,11 @@ class SteamFormat
 			}
 			$output .= "</ul>";
 		}
+		*/
+		
+		//$subs  = $this->formatStat("ID",$appdetails['data']['packages']);
+		
+		
 		if(isset($appdetails['data']['package_groups'])){
 			$output .= "Package Groups: ";
 			foreach($appdetails['data']['package_groups'] as $group){
@@ -432,12 +448,10 @@ class SteamFormat
 			}
 			$output .= "</ul>";
 		}
-		if(isset($appdetails['data']['achievements'])){
-			$output .= "achievements: " . $appdetails['data']['achievements']['total'] . "<br>";
-		}
-		if(isset($appdetails['data']['release_date'])){
-			$output .= "release_date: " . $appdetails['data']['release_date']['date'] . "<br>";
-		}
+		
+		$output .= $this->formatStat("achievements",($appdetails['data']['achievements']['total'] ?? null));
+		$output .= $this->formatStat("release_date",($appdetails['data']['release_date']['date'] ?? null));
+
 		if(isset($appdetails['data']['support_info'])){
 			$output .= "support_info: " . $appdetails['data']['support_info']['url'] . ", " . $appdetails['data']['support_info']['email'] . "<br>";
 		}

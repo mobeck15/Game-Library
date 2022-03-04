@@ -7,6 +7,7 @@ require_once $GLOBALS['rootpath']."\inc\SteamFormat.class.php";
 /**
  * @group include
  * @group classtest
+ * @group steamformat
  */
 final class SteamFormat_Test extends TestCase
 {
@@ -23,6 +24,7 @@ final class SteamFormat_Test extends TestCase
 	/**
 	 * @small
 	 * @covers SteamFormat::formatAppDetails
+	 * @uses SteamFormat
 	 * @uses boolText
 	 */
 	public function test_formatAppDetails_recsingle(): void
@@ -133,6 +135,7 @@ final class SteamFormat_Test extends TestCase
 	/**
 	 * @small
 	 * @covers SteamFormat::formatAppDetails
+	 * @uses SteamFormat
 	 * @uses boolText
 	 */
 	public function test_formatAppDetails_recarray(): void

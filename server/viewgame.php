@@ -347,6 +347,8 @@ if (!(isset($_GET['id']) && is_numeric($_GET['id']))) {
 		<details>
 		<summary>AppDetails</summary>
 		<?php echo $steamformat->formatAppDetails($appdetails[$game['SteamID']],false);?>
+		<?php //echo arrayTable($appdetails[$game['SteamID']]);?>
+
 		</details>
 		<?php } 
 		

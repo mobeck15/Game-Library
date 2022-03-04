@@ -10,6 +10,14 @@ class topx
 	private $filter="Playable,eq,0,Status,eq,Never,Status,eq,Done,Status,eq,Broken,Review,eq,1,Review,eq,2";
 	private $sortDir=SORT_DESC;
 	
+	public function setfilter($filterstring){
+		$this->filter=$filterstring;
+	}
+	
+	public function setxvalue($xvalue){
+		$this->xvalue=$xvalue;
+	}
+	
 	public function __construct($calculations=null,$xvalue=3, $sortDir=SORT_DESC){
 		$this->calculations = $calculations;
 		$this->xvalue=$xvalue;
@@ -37,56 +45,25 @@ class topx
 	}
 	
 	private function statformat($value,$statname){
+		$currency=["Launchperhr","MSRPperhr", "Currentperhr", "Historicperhr", "Paidperhr", "Saleperhr", "Altperhr", "LaunchLess1", "MSRPLess1", "CurrentLess1", "HistoricLess1", "PaidLess1", "SaleLess1", "AltLess1"];
+		
+		$duration_hours=["TimeLeftToBeat"];
+		$duration_seconds=["GrandTotal"];
+		
 		$output=$value;
-		switch($statname){
-			case "Launchperhr":
-			case "MSRPperhr":
-			case "Currentperhr":
-			case "Historicperhr":
-			case "Paidperhr":
-			case "Saleperhr":
-			case "Altperhr":
-			
-			case "LaunchLess1":
-			case "MSRPLess1":
-			case "CurrentLess1":
-			case "HistoricLess1":
-			case "PaidLess1":
-			case "SaleLess1":
-			case "AltLess1":
-				$output=sprintf("$%.2f",$value);
-				break;
-			case "LaunchLess2":
-			case "MSRPLess2":
-			case "CurrentLess2":
-			case "HistoricLess2":
-			case "PaidLess2":
-			case "SaleLess2":
-			case "AltLess2":
-
-			case "LaunchHrsNext1":
-			case "MSRPHrsNext1":
-			case "CurrentHrsNext1":
-			case "HistoricHrsNext1":
-			case "PaidHrsNext1":
-			case "SaleHrsNext1":
-			case "AltHrsNext1":
-
-			case "LaunchHrsNext2":
-			case "MSRPHrsNext2":
-			case "CurrentHrsNext2":
-			case "HistoricHrsNext2":
-			case "PaidHrsNext2":
-			case "SaleHrsNext2":
-			case "AltHrsNext2":
-			
-			case "TimeLeftToBeat":
-				$output=timeduration($value,"hours");
-				break;
-			case "GrandTotal":
-				$output=timeduration($value,"seconds");
-				break;
+		
+		if (in_array($statname, $currency)) {
+			$output=sprintf("$%.2f",$value);
 		}
+		
+		if (in_array($statname, $duration_hours)) {
+			$output=timeduration($value,"hours");
+		}
+
+		if (in_array($statname, $duration_seconds)) {
+			$output=timeduration($value,"seconds");
+		}
+
 		return $output;
 	}
 	
@@ -184,7 +161,6 @@ class topx
 		$filter=$filter ?? $this->defaultFilterString($stat);
 		$filter=$this->parseFilter($filter);		
 		
-		//$list = array(3372,4252,3143);
 		$list=array();
 		
 		$rowcount=0;
@@ -201,14 +177,7 @@ class topx
 		return $list;
 	}
 	
-	public function setfilter($filterstring){
-		$this->filter=$filterstring;
-	}
-	
-	public function setxvalue($xvalue){
-		$this->xvalue=$xvalue;
-	}
-	
+	/*
 	public function gettopx2($stat,$metastat){
 		$calculations=$this->sortbystat($stat,SORT_ASC);
 		
@@ -216,6 +185,7 @@ class topx
 		$filter=$this->parseFilter($this->defaultFilterString($stat));
 		
 	}
+	*/
 	
 	private function defaultFilterString($stat){
 		switch($stat){
@@ -229,38 +199,16 @@ class topx
 	}
 	
 	private function defaultSortDir($stat){
-		switch($stat){
-			case "LastPlayORPurchase":
-			case "LaunchLess2":
-			case "MSRPLess2":
-			case "CurrentLess2":
-			case "HistoricLess2":
-			case "PaidLess2":
-			case "SaleLess2":
-			case "AltLess2":
-			case "LaunchHrsNext1":
-			case "MSRPHrsNext1":
-			case "CurrentHrsNext1":
-			case "HistoricHrsNext1":
-			case "PaidHrsNext1":
-			case "SaleHrsNext1":
-			case "AltHrsNext1":
-
-			case "LaunchHrsNext2":
-			case "MSRPHrsNext2":
-			case "CurrentHrsNext2":
-			case "HistoricHrsNext2":
-			case "PaidHrsNext2":
-			case "SaleHrsNext2":
-			case "AltHrsNext2":
-			case "TimeLeftToBeat":
-			case "GrandTotal":
-				return SORT_ASC;
-				break;
-			default:
-				return SORT_DESC;
-				break;
+		$defaultsortdir=SORT_DESC;
+		
+		$ascending=["LastPlayORPurchase", "LaunchLess2", "MSRPLess2", "CurrentLess2", "HistoricLess2", "PaidLess2", "SaleLess2", "AltLess2", "LaunchHrsNext1", "MSRPHrsNext1", "CurrentHrsNext1", "HistoricHrsNext1", "PaidHrsNext1", "SaleHrsNext1", "AltHrsNext1", "LaunchHrsNext2", "MSRPHrsNext2", "CurrentHrsNext2", "HistoricHrsNext2", "PaidHrsNext2", "SaleHrsNext2", "AltHrsNext2", "TimeLeftToBeat", "GrandTotal"];
+		
+		if (in_array($stat, $ascending)) {
+			$defaultsortdir=SORT_ASC;
 		}
+		
+		return $defaultsortdir;
+
 	}
 	
 	public function statlist(){
@@ -276,12 +224,12 @@ class topx
 			"Paidperhr",
 			"LaunchLess1",
 			"MSRPLess1",
-			"CurrentLess1",
+			//"CurrentLess1",
 			"HistoricLess1",
 			"PaidLess1",
 			"LaunchLess2",
 			"MSRPLess2",
-			"CurrentLess2",
+			//"CurrentLess2",
 			"HistoricLess2",
 			"PaidLess2",
 			"SaleLess2",
@@ -289,7 +237,7 @@ class topx
 
 			"LaunchHrsNext1",
 			"MSRPHrsNext1",
-			"CurrentHrsNext1",
+			//"CurrentHrsNext1",
 			"HistoricHrsNext1",
 			"PaidHrsNext1",
 			"SaleHrsNext1",
@@ -297,7 +245,7 @@ class topx
 
 			"LaunchHrsNext2",
 			"MSRPHrsNext2",
-			"CurrentHrsNext2",
+			//"CurrentHrsNext2",
 			"HistoricHrsNext2",
 			"PaidHrsNext2",
 			"SaleHrsNext2",
