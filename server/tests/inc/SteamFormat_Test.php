@@ -23,6 +23,125 @@ final class SteamFormat_Test extends TestCase
 	
 	/**
 	 * @small
+	 * @covers SteamFormat::formatDetailStat
+	 * @uses SteamFormat
+	 */
+	public function test_formatDetailStat_base(): void
+    {
+		$method = $this->getPrivateMethod( 'SteamFormat', 'formatDetailStat' );
+		$result = $method->invokeArgs($this->SteamFormat_obj, array("label","value") );
+
+		$this->assertEquals("label: value<br>",$result);
+	}
+	
+	/**
+	 * @small
+	 * @covers SteamFormat::formatDetailStat
+	 * @uses SteamFormat
+	 */
+	public function test_formatDetailStat_null(): void
+    {
+		$method = $this->getPrivateMethod( 'SteamFormat', 'formatDetailStat' );
+		$result = $method->invokeArgs($this->SteamFormat_obj, array("label",null) );
+		
+		$this->assertEquals("",$result);
+	}
+
+	/**
+	 * @small
+	 * @covers SteamFormat::formatDetailStat
+	 * @uses SteamFormat
+	 */
+	public function test_formatDetailStat_blank(): void
+    {
+		$method = $this->getPrivateMethod( 'SteamFormat', 'formatDetailStat' );
+		$result = $method->invokeArgs($this->SteamFormat_obj, array("label","") );
+		
+		$this->assertEquals("",$result);
+	}
+	
+	/**
+	 * @small
+	 * @covers SteamFormat::formatListStat
+	 * @uses SteamFormat
+	 */
+	public function test_formatListStat_base(): void
+    {
+		$method = $this->getPrivateMethod( 'SteamFormat', 'formatListStat' );
+		$result = $method->invokeArgs($this->SteamFormat_obj, array("label",["value1","value2"]) );
+		
+		$this->assertisString($result);
+		$this->assertNotEquals("",$result);
+	}
+
+	/**
+	 * @small
+	 * @covers SteamFormat::formatListStat
+	 * @uses SteamFormat
+	 */
+	public function test_formatListStat_empty(): void
+    {
+		$method = $this->getPrivateMethod( 'SteamFormat', 'formatListStat' );
+		$result = $method->invokeArgs($this->SteamFormat_obj, array("label",[]) );
+		
+		$this->assertEquals("",$result);
+	}
+
+	/**
+	 * @small
+	 * @covers SteamFormat::formatListStat
+	 * @uses SteamFormat
+	 */
+	public function test_formatListStat_invalid(): void
+    {
+		$method = $this->getPrivateMethod( 'SteamFormat', 'formatListStat' );
+		$result = $method->invokeArgs($this->SteamFormat_obj, array("label","Value") );
+		
+		$this->assertEquals("",$result);
+	}
+
+	/**
+	 * @small
+	 * @covers SteamFormat::formatStat
+	 * @uses SteamFormat
+	 */
+	public function test_formatStat_null(): void
+    {
+		$method = $this->getPrivateMethod( 'SteamFormat', 'formatStat' );
+		$result = $method->invokeArgs($this->SteamFormat_obj, array("label",null) );
+		
+		$this->assertEquals("",$result);
+	}
+
+	/**
+	 * @small
+	 * @covers SteamFormat::formatStat
+	 * @uses SteamFormat
+	 */
+	public function test_formatStat_array(): void
+    {
+		$method = $this->getPrivateMethod( 'SteamFormat', 'formatStat' );
+		$result = $method->invokeArgs($this->SteamFormat_obj, array("label",["value1","value2"]) );
+		
+		$this->assertisString($result);
+		$this->assertNotEquals("",$result);
+	}
+
+	/**
+	 * @small
+	 * @covers SteamFormat::formatStat
+	 * @uses SteamFormat
+	 */
+	public function test_formatStat_detail(): void
+    {
+		$method = $this->getPrivateMethod( 'SteamFormat', 'formatStat' );
+		$result = $method->invokeArgs($this->SteamFormat_obj, array("label","value") );
+		
+		$this->assertisString($result);
+	}
+	
+	/**
+	 * @small
 	 * @covers SteamFormat::formatAppDetails
 	 * @uses SteamFormat
 	 * @uses boolText
@@ -434,4 +553,39 @@ final class SteamFormat_Test extends TestCase
         $this->assertisString($output);
 		$this->assertEquals($expected,$output);
     }
+	
+	/**
+ 	 * getPrivateProperty
+ 	 *
+ 	 * @author	Joe Sexton <joe@webtipblog.com>
+ 	 * @param 	string $className
+ 	 * @param 	string $propertyName
+ 	 * @return	ReflectionProperty
+	 * Source: https://www.webtipblog.com/unit-testing-private-methods-and-properties-with-phpunit/
+ 	 */
+	public function getPrivateProperty( $className, $propertyName ) {
+		$reflector = new ReflectionClass( $className );
+		$property = $reflector->getProperty( $propertyName );
+		$property->setAccessible( true );
+
+		return $property;
+	}
+
+	/**
+ 	 * getPrivateMethod
+ 	 *
+ 	 * @author	Joe Sexton <joe@webtipblog.com>
+ 	 * @param 	string $className
+ 	 * @param 	string $methodName
+ 	 * @return	ReflectionMethod
+	 * Source: https://www.webtipblog.com/unit-testing-private-methods-and-properties-with-phpunit/
+ 	 */
+	public function getPrivateMethod( $className, $methodName ) {
+		$reflector = new ReflectionClass( $className );
+		$method = $reflector->getMethod( $methodName );
+		$method->setAccessible( true );
+
+		return $method;
+	}
+
 }

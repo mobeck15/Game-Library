@@ -311,6 +311,37 @@ class SteamFormat
 		return $this->formatDetailStat($label,$value);
 	}
 	
+	private function formatRecommendations($recarray){
+		if($recarray == null or count($recarray)==0) {
+			return "";
+		}
+		$output = "<ul>recommendations: ";
+		foreach($recarray as $recommendation){
+			if(is_array($recommendation)){
+				$output .= "<li>".$recommendation['total']."</li>";
+			} else {
+				$output .= "<li>".$recommendation."</li>";
+			}
+		}
+		$output .= "</ul>";
+		
+		return $output;
+	}
+	
+	private function formatDemos($demoarray) {
+		if($demoarray == null or count($demoarray)==0) {
+			return "";
+		}
+		
+		$output = "<ul>Demos: ";
+		foreach($demoarray as $demo){ 
+			$output .= "<li>" . $demo['appid'].": ".$demo['description'] . "</li>";
+		}
+		$output .= "</ul>";
+		
+		return $output;
+	}
+	
 	public function formatAppDetails($appdetails,$verbose=true){
 		$output  = $this->formatStat("Type",$appdetails['data']['type']);
 		$output .= $this->formatStat("Name",$appdetails['data']['required_age']);
@@ -325,12 +356,14 @@ class SteamFormat
 				$output .= "Description: " . $appdetails['data']['about_the_game'] . "<br>";
 			} 
 		}
+		
 		$output .= $this->formatStat("Supported Languages",$appdetails['data']['supported_languages']);
 		$output .= $this->formatStat("Reviews",($appdetails['data']['reviews'] ?? null));
 
 		if($verbose==true) {
 			$output .= $this->formatStat("Header Image","<img src='" . $appdetails['data']['header_image'] . "'>");
 		}
+		
 		$output .= $this->formatStat("Web Site","<a href='" . $appdetails['data']['website'] . "'>" . $appdetails['data']['website'] . "</a>");
 
 		//TODO: add CSS for all elements to make DIV containters for each and spacing.
@@ -340,14 +373,7 @@ class SteamFormat
 		
 		$output .= $this->formatStat("Legal Notice",$appdetails['data']['legal_notice']);
 		$output .= $this->formatStat("Publishers",$appdetails['data']['publishers']);
-		
-		if(isset($appdetails['data']['demos'])){
-			$output .= "<ul>Demos: ";
-			foreach($appdetails['data']['demos'] as $demo){ 
-				$output .= "<li>" . $demo['appid'].": ".$demo['description'] . "</li>";
-			}
-			$output .= "</ul>";
-		}
+		$output .= $this->formatDemos(($appdetails['data']['demos'] ?? null));
 		
 		if(isset($appdetails['data']['price_overview'])) {
 			$output .= "Price Overview: ";
@@ -361,18 +387,8 @@ class SteamFormat
 		}
 		
 		$output .= $this->formatStat("Packages",$appdetails['data']['packages']);
-		/*
-		if(isset($appdetails['data']['packages'])){
-			$output .= "<ul>Packages: ";
-			foreach($appdetails['data']['packages'] as $package){
-				$output .= "<li>".$package."</li>";
-			}
-			$output .= "</ul>";
-		}
-		*/
 		
 		//$subs  = $this->formatStat("ID",$appdetails['data']['packages']);
-		
 		
 		if(isset($appdetails['data']['package_groups'])){
 			$output .= "Package Groups: ";
@@ -437,18 +453,8 @@ class SteamFormat
 			}
 			$output .= "<br><br>";
 		}
-		if(isset($appdetails['data']['recommendations'])){
-			$output .= "<ul>recommendations: ";
-			foreach($appdetails['data']['recommendations'] as $recommendation){
-				if(is_array($recommendation)){
-					$output .= "<li>".$recommendation['total']."</li>";
-				} else {
-					$output .= "<li>".$recommendation."</li>";
-				}
-			}
-			$output .= "</ul>";
-		}
-		
+
+		$output .= $this->formatRecommendations(($appdetails['data']['recommendations'] ?? null));
 		$output .= $this->formatStat("achievements",($appdetails['data']['achievements']['total'] ?? null));
 		$output .= $this->formatStat("release_date",($appdetails['data']['release_date']['date'] ?? null));
 
