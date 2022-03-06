@@ -142,11 +142,53 @@ final class SteamFormat_Test extends TestCase
 	
 	/**
 	 * @small
+	 * @covers SteamFormat::formatRecommendations
+	 * @uses SteamFormat
+	 * @uses boolText
+	 */
+	public function test_formatRecommendations_empty(): void
+	{
+		$method = $this->getPrivateMethod( 'SteamFormat', 'formatRecommendations' );
+		$result = $method->invokeArgs($this->SteamFormat_obj, array("label",null) );
+		
+		$this->assertisString($result);		
+	}
+	
+	/**
+	 * @small
+	 * @covers SteamFormat::formatRecommendations
+	 * @uses SteamFormat
+	 * @uses boolText
+	 */
+	public function test_formatRecommendations_recsingle(): void
+	{
+		$method = $this->getPrivateMethod( 'SteamFormat', 'formatRecommendations' );
+		$result = $method->invokeArgs($this->SteamFormat_obj, array("label",[85]) );
+		
+		$this->assertisString($result);		
+	}
+
+	/**
+	 * @small
+	 * @covers SteamFormat::formatRecommendations
+	 * @uses SteamFormat
+	 * @uses boolText
+	 */
+	public function test_formatRecommendations_recarray(): void
+	{
+		$method = $this->getPrivateMethod( 'SteamFormat', 'formatRecommendations' );
+		$result = $method->invokeArgs($this->SteamFormat_obj, array("label",[["total"=>85]]) );
+		
+		$this->assertisString($result);		
+	}
+	
+	/**
+	 * @small
 	 * @covers SteamFormat::formatAppDetails
 	 * @uses SteamFormat
 	 * @uses boolText
 	 */
-	public function test_formatAppDetails_recsingle(): void
+	public function test_formatAppDetails(): void
     {
 		$appdetails=array(
 			"data" => array(
@@ -256,7 +298,7 @@ final class SteamFormat_Test extends TestCase
 	 * @covers SteamFormat::formatAppDetails
 	 * @uses SteamFormat
 	 * @uses boolText
-	 */
+	 * /
 	public function test_formatAppDetails_recarray(): void
     {
 		$appdetails=array(

@@ -311,29 +311,12 @@ class SteamFormat
 		return $this->formatDetailStat($label,$value);
 	}
 	
-	private function formatRecommendations($array){
-		if($this->isempty($array)) {
-			return "";
-		}
-		$output = "<ul>recommendations: ";
-		foreach($array as $value){
-			if(is_array($value)){
-				$output .= "<li>".$value['total']."</li>";
-			} else {
-				$output .= "<li>".$value."</li>";
-			}
-		}
-		$output .= "</ul>";
-		
-		return $output;
-	}
-	
-	private function formatDemos($array) {
+	private function formatDemos($label, $array) {
 		if($this->isempty($array)) {
 			return "";
 		}
 		
-		$output = "<ul>Demos: ";
+		$output = "<ul>$label: ";
 		foreach($array as $value){ 
 			$output .= "<li>" . $value['appid'].": ".$value['description'] . "</li>";
 		}
@@ -342,12 +325,12 @@ class SteamFormat
 		return $output;
 	}
 	
-	private function formatoverview($array) {
+	private function formatoverview($label, $array) {
 		if($this->isempty($array)) {
 			return "";
 		}
 		
-		$output = "Price Overview: ";
+		$output = $label. ": ";
 		$output .= $array['currency']; 
 		$output .= "$" . $array['initial']/100; 
 		if($array['discount_percent']>0){
@@ -359,12 +342,12 @@ class SteamFormat
 		return $output;
 	}
 	
-	private function formatpackage($array) {
+	private function formatpackage($label, $array) {
 		if($this->isempty($array)) {
 			return "";
 		}
 		
-		$output = "Package Groups: ";
+		$output = $label. ": ";
 		foreach($array as $value){
 			$output .= "<br>Name: ".$value['name']."<br>";
 			$output .= "Title: ".$value['title']."<br>";
@@ -390,12 +373,12 @@ class SteamFormat
 		return $output;
 	}
 	
-	private function formatplatform($array) {
+	private function formatplatform($label, $array) {
 		if($this->isempty($array)) {
 			return "";
 		}
 		
-		$output = "<ul>Platforms: ";
+		$output = "<ul>$label: ";
 		foreach($array as $label => $value){
 			$output .= "<li>".$label.": ".booltext($value)."</li>";
 		}
@@ -404,12 +387,12 @@ class SteamFormat
 		return $output;
 	}
 	
-	private function formatcategory($array) {
+	private function formatcategory($label, $array) {
 		if($this->isempty($array)) {
 			return "";
 		}
 		
-		$output = "<ul>Categories: ";
+		$output = "<ul>$label: ";
 		foreach($array as $value){
 			$output .= "<li>".$value['id'].": ".$value['description']."</li>";
 		}
@@ -417,12 +400,12 @@ class SteamFormat
 		return $output;
 	}
 	
-	private function formatgenre($array) {
+	private function formatgenre($label, $array) {
 		if($this->isempty($array)) {
 			return "";
 		}
 		
-		$output = "<ul>Genres: ";
+		$output = "<ul>$label: ";
 		foreach($array as $value){
 			$output .= "<li>".$value['id'].": ".$value['description']."</li>";
 		}
@@ -430,12 +413,12 @@ class SteamFormat
 		return $output;
 	}
 		
-	private function formatscreenshot($array) {
+	private function formatscreenshot($label, $array) {
 		if($this->isempty($array)) {
 			return "";
 		}
 		
-		$output = "Screenshots: <br>";
+		$output = $label. ": <br>";
 		foreach($array as $value){
 			$output .= "<a href='".$value['path_full']."'><img src='".$value['path_thumbnail']."></a>";
 		}
@@ -443,22 +426,39 @@ class SteamFormat
 		
 		return $output;
 	}
-		
-	private function formatmovies($array) {
+	
+	private function formatmovies($label, $array) {
 		if($this->isempty($array)) {
 			return "";
 		}
 
-		$output = "Movies: <br>";
+		$output = $label . ": <br>";
 		foreach($array as $value){
 			//var_dump($value);
 			$output .= "<a href='".$value['webm']['480']."'><img src='".$value['thumbnail']." title='".$value['name']."'></a>";
 		}
 		$output .= "<br><br>";
-			
+		
 		return $output;
 	}
+	
+	private function formatRecommendations($label, $array){
+		if($this->isempty($array)) {
+			return "";
+		}
+		$output = "<ul>$label: ";
+		foreach($array as $value){
+			if(is_array($value)){
+				$output .= "<li>".$value['total']."</li>";
+			} else {
+				$output .= "<li>".$value."</li>";
+			}
+		}
+		$output .= "</ul>";
 		
+		return $output;
+	}
+	
 	private function formatsupport($label,$array) {
 		if($this->isempty($array)) {
 			return "";
@@ -516,24 +516,23 @@ class SteamFormat
 		
 		$output .= $this->formatStat("Legal Notice",$appdetails['data']['legal_notice']);
 		$output .= $this->formatStat("Publishers",$appdetails['data']['publishers']);
-		$output .= $this->formatDemos(($appdetails['data']['demos'] ?? null));
-		$output .= $this->formatoverview(($appdetails['data']['price_overview'] ?? null));
+		$output .= $this->formatDemos("Demos",($appdetails['data']['demos'] ?? null));
+		$output .= $this->formatoverview("Price Overview",($appdetails['data']['price_overview'] ?? null));
 		$output .= $this->formatStat("Packages",$appdetails['data']['packages']);
-		$output .= $this->formatpackage($appdetails['data']['package_groups']);
-		$output .= $this->formatplatform(($appdetails['data']['platforms'] ?? null));
+		$output .= $this->formatpackage("Package Groups", $appdetails['data']['package_groups']);
+		$output .= $this->formatplatform("Platforms",($appdetails['data']['platforms'] ?? null));
 		$metacriticlink = $this->makehyperlink(($appdetails['data']['metacritic']['url'] ?? null),
 			($appdetails['data']['metacritic']['score'] ?? null));
 		$output .= $this->formatStat("metacritic",$metacriticlink);
-		$output .= $this->formatcategory(($appdetails['data']['categories'] ?? null));
-		$output .= $this->formatgenre(($appdetails['data']['genres'] ?? null));
-		$output .= $this->formatscreenshot(($appdetails['data']['screenshots'] ?? null));
-		$output .= $this->formatmovies(($appdetails['data']['movies'] ?? null));
-		$output .= $this->formatRecommendations(($appdetails['data']['recommendations'] ?? null));
+		$output .= $this->formatcategory("Categories",($appdetails['data']['categories'] ?? null));
+		$output .= $this->formatgenre("Genres",($appdetails['data']['genres'] ?? null));
+		$output .= $this->formatscreenshot("Screenshots",($appdetails['data']['screenshots'] ?? null));
+		$output .= $this->formatmovies("Movies",($appdetails['data']['movies'] ?? null));
+		$output .= $this->formatRecommendations("recommendations",($appdetails['data']['recommendations'] ?? null));
 		$output .= $this->formatStat("achievements",($appdetails['data']['achievements']['total'] ?? null));
 		$output .= $this->formatStat("release_date",($appdetails['data']['release_date']['date'] ?? null));
 		$output .= $this->formatsupport("Support Info",($appdetails['data']['support_info'] ?? null));
 		$output .= $this->formatStat("background",$this->makehyperlink(($appdetails['data']['background'] ?? null),"Link"));
-		
 		
 		return($output);		
 	}
