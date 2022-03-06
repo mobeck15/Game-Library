@@ -342,6 +342,62 @@ class SteamFormat
 		return $output;
 	}
 	
+	private function formatoverview($overviewarray) {
+		if($overviewarray == null or count($overviewarray)==0) {
+			return "";
+		}
+		
+		$output = "Price Overview: ";
+		$output .= $overviewarray['currency']; 
+		$output .= "$" . $overviewarray['initial']/100; 
+		if($overviewarray['discount_percent']>0){
+			 $output .= "-" . $overviewarray['discount_percent'] . "%";
+			 $output .= "=$" . $overviewarray['final']/100; 
+		}
+		$output .= "<br>";
+		
+		return $output;
+	}
+	
+	private function formatpackage($packagearray) {
+		if($packagearray == null or count($packagearray)==0) {
+			return "";
+		}
+		
+		$output = "Package Groups: ";
+		foreach($packagearray as $group){
+			$output .= "<br>Name: ".$group['name']."<br>";
+			$output .= "Title: ".$group['title']."<br>";
+			$output .= "description: ".$group['description']."<br>";
+			$output .= "selection_text: ".$group['selection_text']."<br>";
+			$output .= "save_text: ".$group['save_text']."<br>";
+			$output .= "display_type: ".$group['display_type']."<br>";
+			$output .= "is_recurring_subscription: ".$group['is_recurring_subscription']."<br>";
+			if(isset($group['subs'])){
+				foreach($group['subs'] as $subgroup){
+					$output .= "<br>ID: ".$subgroup['packageid'] . "<br>";
+					$output .= "Percent Savings: ".$subgroup['percent_savings_text'] . ", (".$subgroup['percent_savings'].")<br>";
+					$output .= "Option Text: ".$subgroup['option_text'] . "<br>";
+					$output .= "Option Description: ".$subgroup['option_description'] . "<br>";
+					$output .= "can get free license: ".$subgroup['can_get_free_license'] . "<br>";
+					$output .= "is free license: ".booltext($subgroup['is_free_license']) . "<br>";
+					$output .= "price with discount: $".$subgroup['price_in_cents_with_discount']/100 . "<br>";
+				}
+			}
+		}
+		$output .= "<br>";
+		
+		return $output;
+	}
+	
+	private function makehyperlink($ref,$text){
+		if($ref==null || $ref=="" || $text == null || $text == ""){
+			return "";
+		}
+		
+		return "<a href='$ref'>$text</a>";
+	}
+
 	public function formatAppDetails($appdetails,$verbose=true){
 		$output  = $this->formatStat("Type",$appdetails['data']['type']);
 		$output .= $this->formatStat("Name",$appdetails['data']['required_age']);
@@ -374,46 +430,10 @@ class SteamFormat
 		$output .= $this->formatStat("Legal Notice",$appdetails['data']['legal_notice']);
 		$output .= $this->formatStat("Publishers",$appdetails['data']['publishers']);
 		$output .= $this->formatDemos(($appdetails['data']['demos'] ?? null));
-		
-		if(isset($appdetails['data']['price_overview'])) {
-			$output .= "Price Overview: ";
-			$output .= $appdetails['data']['price_overview']['currency']; 
-			$output .= "$" . $appdetails['data']['price_overview']['initial']/100; 
-			if($appdetails['data']['price_overview']['discount_percent']>0){
-				 $output .= "-" . $appdetails['data']['price_overview']['discount_percent'] . "%";
-				 $output .= "=$" . $appdetails['data']['price_overview']['final']/100; 
-			}
-			$output .= "<br>";
-		}
-		
+		$output .= $this->formatoverview(($appdetails['data']['price_overview'] ?? null));
 		$output .= $this->formatStat("Packages",$appdetails['data']['packages']);
+		$output .= $this->formatpackage($appdetails['data']['package_groups']);
 		
-		//$subs  = $this->formatStat("ID",$appdetails['data']['packages']);
-		
-		if(isset($appdetails['data']['package_groups'])){
-			$output .= "Package Groups: ";
-			foreach($appdetails['data']['package_groups'] as $group){
-				$output .= "<br>Name: ".$group['name']."<br>";
-				$output .= "Title: ".$group['title']."<br>";
-				$output .= "description: ".$group['description']."<br>";
-				$output .= "selection_text: ".$group['selection_text']."<br>";
-				$output .= "save_text: ".$group['save_text']."<br>";
-				$output .= "display_type: ".$group['display_type']."<br>";
-				$output .= "is_recurring_subscription: ".$group['is_recurring_subscription']."<br>";
-				if(isset($group['subs'])){
-					foreach($group['subs'] as $subgroup){
-						$output .= "<br>ID: ".$subgroup['packageid'] . "<br>";
-						$output .= "Percent Savings: ".$subgroup['percent_savings_text'] . ", (".$subgroup['percent_savings'].")<br>";
-						$output .= "Option Text: ".$subgroup['option_text'] . "<br>";
-						$output .= "Option Description: ".$subgroup['option_description'] . "<br>";
-						$output .= "can get free license: ".$subgroup['can_get_free_license'] . "<br>";
-						$output .= "is free license: ".booltext($subgroup['is_free_license']) . "<br>";
-						$output .= "price with discount: $".$subgroup['price_in_cents_with_discount']/100 . "<br>";
-					}
-				}
-			}
-			$output .= "<br>";
-		}
 		if(isset($appdetails['data']['platforms'])){
 			$output .= "<ul>Platforms: ";
 			foreach($appdetails['data']['platforms'] as $platform => $supported){
@@ -421,9 +441,8 @@ class SteamFormat
 			}
 			$output .= "</ul>";
 		}
-		if(isset($appdetails['data']['metacritic'])){
-			$output .= "metacritic: " . $appdetails['data']['metacritic']['score'] . "<a href='".$appdetails['data']['metacritic']['url']."' target='_blank'>link</a><br>";
-		}
+		$output .= $this->formatStat("metacritic",$this->makehyperlink(($appdetails['data']['metacritic']['url'] ?? null),($appdetails['data']['metacritic']['score'] ?? null)));
+		
 		if(isset($appdetails['data']['categories'])){
 			$output .= "<ul>Categories: ";
 			foreach($appdetails['data']['categories'] as $category){
@@ -461,10 +480,16 @@ class SteamFormat
 		if(isset($appdetails['data']['support_info'])){
 			$output .= "support_info: " . $appdetails['data']['support_info']['url'] . ", " . $appdetails['data']['support_info']['email'] . "<br>";
 		}
+		/*
 		if(isset($appdetails['data']['background'])){
-			$output .= "background: <a href='" . $appdetails['data']['background'] . "'>Link</a><br>";
+			//$output .= "background: <a href='" . $appdetails['data']['background'] . "'>Link</a><br>";
+			$output .= "background: ".$this->makehyperlink(($appdetails['data']['background'],null),"Link")."<br>";
 		}
+		*/
+		$output .= $this->formatStat("background",$this->makehyperlink(($appdetails['data']['background'] ?? null),"Link"));
+		
 		
 		return($output);		
 	}
+	
 }
