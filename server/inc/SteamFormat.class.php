@@ -108,13 +108,8 @@ class SteamFormat
 		//$output .= "<img src='http://cdn.akamai.steamstatic.com/steam/apps/".$game['SteamID']."/header.jpg'>";
 		//$output .= "<br>".$description;
 		$output  = "<table><tr>";
-		if(isset($resultarray['game']['gameName']) && $resultarray['game']['gameName']<>""){
-			$output .= "<td>".$resultarray['game']['gameName'] . "</td>";
-		}
-		
-		if(isset($resultarray['game']['gameVersion']) && $resultarray['game']['gameVersion']<>""){
-			$output .= "<td>Version ".$resultarray['game']['gameVersion'] . "</td>";
-		}
+		$output.=$this->formatDetailStat("",$resultarray['game']['gameName'],"<td>","","</td>");
+		$output.=$this->formatDetailStat("Version",$resultarray['game']['gameVersion'],"<td>"," ","</td>");
 		$output .= "</tr><tr>";
 		if(isset($resultarray['game']['availableGameStats']['stats'])){
 			$output .= "<td ";
@@ -164,13 +159,14 @@ class SteamFormat
 				
 				//TODO: Fix the replace code to print "'" properly.
 				$output .= " title='".htmlspecialchars(str_replace("'","",$acachievement['displayName']));
+				
 				if (isset($acachievement['description'])){
 					$output .= " | " . htmlspecialchars(str_replace("'","",$acachievement['description']));
 				}
+				
 				$output .= "'> ";
 				if($counter==6){
 					$counter=0;
-					//$output .= "<br>";
 				}
 				$counter++;
 				$achivementcounter++;
@@ -275,12 +271,12 @@ class SteamFormat
 	}
 	*/
 	
-	private function formatDetailStat($label,$value){
+	private function formatDetailStat($label,$value,$prefix="",$separator=": ",$suffix="<br>"){
 		if($this->isempty($value)) {
 			return "";
 		}
 		
-		$output = $label . ": " . $value . "<br>";
+		$output = $prefix . $label . $separator . $value . $suffix;
 		
 		return $output;
 	}
@@ -388,19 +384,6 @@ class SteamFormat
 	}
 	
 	private function formatcategory($label, $array) {
-		if($this->isempty($array)) {
-			return "";
-		}
-		
-		$output = "<ul>$label: ";
-		foreach($array as $value){
-			$output .= "<li>".$value['id'].": ".$value['description']."</li>";
-		}
-		$output .= "</ul>";
-		return $output;
-	}
-	
-	private function formatgenre($label, $array) {
 		if($this->isempty($array)) {
 			return "";
 		}
@@ -525,7 +508,7 @@ class SteamFormat
 			($appdetails['data']['metacritic']['score'] ?? null));
 		$output .= $this->formatStat("metacritic",$metacriticlink);
 		$output .= $this->formatcategory("Categories",($appdetails['data']['categories'] ?? null));
-		$output .= $this->formatgenre("Genres",($appdetails['data']['genres'] ?? null));
+		$output .= $this->formatcategory("Genres",($appdetails['data']['genres'] ?? null));
 		$output .= $this->formatscreenshot("Screenshots",($appdetails['data']['screenshots'] ?? null));
 		$output .= $this->formatmovies("Movies",($appdetails['data']['movies'] ?? null));
 		$output .= $this->formatRecommendations("recommendations",($appdetails['data']['recommendations'] ?? null));

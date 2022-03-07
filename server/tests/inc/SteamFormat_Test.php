@@ -36,32 +36,6 @@ final class SteamFormat_Test extends TestCase
 	
 	/**
 	 * @small
-	 * @covers SteamFormat::formatDetailStat
-	 * @uses SteamFormat
-	 */
-	public function test_formatDetailStat_null(): void
-    {
-		$method = $this->getPrivateMethod( 'SteamFormat', 'formatDetailStat' );
-		$result = $method->invokeArgs($this->SteamFormat_obj, array("label",null) );
-		
-		$this->assertEquals("",$result);
-	}
-
-	/**
-	 * @small
-	 * @covers SteamFormat::formatDetailStat
-	 * @uses SteamFormat
-	 */
-	public function test_formatDetailStat_blank(): void
-    {
-		$method = $this->getPrivateMethod( 'SteamFormat', 'formatDetailStat' );
-		$result = $method->invokeArgs($this->SteamFormat_obj, array("label","") );
-		
-		$this->assertEquals("",$result);
-	}
-	
-	/**
-	 * @small
 	 * @covers SteamFormat::formatListStat
 	 * @uses SteamFormat
 	 */
@@ -79,36 +53,10 @@ final class SteamFormat_Test extends TestCase
 	 * @covers SteamFormat::formatListStat
 	 * @uses SteamFormat
 	 */
-	public function test_formatListStat_empty(): void
-    {
-		$method = $this->getPrivateMethod( 'SteamFormat', 'formatListStat' );
-		$result = $method->invokeArgs($this->SteamFormat_obj, array("label",[]) );
-		
-		$this->assertEquals("",$result);
-	}
-
-	/**
-	 * @small
-	 * @covers SteamFormat::formatListStat
-	 * @uses SteamFormat
-	 */
 	public function test_formatListStat_invalid(): void
     {
 		$method = $this->getPrivateMethod( 'SteamFormat', 'formatListStat' );
 		$result = $method->invokeArgs($this->SteamFormat_obj, array("label","Value") );
-		
-		$this->assertEquals("",$result);
-	}
-
-	/**
-	 * @small
-	 * @covers SteamFormat::formatStat
-	 * @uses SteamFormat
-	 */
-	public function test_formatStat_null(): void
-    {
-		$method = $this->getPrivateMethod( 'SteamFormat', 'formatStat' );
-		$result = $method->invokeArgs($this->SteamFormat_obj, array("label",null) );
 		
 		$this->assertEquals("",$result);
 	}
@@ -142,23 +90,61 @@ final class SteamFormat_Test extends TestCase
 	
 	/**
 	 * @small
-	 * @covers SteamFormat::formatRecommendations
+	 * @covers SteamFormat::isempty
 	 * @uses SteamFormat
-	 * @uses boolText
 	 */
-	public function test_formatRecommendations_empty(): void
+	public function test_isempty_no(): void
 	{
-		$method = $this->getPrivateMethod( 'SteamFormat', 'formatRecommendations' );
-		$result = $method->invokeArgs($this->SteamFormat_obj, array("label",null) );
+		$method = $this->getPrivateMethod( 'SteamFormat', 'isempty' );
+		$result = $method->invokeArgs($this->SteamFormat_obj, array("not empty") );
 		
+		$this->assertEquals(false,$result);		
+	}
+	
+	/**
+	 * @small
+	 * @covers SteamFormat::isempty
+	 * @uses SteamFormat
+	 */
+	public function test_isempty_yes(): void
+	{
+		$method = $this->getPrivateMethod( 'SteamFormat', 'isempty' );
+		$result = $method->invokeArgs($this->SteamFormat_obj, array("") );
+		
+		$this->assertEquals(true,$result);		
+	}
+	
+	/**
+	 * @small
+	 * @covers SteamFormat::makehyperlink
+	 * @uses SteamFormat
+	 */
+	public function test_makehyperlink_base(): void
+	{
+		$method = $this->getPrivateMethod( 'SteamFormat', 'makehyperlink' );
+		$result = $method->invokeArgs($this->SteamFormat_obj, array("ref","text") );
+		
+		$this->assertEquals("<a href='ref'>text</a>",$result);		
+	}
+	
+	/**
+	 * @small
+	 * @covers SteamFormat::formatsupport
+	 * @uses SteamFormat
+	 */
+	public function test_formatsupport_base(): void
+	{
+		$method = $this->getPrivateMethod( 'SteamFormat', 'formatsupport' );
+		$result = $method->invokeArgs($this->SteamFormat_obj, array("label",["url"=>"url","email"=>"email"]) );
+
 		$this->assertisString($result);		
+		$this->assertNotEquals("",$result);		
 	}
 	
 	/**
 	 * @small
 	 * @covers SteamFormat::formatRecommendations
 	 * @uses SteamFormat
-	 * @uses boolText
 	 */
 	public function test_formatRecommendations_recsingle(): void
 	{
@@ -172,14 +158,158 @@ final class SteamFormat_Test extends TestCase
 	 * @small
 	 * @covers SteamFormat::formatRecommendations
 	 * @uses SteamFormat
-	 * @uses boolText
 	 */
 	public function test_formatRecommendations_recarray(): void
 	{
 		$method = $this->getPrivateMethod( 'SteamFormat', 'formatRecommendations' );
 		$result = $method->invokeArgs($this->SteamFormat_obj, array("label",[["total"=>85]]) );
 		
-		$this->assertisString($result);		
+		$this->assertisString($result);
+	}
+	
+	/**
+	 * @small
+	 * @covers SteamFormat::formatmovies
+	 * @uses SteamFormat
+	 */
+	public function test_formatmovies_base(): void
+	{
+		$method = $this->getPrivateMethod( 'SteamFormat', 'formatmovies' );
+		$result = $method->invokeArgs($this->SteamFormat_obj, array("label",[["webm"=>["480"=>"value"],"thumbnail"=>"tn","name"=>"name"]]) );
+		
+		$this->assertisString($result);
+		$this->assertnotEquals("",$result);		
+	}
+	
+	/**
+	 * @small
+	 * @covers SteamFormat::formatscreenshot
+	 * @uses SteamFormat
+	 */
+	public function test_formatscreenshot_base(): void
+	{
+		$method = $this->getPrivateMethod( 'SteamFormat', 'formatscreenshot' );
+		$result = $method->invokeArgs($this->SteamFormat_obj, array("label",[["path_full"=>"f","path_thumbnail"=>"tn"]]) );
+		
+		$this->assertisString($result);
+		$this->assertnotEquals("",$result);		
+	}
+
+	/**
+	 * @small
+	 * @covers SteamFormat::formatcategory
+	 * @uses SteamFormat
+	 */
+	public function test_formatcategory_base(): void
+	{
+		$method = $this->getPrivateMethod( 'SteamFormat', 'formatcategory' );
+		$result = $method->invokeArgs($this->SteamFormat_obj, array("label",[["id"=>"id","description"=>"description"]]) );
+		
+		$this->assertisString($result);
+		$this->assertnotEquals("",$result);		
+	}
+
+	/**
+	 * @small
+	 * @covers SteamFormat::formatplatform
+	 * @uses SteamFormat
+	 * @uses boolText
+	 */
+	public function test_formatplatform_base(): void
+	{
+		$method = $this->getPrivateMethod( 'SteamFormat', 'formatplatform' );
+		$result = $method->invokeArgs($this->SteamFormat_obj, array("label",["label2"=>0]) );
+		
+		$this->assertisString($result);
+		$this->assertnotEquals("",$result);		
+	}
+
+	/**
+	 * @small
+	 * @covers SteamFormat::formatpackage
+	 * @uses SteamFormat
+	 * @uses boolText
+	 */
+	public function test_formatpackage_base(): void
+	{
+		$testarray=array(
+					array(
+						"name" => "words",
+						"title" => "words",
+						"description" => "words",
+						"selection_text" => "words",
+						"save_text" => "words",
+						"display_type" => "words",
+						"is_recurring_subscription" => "words",
+						"subs" => array(array(
+							'packageid'=> "words",
+							'percent_savings_text'=> "words",
+							'percent_savings'=> "words",
+							'option_text'=> "words",
+							'option_description'=> "words",
+							'can_get_free_license'=> "words",
+							'is_free_license'=> "words",
+							'price_in_cents_with_discount'=> "1099"
+						))
+					));
+		$method = $this->getPrivateMethod( 'SteamFormat', 'formatpackage' );
+		$result = $method->invokeArgs($this->SteamFormat_obj, array("label",$testarray) );
+		
+		$this->assertisString($result);
+		$this->assertnotEquals("",$result);		
+	}
+
+	/**
+	 * @small
+	 * @covers SteamFormat::formatoverview
+	 * @uses SteamFormat
+	 */
+	public function test_formatoverview_base(): void
+	{
+		$method = $this->getPrivateMethod( 'SteamFormat', 'formatoverview' );
+		$result = $method->invokeArgs($this->SteamFormat_obj, array("label",["currency"=>"$","initial"=>100,"discount_percent"=>90,"final"=>10]) );
+		
+		$this->assertisString($result);
+		$this->assertnotEquals("",$result);		
+	}
+
+	/**
+	 * @small
+	 * @covers SteamFormat::formatDemos
+	 * @uses SteamFormat
+	 */
+	public function test_formatDemos_base(): void
+	{
+		$method = $this->getPrivateMethod( 'SteamFormat', 'formatDemos' );
+		$result = $method->invokeArgs($this->SteamFormat_obj, array("label",[["appid"=>"id","description"=>"description"]]) );
+		
+		$this->assertisString($result);
+		$this->assertnotEquals("",$result);		
+	}
+
+	/**
+	 * @small
+	 * @covers SteamFormat
+	 * @testWith ["formatscreenshot"]
+	 *           ["formatmovies"]
+	 *           ["formatRecommendations"]
+	 *           ["formatsupport"]
+	 *           ["formatStat"]
+	 *           ["makehyperlink"]
+	 *           ["formatListStat"]
+	 *           ["formatDetailStat"]
+	 *           ["formatcategory"]
+	 *           ["formatplatform"]
+	 *           ["formatpackage"]
+	 *           ["formatoverview"]
+	 *           ["formatDemos"]
+	 */
+	public function test_formatfunction_empty($functionName): void
+	{
+		$method = $this->getPrivateMethod( 'SteamFormat', $functionName );
+		$result = $method->invokeArgs($this->SteamFormat_obj, array("label",null) );
+		
+		$this->assertEquals("",$result);		
 	}
 	
 	/**
@@ -291,134 +421,14 @@ final class SteamFormat_Test extends TestCase
 		
 		$output=$this->SteamFormat_obj->formatAppDetails($appdetails);
         $this->assertisString($output);
-    }
-	
-	/**
-	 * @small
-	 * @covers SteamFormat::formatAppDetails
-	 * @uses SteamFormat
-	 * @uses boolText
-	 * /
-	public function test_formatAppDetails_recarray(): void
-    {
-		$appdetails=array(
-			"data" => array(
-				"type" => "apptype",
-				"name" => "appname",
-				"required_age" => 10,
-				"is_free" => true,
-				"controller_support" => true,
-				"dlc" => array("DLC1","DLC2"),
-				"detailed_description" => "A detailed description of the app. Might be kind of long.",
-				"about_the_game" => "Another detailed description of the app. Might be kind of long.",
-				"supported_languages" => "language",
-				"reviews" => "a review",
-				"header_image" => "image link",
-				"website" => "website link",
-				"pc_requirements" => array(
-					"minimum" => "first requirement",
-					"recomended" => "Second requirement",
-					"high" => "Third requirement"
-				),
-				"mac_requirements" => array(
-					"minimum" => "first requirement",
-					"recomended" => "Second requirement",
-					"high" => "Third requirement"
-				),
-				"linux_requirements" => array(
-					"minimum" => "first requirement",
-					"recomended" => "Second requirement",
-					"high" => "Third requirement"
-				),
-				"legal_notice" => "legal notice",
-				"publishers" => array("publisher1","publisher2"),
-				"demos" => array(
-					array("appid"=>1,
-					"description"=>"Demo Description")
-				),
-				"price_overview" => array(
-					"currency" => 1,
-					"initial" => 1,
-					"discount_percent" => 1,
-					"final" => 1
-				),
-				"packages" => array("package1","package2"),
-				"package_groups" => array(
-					array(
-						"name" => "words",
-						"title" => "words",
-						"description" => "words",
-						"selection_text" => "words",
-						"save_text" => "words",
-						"display_type" => "words",
-						"is_recurring_subscription" => "words",
-						"subs" => array(array(
-							'packageid'=> "words",
-							'percent_savings_text'=> "words",
-							'percent_savings'=> "words",
-							'option_text'=> "words",
-							'option_description'=> "words",
-							'can_get_free_license'=> "words",
-							'is_free_license'=> "words",
-							'price_in_cents_with_discount'=> "1099"
-						))
-					)
-				),
-				"platforms" => array("platform1","platform2"),
-				"metacritic" => array(
-					"score" => "99",
-					"url" => "web link"
-				),
-				"categories" => array(
-					array("id"=>"1","description"=>"category1"),
-					array("id"=>"2","description"=>"category2")
-				),
-				"genres" => array(
-					array("id"=>"1","description"=>"genre1"),
-					array("id"=>"2","description"=>"genre2")
-				),
-				"screenshots" => array(
-					array(
-						"path_full" => "image path full",
-						"path_thumbnail" => "image path thumbnail",
-					)
-				),
-				"movies" => array(
-					array(
-						"webm" => array("480"=>"movie path full"),
-						"thumbnail" => "image path thumbnail",
-						"name" => "movie name",
-					)
-				),
-				"recommendations" => array(array("total" => "Total recomendation")),
-				"achievements" => array("total" => "Total Achievements"),
-				"release_date" => array("date" => "release date"),
-				"support_info" => array("url" => "web link", "email" => "email"),
-				"background" => "image link"
-			)
-		);
-		
-		//var_dump($appdetails);
-		
-		$output=$this->SteamFormat_obj->formatAppDetails($appdetails);
-        $this->assertisString($output);
-    }
-	
-	/* *
-	 * @covers SteamFormat::formatSteamPics
-	 * Function not working
-	 * /
-	public function test_formatSteamPics(): void
-    {
-		$SteamPics = array();
-		$output=$this->SteamFormat_obj->formatSteamPics($SteamPics);
-        $this->assertisString($output);
-    } /* */
+ 		$this->assertNotEquals("",$output);		
+   }
 	
 	/**
 	 * @small
 	 * @covers SteamFormat::formatSteamAPI
 	 * @uses regroupArray
+	 * @uses SteamFormat
 	 */
 	public function test_formatSteamAPI(): void
     {
@@ -534,7 +544,8 @@ final class SteamFormat_Test extends TestCase
 		
 		$output=$this->SteamFormat_obj->formatSteamAPI($SchemaforGame,$UserStatsForGame);
         $this->assertisString($output);
-    }
+ 		$this->assertNotEquals("",$output);		
+   }
 
 	/**
 	 * @small
@@ -544,7 +555,8 @@ final class SteamFormat_Test extends TestCase
     {
 		$output=$this->SteamFormat_obj->formatSteamLinks(289070,123456789);
         $this->assertisString($output);
-    }
+ 		$this->assertNotEquals("",$output);		
+   }
 	
 	/**
 	 * @small
