@@ -549,6 +549,95 @@ final class SteamFormat_Test extends TestCase
 
 	/**
 	 * @small
+	 * @covers SteamFormat::achievementTable
+	 * @uses regroupArray
+	 * @uses SteamFormat
+	 */
+	public function test_achievementTable(): void
+	{
+		$SchemaforGame = array(
+				array(
+					"name" => "achievement1",
+					"defaultvalue" => 0,
+					"displayName" => "Achievement #1",
+					"hidden" => 0,
+					"description" => "get achievement 1",
+					"icon" => "",
+					"icongray" => ""
+				), array(
+					"name" => "achievement2",
+					"defaultvalue" => 0,
+					"displayName" => "Achievement #2",
+					"hidden" => 0,
+					"description" => "get achievement 2",
+					"icon" => "",
+					"icongray" => ""
+				)
+			);
+			
+		$UserStats = array(
+				array(
+					"name"=>"achievement1",
+					"achieved"=>1
+				), 	array(
+					"name"=>"achievement3",
+					"achieved"=>1
+				)
+			);
+		
+		$method = $this->getPrivateMethod( 'SteamFormat', 'achievementTable' );
+		$result = $method->invokeArgs($this->SteamFormat_obj, array($SchemaforGame,$UserStats) );
+		
+		$this->assertisString($result);
+		$this->assertnotEquals("",$result);			
+	}
+
+	/**
+	 * @small
+	 * @covers SteamFormat::statsTable
+	 * @uses regroupArray
+	 * @uses SteamFormat
+	 */
+	public function test_statTable(): void
+	{
+		$SchemaforGame = array(array(
+					"name"=> "stat1",
+					"defaultvalue"=>0,
+					"displayName"=>"Display Name 1"
+					),array(
+					"name"=> "stat2",
+					"defaultvalue"=>0,
+					"displayName"=>"Display Name 2"
+					),array(
+					"name"=> "stat3",
+					"defaultvalue"=>0,
+					"displayName"=>""
+					),array(
+					"name"=> "stat4",
+					"defaultvalue"=>0,
+					"displayName"=>"Display Name 4"
+					)
+				);
+			
+		$UserStatsForGame = array(
+				array(
+					"name"=>"stat1",
+					"value"=>11
+				), 	array(
+					"name"=>"stat3",
+					"value"=>33
+				)
+		);
+		
+		$method = $this->getPrivateMethod( 'SteamFormat', 'statsTable' );
+		$result = $method->invokeArgs($this->SteamFormat_obj, array($SchemaforGame,$UserStatsForGame) );
+		
+		$this->assertisString($result);
+		$this->assertnotEquals("",$result);			
+	}
+	
+	/**
+	 * @small
 	 * @covers SteamFormat::formatSteamLinks
 	 */
 	public function test_formatSteamLinks(): void

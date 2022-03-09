@@ -101,12 +101,6 @@ class SteamFormat
 	}
 	
 	public function formatSteamAPI($resultarray,$userstatsarray){
-		//echo "000-DEBUG-000";
-		//var_dump($resultarray); //GetSchemaForGame
-		//var_dump($userstatsarray); //GetUserStatsForGame
-		
-		//$output .= "<img src='http://cdn.akamai.steamstatic.com/steam/apps/".$game['SteamID']."/header.jpg'>";
-		//$output .= "<br>".$description;
 		$output  = "<table><tr>";
 		$output.=$this->formatDetailStat("",$resultarray['game']['gameName'],"<td>","","</td>");
 		$output.=$this->formatDetailStat("Version",$resultarray['game']['gameVersion'],"<td>"," ","</td>");
@@ -114,63 +108,16 @@ class SteamFormat
 		if(isset($resultarray['game']['availableGameStats']['stats'])){
 			$output .= "<td ";
 			if(!isset($resultarray['game']['availableGameStats']['achievements'])){ $output .= "colspan=2 "; }
-			$output .= "valign=top><table><thead><tr><th>Stat</th><th>Value</th></tr></thead>";
-			//var_dump($userstatsarray['playerstats']);
-			if(isset($userstatsarray['playerstats']['stats'])){
-				$statarray=regroupArray($userstatsarray['playerstats']['stats'],"name");
-				//var_dump($statarray);
-			}
-			foreach($resultarray['game']['availableGameStats']['stats'] as $key => $stat ) {
-				$output .= "<tr><td>";
-				if($stat['displayName']<>""){
-					$output .= "<a href='' title='".htmlspecialchars($stat['name'])."'>".str_replace(" ","&nbsp;",$stat['displayName'])."</a>";
-				} else {
-					$output .= str_replace(" ","&nbsp;",$stat['name']);
-				}
-				$output .= "</td>";
-				//var_dump($userstatsarray['playerstats']['stats'][$stat['name']]);
-				if(isset($statarray[$stat['name']])){
-					$output .= "<td>" . $statarray[$stat['name']][0]['value'] . "</td></tr>";
-				} else {
-					$output .= "<td>" . $stat['defaultvalue'] . "</td></tr>";
-				}
-			}
-			$output .= "</table></td>";
+			$output .= "valign=top>";
+			$output .= $this->statsTable($resultarray['game']['availableGameStats']['stats'],($userstatsarray['playerstats']['stats'] ?? []));
+			$output .= "</td>";
 		}
 		
 		if(isset($resultarray['game']['availableGameStats']['achievements'])){
 			$output .= "<td ";
 			if(!isset($resultarray['game']['availableGameStats']['stats'])){ $output .= "colspan=2 "; }
 			$output .= "valign=top>";
-			if(isset($userstatsarray['playerstats']['achievements'])){
-				$acharray=regroupArray($userstatsarray['playerstats']['achievements'],"name");
-				//var_dump($acharray);
-			}
-			$achivementcounter=0;
-			$counter=1;
-			foreach($resultarray['game']['availableGameStats']['achievements'] as $key => $acachievement ) {
-				if(isset($acharray[$acachievement['name']]) && $acharray[$acachievement['name']][0]['achieved']==1){
-					$output .= "<img src='" . $acachievement['icon']. "' height=64 width=64 "; 
-				} else {
-					$output .= "<img src='" . $acachievement['icongray']. "' height=64 width=64 ";
-					$output .= "onMouseOver=\"this.src='".$acachievement['icon']."'\" "; 
-					$output .= "onMouseOut=\"this.src='".$acachievement['icongray']."'\" "; 
-				}
-				
-				//TODO: Fix the replace code to print "'" properly.
-				$output .= " title='".htmlspecialchars(str_replace("'","",$acachievement['displayName']));
-				
-				if (isset($acachievement['description'])){
-					$output .= " | " . htmlspecialchars(str_replace("'","",$acachievement['description']));
-				}
-				
-				$output .= "'> ";
-				if($counter==6){
-					$counter=0;
-				}
-				$counter++;
-				$achivementcounter++;
-			}
+			$output .= $this->achievementTable($resultarray['game']['availableGameStats']['achievements'],($userstatsarray['playerstats']['achievements'] ?? []));
 			$output .= "</td>";
 		}
 		$output .= "</tr>";
@@ -179,97 +126,50 @@ class SteamFormat
 		return($output);		
 	}
 	
-	/*
-	public function formatSteamPics($steampics){
-		// @codeCoverageIgnoreStart
-		//function is unused and has been since 2020
-		$output  = "ID: ". $steampics['apps'][$game['SteamID']]['appid']."<br>";
-		$output .= "Change#: ". $steampics['apps'][$game['SteamID']]['change_number']."<br>";
-		$output .= "name: ". $steampics['apps'][$game['SteamID']]['common']['name']."<br>";
-		$output .= "type: ". $steampics['apps'][$game['SteamID']]['common']['type']."<br>";
-		if(isset($steampics['apps'][$game['SteamID']]['common']['releasestate'])){
-			$output .= "releasestate: ". $steampics['apps'][$game['SteamID']]['common']['releasestate']."<br>";
-		}
-		$output .= "logo: <img src='https://steamcdn-a.akamaihd.net/steamcommunity/public/images/apps/".$game['SteamID']."/". $steampics['apps'][$game['SteamID']]['common']['logo'].".jpg'><br>";
-		$output .= "logo_small: <img src='https://steamcdn-a.akamaihd.net/steamcommunity/public/images/apps/".$game['SteamID']."/". $steampics['apps'][$game['SteamID']]['common']['logo_small'].".jpg'><br>";
-		$output .= "clienticon: <img src='https://steamcdn-a.akamaihd.net/steamcommunity/public/images/apps/".$game['SteamID']."/". $steampics['apps'][$game['SteamID']]['common']['clienticon'].".ico'><br>";
-		//$output .= "clienttga: <img src='https://steamcdn-a.akamaihd.net/steamcommunity/public/images/apps/".$game['SteamID']."/". $steampics['apps'][$game['SteamID']]['common']['clienttga'].".tga'><br>";
-		$output .= "icon: <img src='https://steamcdn-a.akamaihd.net/steamcommunity/public/images/apps/".$game['SteamID']."/". $steampics['apps'][$game['SteamID']]['common']['icon'].".jpg'><br>";
-		if(isset($steampics['apps'][$game['SteamID']]['common']['oslist'])){
-			$output .= "oslist: ". $steampics['apps'][$game['SteamID']]['common']['oslist']."<br>";
-		}
-		$output .= "metacritic_name: ". $steampics['apps'][$game['SteamID']]['common']['metacritic_name']."<br>";
-		$output .= "community_visible_stats: ". booltext($steampics['apps'][$game['SteamID']]['common']['community_visible_stats'])."<br>";
-		$output .= "community_hub_visible: ". booltext($steampics['apps'][$game['SteamID']]['common']['community_hub_visible'])."<br>";
-		$output .= "gameid: ". $steampics['apps'][$game['SteamID']]['common']['gameid']."<br>";
-		if(isset($steampics['apps'][$game['SteamID']]['common']['controller_support'])){
-			$output .= "controller_support: ". $steampics['apps'][$game['SteamID']]['common']['controller_support']."<br>";
-		}
-		if(isset($steampics['apps'][$game['SteamID']]['common']['metacritic_score'])){
-			$output .= "metacritic_score: ". $steampics['apps'][$game['SteamID']]['common']['metacritic_score']."<br>";
-		}
-		if(isset($steampics['apps'][$game['SteamID']]['common']['metacritic_fullurl'])){
-			$output .= "metacritic_fullurl: ". $steampics['apps'][$game['SteamID']]['common']['metacritic_fullurl']."<br>";
-		}
-		if(isset($steampics['apps'][$game['SteamID']]['common']['languages'])){
-			$output .= "<ul>languages: ";
-			foreach($steampics['apps'][$game['SteamID']]['common']['languages'] as $language => $supported){
-				$output .= "<li>".$language . ": ".boolText($supported)."</li>";
+	private function achievementTable($achievements,$userach){
+		$acharray=regroupArray($userach,"name");
+		$output="";
+		foreach($achievements as $key => $acachievement ) {
+			if(isset($acharray[$acachievement['name']]) && $acharray[$acachievement['name']][0]['achieved']==1){
+				$output .= "<img src='" . $acachievement['icon']. "' height=64 width=64 "; 
+			} else {
+				$output .= "<img src='" . $acachievement['icongray']. "' height=64 width=64 ";
+				$output .= "onMouseOver=\"this.src='".$acachievement['icon']."'\" "; 
+				$output .= "onMouseOut=\"this.src='".$acachievement['icongray']."'\" "; 
 			}
-			$output .= "</ul>";
-		}
-		if(isset($steampics['apps'][$game['SteamID']]['common']['eulas'])){
-			$output .= "<ul>eulas: ";
-			foreach($steampics['apps'][$game['SteamID']]['common']['eulas'] as $eula){
-				$output .= "<li><a href='".$eula['url']."'>".$eula['name']."</a></li>";
+			
+			//TODO: Fix the replace code to print "'" properly.
+			$output .= " title='".htmlspecialchars(str_replace("'","",$acachievement['displayName']));
+			
+			if (isset($acachievement['description'])){
+				$output .= " | " . htmlspecialchars(str_replace("'","",$acachievement['description']));
 			}
-			$output .= "</ul>";
+			
+			$output .= "'> ";
 		}
-		if(isset($steampics['apps'][$game['SteamID']]['extended']['developer'])){
-			$output .= "developer: ". $steampics['apps'][$game['SteamID']]['extended']['developer']."<br>";
-		}
-		if(isset($steampics['apps'][$game['SteamID']]['extended']['gamedir'])){
-			$output .= "gamedir: ". $steampics['apps'][$game['SteamID']]['extended']['gamedir']."<br>";
-		}
-		$output .= "gamemanualurl: ". $steampics['apps'][$game['SteamID']]['extended']['gamemanualurl']."<br>";
-		$output .= "homepage: ". $steampics['apps'][$game['SteamID']]['extended']['homepage']."<br>";
-		if(isset($steampics['apps'][$game['SteamID']]['extended']['icon'])){
-			$output .= "icon: ". $steampics['apps'][$game['SteamID']]['extended']['icon']."<br>";
-		}
-		if(isset($steampics['apps'][$game['SteamID']]['extended']['installscript'])){
-			$output .= "installscript: ". $steampics['apps'][$game['SteamID']]['extended']['installscript']."<br>";
-		}
-		if(isset($steampics['apps'][$game['SteamID']]['extended']['languages'])){
-			$output .= "languages: ". $steampics['apps'][$game['SteamID']]['extended']['languages']."<br>";
-		}
-		if(isset($steampics['apps'][$game['SteamID']]['extended']['launcheula'])){
-			$output .= "launcheula: ". $steampics['apps'][$game['SteamID']]['extended']['launcheula']."<br>";
-		}
-		if(isset($steampics['apps'][$game['SteamID']]['extended']['noservers'])){
-			$output .= "noservers: ". $steampics['apps'][$game['SteamID']]['extended']['noservers']."<br>";
-		}
-		if(isset($steampics['apps'][$game['SteamID']]['extended']['order'])){
-			$output .= "order: ". $steampics['apps'][$game['SteamID']]['extended']['order']."<br>";
-		}
-		if(isset($steampics['apps'][$game['SteamID']]['extended']['primarycache'])){
-			$output .= "primarycache: ". $steampics['apps'][$game['SteamID']]['extended']['primarycache']."<br>";
-		}
-		if(isset($steampics['apps'][$game['SteamID']]['extended']['serverbrowsername'])){
-			$output .= "serverbrowsername: ". $steampics['apps'][$game['SteamID']]['extended']['serverbrowsername']."<br>";
-		}
-		if(isset($steampics['apps'][$game['SteamID']]['extended']['state'])){
-			$output .= "state: ". $steampics['apps'][$game['SteamID']]['extended']['state']."<br>";
-		}
-		$output .= "publisher: ". $steampics['apps'][$game['SteamID']]['extended']['publisher']."<br>";
-		if(isset($steampics['apps'][$game['SteamID']]['extended']['listofdlc'])){
-			$output .= "listofdlc: ". $steampics['apps'][$game['SteamID']]['extended']['listofdlc']."<br>";
-		}
-		
-		//var_dump($steampics);	
 		return $output;
-		// @codeCoverageIgnoreEnd
 	}
-	*/
+
+	private function statsTable($gamestats,$userstats){
+		$output = "<table><thead><tr><th>Stat</th><th>Value</th></tr></thead>";
+		$statarray=regroupArray($userstats,"name");
+		foreach($gamestats as $key => $stat ) {
+			$output .= "<tr><td>";
+			if($stat['displayName']<>""){
+				$output .= "<a href='' title='".htmlspecialchars($stat['name'])."'>".str_replace(" ","&nbsp;",$stat['displayName'])."</a>";
+			} else {
+				$output .= str_replace(" ","&nbsp;",$stat['name']);
+			}
+			$output .= "</td>";
+			if(isset($statarray[$stat['name']])){
+				$output .= "<td>" . $statarray[$stat['name']][0]['value'] . "</td></tr>";
+			} else {
+				$output .= "<td>" . $stat['defaultvalue'] . "</td></tr>";
+			}
+		}
+		$output .= "</table>";
+		return $output;
+	}
 	
 	private function formatDetailStat($label,$value,$prefix="",$separator=": ",$suffix="<br>"){
 		if($this->isempty($value)) {

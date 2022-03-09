@@ -329,7 +329,7 @@ if(isset($_GET['mode']) && $_GET['mode']=="steam") {
 			</td>
 			<?php
 		} else {
-			$resultarray2=GetUserStatsForGame($row['appid']);
+			$resultarray2=$steamAPI->GetSteamAPI("GetUserStatsForGame");
 			$gamename="";
 			if(isset($resultarray2['playerstats']['gameName'])){
 				$gamename=$resultarray2['playerstats']['gameName'];
