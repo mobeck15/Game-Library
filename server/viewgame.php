@@ -899,7 +899,9 @@ if (!(isset($_GET['id']) && is_numeric($_GET['id']))) {
 
 	<tr><th>Bundles</th><td>
 	<?php
-	$purchases=getPurchases("",$conn);
+	//$purchases=getPurchases("",$conn);
+	$purchaseobj=new Purchases("",$conn);
+	$purchases=$purchaseobj->getPurchases();
 	$purchaseIndex=makeIndex($purchases,"TransID");
 
 	if(!isset($calculations[$game['Game_ID']]['TopBundleIDs'])) {

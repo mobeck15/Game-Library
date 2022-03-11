@@ -423,7 +423,7 @@ final class SteamScrape_Test extends TestCase
     }
 	
 	/**
-	 * @small
+	 * @medium
 	 * @covers SteamScrape::getGenre
 	 * @uses SteamScrape
 	 * @uses simple_html_dom
@@ -674,7 +674,7 @@ final class SteamScrape_Test extends TestCase
     }
 	
 	/**
-	 * @small
+	 * @medium
 	 * @covers SteamScrape::getPublisher
 	 * @uses SteamScrape
 	 * @uses simple_html_dom

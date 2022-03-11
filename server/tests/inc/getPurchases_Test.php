@@ -26,7 +26,7 @@ final class getPurchases_Test extends TestCase
 	 * @uses timeduration
 	 * @uses combinedate
 	 * @uses getCleanStringDate
-	 */
+	 * /
 	public function test_getPurchasesFunction_base() {
 		$this->assertisArray(getPurchases());
 	}
@@ -46,12 +46,12 @@ final class getPurchases_Test extends TestCase
 	 * @uses timeduration
 	 * @uses combinedate
 	 * @uses getCleanStringDate
-	 */
+	 * /
     public function test_getPurchasesFunction_conn() {
 		$conn=get_db_connection();
         $this->assertisArray(getPurchases("6",$conn));
  		$conn->close();
-  }
+  } */
    
 	/**
 	 * @medium

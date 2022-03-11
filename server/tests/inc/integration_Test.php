@@ -34,7 +34,9 @@ final class integration_Test extends TestCase
 		$conn=get_db_connection();
 		$settings=getsettings($conn);
 		$calculations=reIndexArray(getCalculations("",$conn),"Game_ID");
-		$purchases=reIndexArray(getPurchases("",$conn), "TransID");
+		//$purchases=reIndexArray(getPurchases("",$conn), "TransID");
+		$purchaseobj=new Purchases("",$conn);
+		$purchases=reIndexArray($purchaseobj->getPurchases(), "TransID");
 		
 		foreach ($calculations[$useproductid]["TopBundleIDs"] as $bundle) {
 			$totalMSRP=0;
@@ -165,7 +167,9 @@ final class integration_Test extends TestCase
 		$conn=get_db_connection();
 		$settings=getsettings($conn);
 		$calculations=reIndexArray(getCalculations("",$conn),"Game_ID");
-		$purchases=reIndexArray(getPurchases("",$conn), "TransID");
+		//$purchases=reIndexArray(getPurchases("",$conn), "TransID");
+		$purchaseobj=new Purchases("",$conn);
+		$purchases=reIndexArray($purchaseobj->getPurchases(), "TransID");
 		
 		/*
 		MSRP - gameMSRP

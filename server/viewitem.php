@@ -60,7 +60,9 @@ $settings=getsettings($conn);
 $gameID="";
 $games=getGames($gameID,$conn);
 $items=getAllItems($gameID,$conn);
-$purchases=getPurchases("",$conn,$items,$games);
+//$purchases=getPurchases("",$conn,$items,$games);
+$purchaseobj=new Purchases("",$conn,$items,$games);
+$purchases=$purchaseobj->getPurchases();
 
 $gameIndex=makeIndex($games,"Game_ID");
 $itemIndex=makeIndex($items,"ItemID");

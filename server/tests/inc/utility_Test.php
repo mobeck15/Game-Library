@@ -160,7 +160,7 @@ final class Utility_Test extends TestCase
 	}
 	
 	/**
-	 * @small
+	 * @medium
 	 * @covers getAllItems
 	 * @uses get_db_connection
 	 */

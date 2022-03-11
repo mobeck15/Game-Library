@@ -8,7 +8,9 @@ echo Get_Header($title);
 
 $conn=get_db_connection();
 	$settings=getsettings($conn);
-	$purchases=getPurchases("",$conn);
+	//$purchases=getPurchases("",$conn);
+	$purchaseobj=new Purchases("",$conn);
+	$purchases=$purchaseobj->getPurchases();
 	$calculations=getCalculations("",$conn);
 	$conn->close();	
 

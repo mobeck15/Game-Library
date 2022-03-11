@@ -28,8 +28,10 @@ function getCalculations($gameID="",$connection=false,$start=false,$end=false){
 		$history=getHistoryCalculations($gameID,$conn);
 		$activity=getActivityCalculations($gameID,$history,$conn);
 		$keywords=getKeywords($gameID,$conn);
-		$purchases=getPurchases("",$conn,$items,$games);
-		
+		//$purchases=getPurchases("",$conn,$items,$games);
+		$purchaseobj=new Purchases("",$conn,$items,$games);
+		$purchases=$purchaseobj->getPurchases();
+
 		foreach ($history as $row) {
 			//Group the history records by GameID
 			$historyByGame[$row['ParentGameID']][]=$row;

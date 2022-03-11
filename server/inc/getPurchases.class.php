@@ -258,11 +258,6 @@ class Purchases
 }
 /* ----------------------------------------------------------------------------------- */
 
-function getPurchases($transID="",$connection=false,$items=false,$games=false) {
-	$purchaseobj=new Purchases($transID,$connection,$items,$games);
-	return $purchaseobj->getPurchases();
-}
-
 // @codeCoverageIgnoreStart
 if (basename($_SERVER["SCRIPT_NAME"], '.php') == "getPurchases.class") {
 	require_once $GLOBALS['rootpath']."/inc/php.ini.inc.php";
@@ -278,28 +273,13 @@ if (basename($_SERVER["SCRIPT_NAME"], '.php') == "getPurchases.class") {
 		Please specify a bundle by ID.
 		<form method="Get">
 			<?php echo $lookupbundle["textBox"]; ?>
-			<br><label><input type="radio" name="function" value="getPurchases" CHECKED>getPurchases</label>
-			<br><label><input type="radio" name="function" value="getAllPurchases">getAllPurchases</label>
 			<br><input type="submit">
 		</form>
 
 		<?php
 		echo $lookupbundle["lookupBox"];
 	} else {
-		if(!isset($_GET['function'])) {
-			$_GET['function'] = "getPurchases";
-		}
-		
-		switch ($_GET['function']) {
-			case "getPurchases":
-			default:
-				$purchases=reIndexArray(getPurchases(),"TransID");
-				break;
-			case "getAllPurchases":
-				$purchases=reIndexArray(getAllPurchases(),"TransID");
-				break;
-		}
-		
+		$purchases=reIndexArray(getAllPurchases(),"TransID");
 		echo arrayTable($purchases[$_GET['id']]);
 	}
 	echo Get_Footer();
