@@ -2,13 +2,9 @@
 declare(strict_types=1);
 use PHPUnit\Framework\TestCase;
 
-// We require the file we need to test.
-// Relative path to the current working dir (root of xampp)
 $GLOBALS['rootpath'] = $GLOBALS['rootpath'] ?? "htdocs\Game-Library\server";
 require_once $GLOBALS['rootpath']."\inc\utility.inc.php";
 
-//Time: 00:01.366, Memory: 58.00 MB
-//(29 tests, 89 assertions)
 /**
  * @group include
  */
@@ -24,8 +20,9 @@ final class Utility_Test extends TestCase
 	 *           ["1:30:00", 90, "minutes"]
 	 *           ["0:01:00", 60, "seconds"]
 	 *           ["0:01:30", 90, "seconds"]
+	 *           ["0:00:00 123", 0.1234, "seconds"]
 	 */
-    public function test_timeduration($expected, $time, $unit) {
+    public function test_timeduration_base($expected, $time, $unit) {
         $this->assertEquals($expected, timeduration($time,$unit));
     }
 
@@ -121,6 +118,23 @@ final class Utility_Test extends TestCase
 		//Assert
 		$this->assertIsArray($index);
 		$this->assertEquals("pear", $array[$index[1]]["name"]);
+	}
+
+	/**
+	 * @small
+	 * @covers makeIndex
+	 */
+	public function test_makeIndex_empty() {
+		//Arrange
+		$array = array();
+		
+		//Act
+		
+		//Assert
+		$this->expectNotice();
+		$this->expectNoticeMessage("Array not provided (or empty array) for MakeIndex Function");
+		
+		$index=makeIndex($array,"id");
 	}
 
 	/**
@@ -456,10 +470,11 @@ final class Utility_Test extends TestCase
 	/**
 	 * @small
 	 * @covers getGameDetail
-	 * @uses CalculateGameRow
+	 * @uses Games
+	 * @uses getGames
+	 * @uses dataAccess
 	 * @uses getActivityCalculations
 	 * @uses getAllCpi
-	 * @uses getGames
 	 * @uses getHistoryCalculations
 	 * @uses getsettings
 	 * @uses timeduration
@@ -595,18 +610,32 @@ final class Utility_Test extends TestCase
 	/**
 	 * @small
 	 * @covers daysSinceDate
+	 * @testWith ["P55D",55]
+	 *           ["P200D", 200]
+	 *           ["P400D", 400]
 	 */
-	public function test_daysSinceDate() {
-		//TODO: Add mock for Time() function in daysSinceDate()
+	public function test_daysSinceDate_base($interval,$expected) {
 		//Arrange
 		$date = new DateTime();
-		$days55 = new DateInterval('P55D');
+		$days55 = new DateInterval($interval);
 		$date = $date->sub($days55);
 		
 		//Act
 		
 		//Assert
-		$this->assertEquals(55,daysSinceDate($date->getTimestamp()));
+		$this->assertEquals($expected,daysSinceDate($date->getTimestamp()));
+	}
+
+	/**
+	 * @small
+	 * @covers daysSinceDate
+	 */
+	public function test_daysSinceDate_error() {
+		//Arrange
+		
+		//Act
+		
+		//Assert
 		$this->assertEquals(0,daysSinceDate("O"));
 		$this->assertEquals("",daysSinceDate(-1));
 	}
@@ -766,7 +795,7 @@ Failed asserting that two strings are equal.
 	 * @covers findgaps
 	 * @uses get_db_connection
 	 */
-	public function test_findgaps() {
+	public function test_findgaps_base() {
 		//ARRANGE
 		$conn=get_db_connection();
 		$sql1c = "SELECT DISTINCT round(`cpi`)-10 as 'cpi' FROM `gl_cpi` where round(`cpi`) in (10,11,14,16) ORDER by round(`cpi`);";
@@ -779,6 +808,50 @@ Failed asserting that two strings are equal.
 		$this->assertEquals(6,$gaps['max']);
 		$this->assertEquals(array(2,3, 5),$gaps['gaps']);
 		$this->assertEquals("2, 3, 5, ",$gaps['gapsText']);
+		$conn->close();
+	}
+	
+	/**
+	 * @small
+	 * @covers findgaps
+	 * @uses get_db_connection
+	 */
+	public function test_findgaps_itemcards() {
+		//ARRANGE
+		$conn=get_db_connection();
+		$sql1c = "SELECT DISTINCT round(`cpi`)-10 as 'ItemID',null as 'ProductID' FROM `gl_cpi` where round(`cpi`) in (10,11,14,16) ORDER by round(`cpi`);";
+		
+		//ACT
+		$gaps=findgaps($sql1c,$conn,"ItemID");
+
+		//ASSERT
+		$this->assertEquals(4,$gaps['count']);
+		$this->assertEquals(6,$gaps['max']);
+		$this->assertEquals(array(2,3, 5),$gaps['gaps']);
+		$this->assertEquals("2, 3, 5, ",$gaps['gapsText']);
+		$this->assertEquals("6",$gaps['lastcard']['ItemID']);
+		$conn->close();
+	}
+	
+	/**
+	 * @small
+	 * @covers findgaps
+	 * @uses get_db_connection
+	 */
+	public function test_findgaps_trancards() {
+		//ARRANGE
+		$conn=get_db_connection();
+		$sql1c = "SELECT DISTINCT round(`cpi`)-10 as 'TransID',-1 as 'Credit Used' FROM `gl_cpi` where round(`cpi`) in (10,11,14,16) ORDER by round(`cpi`);";
+		
+		//ACT
+		$gaps=findgaps($sql1c,$conn,"TransID");
+
+		//ASSERT
+		$this->assertEquals(4,$gaps['count']);
+		$this->assertEquals(6,$gaps['max']);
+		$this->assertEquals(array(2,3, 5),$gaps['gaps']);
+		$this->assertEquals("2, 3, 5, ",$gaps['gapsText']);
+		$this->assertEquals("6",$gaps['lastcard']['TransID']);
 		$conn->close();
 	}
 }

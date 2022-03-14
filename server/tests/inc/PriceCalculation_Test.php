@@ -3,13 +3,14 @@ declare(strict_types=1);
 use PHPUnit\Framework\TestCase;
 
 $GLOBALS['rootpath'] = "htdocs\Game-Library\server";
+require_once $GLOBALS['rootpath'].'\tests\inc\testprivate.inc.php';
 require_once $GLOBALS['rootpath']."\inc\PriceCalculation.class.php";
 
 /**
  * @group include
  * @group classtest
  */
-final class PriceCalculation_Test extends TestCase
+final class PriceCalculation_Test extends testprivate
 {
 	private $PriceCalculation;
 	
@@ -51,40 +52,6 @@ final class PriceCalculation_Test extends TestCase
 		$this->assertEquals( $property->getValue( $this->PriceCalculation ), $value );
     }
 
-	/**
- 	 * getPrivateProperty
- 	 *
- 	 * @author	Joe Sexton <joe@webtipblog.com>
- 	 * @param 	string $className
- 	 * @param 	string $propertyName
- 	 * @return	ReflectionProperty
-	 * Source: https://www.webtipblog.com/unit-testing-private-methods-and-properties-with-phpunit/
- 	 */
-	public function getPrivateProperty( $className, $propertyName ) {
-		$reflector = new ReflectionClass( $className );
-		$property = $reflector->getProperty( $propertyName );
-		$property->setAccessible( true );
-
-		return $property;
-	}
-
-	/**
- 	 * getPrivateMethod
- 	 *
- 	 * @author	Joe Sexton <joe@webtipblog.com>
- 	 * @param 	string $className
- 	 * @param 	string $methodName
- 	 * @return	ReflectionMethod
-	 * Source: https://www.webtipblog.com/unit-testing-private-methods-and-properties-with-phpunit/
- 	 */
-	public function getPrivateMethod( $className, $methodName ) {
-		$reflector = new ReflectionClass( $className );
-		$method = $reflector->getMethod( $methodName );
-		$method->setAccessible( true );
-
-		return $method;
-	}
-	
 	/**
 	 * @small
 	 * @covers PriceCalculation::getVarianceFromMSRP

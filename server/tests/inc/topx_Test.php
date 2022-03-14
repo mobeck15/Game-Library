@@ -3,6 +3,7 @@ declare(strict_types=1);
 use PHPUnit\Framework\TestCase;
 
 $GLOBALS['rootpath'] = "htdocs\Game-Library\server";
+require_once $GLOBALS['rootpath'].'\tests\inc\testprivate.inc.php';
 require_once $GLOBALS['rootpath'].'\inc\topx.class.php';
 
 /**
@@ -10,7 +11,7 @@ require_once $GLOBALS['rootpath'].'\inc\topx.class.php';
  * @group classtest
  * @group topx
  */
-final class topx_Test extends TestCase
+final class topx_Test extends testprivate
 {
 	/**
 	 * @small
@@ -330,39 +331,5 @@ final class topx_Test extends TestCase
 		//$result=$topxObject->parseFilter($filterstring);
 		$this->assertisArray($result);
 		$this->assertEquals($filterarray,$result);
-	}
-
-	/**
- 	 * getPrivateProperty
- 	 *
- 	 * @author	Joe Sexton <joe@webtipblog.com>
- 	 * @param 	string $className
- 	 * @param 	string $propertyName
- 	 * @return	ReflectionProperty
-	 * Source: https://www.webtipblog.com/unit-testing-private-methods-and-properties-with-phpunit/
- 	 */
-	public function getPrivateProperty( $className, $propertyName ) {
-		$reflector = new ReflectionClass( $className );
-		$property = $reflector->getProperty( $propertyName );
-		$property->setAccessible( true );
-
-		return $property;
-	}
-
-	/**
- 	 * getPrivateMethod
- 	 *
- 	 * @author	Joe Sexton <joe@webtipblog.com>
- 	 * @param 	string $className
- 	 * @param 	string $methodName
- 	 * @return	ReflectionMethod
-	 * Source: https://www.webtipblog.com/unit-testing-private-methods-and-properties-with-phpunit/
- 	 */
-	public function getPrivateMethod( $className, $methodName ) {
-		$reflector = new ReflectionClass( $className );
-		$method = $reflector->getMethod( $methodName );
-		$method->setAccessible( true );
-
-		return $method;
 	}
 }

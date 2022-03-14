@@ -208,7 +208,6 @@ final class getmetastats_Test extends TestCase
 	/**
 	 * @large
 	 * @covers getStatRow
-	 * @uses CalculateGameRow
 	 * @uses PriceCalculation
 	 * @uses combinedate
 	 * @uses countrow
@@ -227,7 +226,6 @@ final class getmetastats_Test extends TestCase
 	 * @uses getOnlyValues
 	 * @uses getPriceSort
 	 * @uses getPriceperhour
-	 * @uses getPurchases
 	 * @uses getTimeLeft
 	 * @uses getsettings
 	 * @uses makeIndex
@@ -255,7 +253,6 @@ final class getmetastats_Test extends TestCase
 	/**
 	 * @large
 	 * @covers getStatRow
-	 * @uses CalculateGameRow
 	 * @uses PriceCalculation
 	 * @uses combinedate
 	 * @uses countrow
@@ -274,7 +271,6 @@ final class getmetastats_Test extends TestCase
 	 * @uses getOnlyValues
 	 * @uses getPriceSort
 	 * @uses getPriceperhour
-	 * @uses getPurchases
 	 * @uses getTimeLeft
 	 * @uses getsettings
 	 * @uses makeIndex
@@ -294,7 +290,6 @@ final class getmetastats_Test extends TestCase
 	/**
 	 * @large
 	 * @covers getStatRow
-	 * @uses CalculateGameRow
 	 * @uses PriceCalculation
 	 * @uses combinedate
 	 * @uses countrow
@@ -313,7 +308,6 @@ final class getmetastats_Test extends TestCase
 	 * @uses getOnlyValues
 	 * @uses getPriceSort
 	 * @uses getPriceperhour
-	 * @uses getPurchases
 	 * @uses getTimeLeft
 	 * @uses getsettings
 	 * @uses makeIndex
@@ -334,7 +328,6 @@ final class getmetastats_Test extends TestCase
 	/**
 	 * @large
 	 * @covers countgames
-	 * @uses CalculateGameRow
 	 * @uses PriceCalculation
 	 * @uses combinedate
 	 * @uses countrow
@@ -352,7 +345,6 @@ final class getmetastats_Test extends TestCase
 	 * @uses getNextPosition
 	 * @uses getPriceSort
 	 * @uses getPriceperhour
-	 * @uses getPurchases
 	 * @uses getTimeLeft
 	 * @uses getsettings
 	 * @uses makeIndex
@@ -366,7 +358,6 @@ final class getmetastats_Test extends TestCase
 	/**
 	 * @large
 	 * @covers makeStatTable
-	 * @uses CalculateGameRow
 	 * @uses PriceCalculation
 	 * @uses combinedate
 	 * @uses countgames
@@ -386,7 +377,6 @@ final class getmetastats_Test extends TestCase
 	 * @uses getOnlyValues
 	 * @uses getPriceSort
 	 * @uses getPriceperhour
-	 * @uses getPurchases
 	 * @uses getStatRow
 	 * @uses getTimeLeft
 	 * @uses getmetastats
@@ -412,7 +402,6 @@ final class getmetastats_Test extends TestCase
 	/**
 	 * @large
 	 * @covers makeGameCountRow
-	 * @uses CalculateGameRow
 	 * @uses PriceCalculation
 	 * @uses combinedate
 	 * @uses countgames
@@ -431,7 +420,6 @@ final class getmetastats_Test extends TestCase
 	 * @uses getNextPosition
 	 * @uses getPriceSort
 	 * @uses getPriceperhour
-	 * @uses getPurchases
 	 * @uses getTimeLeft
 	 * @uses getsettings
 	 * @uses makeIndex
@@ -445,7 +433,6 @@ final class getmetastats_Test extends TestCase
 	/**
 	 * @large
 	 * @covers makeStatRow
-	 * @uses CalculateGameRow
 	 * @uses PriceCalculation
 	 * @uses combinedate
 	 * @uses countrow
@@ -464,7 +451,6 @@ final class getmetastats_Test extends TestCase
 	 * @uses getOnlyValues
 	 * @uses getPriceSort
 	 * @uses getPriceperhour
-	 * @uses getPurchases
 	 * @uses getStatRow
 	 * @uses getTimeLeft
 	 * @uses getmetastats
@@ -495,7 +481,6 @@ final class getmetastats_Test extends TestCase
 	/**
 	 * @large
 	 * @covers makeStatDataSet
-	 * @uses CalculateGameRow
 	 * @uses PriceCalculation
 	 * @uses combinedate
 	 * @uses countrow
@@ -513,7 +498,6 @@ final class getmetastats_Test extends TestCase
 	 * @uses getNextPosition
 	 * @uses getPriceSort
 	 * @uses getPriceperhour
-	 * @uses getPurchases
 	 * @uses getTimeLeft
 	 * @uses getsettings
 	 * @uses makeIndex
@@ -543,7 +527,6 @@ final class getmetastats_Test extends TestCase
 	/**
 	 * @large
 	 * @covers printStatRow2
-	 * @uses CalculateGameRow
 	 * @uses PriceCalculation
 	 * @uses combinedate
 	 * @uses countrow
@@ -562,7 +545,6 @@ final class getmetastats_Test extends TestCase
 	 * @uses getOnlyValues
 	 * @uses getPriceSort
 	 * @uses getPriceperhour
-	 * @uses getPurchases
 	 * @uses getStatRow
 	 * @uses getTimeLeft
 	 * @uses getsettings
@@ -582,7 +564,6 @@ final class getmetastats_Test extends TestCase
 	/**
 	 * @large
 	 * @covers DetailDataTable
-	 * @uses CalculateGameRow
 	 * @uses PriceCalculation
 	 * @uses combinedate
 	 * @uses countrow
@@ -601,7 +582,6 @@ final class getmetastats_Test extends TestCase
 	 * @uses getOnlyValues
 	 * @uses getPriceSort
 	 * @uses getPriceperhour
-	 * @uses getPurchases
 	 * @uses getStatRow
 	 * @uses getTimeLeft
 	 * @uses getsettings
@@ -625,7 +605,6 @@ final class getmetastats_Test extends TestCase
 	/**
 	 * @large
 	 * @covers getOnlyValues
-	 * @uses CalculateGameRow
 	 * @uses PriceCalculation
 	 * @uses combinedate
 	 * @uses countrow
@@ -643,7 +622,6 @@ final class getmetastats_Test extends TestCase
 	 * @uses getNextPosition
 	 * @uses getPriceSort
 	 * @uses getPriceperhour
-	 * @uses getPurchases
 	 * @uses getTimeLeft
 	 * @uses getsettings
 	 * @uses makeIndex

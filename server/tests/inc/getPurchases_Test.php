@@ -3,60 +3,18 @@ declare(strict_types=1);
 use PHPUnit\Framework\TestCase;
 
 $GLOBALS['rootpath'] = $GLOBALS['rootpath'] ?? "htdocs\Game-Library\server";
+require_once $GLOBALS['rootpath'].'\tests\inc\testprivate.inc.php';
 require_once $GLOBALS['rootpath']."\inc\getPurchases.class.php";
 
 /**
  * @group include
  * @group purchases
  */
-final class getPurchases_Test extends TestCase
+final class getPurchases_Test extends testprivate
 {
 	/**
 	 * @medium
-	 * @covers getPurchases
-	 * @uses get_db_connection
-	 * @uses CalculateGameRow
-	 * @uses getActivityCalculations
-	 * @uses getAllCpi
-	 * @uses getAllItems
-	 * @uses getGames
-	 * @uses getHistoryCalculations
-	 * @uses getsettings
-	 * @uses makeIndex
-	 * @uses timeduration
-	 * @uses combinedate
-	 * @uses getCleanStringDate
-	 * /
-	public function test_getPurchasesFunction_base() {
-		$this->assertisArray(getPurchases());
-	}
-   
-	/**
-	 * @medium
-	 * @covers getPurchases
-	 * @uses get_db_connection
-	 * @uses CalculateGameRow
-	 * @uses getActivityCalculations
-	 * @uses getAllCpi
-	 * @uses getAllItems
-	 * @uses getGames
-	 * @uses getHistoryCalculations
-	 * @uses getsettings
-	 * @uses makeIndex
-	 * @uses timeduration
-	 * @uses combinedate
-	 * @uses getCleanStringDate
-	 * /
-    public function test_getPurchasesFunction_conn() {
-		$conn=get_db_connection();
-        $this->assertisArray(getPurchases("6",$conn));
- 		$conn->close();
-  } */
-   
-	/**
-	 * @medium
 	 * @covers Purchases::getPurchases
-	 * @uses CalculateGameRow
 	 * @uses getActivityCalculations
 	 * @uses getAllCpi
 	 * @uses getAllItems
@@ -72,8 +30,6 @@ final class getPurchases_Test extends TestCase
 		$purchasObject=new Purchases();
 		$this->assertisArray($purchasObject->getPurchases());
 	}
-
-//------------------------------------------------------
 
 	/**
 	 * @medium
@@ -158,7 +114,6 @@ final class getPurchases_Test extends TestCase
 	/**
 	 * @medium
 	 * @covers Purchases::getTopBundle
-	 * @uses CalculateGameRow
 	 * @uses Purchases
 	 * @uses combinedate
 	 * @uses dataAccess
@@ -199,7 +154,6 @@ final class getPurchases_Test extends TestCase
 	/**
 	 * @medium
 	 * @covers Purchases::getTopBundle
-	 * @uses CalculateGameRow
 	 * @uses Purchases
 	 * @uses combinedate
 	 * @uses dataAccess
@@ -244,7 +198,6 @@ final class getPurchases_Test extends TestCase
 	/**
 	 * @medium
 	 * @covers Purchases::getTopBundle
-	 * @uses CalculateGameRow
 	 * @uses Purchases
 	 * @uses combinedate
 	 * @uses dataAccess
@@ -298,7 +251,6 @@ final class getPurchases_Test extends TestCase
 	/**
 	 * @medium
 	 * @covers Purchases::getTopBundle
-	 * @uses CalculateGameRow
 	 * @uses Purchases
 	 * @uses combinedate
 	 * @uses dataAccess
@@ -518,7 +470,6 @@ final class getPurchases_Test extends TestCase
 	 * @medium
 	 * @covers Purchases::getPurchases
 	 * @uses get_db_connection
-	 * @uses CalculateGameRow
 	 * @uses getActivityCalculations
 	 * @uses getAllCpi
 	 * @uses getAllItems
@@ -634,7 +585,6 @@ final class getPurchases_Test extends TestCase
 	 * @covers Purchases::setvalue
 	 * @uses dataAccess
 	 * @uses Purchases
-	 * @uses CalculateGameRow
 	 * @uses combinedate
 	 * @uses getActivityCalculations
 	 * @uses getAllCpi
@@ -666,7 +616,6 @@ final class getPurchases_Test extends TestCase
 	 * @covers Purchases::divzero
 	 * @uses dataAccess
 	 * @uses Purchases
-	 * @uses CalculateGameRow
 	 * @uses combinedate
 	 * @uses getActivityCalculations
 	 * @uses getAllCpi
@@ -689,40 +638,5 @@ final class getPurchases_Test extends TestCase
 		
 		//$result = $purchasObject->divzero($numerator,$denominator,$ifzero);
 		$this->assertEquals($expected,$result);
-	}
-	
-	/**
- 	 * getPrivateProperty
- 	 *
- 	 * @author	Joe Sexton <joe@webtipblog.com>
- 	 * @param 	string $className
- 	 * @param 	string $propertyName
- 	 * @return	ReflectionProperty
-	 * Source: https://www.webtipblog.com/unit-testing-private-methods-and-properties-with-phpunit/
- 	 */
-	public function getPrivateProperty( $className, $propertyName ) {
-		$reflector = new ReflectionClass( $className );
-		$property = $reflector->getProperty( $propertyName );
-		$property->setAccessible( true );
-
-		return $property;
-	}
-
-	/**
- 	 * getPrivateMethod
- 	 *
- 	 * @author	Joe Sexton <joe@webtipblog.com>
- 	 * @param 	string $className
- 	 * @param 	string $methodName
- 	 * @return	ReflectionMethod
-	 * Source: https://www.webtipblog.com/unit-testing-private-methods-and-properties-with-phpunit/
- 	 */
-	public function getPrivateMethod( $className, $methodName ) {
-		$reflector = new ReflectionClass( $className );
-		$method = $reflector->getMethod( $methodName );
-		$method->setAccessible( true );
-
-		return $method;
-	}
-	
+	}	
 }

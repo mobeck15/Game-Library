@@ -3,32 +3,60 @@ declare(strict_types=1);
 use PHPUnit\Framework\TestCase;
 
 $GLOBALS['rootpath'] = $GLOBALS['rootpath'] ?? "htdocs\Game-Library\server";
+require_once $GLOBALS['rootpath'].'\tests\inc\testprivate.inc.php';
 require_once $GLOBALS['rootpath']."\inc\getGames.inc.php";
 
 /**
  * @group include
+ * @group getGames
  */
-final class getGames_Test extends TestCase
+final class getGames_Test extends testprivate
 {
 	/**
 	 * @small
+	 * @covers Games::getGames
 	 * @covers getGames
-	 * @uses get_db_connection
-	 * @uses CalculateGameRow
+	 * @uses Games
+	 * @uses dataAccess
 	 * @uses getAllCpi
+	 * @uses get_db_connection
 	 * @uses timeduration
 	 */
     public function test_getGames_base() {
-        $this->assertisArray(getGames());
+		$result=getGames();
+        $this->assertisArray($result);
+        $this->assertEquals(true,count($result)>0);
 		
         $this->assertisArray(getGames(2));
         $this->assertisArray(getGames(array(2,3)));
 	}
+
 	
 	/**
 	 * @small
+	 * @covers Games::getGames
 	 * @covers getGames
-	 * @uses CalculateGameRow
+	 * @uses Games
+	 * @uses dataAccess
+	 * @uses getAllCpi
+	 * @uses get_db_connection
+	 * @uses timeduration
+	 * @uses makeIndex
+	 */
+    public function test_getGames_reindex() {
+		$result=getGames();
+        $this->assertisArray($result);
+        $this->assertEquals(true,count($result)>0);
+		$this->assertisArray(makeIndex($result,"Game_ID"));
+	}
+
+	
+	/**
+	 * @small
+	 * @covers Games::getGames
+	 * @uses getGames
+	 * @uses Games
+	 * @uses dataAccess
 	 * @uses getAllCpi
 	 * @uses get_db_connection
 	 * @uses timeduration
@@ -41,18 +69,19 @@ final class getGames_Test extends TestCase
 	
 	/**
 	 * @small
+	 * @covers Games::getGames
 	 * @covers getGames
-	 * @uses getsettings
 	 * @uses get_db_connection
-	 */
+	 * /
     public function test_getGames_error() {
         $this->expectNotice();
 		$this->assertisArray(getGames(";"));
 	}
+	/* */
 
 	/**
 	 * @small
-	 * @covers CalculateGameRow
+	 * @covers Games::CalculateGameRow
 	 * @uses getAllCpi
 	 * @uses getGames
 	 * @uses timeduration
@@ -85,7 +114,12 @@ final class getGames_Test extends TestCase
 			"Playable" => 1
 		);
 		
-		$this->assertisArray(CalculateGameRow($gamerow));
+		$GameListObject=new Games();
+
+		$method = $this->getPrivateMethod( 'Games', 'CalculateGameRow' );
+		$result = $method->invokeArgs( $GameListObject, array($gamerow) );
+		
+		$this->assertisArray($result);
 		
 		$gamerow["LowDate"]="";
 		$gamerow["DateUpdated"]="";
@@ -105,11 +139,18 @@ final class getGames_Test extends TestCase
 		$gamerow["TimeToBeat"]=0;
 		$gamerow["ParentGameID"]=3;
 		
-		$this->assertisArray(CalculateGameRow($gamerow));
+		$GameListObject=new Games();
+
+		$method = $this->getPrivateMethod( 'Games', 'CalculateGameRow' );
+		$result = $method->invokeArgs( $GameListObject, array($gamerow) );
+		
+		$this->assertisArray($result);
 
 		$gamerow["MetascoreID"]="";
 		$gamerow["TimeToBeatID"]="";
 		
-		$this->assertisArray(CalculateGameRow($gamerow));
+		$result = $method->invokeArgs( $GameListObject, array($gamerow) );
+		$this->assertisArray($result);
 	}
+	/* */
 }

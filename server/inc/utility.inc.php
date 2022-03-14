@@ -121,6 +121,10 @@ function get_db_connection(){
 }
 
 function makeIndex($array,$indexKey){
+	if(!is_array($array) OR count($array) == 0) {
+		trigger_error("Array not provided (or empty array) for MakeIndex Function");
+	}
+	
 	$errorlist=array();
 	foreach ($array as $key => $value) {
 		if(isset($index[$value[$indexKey]]) && !in_array($value[$indexKey],$errorlist)){
@@ -410,7 +414,10 @@ function daysSinceDate($date) {
 		$daysSince=0;
 	} else {
 		if($date>0){
-			$daysSince=floor((time()-$date) / (60 * 60 * 24));
+			$secondsinaday=(60*60*24);
+			$nowdays = floor(time()/$secondsinaday);
+			$pastdays = floor($date/$secondsinaday);
+			$daysSince=$nowdays-$pastdays;
 		} else {
 			$daysSince="";
 		}

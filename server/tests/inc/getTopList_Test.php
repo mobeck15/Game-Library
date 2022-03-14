@@ -31,7 +31,6 @@ final class getTopList_Test extends TestCase
 	/**
 	 * @large
 	 * @covers getTopList
-	 * @uses CalculateGameRow
 	 * @uses PriceCalculation
 	 * @uses combinedate
 	 * @uses daysSinceDate
@@ -47,7 +46,6 @@ final class getTopList_Test extends TestCase
 	 * @uses getNextPosition
 	 * @uses getPriceSort
 	 * @uses getPriceperhour
-	 * @uses getPurchases
 	 * @uses getTimeLeft
 	 * @uses getsettings
 	 * @uses makeIndex
@@ -71,7 +69,6 @@ final class getTopList_Test extends TestCase
 	/**
 	 * @large
 	 * @covers getTopList
-	 * @uses CalculateGameRow
 	 * @uses PriceCalculation
 	 * @uses combinedate
 	 * @uses daysSinceDate
@@ -87,7 +84,6 @@ final class getTopList_Test extends TestCase
 	 * @uses getNextPosition
 	 * @uses getPriceSort
 	 * @uses getPriceperhour
-	 * @uses getPurchases
 	 * @uses getTimeLeft
 	 * @uses getsettings
 	 * @uses makeIndex
@@ -117,7 +113,6 @@ final class getTopList_Test extends TestCase
 	/* *
 	 * @large
 	 * @covers getTopList
-	 * @uses CalculateGameRow
 	 * @uses PriceCalculation
 	 * @uses combinedate
 	 * @uses daysSinceDate
@@ -133,7 +128,6 @@ final class getTopList_Test extends TestCase
 	 * @uses getNextPosition
 	 * @uses getPriceSort
 	 * @uses getPriceperhour
-	 * @uses getPurchases
 	 * @uses getTimeLeft
 	 * @uses getsettings
 	 * @uses makeIndex

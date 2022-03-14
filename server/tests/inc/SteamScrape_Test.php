@@ -2,16 +2,15 @@
 declare(strict_types=1);
 use PHPUnit\Framework\TestCase;
 
-// We require the file we need to test.
-// Relative path to the current working dir (root of xampp)
 $GLOBALS['rootpath'] = "htdocs\Game-Library\server";
+require_once $GLOBALS['rootpath'].'\tests\inc\testprivate.inc.php';
 require_once $GLOBALS['rootpath']."\inc\SteamScrape.class.php";
 
 /**
  * @group include
  * @group classtest
  */
-final class SteamScrape_Test extends TestCase
+final class SteamScrape_Test extends testprivate
 {
 	private $SteamScrape_obj;
 	
@@ -735,40 +734,4 @@ final class SteamScrape_Test extends TestCase
 		$this->assertisString($result);
 		$this->assertEquals("Maxis™",$result);
     }
-	
-	
-	/**
- 	 * getPrivateProperty
- 	 *
- 	 * @author	Joe Sexton <joe@webtipblog.com>
- 	 * @param 	string $className
- 	 * @param 	string $propertyName
- 	 * @return	ReflectionProperty
-	 * Source: https://www.webtipblog.com/unit-testing-private-methods-and-properties-with-phpunit/
- 	 */
-	public function getPrivateProperty( $className, $propertyName ) {
-		$reflector = new ReflectionClass( $className );
-		$property = $reflector->getProperty( $propertyName );
-		$property->setAccessible( true );
-
-		return $property;
-	}
-
-	/**
- 	 * getPrivateMethod
- 	 *
- 	 * @author	Joe Sexton <joe@webtipblog.com>
- 	 * @param 	string $className
- 	 * @param 	string $methodName
- 	 * @return	ReflectionMethod
-	 * Source: https://www.webtipblog.com/unit-testing-private-methods-and-properties-with-phpunit/
- 	 */
-	public function getPrivateMethod( $className, $methodName ) {
-		$reflector = new ReflectionClass( $className );
-		$method = $reflector->getMethod( $methodName );
-		$method->setAccessible( true );
-
-		return $method;
-	}
-	
 }

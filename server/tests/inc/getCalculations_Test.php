@@ -26,7 +26,6 @@ final class getCalculations_Test extends TestCase
 	/**
 	 * @medium
 	 * @covers getCalculations
-	 * @uses CalculateGameRow
 	 * @uses PriceCalculation
 	 * @uses combinedate
 	 * @uses daysSinceDate
@@ -42,7 +41,6 @@ final class getCalculations_Test extends TestCase
 	 * @uses getNextPosition
 	 * @uses getPriceSort
 	 * @uses getPriceperhour
-	 * @uses getPurchases
 	 * @uses getTimeLeft
 	 * @uses getsettings
 	 * @uses makeIndex
@@ -60,7 +58,6 @@ final class getCalculations_Test extends TestCase
 	 * @covers getCalculations
 	 * @uses get_db_connection
 	 * @uses PriceCalculation
-	 * @uses CalculateGameRow
 	 * @uses combinedate
 	 * @uses daysSinceDate
 	 * @uses getActivityCalculations
@@ -75,7 +72,6 @@ final class getCalculations_Test extends TestCase
 	 * @uses getNextPosition
 	 * @uses getPriceSort
 	 * @uses getPriceperhour
-	 * @uses getPurchases
 	 * @uses getTimeLeft
 	 * @uses getsettings
 	 * @uses makeIndex

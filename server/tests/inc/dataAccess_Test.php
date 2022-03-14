@@ -3,18 +3,20 @@ declare(strict_types=1);
 use PHPUnit\Framework\TestCase;
 
 $GLOBALS['rootpath'] = $GLOBALS['rootpath'] ?? "htdocs\Game-Library\server";
+require_once $GLOBALS['rootpath'].'\tests\inc\testprivate.inc.php';
 require_once $GLOBALS['rootpath']."\inc\dataAccess.class.php";
 
 /**
  * @group include
  * @group classtest
+ * @group getGames
  */
-final class dataAccess_Test extends TestCase
+final class dataAccess_Test extends testprivate
 {
 	/**
+	 * @small
 	 * @covers dataAccess::getConnection
-	 * @uses dataAccess::__construct
-	 * @uses dataAccess::getConnection
+	 * @uses dataAccess
 	 */
 	public function test_getConnection() {
 		$dataobject= new dataAccess();
@@ -26,9 +28,9 @@ final class dataAccess_Test extends TestCase
 	}
 
 	/**
+	 * @small
 	 * @covers dataAccess::closeConnection
-	 * @uses dataAccess::__construct
-	 * @uses dataAccess::getConnection
+	 * @uses dataAccess
 	 */
 	public function test_closeConnection() {
 		$dataobject= new dataAccess();
@@ -43,9 +45,45 @@ final class dataAccess_Test extends TestCase
 	}
 
 	/**
+	 * @small
+	 * @covers dataAccess::getGames
+	 * @uses dataAccess
+	 */
+	public function test_getGames() {
+		$dataobject= new dataAccess();
+		$statement=$dataobject->getGames();
+		$this->assertisObject($statement);
+		$this->assertInstanceOf(PDOStatement::class, $statement);
+	}
+
+	/**
+	 * @small
+	 * @covers dataAccess::getGames
+	 * @uses dataAccess
+	 */
+	public function test_getGames_One() {
+		$dataobject= new dataAccess();
+		$statement=$dataobject->getGames(111);
+		$this->assertisObject($statement);
+		$this->assertInstanceOf(PDOStatement::class, $statement);
+	}
+
+	/**
+	 * @small
+	 * @covers dataAccess::getGames
+	 * @uses dataAccess
+	 */
+	public function test_getGames_Many() {
+		$dataobject= new dataAccess();
+		$statement=$dataobject->getGames([111,101]);
+		$this->assertisObject($statement);
+		$this->assertInstanceOf(PDOStatement::class, $statement);
+	}
+
+	/**
+	 * @small
 	 * @covers dataAccess::getPurchases
-	 * @uses dataAccess::__construct
-	 * @uses dataAccess::getConnection
+	 * @uses dataAccess
 	 */
 	public function test_getPurchases() {
 		$dataobject= new dataAccess();
@@ -55,9 +93,9 @@ final class dataAccess_Test extends TestCase
 	}
 
 	/**
+	 * @small
 	 * @covers dataAccess::getPurchases
-	 * @uses dataAccess::__construct
-	 * @uses dataAccess::getConnection
+	 * @uses dataAccess
 	 */
 	public function test_getPurchases_One() {
 		$dataobject= new dataAccess();
@@ -67,10 +105,9 @@ final class dataAccess_Test extends TestCase
 	}
 	
 	/**
+	 * @small
 	 * @covers dataAccess::getAllRows
-	 * @uses dataAccess::getPurchases
-	 * @uses dataAccess::__construct
-	 * @uses dataAccess::getConnection
+	 * @uses dataAccess
 	 */
 	public function test_getAllRows() {
 		$dataobject= new dataAccess();
@@ -82,10 +119,9 @@ final class dataAccess_Test extends TestCase
 	}
 	
 	/**
+	 * @small
 	 * @covers dataAccess::getAllRows
-	 * @uses dataAccess::getPurchases
-	 * @uses dataAccess::__construct
-	 * @uses dataAccess::getConnection
+	 * @uses dataAccess
 	 */
 	public function test_getAllRows_index() {
 		$dataobject= new dataAccess();
@@ -94,40 +130,5 @@ final class dataAccess_Test extends TestCase
 		$this->assertisArray($allrows);
 		$this->assertisArray($allrows[0]);
 		$this->assertEquals("Not Owned",$allrows[0]["Title"]);
-	}
-	
-	/**
- 	 * getPrivateProperty
- 	 *
- 	 * @author	Joe Sexton <joe@webtipblog.com>
- 	 * @param 	string $className
- 	 * @param 	string $propertyName
- 	 * @return	ReflectionProperty
-	 * Source: https://www.webtipblog.com/unit-testing-private-methods-and-properties-with-phpunit/
- 	 */
-	public function getPrivateProperty( $className, $propertyName ) {
-		$reflector = new ReflectionClass( $className );
-		$property = $reflector->getProperty( $propertyName );
-		$property->setAccessible( true );
-
-		return $property;
-	}
-
-	/**
- 	 * getPrivateMethod
- 	 *
- 	 * @author	Joe Sexton <joe@webtipblog.com>
- 	 * @param 	string $className
- 	 * @param 	string $methodName
- 	 * @return	ReflectionMethod
-	 * Source: https://www.webtipblog.com/unit-testing-private-methods-and-properties-with-phpunit/
- 	 */
-	public function getPrivateMethod( $className, $methodName ) {
-		$reflector = new ReflectionClass( $className );
-		$method = $reflector->getMethod( $methodName );
-		$method->setAccessible( true );
-
-		return $method;
-	}
-	
+	}	
 }

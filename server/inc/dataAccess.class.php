@@ -33,7 +33,7 @@ class dataAccess {
 	
 	public function getPurchases($transactionid=null){
 		$filter="";
-		if(isset($transactionid)){
+		if($transactionid <> null){
 			$filter .= "where TransID = ?";
 			$filter .= " OR BundleID = ?";			
 		}
@@ -53,6 +53,31 @@ class dataAccess {
 		$row = $query->fetch(PDO::FETCH_ASSOC);
 		var_dump($row);
 		*/
+		
+		return $query;
+	}
+	
+	public function getGames($gameID=null) {
+		$filter="";
+		if($gameID <> null){
+			$filter .= "where Game_ID in (?)";
+			$filter .= " OR ParentGameID in (?)";			
+		}
+		
+		$query = $this->getConnection()->prepare("SELECT * from `gl_products` $filter order by `Series` ASC, `LaunchDate` ASC");
+		
+		//var_dump($query);
+		
+		if(is_array($gameID)) {
+			$gameID = implode(",",$gameID);
+		}
+		
+		if(isset($gameID)){
+			$query->bindvalue(1,$gameID);
+			$query->bindvalue(2,$gameID);
+		}
+		
+		$query->execute();
 		
 		return $query;
 	}
