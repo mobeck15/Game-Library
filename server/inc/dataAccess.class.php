@@ -72,7 +72,7 @@ class dataAccess {
 			$gameID = implode(",",$gameID);
 		}
 		
-		if(isset($gameID)){
+		if($gameID <> null){
 			$query->bindvalue(1,$gameID);
 			$query->bindvalue(2,$gameID);
 		}

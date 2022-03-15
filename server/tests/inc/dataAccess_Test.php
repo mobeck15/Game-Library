@@ -108,6 +108,7 @@ final class dataAccess_Test extends testprivate
 	 * @small
 	 * @covers dataAccess::getAllRows
 	 * @uses dataAccess
+	 * @uses simple_html_dom
 	 */
 	public function test_getAllRows() {
 		$dataobject= new dataAccess();
