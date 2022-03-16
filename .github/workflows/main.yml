@@ -33,7 +33,7 @@ jobs:
           username: ${{ secrets.SFTP_USER }}
           password: ${{ secrets.SFTP_PW }}
           local-dir: './server/'
-          server-dir: './games.stuffiknowabout.com/gl/'
+          server-dir: './${{ secrets.SFTP_HOST }}/gl/'
           exclude: |
             auth.inc.php
             authapi.inc.php
