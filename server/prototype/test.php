@@ -9,7 +9,11 @@ echo Get_Header($title);
 $conn=get_db_connection();
 $settings=getsettings($conn);
 $calculations=reIndexArray(getCalculations("",$conn),"Game_ID");
-$purchases=reIndexArray(getPurchases("",$conn), "TransID");
+//$purchases=reIndexArray(getPurchases("",$conn), "TransID");
+$purchaseobj=new Purchases("",$conn);
+$purchases=$purchaseobj->getPurchases();
+$purchases=reIndexArray($purchases, "TransID");
+
 //$items=getAllItems("",$conn);
 
 

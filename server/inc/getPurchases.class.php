@@ -279,7 +279,11 @@ if (basename($_SERVER["SCRIPT_NAME"], '.php') == "getPurchases.class") {
 		<?php
 		echo $lookupbundle["lookupBox"];
 	} else {
-		$purchases=reIndexArray(getAllPurchases(),"TransID");
+		//$purchases=reIndexArray(getAllPurchases(),"TransID");
+		$purchaseobj=new Purchases();
+		$purchases=$purchaseobj->getPurchases();
+		$purchases=reIndexArray($purchases, "TransID");
+
 		echo arrayTable($purchases[$_GET['id']]);
 	}
 	echo Get_Footer();
