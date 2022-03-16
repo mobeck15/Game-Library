@@ -50,4 +50,4 @@ jobs:
           password: ${{ secrets.SFTP_PW }}
           local-dir: './server/'
           server-dir: './games.stuffiknowabout.com/gl/'
-          dry-run: true
+#          dry-run: true
