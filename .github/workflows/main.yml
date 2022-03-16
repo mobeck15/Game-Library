@@ -34,10 +34,10 @@ jobs:
         run: |
           echo Add other actions to build,
           echo test, and deploy your project.
-      - name: Deploy to FTP
-        uses: MartinKukolos/action-ftp-deployment@v18
-        with:
-          ftp-server: ${{ secrets.SFTP_HOST }}
-          ftp-user: ${{ secrets.SFTP_USER }}
-          ftp-password: ${{ secrets.SFTP_HOST }}
-          source-folder: './server'
+#      - name: Deploy to FTP
+#        uses: MartinKukolos/action-ftp-deployment@v18
+#        with:
+#          ftp-server: ${{ secrets.SFTP_HOST }}
+#          ftp-user: ${{ secrets.SFTP_USER }}
+#          ftp-password: ${{ secrets.SFTP_HOST }}
+#          source-folder: './server'
