@@ -14,6 +14,20 @@ final class getGames_Test extends testprivate
 {
 	/**
 	 * @small
+	 * @covers Game::__construct
+	 */
+    public function test_Game_construct() {
+		$gamerow=[
+		"Game_ID"=>1,
+		"LaunchDate"=>"5/1/2018"
+		];
+		$gameobject=new Game($gamerow);
+		
+		$this->assertInstanceOf(Game::class, $gameobject);
+	}
+
+	/**
+	 * @small
 	 * @covers Games::getGames
 	 * @covers getGames
 	 * @uses Games
@@ -30,7 +44,6 @@ final class getGames_Test extends testprivate
         $this->assertisArray(getGames(2));
         $this->assertisArray(getGames(array(2,3)));
 	}
-
 	
 	/**
 	 * @small

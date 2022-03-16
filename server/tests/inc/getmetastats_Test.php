@@ -244,10 +244,6 @@ final class getmetastats_Test extends TestCase
     public function test_getStatRow_main($stat) {
 		
         $this->assertisArray(getStatRow("All",$stat));
-
-		//Total not set?
-        //$this->assertisArray(getStatRow("All",'othervalue'));
-        //$this->assertisArray(getStatRow("All",'launchhrsavg'));
 	}
 	
 	/**
@@ -322,7 +318,41 @@ final class getmetastats_Test extends TestCase
 		$output = getStatRow("All",'othervalue');
         $this->assertisArray($output);
         $this->assertEquals(array("already set"),$output);
-		
+	}
+
+	/**
+	 * @large
+	 * @covers getStatRow
+	 * @uses PriceCalculation
+	 * @uses combinedate
+	 * @uses countrow
+	 * @uses daysSinceDate
+	 * @uses getActivityCalculations
+	 * @uses getAllCpi
+	 * @uses getAllItems
+	 * @uses getCalculations
+	 * @uses getCleanStringDate
+	 * @uses getGames
+	 * @uses getHistoryCalculations
+	 * @uses getHrsNextPosition
+	 * @uses getHrsToTarget
+	 * @uses getKeywords
+	 * @uses getNextPosition
+	 * @uses getOnlyValues
+	 * @uses getPriceSort
+	 * @uses getPriceperhour
+	 * @uses getTimeLeft
+	 * @uses getsettings
+	 * @uses makeIndex
+	 * @uses makeStatDataSet
+	 * @uses methodTranslator
+	 * @uses objectTranslator
+	 * @uses regroupArray
+	 * @uses timeduration
+	 */
+    public function test_getStatRow_null() {
+		$output = getStatRow("All",null);
+        $this->assertisArray($output);
 	}
 	
 	/**
