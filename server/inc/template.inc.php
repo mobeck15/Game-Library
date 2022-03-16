@@ -69,9 +69,12 @@ function Get_Footer($WIP=""){
 	}
 	$time = round(microtime(true) - $_SERVER['REQUEST_TIME_FLOAT'],3);
 	$Template_Footer=$WIP."<div class='foot'><span class='execTime'>Loaded in ".$time." Seconds</class><br/>
-	Memory Used: ".read_memory_usage()."</div>
+	Memory Used: ".read_memory_usage();
+	$Template_Footer .="</div>";
 	
-	</div>
+	$Template_Footer .= '<a href="https://github.com/SamKirkland/FTP-Deploy-Action"><img alt="Website Deployed for Free with FTP Deploy Action" src="https://img.shields.io/badge/Website deployed for free with-FTP DEPLOY ACTION-%3CCOLOR%3E?style=for-the-badge&color=2b9348"></a>';
+	
+	$Template_Footer .="</div>
 	</BODY>
 	</HTML>";
 
