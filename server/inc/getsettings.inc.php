@@ -21,8 +21,7 @@ function getsettings($connection=false){
 		
 		//If connection was not provided, include the authorization variables and establish a connection.
 		if($connection==false){
-			require $GLOBALS['rootpath']."/inc/auth.inc.php";
-			$conn = new mysqli($servername, $username, $password, $dbname);
+			$conn = get_db_connection();
 		} else {
 			$conn = $connection;
 		}

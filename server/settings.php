@@ -8,11 +8,6 @@ echo Get_Header($title);
 	//TODO: Update settings to include new values: cntTraded, CountDupes, WeightMSRP, WeightPlay, WeightWant, Inflation, CountWntAs
 	//TODO: Add Restore Defaults Button
 	//TODO: Update to gl6 style (raw HTML instead of echos)
-	
-	//include "inc/auth.inc.php";
-	//$conn = new mysqli($servername, $username, $password, $dbname);
-	
-	//trigger_error("Memory Used: ".read_memory_usage(), E_USER_NOTICE);
 	$conn=get_db_connection();
 	
 	if(isset($_POST['Tax'])){

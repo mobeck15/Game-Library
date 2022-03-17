@@ -5,6 +5,7 @@ $GLOBALS['rootpath'] = $GLOBALS['rootpath'] ?? "htdocs\Game-Library\server";
 
 /**
  * @group page
+ * @coversNothing
  */
 class testexport extends TestCase {
 
@@ -16,10 +17,7 @@ class testexport extends TestCase {
     }
 
 	/**
-	 * @group fast
 	 * @small
-	 * Time: 00:00.017, Memory: 26.00 MB
-	 * (1 test, 1 assertion)
 	 */
     public function test_export_Load() {
         $args = array();
@@ -27,9 +25,7 @@ class testexport extends TestCase {
     }
 
 	/**
-	 * @group untimed
 	 * @small
-	 * Time
 	 * /
     public function test_export_export() {
         $args = array('export'=>"Export");
@@ -37,9 +33,7 @@ class testexport extends TestCase {
     }
 	
 	/**
-	 * @group untimed
 	 * @small
-	 * Time
 	 * /
     public function test_export_function() {
 		require_once $GLOBALS['rootpath']."/inc/export.inc.php";

@@ -13,11 +13,14 @@
 //or add 5th parameter(array) of specific tables:    array("mytable1","mytable2","mytable3") for multiple tables
 // if you have only one table then add your table name on $tables = 'your_table_name' of if you want add multi table then pass array on $tables, like $tables = array('tbl_1','tbl_2','tbl_3'); on line no.8. no need to define any other parameter.
 
-function Create_Export($host,$user,$pass,$name,  $tables=false, $backup_name=false )
+
+// @codeCoverageIgnoreStart
+function Create_Export($tables=false, $backup_name=false )
 {
 	ini_set('display_errors',0);
 	
-	$mysqli = new mysqli($host,$user,$pass,$name); 
+	//$mysqli = new mysqli($host,$user,$pass,$name); 
+	$mysqli = get_db_connection();
 	$mysqli->select_db($name); 
 	$mysqli->query("SET NAMES 'utf8'");
 
@@ -90,11 +93,11 @@ function Create_Export($host,$user,$pass,$name,  $tables=false, $backup_name=fal
 	return $content;
 }
 
-function Export_Database($host,$user,$pass,$name,  $tables=false, $backup_name=false )
+function Export_Database($tables=false, $backup_name=false )
 {
-	$content = Create_Export($host,$user,$pass,$name,  $tables=false);
+	$content = Create_Export($tables=false);
 	//$backup_name = $backup_name ? $backup_name : $name."___(".date('H-i-s')."_".date('d-m-Y').")__rand".rand(1,11111111).".sql";
-	$backup_name = $backup_name ? $backup_name : $name."__(".date('Y-d-d_H-i-s').").sql";
+	$backup_name = $backup_name ? $backup_name : "GL__(".date('Y-d-d_H-i-s').").sql";
 	//$backup_name = $backup_name ? $backup_name : $name.".sql";
 	header('Content-Type: application/octet-stream');   
 	header("Content-Transfer-Encoding: Binary"); 
@@ -102,3 +105,4 @@ function Export_Database($host,$user,$pass,$name,  $tables=false, $backup_name=f
 	echo $content; 
 	exit;
 }
+// @codeCoverageIgnoreEnd

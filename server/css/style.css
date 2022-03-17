@@ -5,6 +5,7 @@ summary {
 body {
 	background-color: #924136;
 	color: F6FBFB;
+	margin-left: 5px
 }
 
 a {
@@ -139,6 +140,15 @@ td.greenCell{
 	color: #000000;
 	background-color: #b7e1cd;
 }
+td.greenCell2{
+	color: #000000;
+	background-color: #c2e1b7;
+}
+td.greenCell2 a{
+	color: #000000;
+}
+
+
 td.redCell{
 	color: #000000;
 	background-color: #f4cccc;
@@ -198,6 +208,7 @@ thead th {
 }
 
 .foot {
+	clear: both;
 	background-color: #ffcc66;
 	Color: Black;
 	box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.4);	
@@ -214,6 +225,10 @@ thead th {
 //TODO: Stickey column headings show behind CSS fancy checkboxes
 //TODO: CSS fancy checkboxes appear below inline text
 */
+
+ul {
+	margin-top: 0px;
+}
 
 /* The switch - the box around the slider */
 .switch {

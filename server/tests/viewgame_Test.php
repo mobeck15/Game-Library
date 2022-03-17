@@ -5,6 +5,8 @@ $GLOBALS['rootpath'] = $GLOBALS['rootpath'] ?? "htdocs\Game-Library\server";
 
 /**
  * @group page
+ * @coversNothing
+ * @group steamformat
  */
 class testviewgame extends TestCase {
 
@@ -16,10 +18,7 @@ class testviewgame extends TestCase {
     }
 
 	/**
-	 * @group slow
-	 * @medium
-	 * Time: 00:07.173, Memory: 276.00 MB
-	 * (1 test, 1 assertion)
+	 * @small
 	 */
     public function test_viewgame_Load() {
         $args = array();
@@ -27,10 +26,7 @@ class testviewgame extends TestCase {
     }
 
 	/**
-	 * @group slow
-	 * @medium
-	 * Time: 00:07.173, Memory: 276.00 MB
-	 * (1 test, 1 assertion)
+	 * @large
 	 */
     public function test_viewgame_nonsteam() {
         $args = array('id'=>17);
@@ -38,10 +34,7 @@ class testviewgame extends TestCase {
     }
 
 	/**
-	 * @group slow
-	 * @medium
-	 * Time: 00:07.173, Memory: 276.00 MB
-	 * (1 test, 1 assertion)
+	 * @large
 	 */
     public function test_viewgame_steamgame() {
         $args = array('id'=>515);
@@ -49,10 +42,7 @@ class testviewgame extends TestCase {
     }
 
 	/**
-	 * @group slow
-	 * @medium
-	 * Time: 00:07.173, Memory: 276.00 MB
-	 * (1 test, 1 assertion)
+	 * @large
 	 */
     public function test_viewgame_edit() {
         $args = array('id'=>17,'edit'=>1);

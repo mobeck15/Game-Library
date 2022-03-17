@@ -2,24 +2,18 @@
 declare(strict_types=1);
 use PHPUnit\Framework\TestCase;
 
-// We require the file we need to test.
-// Relative path to the current working dir (root of xampp)
 $GLOBALS['rootpath'] = $GLOBALS['rootpath'] ?? "htdocs\Game-Library\server";
 require_once $GLOBALS['rootpath']."\inc\getCalculations.inc.php";
 
-//Time: 00:37.892, Memory: 264.00 MB
-//(3 tests, 5 assertions)
 /**
  * @group include
+ * @group purchases
  */
 final class getCalculations_Test extends TestCase
 {
 	/**
-	 * @group fast
 	 * @small
 	 * @covers getCalculations
-	 * Time: 00:00.307, Memory: 48.00 MB
-	 * (1 test, 2 assertions)
 	 */
     public function test_getCalculations_Global() {
 		$GLOBALS["CALCULATIONS"]=array("preset calculations");
@@ -30,10 +24,8 @@ final class getCalculations_Test extends TestCase
 	}
 
 	/**
-	 * @group fast
-	 * @small
+	 * @medium
 	 * @covers getCalculations
-	 * @uses CalculateGameRow
 	 * @uses PriceCalculation
 	 * @uses combinedate
 	 * @uses daysSinceDate
@@ -49,27 +41,23 @@ final class getCalculations_Test extends TestCase
 	 * @uses getNextPosition
 	 * @uses getPriceSort
 	 * @uses getPriceperhour
-	 * @uses getPurchases
 	 * @uses getTimeLeft
 	 * @uses getsettings
 	 * @uses makeIndex
 	 * @uses regroupArray
 	 * @uses timeduration
-	 * Time: 00:00.307, Memory: 48.00 MB
-	 * (1 test, 2 assertions)
+	 * @uses get_db_connection
 	 */
     public function test_getCalculations_Base() {
 		$output=getCalculations();
         $this->assertisArray($output);
-	} /* */
+	} 
 	
 	/**
-	 * @group slow
 	 * @large
 	 * @covers getCalculations
 	 * @uses get_db_connection
 	 * @uses PriceCalculation
-	 * @uses CalculateGameRow
 	 * @uses combinedate
 	 * @uses daysSinceDate
 	 * @uses getActivityCalculations
@@ -84,14 +72,11 @@ final class getCalculations_Test extends TestCase
 	 * @uses getNextPosition
 	 * @uses getPriceSort
 	 * @uses getPriceperhour
-	 * @uses getPurchases
 	 * @uses getTimeLeft
 	 * @uses getsettings
 	 * @uses makeIndex
 	 * @uses regroupArray
 	 * @uses timeduration
-	 * Time: 00:18.758, Memory: 262.00 MB
-	 * (1 test, 1 assertion)
 	 */
 	public function test_getCalculations_Connection() {
 		$conn=get_db_connection();
@@ -100,12 +85,9 @@ final class getCalculations_Test extends TestCase
 	}
 	
 	/**
-	 * @group fast
 	 * @small
 	 * @covers getPriceSort
 	 * @uses PriceCalculation
-	 * Time: 00:00.224, Memory: 46.00 MB
-	 * (1 test, 2 assertions)
 	 */
 	public function test_getPriceSort() {
 		
@@ -132,5 +114,4 @@ final class getCalculations_Test extends TestCase
         $this->assertisArray(getPriceSort($sourceArray,"PriceObject"));
         $this->assertisArray(getPriceSort($sourceArray,"PriceObject",true));
 	}
-
 }

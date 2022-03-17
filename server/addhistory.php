@@ -2,6 +2,7 @@
 $GLOBALS['rootpath']=$GLOBALS['rootpath'] ?? ".";
 require_once $GLOBALS['rootpath']."/inc/php.ini.inc.php";
 require_once $GLOBALS['rootpath']."/inc/functions.inc.php";
+require_once $GLOBALS['rootpath']."/inc/SteamAPI.class.php";
 
 //TODO: Split into three files, Single form, SteamAPI, and Form Post (where both forms will go and show stats about recently played)
 
@@ -44,8 +45,7 @@ if (isset($_POST['datarow'])){
 	} else {
 		$_GET['HistID']=$maxID;
 	}
-	//DONE: Update query does not work for editing old records!!! A new one is inserted instead.
-/*	
+	/*	
 	Post array:
 array(1) {
   [1]=>
@@ -292,7 +292,9 @@ if(isset($_GET['mode']) && $_GET['mode']=="steam") {
 	<tbody>
 
 <?php
-	$resultarray=GetRecentlyPlayedGames();
+	//$resultarray=GetRecentlyPlayedGames();
+	$steamAPI= new SteamAPI();
+	$resultarray=$steamAPI->GetSteamAPI("GetRecentlyPlayedGames");
 	
 	$missing_count=0;
 	$updatelist=array();
@@ -327,7 +329,7 @@ if(isset($_GET['mode']) && $_GET['mode']=="steam") {
 			</td>
 			<?php
 		} else {
-			$resultarray2=GetUserStatsForGame($row['appid']);
+			$resultarray2=$steamAPI->GetSteamAPI("GetUserStatsForGame");
 			$gamename="";
 			if(isset($resultarray2['playerstats']['gameName'])){
 				$gamename=$resultarray2['playerstats']['gameName'];
@@ -457,14 +459,17 @@ if(isset($_GET['mode']) && $_GET['mode']=="steam") {
 			/* */
 			if(isset($thisgamedata['SteamID']) && $thisgamedata['SteamID']>0) {
 				$achearned=0;
-				$resultarray=GetSchemaForGame($thisgamedata['SteamID']);
+				//$resultarray=GetSchemaForGame($thisgamedata['SteamID']);
+				$steamAPI= new SteamAPI($thisgamedata['SteamID']);
+				$resultarray=$steamAPI->GetSteamAPI("GetSchemaForGame");
 				//var_dump($resultarray['game']);
 				if(isset($resultarray['game']['availableGameStats']['achievements'])) {
 					$acharray=regroupArray($resultarray['game']['availableGameStats']['achievements'],"name");
 				}
 				//var_dump($acharray);
 				
-				$userstatsarray=GetPlayerAchievements($thisgamedata['SteamID']);
+				//$userstatsarray=GetPlayerAchievements($thisgamedata['SteamID']);
+				$userstatsarray=$steamAPI->GetSteamAPI("GetPlayerAchievements");
 				if(isset($userstatsarray['playerstats']['achievements'])){
 					foreach ($userstatsarray['playerstats']['achievements'] as $achievement2){
 						//Count achievements earned

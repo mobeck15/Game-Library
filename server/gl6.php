@@ -2,6 +2,7 @@
 $time_start = microtime(true);
 $GLOBALS['rootpath']=$GLOBALS['rootpath'] ?? ".";
 require_once $GLOBALS['rootpath']."/inc/functions.inc.php";
+require_once $GLOBALS['rootpath']."/inc/SteamFormat.class.php";
 $title="Index";
 echo Get_Header($title);
 ?>
@@ -10,7 +11,8 @@ echo Get_Header($title);
 <hr>
 <?php 
 $settings=getsettings();
-echo formatSteamLinks("",$settings['LinkSteam']); 
+$steamformat = new SteamFormat();
+echo $steamformat->formatSteamLinks("",$settings['LinkSteam']); 
 ?>
 <hr>
 
@@ -68,16 +70,6 @@ $directory    = ".";
 //$scanned_directory = array_diff(scandir($directory), array('..', '.'));
 $scanned_directory=dirToArray($directory);
 
-//print_r($scanned_directory);
-?>
-<?php
-//DONE: Fix Dynamic todo list to not have blank lines (there is some issue with extra ul tags)
-//DONE: Fix Dynamic todo list to not show files and folders with no todo items.
-//DONE: Dynamic todo list only looks one folder deep, make recursive.
-//DONE: Add page titles for easier read.
-//DONE: Add filename links to jump to relevant page
-//DONE: Dynamic todo not detecting comments that are not indented at least one character.
-
 $list="";
 foreach ($scanned_directory as $key => $file) {
 	//echo $key." "; var_dump($file);echo "<br>";
@@ -86,8 +78,6 @@ foreach ($scanned_directory as $key => $file) {
 echo "<ul>".$list."</ul>";
 
 ?>
-
-
 </td></tr></table>
 <?php echo Get_Footer(); ?>
 

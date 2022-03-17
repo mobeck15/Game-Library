@@ -5,6 +5,7 @@ $GLOBALS['rootpath'] = $GLOBALS['rootpath'] ?? "htdocs\Game-Library\server";
 
 /**
  * @group page
+ * @coversNothing
  */
 class teststatistics extends TestCase {
 
@@ -16,10 +17,7 @@ class teststatistics extends TestCase {
     }
 
 	/**
-	 * @group short
 	 * @small
-	 * Time: 00:00.019, Memory: 26.00 MB
-	 * (1 test, 1 assertion) 
 	 */
     public function test_statistics_Load() {
         $args = array();
@@ -27,10 +25,7 @@ class teststatistics extends TestCase {
     }
 
 	/**
-	 * @group short
-	 * @small
-	 * Time: 00:00.019, Memory: 26.00 MB
-	 * (1 test, 1 assertion) 
+	 * @large
 	 */
     public function test_statistics_fullpage() {
         $args = array('filter'=>"All",'meta'=>"both");

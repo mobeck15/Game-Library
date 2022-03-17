@@ -12,12 +12,11 @@ require_once $GLOBALS['rootpath']."/inc/utility.inc.php";
 require_once $GLOBALS['rootpath']."/inc/getsettings.inc.php";
 require_once $GLOBALS['rootpath']."/inc/getHistoryCalculations.inc.php";
 require_once $GLOBALS['rootpath']."/inc/getActivityCalculations.inc.php";
-require_once $GLOBALS['rootpath']."/inc/getPurchases.inc.php";
+require_once $GLOBALS['rootpath']."/inc/getPurchases.class.php";
 
 function getTopList($group,$connection=false,$calc=false,$minGroupSize=2){
 	if($connection==false){
-		require $GLOBALS['rootpath']."/inc/auth.inc.php";
-		$conn = new mysqli($servername, $username, $password, $dbname);
+		$conn = get_db_connection();
 	} else {
 		$conn = $connection;
 	}
@@ -33,7 +32,9 @@ function getTopList($group,$connection=false,$calc=false,$minGroupSize=2){
 		default:
 		case "Bundle":
 			//$items=getAllItems("",$conn);
-			$purchases=getPurchases("",$conn,"","");
+			//$purchases=getPurchases("",$conn,"","");
+			$purchaseobj=new Purchases("",$conn,"","");
+			$purchases=$purchaseobj->getPurchases();
 			
 			foreach($purchases as $row) {
 				if($row['TransID']==$row['BundleID'] && isset($row['ProductsinBunde'])){
@@ -212,7 +213,9 @@ function getTopList($group,$connection=false,$calc=false,$minGroupSize=2){
 			
 			break;
 		case "Store":
-			$purchases=getPurchases("",$conn,"","");
+			//$purchases=getPurchases("",$conn,"","");
+			$purchaseobj=new Purchases("",$conn);
+			$purchases=$purchaseobj->getPurchases();
 			$storeList=array();
 			foreach($purchases as $row) {
 				$StoreID=strtolower($row['Store']);

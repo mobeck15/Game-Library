@@ -69,9 +69,12 @@ function Get_Footer($WIP=""){
 	}
 	$time = round(microtime(true) - $_SERVER['REQUEST_TIME_FLOAT'],3);
 	$Template_Footer=$WIP."<div class='foot'><span class='execTime'>Loaded in ".$time." Seconds</class><br/>
-	Memory Used: ".read_memory_usage()."</div>
+	Memory Used: ".read_memory_usage();
+	$Template_Footer .="</div>";
 	
-	</div>
+	$Template_Footer .= '<a href="https://github.com/SamKirkland/FTP-Deploy-Action"><img alt="Website Deployed for Free with FTP Deploy Action" src="https://img.shields.io/badge/Website deployed for free with-FTP DEPLOY ACTION-%3CCOLOR%3E?style=for-the-badge&color=2b9348"></a>';
+	
+	$Template_Footer .="</div>
 	</BODY>
 	</HTML>";
 
@@ -94,11 +97,12 @@ function get_navmenu($dropbar=true){
 			$navmenu .= "\t\t<li><a href=\"/phpinfo.php\" target='_blank'>PHP Info<img src='".$GLOBALS['rootpath']."/img/new_window-512.png' height=15 /></a></li>\r\n";
 			$navmenu .= "\t\t<li><a href=\"".$GLOBALS['rootpath']."/prototype\"><img src=\"".$GLOBALS['rootpath']."/img/favicon.ico\" height=15 />Prototypes</a></li>\r\n";
 			$navmenu .= "\t\t<li><a href=\"".$GLOBALS['rootpath']."/settings.php\"><img src=\"".$GLOBALS['rootpath']."/img/favicon.ico\" height=15 />Settings</a></li>\r\n";
-			$navmenu .= "\t\t<li><a href=\"".$GLOBALS['rootpath']."/tests/test.php\"><img src=\"".$GLOBALS['rootpath']."/img/favicon.ico\" height=15 />Tests <img src=\"".$GLOBALS['rootpath']."/img/caret-right.png\" height=15 /></a>\r\n";
+			$navmenu .= "\t\t<li><a href=\"".$GLOBALS['rootpath']."/prototype/test.php\"><img src=\"".$GLOBALS['rootpath']."/img/favicon.ico\" height=15 />Tests <img src=\"".$GLOBALS['rootpath']."/img/caret-right.png\" height=15 /></a>\r\n";
+			//$navmenu .= "\t\t<li><a >Tests <img src=\"".$GLOBALS['rootpath']."/img/caret-right.png\" height=15 /></a>\r\n";
 			$navmenu .= "\t<ul>\r\n";
 			$navmenu .= "\t\t<li><a href=\"".$GLOBALS['rootpath']."/inc/getGames.inc.php\">Get Games</a></li>\r\n";
 			$navmenu .= "\t\t<li><a href=\"".$GLOBALS['rootpath']."/inc/getCalculations.inc.php\">Get Calculations</a></li>\r\n";
-			$navmenu .= "\t\t<li><a href=\"".$GLOBALS['rootpath']."/inc/getPurchases.inc.php\">Get Purchases</a></li>\r\n";
+			$navmenu .= "\t\t<li><a href=\"".$GLOBALS['rootpath']."/inc/getPurchases.class.php\">Get Purchases</a></li>\r\n";
 			$navmenu .= "\t\t<li><a href=\"".$GLOBALS['rootpath']."/inc/getActivityCalculations.inc.php\">Get Activity Calculations</a></li>\r\n";
 			$navmenu .= "\t\t<li><a href=\"".$GLOBALS['rootpath']."/inc/getHistoryCalculations.inc.php\">Get History Calculations</a></li>\r\n";
 			$navmenu .= "\t\t<li><a href=\"".$GLOBALS['rootpath']."/inc/getTopList.inc.php\">Get Top List</a></li>\r\n";
@@ -161,6 +165,7 @@ function get_navmenu($dropbar=true){
 			$navmenu .= "\t\t<li><a href=\"".$GLOBALS['rootpath']."/ratings.php\"><img src=\"".$GLOBALS['rootpath']."/img/favicon.ico\" height=15 />Ratings</a></li>\r\n";
 			$navmenu .= "\t\t<li><a href=\"".$GLOBALS['rootpath']."/waste.php\"><img src=\"".$GLOBALS['rootpath']."/img/favicon.ico\" height=15 />Waste</a></li>\r\n";
 			$navmenu .= "\t\t<li><a href=\"".$GLOBALS['rootpath']."/playnext.php\"><img src=\"".$GLOBALS['rootpath']."/img/favicon.ico\" height=15 />Play Next</a></li>\r\n";
+			$navmenu .= "\t\t<li><a href=\"".$GLOBALS['rootpath']."/playnext2.php\"><img src=\"".$GLOBALS['rootpath']."/img/favicon.ico\" height=15 />Play Next 2</a></li>\r\n";
 			$navmenu .= "\t\t<li><a href=\"".$GLOBALS['rootpath']."/gamestatuschart.php\"><img src=\"".$GLOBALS['rootpath']."/img/favicon.ico\" height=15 />Status Charts</a></li>\r\n";
 			$navmenu .= "\t\t<li><a href=\"".$GLOBALS['rootpath']."/goty.php\"><img src=\"".$GLOBALS['rootpath']."/img/favicon.ico\" height=15 />GOTY</a></li>\r\n";
 		$navmenu .= "\t</ul></li>\r\n";

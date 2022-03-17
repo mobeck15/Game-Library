@@ -5,6 +5,7 @@ $GLOBALS['rootpath'] = $GLOBALS['rootpath'] ?? "htdocs\Game-Library\server";
 
 /**
  * @group page
+ * @coversNothing
  */
 class testtoplists extends TestCase {
 
@@ -16,10 +17,7 @@ class testtoplists extends TestCase {
     }
 
 	/**
-	 * @group long
-	 * @medium
-	 * Time: 00:05.826, Memory: 268.00 MB
-	 * (1 test, 1 assertion) 
+	 * @large
 	 */
     public function test_toplists_Load() {
         $args = array();

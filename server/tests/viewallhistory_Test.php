@@ -5,6 +5,7 @@ $GLOBALS['rootpath'] = $GLOBALS['rootpath'] ?? "htdocs\Game-Library\server";
 
 /**
  * @group page
+ * @coversNothing
  */
 class testviewallhistory extends TestCase {
 
@@ -16,10 +17,7 @@ class testviewallhistory extends TestCase {
     }
 
 	/**
-	 * @group short
 	 * @small
-	 * Time: 00:00.028, Memory: 26.00 MB
-	 * (1 test, 1 assertion)
 	 */
     public function test_viewallhistory_Load() {
         $args = array();
@@ -27,9 +25,7 @@ class testviewallhistory extends TestCase {
     }
 
 	/**
-	 * @group untimed
-	 * @small
-	 * Time: 
+	 * @medium
 	 */
     public function test_viewallhistory_history() {
         $args = array('num'=>30,'Sort'=>"Played");

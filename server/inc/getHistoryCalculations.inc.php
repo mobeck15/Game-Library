@@ -7,8 +7,7 @@ $GLOBALS[__FILE__]=1;
 function getHistoryCalculations($gameID="",$connection=false,$start=false,$end=false){
 	//include_once('utility.inc.php');
 	if($connection==false){
-		require $GLOBALS['rootpath']."/inc/auth.inc.php";
-		$conn = new mysqli($servername, $username, $password, $dbname);
+		$conn = get_db_connection();
 	} else {
 		$conn = $connection;
 	}

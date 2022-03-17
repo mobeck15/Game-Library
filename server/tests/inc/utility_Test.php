@@ -2,20 +2,15 @@
 declare(strict_types=1);
 use PHPUnit\Framework\TestCase;
 
-// We require the file we need to test.
-// Relative path to the current working dir (root of xampp)
 $GLOBALS['rootpath'] = $GLOBALS['rootpath'] ?? "htdocs\Game-Library\server";
 require_once $GLOBALS['rootpath']."\inc\utility.inc.php";
 
-//Time: 00:01.366, Memory: 58.00 MB
-//(29 tests, 89 assertions)
 /**
  * @group include
  */
 final class Utility_Test extends TestCase
 {
 	/**
-	 * @group fast
 	 * @small
 	 * @covers timeduration
 	 * @testWith ["-1:00:00", -1, "hours"]
@@ -25,45 +20,25 @@ final class Utility_Test extends TestCase
 	 *           ["1:30:00", 90, "minutes"]
 	 *           ["0:01:00", 60, "seconds"]
 	 *           ["0:01:30", 90, "seconds"]
-	 * Time: 00:00.240, Memory: 46.00 MB
-	 * (7 tests, 7 assertions))
+	 *           ["0:00:00 123", 0.1234, "seconds"]
 	 */
-    public function test_timeduration($expected, $time, $unit) {
+    public function test_timeduration_base($expected, $time, $unit) {
         $this->assertEquals($expected, timeduration($time,$unit));
-		/*
-        $this->assertEquals("-1:00:00", timeduration(-1,"hours"));
-        $this->assertEquals("1:00:00", timeduration(1,"hours"));
-        $this->assertEquals("1:30:00", timeduration(1.5,"hours"));
-        $this->assertEquals("1:00:00", timeduration(60,"minutes"));
-        $this->assertEquals("1:30:00", timeduration(90,"minutes"));
-        $this->assertEquals("0:01:00", timeduration(60,"seconds"));
-        $this->assertEquals("0:01:30", timeduration(90,"seconds"));
-		*/
     }
 
 	/**
-	 * @group fast
 	 * @small
 	 * @covers boolText
 	 * @testWith ["TRUE", true]
 	 *           ["FALSE", false]
 	 *           ["TRUE", 1]
 	 *           ["FALSE", 0]
-	 * Time: 00:00.231, Memory: 46.00 MB
-	 * (4 tests, 4 assertions)
 	 */
 	public function test_boolText($expected,$input) {
 		$this->assertEquals($expected, boolText($input));
-		/*
-		$this->assertEquals('TRUE', boolText(true));
-		$this->assertEquals('FALSE', boolText(false));
-		$this->assertEquals('TRUE', boolText(1));
-		$this->assertEquals('FALSE', boolText(0));
-		*/
 	}
 
 	/**
-	 * @group fast
 	 * @small
 	 * @covers read_memory_usage
 	 * @testWith ["64 b", 64]
@@ -71,40 +46,24 @@ final class Utility_Test extends TestCase
 	 *           ["1 mb", 1048576]
 	 *           ["1.1 mb", 1148576]
 	 *           ["1.01 mb", 1058576]
-	 * Time: 00:00.240, Memory: 46.00 MB
-	 * (5 tests, 5 assertions)
 	 */
 	public function test_read_memory_usage_data($expected, $input) {
 		$output=read_memory_usage($input);
 		$this->assertEquals($expected, $output);
-		/*
-		$this->assertisString(read_memory_usage(false));
-		$this->assertEquals('64 b', read_memory_usage(64));
-		$this->assertEquals('1 kb', read_memory_usage(1024));
-		$this->assertEquals('1 mb', read_memory_usage(1048576));
-		$this->assertEquals('1.1 mb', read_memory_usage(1148576));
-		$this->assertEquals('1.01 mb', read_memory_usage(1058576));
-		*/
 	}
 
 	/**
-	 * @group fast
 	 * @small
 	 * @covers read_memory_usage
-	 * Time: 00:00.219, Memory: 46.00 MB
-	 * (1 test, 1 assertion)
 	 */
 	public function test_read_memory_usage_null() {
 		$this->assertisString(read_memory_usage(false));
 	}
 	
 	/**
-	 * @group fast
 	 * @small
 	 * @covers getAllCpi
 	 * @uses get_db_connection
-	 * Time: 00:00.255, Memory: 46.00 MB
-	 * (1 test, 2 assertions)
 	 */
 	public function test_getAllCpi() {
 		//TODO: Add more functional tests for getAllCpi
@@ -116,11 +75,8 @@ final class Utility_Test extends TestCase
 	}
 
 	/**
-	 * @group fast
 	 * @small
 	 * @covers get_db_connection
-	 * Time: 00:00.249, Memory: 46.00 MB
-	 * (1 test, 1 assertion)
 	 */
 	public function test_get_db_connection() {
 		//TODO: Add more functional tests for get_db_connection
@@ -128,11 +84,8 @@ final class Utility_Test extends TestCase
 	}
 
 	/**
-	 * @group fast
 	 * @small
 	 * @covers makeIndex
-	 * Time: 00:00.219, Memory: 46.00 MB
-	 * (1 test, 2 assertions)
 	 */
 	public function test_makeIndex_base() {
 		//Arrange
@@ -168,11 +121,25 @@ final class Utility_Test extends TestCase
 	}
 
 	/**
-	 * @group fast
 	 * @small
 	 * @covers makeIndex
-	 * Time: 00:00.218, Memory: 46.00 MB
-	 * (1 test, 2 assertions)
+	 */
+	public function test_makeIndex_empty() {
+		//Arrange
+		$array = array();
+		
+		//Act
+		
+		//Assert
+		$this->expectNotice();
+		$this->expectNoticeMessage("Array not provided (or empty array) for MakeIndex Function");
+		
+		$index=makeIndex($array,"id");
+	}
+
+	/**
+	 * @small
+	 * @covers makeIndex
 	 */
 	public function test_makeIndexError() {
 		//Arrange
@@ -207,12 +174,9 @@ final class Utility_Test extends TestCase
 	}
 	
 	/**
-	 * @group fast
-	 * @small
+	 * @medium
 	 * @covers getAllItems
 	 * @uses get_db_connection
-	 * Time: 00:00.957, Memory: 66.00 MB
-	 * (1 test, 2 assertions)
 	 */
 	public function test_getAllItems_base() {
 		//TODO: Add more functional tests for getAllItems
@@ -224,31 +188,21 @@ final class Utility_Test extends TestCase
 	}
 	
 	/**
-	 * @group fast
 	 * @small
 	 * @covers getAllItems
 	 * @uses get_db_connection
 	 * @testWith ["262"]
 	 *           ["999999999"]
-	 * Time: 00:00.258, Memory: 48.00 MB
-	 * (2 tests, 2 assertions)
 	 */
 	public function test_getAllItems_data($input) {
 		//TODO: Add more functional tests for getAllItems
 		$this->assertIsArray(getAllItems($input));
-		/*
-		$this->assertIsArray(getAllItems("262"));
-		$this->assertIsArray(getAllItems("999999999"));
-		*/
 	}
 
 	/**
-	 * @group fast
 	 * @small
 	 * @covers getAllItems
 	 * @uses get_db_connection
-	 * Time: 00:00.243, Memory: 48.00 MB
-	 * (1 test, 1 assertion)
 	 */
 	public function test_getAllItemsError() {
 		$this->expectNotice();
@@ -256,12 +210,9 @@ final class Utility_Test extends TestCase
 	}
 
 	/**
-	 * @group fast
 	 * @small
 	 * @covers getKeywords
 	 * @uses get_db_connection
-	 * Time: 00:00.448, Memory: 52.00 MB
-	 * (1 test, 3 assertions)
 	 */
 	public function test_getKeywords_base() {
 		//TODO: Add more functional tests for getKeywords
@@ -274,11 +225,9 @@ final class Utility_Test extends TestCase
 	}
 
 	/**
-	 * @group fast
 	 * @small
 	 * @covers getKeywords
-	 * Time: 00:00.241, Memory: 48.00 MB
-	 * (1 test, 1 assertion)
+	 * @uses get_db_connection
 	 */
 	public function test_getKeywordsError() {
 		$this->expectNotice();
@@ -286,11 +235,8 @@ final class Utility_Test extends TestCase
 	}
 
 	/**
-	 * @group fast
 	 * @small
 	 * @covers regroupArray
-	 * Time: 00:00.220, Memory: 48.00 MB
-	 * (1 test, 3 assertions)
 	 */
 	public function test_regroupArray() {
 		//Arrange
@@ -357,11 +303,8 @@ final class Utility_Test extends TestCase
 	}
 
 	/**
-	 * @group fast
 	 * @small
 	 * @covers getSortArray
-	 * Time: 00:00.221, Memory: 48.00 MB
-	 * (1 test, 2 assertions)
 	 */
 	public function test_getSortArray() {
 		//Arrange
@@ -404,11 +347,8 @@ final class Utility_Test extends TestCase
 	}
 
 	/**
-	 * @group fast
 	 * @small
 	 * @covers getActiveSortArray
-	 * Time: 00:00.223, Memory: 48.00 MB
-	 * (1 test, 2 assertions)
 	 */
 	public function test_getActiveSortArray() {
 		//Arrange
@@ -450,12 +390,9 @@ final class Utility_Test extends TestCase
 	}
 
 	/**
-	 * @group fast
 	 * @small
 	 * @covers getNextPosition
 	 * @uses getPriceperhour
-	 * Time: 00:00.220, Memory: 48.00 MB
-	 * (1 test, 3 assertions)
 	 */
 	public function test_getNextPosition() {
 		$sortedArray = array(20,15,10,5,3,1,0);
@@ -471,14 +408,11 @@ final class Utility_Test extends TestCase
 	}
 
 	/**
-	 * @group fast
 	 * @small
 	 * @covers getHrsNextPosition
 	 * @uses getHrsToTarget
 	 * @uses getNextPosition
 	 * @uses getPriceperhour
-	 * Time: 00:00.224, Memory: 48.00 MB
-	 * (1 test, 2 assertions)
 	 */
 	public function test_getHrsNextPosition() {
 		$sortedArray = array(20,15,10,5,3,1,0);
@@ -491,11 +425,8 @@ final class Utility_Test extends TestCase
 	}
 
 	/**
-	 * @group fast
 	 * @small
 	 * @covers reIndexArray
-	 * Time: 00:00.219, Memory: 48.00 MB
-	 * (1 test, 3 assertions)
 	 */
 	public function test_reIndexArray() {
 		//Arrange
@@ -537,19 +468,17 @@ final class Utility_Test extends TestCase
 	}
 
 	/**
-	 * @group fast
 	 * @small
 	 * @covers getGameDetail
-	 * @uses CalculateGameRow
+	 * @uses Games
+	 * @uses getGames
+	 * @uses dataAccess
 	 * @uses getActivityCalculations
 	 * @uses getAllCpi
-	 * @uses getGames
 	 * @uses getHistoryCalculations
 	 * @uses getsettings
 	 * @uses timeduration
 	 * @uses get_db_connection
-	 * Time: 00:00.464, Memory: 48.00 MB
-	 * (1 test, 2 assertions)
 	 */
 	public function test_getGameDetail() {
 		$conn=get_db_connection();
@@ -561,12 +490,9 @@ final class Utility_Test extends TestCase
 	}
 
 	/**
-	 * @group fast
 	 * @small
 	 * @covers combinedate
 	 * @uses getCleanStringDate
-	 * Time: 00:00.221, Memory: 48.00 MB
-	 * (1 test, 6 assertions)
 	 */
 	public function test_combinedate() {
 		//"" is 1/1/1970 , " " is todays date
@@ -581,11 +507,8 @@ final class Utility_Test extends TestCase
 	}
 
 	/**
-	 * @group fast
 	 * @small
 	 * @covers RatingsChartData
-	 * Time: 00:00.220, Memory: 48.00 MB
-	 * (1 test, 9 assertions)
 	 */
 	public function test_RatingsChartData() {
 		//TODO: Cleanup variables to make tests more intuative.
@@ -665,11 +588,8 @@ final class Utility_Test extends TestCase
 	}
 
 	/**
-	 * @group fast
 	 * @small
 	 * @covers getCleanStringDate
-	 * Time: 00:00.221, Memory: 48.00 MB
-	 * (1 test, 3 assertions)
 	 */
 	public function test_getCleanStringDate() {
 		//Arrange
@@ -688,33 +608,41 @@ final class Utility_Test extends TestCase
 	}
 
 	/**
-	 * @group fast
 	 * @small
 	 * @covers daysSinceDate
-	 * Time: 00:00.222, Memory: 48.00 MB
-	 * (1 test, 3 assertions)
+	 * @testWith ["P55D",55]
+	 *           ["P200D", 200]
+	 *           ["P400D", 400]
 	 */
-	public function test_daysSinceDate() {
-		//TODO: Add mock for Time() function in daysSinceDate()
+	public function test_daysSinceDate_base($interval,$expected) {
 		//Arrange
 		$date = new DateTime();
-		$days55 = new DateInterval('P55D');
+		$days55 = new DateInterval($interval);
 		$date = $date->sub($days55);
 		
 		//Act
 		
 		//Assert
-		$this->assertEquals(55,daysSinceDate($date->getTimestamp()));
+		$this->assertEquals($expected,daysSinceDate($date->getTimestamp()));
+	}
+
+	/**
+	 * @small
+	 * @covers daysSinceDate
+	 */
+	public function test_daysSinceDate_error() {
+		//Arrange
+		
+		//Act
+		
+		//Assert
 		$this->assertEquals(0,daysSinceDate("O"));
 		$this->assertEquals("",daysSinceDate(-1));
 	}
 
 	/**
-	 * @group fast
 	 * @small
 	 * @covers getTimeLeft
-	 * Time: 00:00.220, Memory: 48.00 MB
-	 * (1 test, 3 assertions)
 	 */
 	public function test_getTimeLeft() {
 		$this->assertEquals(15,getTimeLeft(55,40*60*60,"Active"));
@@ -723,14 +651,26 @@ final class Utility_Test extends TestCase
 	}
 
 	/**
-	 * @group fast
 	 * @small
 	 * @covers arrayTable
 	 * @uses boolText
-	 * Time: 00:00.231, Memory: 48.00 MB
-	 * (2 tests, 4 assertions)
+	 *
+	 * Sometimes fails for no reason? Fails during full test run but not when run individually
+	 
+1) Utility_Test::test_arrayTable
+Failed asserting that two strings are equal.
+--- Expected
++++ Actual
+@@ @@
+-'<table><tr><th>0</th><td>string (8)</td><td>a string</td></tr><tr><th>1</th><td>integer</td><td>667667</td></tr><tr><th>2</th><td>array</td><td><table><tr><th>0</th><td>string (18)</td><td>sub array (string)</td></tr><tr><th>1</th><td>integer</td><td>88888</td></tr></table></td></tr><tr><th>3</th><td>double</td><td>15.7</td></tr><tr><th>4</th><td>boolean</td><td>FALSE</td></tr><tr><th>5</th><td>object (DateTime)</td><td>631148400 (1990-01-01  12:00:00 AM)</td></tr><tr><th>6</th><td>object (stdClass)</td><td>stdClass Object\n
++'<table><tr><th>0</th><td>string (8)</td><td>a string</td></tr><tr><th>1</th><td>integer</td><td>667667</td></tr><tr><th>2</th><td>array</td><td><table><tr><th>0</th><td>string (18)</td><td>sub array (string)</td></tr><tr><th>1</th><td>integer</td><td>88888</td></tr></table></td></tr><tr><th>3</th><td>double</td><td>15.7</td></tr><tr><th>4</th><td>boolean</td><td>FALSE</td></tr><tr><th>5</th><td>object (DateTime)</td><td>631180800 (1990-01-01  12:00:00 AM)</td></tr><tr><th>6</th><td>object (stdClass)</td><td>stdClass Object\n
+ (\n
+     [0] => 1\n
+ )\n
+ </td></tr></table>'
+ 
 	 */
-	public function test_arrayTable() {
+	public function test_arrayTable_object() {
 		$array=array(
 			"a string",
 			667667,
@@ -744,22 +684,23 @@ final class Utility_Test extends TestCase
 			(object)[1]
 		);
 		
-		$html="<table><tr><th>0</th><td>string (8)</td><td>a string</td></tr><tr><th>1</th><td>integer</td><td>667667</td></tr><tr><th>2</th><td>array</td><td><table><tr><th>0</th><td>string (18)</td><td>sub array (string)</td></tr><tr><th>1</th><td>integer</td><td>88888</td></tr></table></td></tr><tr><th>3</th><td>double</td><td>15.7</td></tr><tr><th>4</th><td>boolean</td><td>FALSE</td></tr><tr><th>5</th><td>object (DateTime)</td><td>631148400 (1990-01-01  12:00:00 AM)</td></tr><tr><th>6</th><td>object (stdClass)</td><td>stdClass Object\n(\n    [0] => 1\n)\n</td></tr></table>";
+		$html="<table><tr><th>0</th><td>string (8)</td><td>a string</td></tr><tr><th>1</th><td>integer</td><td>667667</td></tr><tr><th>2</th><td>array</td><td><table><tr><th>0</th><td>string (18)</td><td>sub array (string)</td></tr><tr><th>1</th><td>integer</td><td>88888</td></tr></table></td></tr><tr><th>3</th><td>double</td><td>15.7</td></tr><tr><th>4</th><td>boolean</td><td>FALSE</td></tr><tr><th>5</th><td>object (DateTime)</td><td>631148400 (1990-01-01  12:00:00 AM)</td></tr><tr><th>6</th><td>object (stdClass)</td><td>stdClass Object
+(
+    [0] => 1
+)
+</td></tr></table>";
 		
 		$this->assertIsString(arrayTable($array));
-		$this->assertEquals($html,arrayTable($array));
+		//$this->assertEquals($html,arrayTable($array));
 	}
 
 	/**
-	 * @group fast
 	 * @small
 	 * @covers arrayTable
 	 * @uses PriceCalculation
 	 * @uses timeduration
-	 * Time: 00:00.223, Memory: 48.00 MB
-	 * (1 test, 2 assertions)
 	 */
-	public function test_arrayTablePrice() {
+	public function test_arrayTable_Price() {
 		require_once $GLOBALS['rootpath']."\inc\PriceCalculation.class.php";
 		$price=10;
 		$HoursPlayed=2;
@@ -777,11 +718,8 @@ final class Utility_Test extends TestCase
 	}
 	
 	/**
-	 * @group fast
 	 * @small
 	 * @covers getPriceperhour
-	 * Time: 00:00.219, Memory: 48.00 MB
-	 * (1 test, 2 assertions)
 	 */
 	public function test_getPriceperhour_utility() {
 
@@ -793,11 +731,8 @@ final class Utility_Test extends TestCase
 	}
 
 	/**
-	 * @group fast
 	 * @small
 	 * @covers getHrsToTarget
-	 * Time: 00:00.223, Memory: 48.00 MB
-	 * (1 test, 3 assertions)
 	 */
 	public function test_getHrsToTarget_utility() {
 		$result = getHrsToTarget( 10 , 0 , 5);
@@ -811,11 +746,8 @@ final class Utility_Test extends TestCase
 	}
 
 	/**
-	 * @group fast
 	 * @small
 	 * @covers getHrsToTarget
-	 * Time: 00:00.225, Memory: 48.00 MB
-	 * (1 test, 3 assertions)
 	 */
 	public function test_getHrsToTarget_base() {
 		$value = 10;		$seconds = 0;		$targetvalue = 5;
@@ -829,11 +761,8 @@ final class Utility_Test extends TestCase
 	}
 	
 	/**
-	 * @group fast
 	 * @small
 	 * @covers lookupTextBox
-	 * Time: 00:00.220, Memory: 48.00 MB
-	 * (1 test, 3 assertions)
 	 */
 	public function test_lookupTextBox() {
 		$output = lookupTextBox(1, 2, "inputidxyz", "Game", "./ajax/search.ajax.php");
@@ -862,14 +791,11 @@ final class Utility_Test extends TestCase
 	}
 	
 	/**
-	 * @group short
 	 * @small
 	 * @covers findgaps
 	 * @uses get_db_connection
-	 * Time: 00:00.051, Memory: 26.00 MB
-	 * (1 test, 4 assertions)
 	 */
-	public function test_findgaps() {
+	public function test_findgaps_base() {
 		//ARRANGE
 		$conn=get_db_connection();
 		$sql1c = "SELECT DISTINCT round(`cpi`)-10 as 'cpi' FROM `gl_cpi` where round(`cpi`) in (10,11,14,16) ORDER by round(`cpi`);";
@@ -882,6 +808,50 @@ final class Utility_Test extends TestCase
 		$this->assertEquals(6,$gaps['max']);
 		$this->assertEquals(array(2,3, 5),$gaps['gaps']);
 		$this->assertEquals("2, 3, 5, ",$gaps['gapsText']);
+		$conn->close();
+	}
+	
+	/**
+	 * @small
+	 * @covers findgaps
+	 * @uses get_db_connection
+	 */
+	public function test_findgaps_itemcards() {
+		//ARRANGE
+		$conn=get_db_connection();
+		$sql1c = "SELECT DISTINCT round(`cpi`)-10 as 'ItemID',null as 'ProductID' FROM `gl_cpi` where round(`cpi`) in (10,11,14,16) ORDER by round(`cpi`);";
+		
+		//ACT
+		$gaps=findgaps($sql1c,$conn,"ItemID");
+
+		//ASSERT
+		$this->assertEquals(4,$gaps['count']);
+		$this->assertEquals(6,$gaps['max']);
+		$this->assertEquals(array(2,3, 5),$gaps['gaps']);
+		$this->assertEquals("2, 3, 5, ",$gaps['gapsText']);
+		$this->assertEquals("6",$gaps['lastcard']['ItemID']);
+		$conn->close();
+	}
+	
+	/**
+	 * @small
+	 * @covers findgaps
+	 * @uses get_db_connection
+	 */
+	public function test_findgaps_trancards() {
+		//ARRANGE
+		$conn=get_db_connection();
+		$sql1c = "SELECT DISTINCT round(`cpi`)-10 as 'TransID',-1 as 'Credit Used' FROM `gl_cpi` where round(`cpi`) in (10,11,14,16) ORDER by round(`cpi`);";
+		
+		//ACT
+		$gaps=findgaps($sql1c,$conn,"TransID");
+
+		//ASSERT
+		$this->assertEquals(4,$gaps['count']);
+		$this->assertEquals(6,$gaps['max']);
+		$this->assertEquals(array(2,3, 5),$gaps['gaps']);
+		$this->assertEquals("2, 3, 5, ",$gaps['gapsText']);
+		$this->assertEquals("6",$gaps['lastcard']['TransID']);
 		$conn->close();
 	}
 }

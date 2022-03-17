@@ -2,46 +2,77 @@
 declare(strict_types=1);
 use PHPUnit\Framework\TestCase;
 
-// We require the file we need to test.
-// Relative path to the current working dir (root of xampp)
 $GLOBALS['rootpath'] = $GLOBALS['rootpath'] ?? "htdocs\Game-Library\server";
+require_once $GLOBALS['rootpath'].'\tests\inc\testprivate.inc.php';
 require_once $GLOBALS['rootpath']."\inc\getGames.inc.php";
 
-//Time: 00:00.979, Memory: 58.00 MB
-//(4 tests, 8 assertions)
 /**
  * @group include
+ * @group getGames
  */
-final class getGames_Test extends TestCase
+final class getGames_Test extends testprivate
 {
 	/**
-	 * @group fast
 	 * @small
+	 * @covers Game::__construct
+	 */
+    public function test_Game_construct() {
+		$gamerow=[
+		"Game_ID"=>1,
+		"LaunchDate"=>"5/1/2018"
+		];
+		$gameobject=new Game($gamerow);
+		
+		$this->assertInstanceOf(Game::class, $gameobject);
+	}
+
+	/**
+	 * @small
+	 * @covers Games::getGames
 	 * @covers getGames
-	 * @uses get_db_connection
-	 * @uses CalculateGameRow
+	 * @uses Games
+	 * @uses dataAccess
 	 * @uses getAllCpi
+	 * @uses get_db_connection
 	 * @uses timeduration
-	 * Time: 00:00.610, Memory: 70.00 MB
-	 * (1 test, 3 assertions)
 	 */
     public function test_getGames_base() {
-        $this->assertisArray(getGames());
+		$result=getGames();
+        $this->assertisArray($result);
+        $this->assertEquals(true,count($result)>0);
 		
         $this->assertisArray(getGames(2));
         $this->assertisArray(getGames(array(2,3)));
 	}
 	
 	/**
-	 * @group fast
 	 * @small
+	 * @covers Games::getGames
 	 * @covers getGames
-	 * @uses CalculateGameRow
+	 * @uses Games
+	 * @uses dataAccess
 	 * @uses getAllCpi
 	 * @uses get_db_connection
 	 * @uses timeduration
-	 * Time: 00:00.571, Memory: 70.00 MB
-	 * (1 test, 1 assertion)
+	 * @uses makeIndex
+	 */
+    public function test_getGames_reindex() {
+		$result=getGames();
+        $this->assertisArray($result);
+        $this->assertEquals(true,count($result)>0);
+		$this->assertisArray(makeIndex($result,"Game_ID"));
+	}
+
+	
+	/**
+	 * @small
+	 * @covers Games::getGames
+	 * @uses getGames
+	 * @uses Games
+	 * @uses dataAccess
+	 * @uses getAllCpi
+	 * @uses get_db_connection
+	 * @uses timeduration
 	 */
     public function test_getGames_conn() {
 		$conn=get_db_connection();
@@ -50,27 +81,23 @@ final class getGames_Test extends TestCase
 	}
 	
 	/**
-	 * @group fast
 	 * @small
+	 * @covers Games::getGames
 	 * @covers getGames
-	 * @uses getsettings
-	 * Time: 00:00.234, Memory: 48.00 MB
-	 * (1 test, 1 assertion)
-	 */
+	 * @uses get_db_connection
+	 * /
     public function test_getGames_error() {
         $this->expectNotice();
 		$this->assertisArray(getGames(";"));
 	}
+	/* */
 
 	/**
-	 * @group fast
 	 * @small
-	 * @covers CalculateGameRow
+	 * @covers Games::CalculateGameRow
 	 * @uses getAllCpi
 	 * @uses getGames
 	 * @uses timeduration
-	 * Time: 00:00.221, Memory: 46.00 MB
-	 * (1 test, 3 assertions)
 	 */
     public function test_CalculateGameRow() {
 		$gamerow=array(
@@ -100,7 +127,12 @@ final class getGames_Test extends TestCase
 			"Playable" => 1
 		);
 		
-		$this->assertisArray(CalculateGameRow($gamerow));
+		$GameListObject=new Games();
+
+		$method = $this->getPrivateMethod( 'Games', 'CalculateGameRow' );
+		$result = $method->invokeArgs( $GameListObject, array($gamerow) );
+		
+		$this->assertisArray($result);
 		
 		$gamerow["LowDate"]="";
 		$gamerow["DateUpdated"]="";
@@ -120,11 +152,18 @@ final class getGames_Test extends TestCase
 		$gamerow["TimeToBeat"]=0;
 		$gamerow["ParentGameID"]=3;
 		
-		$this->assertisArray(CalculateGameRow($gamerow));
+		$GameListObject=new Games();
+
+		$method = $this->getPrivateMethod( 'Games', 'CalculateGameRow' );
+		$result = $method->invokeArgs( $GameListObject, array($gamerow) );
+		
+		$this->assertisArray($result);
 
 		$gamerow["MetascoreID"]="";
 		$gamerow["TimeToBeatID"]="";
 		
-		$this->assertisArray(CalculateGameRow($gamerow));
+		$result = $method->invokeArgs( $GameListObject, array($gamerow) );
+		$this->assertisArray($result);
 	}
+	/* */
 }

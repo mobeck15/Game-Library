@@ -9,7 +9,7 @@ require_once $GLOBALS['rootpath']."/inc/utility.inc.php";
 require_once $GLOBALS['rootpath']."/inc/getsettings.inc.php";
 require_once $GLOBALS['rootpath']."/inc/getHistoryCalculations.inc.php";
 require_once $GLOBALS['rootpath']."/inc/getActivityCalculations.inc.php";
-require_once $GLOBALS['rootpath']."/inc/getPurchases.inc.php";
+require_once $GLOBALS['rootpath']."/inc/getPurchases.class.php";
 
 
 
@@ -876,7 +876,7 @@ function getStatRow($filter,$statname){
 				$row['Print']['Min2']=timeduration($row['Min2'],"hours");
 				break;
 			default:
-				/* UNREACHABLE */
+				//var_dump($statname);
 				$row['Print']['Total']=null;
 				$row['Print']['Average']=null;
 				$row['Print']['HarMean']=null;
@@ -887,7 +887,6 @@ function getStatRow($filter,$statname){
 				$row['Print']['Min1']=null;
 				$row['Print']['Min2']=null;
 				break;
-				/* */
 		}
 		
 		$GLOBALS["METASTATS"][$statname] = $row;

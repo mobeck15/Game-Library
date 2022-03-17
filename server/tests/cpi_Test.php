@@ -5,6 +5,7 @@ $GLOBALS['rootpath'] = $GLOBALS['rootpath'] ?? "htdocs\Game-Library\server";
 
 /**
  * @group page
+ * @coversNothing
  */
 class testcpi extends TestCase {
 
@@ -16,10 +17,7 @@ class testcpi extends TestCase {
     }
 
 	/**
-	 * @group fast
 	 * @small
-	 * Time: 00:00.032, Memory: 26.00 MB
-	 * (1 test, 1 assertion)
 	 */
     public function test_cpi_Load() {
         $args = array();

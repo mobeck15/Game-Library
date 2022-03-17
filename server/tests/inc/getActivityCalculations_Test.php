@@ -2,26 +2,19 @@
 declare(strict_types=1);
 use PHPUnit\Framework\TestCase;
 
-// We require the file we need to test.
-// Relative path to the current working dir (root of xampp)
 $GLOBALS['rootpath'] = $GLOBALS['rootpath'] ?? "htdocs\Game-Library\server";
 require_once $GLOBALS['rootpath']."\inc\getActivityCalculations.inc.php";
 
-//Time: 00:03.651, Memory: 100.00 MB
-//(2 tests, 3 assertions)
 /**
  * @group include
  */
 final class getActivityCalculations_Test extends TestCase
 {
 	/**
-	 * @group fast
 	 * @small
 	 * @uses getsettings
 	 * @uses get_db_connection
 	 * @covers getActivityCalculations
-	 * Time: 00:00.451, Memory: 48.00 MB
-	 * (1 test, 1 assertion))
 	 */
     public function test_getActivityCalculations_base() {
 		$GLOBALS["SETTINGS"]['MinPlay']=120;
@@ -95,14 +88,12 @@ final class getActivityCalculations_Test extends TestCase
    }
 
 	/**
-	 * @group fast
+	 * @group dbconnect
 	 * @small
 	 * @covers getActivityCalculations
 	 * @uses getHistoryCalculations
 	 * @uses get_db_connection
 	 * @uses getsettings
-	 * Time: 00:00.342, Memory: 48.00 MB
-	 * (1 test, 1 assertion)
 	 */
     public function test_getActivityCalculations_conn() {
 		//TODO: Add default Settings variable.
@@ -112,13 +103,11 @@ final class getActivityCalculations_Test extends TestCase
    }
    
 	/**
-	 * @group fast
+	 * @group dbconnect
 	 * @small
 	 * @covers getActivityCalculations
 	 * @uses get_db_connection
 	 * @uses getsettings
-	 * Time: 00:00.243, Memory: 48.00 MB
-	 * (1 test, 1 assertion)
 	 */
     public function test_getActivityCalculations_false() {
 		$GLOBALS["SETTINGS"]['MinPlay']=120;

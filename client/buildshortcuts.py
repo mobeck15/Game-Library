@@ -53,10 +53,11 @@ with open(datafile) as json_file:
             #print(" -NOT FOUND-")
     print(str(datacount) + " Data records processed")
     print(str(linkcount) + " Shortcuts created")
+    input("Press Enter to exit...")
 
 #dump shortcut data
 #lnk = str(shorcutfolder + r"\Dragonshard (original1).lnk")
 #shortcut = winshell.shortcut(str(lnk))
 #shortcut.dump()
-
+ 
 

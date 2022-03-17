@@ -40,25 +40,33 @@ $settings=getsettings($conn);
 	<a href="calculations.php?fav=Custom&hide=Playable,eq,0,Status,eq,Never,Status,eq,Broken&sort=Title&dir=4&col=Title,All Bundles,PurchaseDate,LaunchPrice,MSRP,HistoricLow,Paid,SalePrice,TimeToBeat,Metascore,MetaUser,GrandTotal,Status,lastplay,DateUpdated,Paidperhr,Saleperhr,PaidLess1,SaleLess1,PaidLess2,SaleLess2#tablestart">Custom</a>
 	/ <a href="calculations.php?fav=Default#tablestart">Default</a>
 	</li>
-	<li class="hidden"><a href="calculations.php?fav=Custom&hide=Playable,eq,0,Status,eq,Never,Status,eq,Broken&sort=Title&dir=3&col=Title,PurchaseDate,GrandTotal,TimeToBeat,TimeLeftToBeat,AltSalePrice,Altperhr,AltLess1,AltLess2,AltHrsNext1,AltHrsNext2,Metascore,MetaUser,lastplay#tablestart">All Games</a></li>
+	<li class="hidden"><a href="calculations.php?fav=Custom&hide=Playable,eq,0,Status,eq,Never,Status,eq,Broken&sort=Title&dir=3&col=Title,PurchaseDate,GrandTotal,TimeToBeat,TimeLeftToBeat,AltSalePrice,Altperhr,AltLess1,AltLess2,AltHrsNext1,AltHrsNext2,Metascore,MetaUser,lastplay#tablestart">All Games</a>
 		<ul>
 		<li class="hidden"><a href="calculations.php?fav=Custom&hide=Playable,eq,0,Status,eq,Never,Status,eq,Broken,Status,eq,Done,GrandTotal,eq,0&sort=GrandTotal&dir=3&col=Title,All Bundles,PurchaseDate,LaunchPrice,MSRP,HistoricLow,Paid,SalePrice,TimeToBeat,Metascore,MetaUser,GrandTotal,Status,lastplay,DateUpdated,Paidperhr,Saleperhr,PaidLess1,SaleLess1,PaidLess2,SaleLess2#tablestart">Most Played</a></li>
 		<li class="hidden"><a href="calculations.php?fav=Custom&hide=Playable,eq,0,Status,eq,Never,Status,eq,Broken,Status,eq,Done,GrandTotal,eq,0&sort=lastplaySort&dir=3&col=Title,All Bundles,PurchaseDate,LaunchPrice,MSRP,HistoricLow,Paid,SalePrice,TimeToBeat,Metascore,MetaUser,GrandTotal,Status,lastplay,DateUpdated,Paidperhr,Saleperhr,PaidLess1,SaleLess1,PaidLess2,SaleLess2#tablestart">Last Played</a></li>
 		<li class="hidden"><a href="calculations.php?fav=Custom&hide=Playable,eq,0,Status,eq,Never,Status,eq,Broken&sort=Saleperhr&dir=3&col=Title,PurchaseDate,GrandTotal,TimeToBeat,TimeLeftToBeat,AltSalePrice,Altperhr,AltLess1,AltLess2,AltHrsNext1,AltHrsNext2,Metascore,MetaUser,lastplay#tablestart">All Games Sorted by Alt Saleperhr</a></li>
 		<li class="hidden"><a href="calculations.php?fav=Custom&hide=Playable,eq,0,Status,eq,Never,Status,eq,Broken&sort=Altperhr&dir=3&col=Title,PurchaseDate,GrandTotal,TimeToBeat,TimeLeftToBeat,AltSalePrice,Altperhr,AltLess1,AltLess2,AltHrsNext1,AltHrsNext2,Metascore,MetaUser,lastplay#tablestart">All Games Sorted by Alt AltSaleperhr</a></li>
-		</ul>
-	<li class="hidden"><a href="calculations.php?fav=Custom&hide=Playable,eq,0,Status,ne,Active&sort=Title&dir=4&col=Title,All Bundles,PurchaseDate,LaunchPrice,MSRP,HistoricLow,Paid,SalePrice,TimeToBeat,Metascore,MetaUser,GrandTotal,Status,lastplay,DateUpdated,Paidperhr,Saleperhr,PaidLess1,SaleLess1,PaidLess2,SaleLess2#tablestart">Active Games</a></li>
+		</ul></li>
+	<li class="hidden"><a href="calculations.php?fav=Custom&hide=Playable,eq,0,Status,ne,Active&sort=Title&dir=4&col=Title,All Bundles,PurchaseDate,LaunchPrice,MSRP,HistoricLow,Paid,SalePrice,TimeToBeat,Metascore,MetaUser,GrandTotal,Status,lastplay,DateUpdated,Paidperhr,Saleperhr,PaidLess1,SaleLess1,PaidLess2,SaleLess2#tablestart">Active Games</a>
 		<ul>
 		<li class="hidden"><a href="calculations.php?fav=Custom&hide=Playable,eq,0,Status,ne,Active,GrandTotal,eq,0&sort=lastplaySort&dir=3&col=Title,All Bundles,PurchaseDate,LaunchPrice,MSRP,HistoricLow,Paid,SalePrice,TimeToBeat,Metascore,MetaUser,GrandTotal,Status,lastplay,DateUpdated,Paidperhr,Saleperhr,PaidLess1,SaleLess1,PaidLess2,SaleLess2#tablestart">Last Played Active</a></li>
 		<li class="hidden"><a href="calculations.php?fav=Custom&hide=Playable,eq,0,Status,ne,Active&sort=Saleperhr&dir=3&col=Title,All Bundles,PurchaseDate,LaunchPrice,MSRP,HistoricLow,Paid,SalePrice,TimeToBeat,Metascore,MetaUser,GrandTotal,Status,lastplay,DateUpdated,Paidperhr,Saleperhr,PaidLess1,SaleLess1,PaidLess2,SaleLess2#tablestart">Active Games Sorted by Saleperhr</a></li>
-		</ul>
-	<li><a href="calculations.php?fav=Custom&hide=None&sort=DateUpdatedSort&dir=4&col=TitleEdit,All Bundles,PurchaseDate,LaunchPrice,MSRP,HistoricLow,Paid,SalePrice,TimeToBeat,Metascore,MetaUser,GrandTotal,Status,lastplay,DateUpdated#tablestart">Oldest-Updated</a></li>
+		</ul></li>
+	<li><a href="calculations.php?fav=Custom&hide=None&sort=DateUpdatedSort&dir=4&col=TitleEdit,All Bundles,PurchaseDate,LaunchPrice,MSRP,HistoricLow,Paid,SalePrice,TimeToBeat,Metascore,MetaUser,GrandTotal,Status,lastplay,DateUpdated#tablestart">Oldest-Updated</a>
 		<ul>
 		<li><a href="calculations.php?fav=Custom&hide=DateUpdated,gt,0&sort=PurchaseDate&dir=3&col=TitleEdit,All Bundles,PurchaseDate,LaunchPrice,MSRP,HistoricLow,Paid,SalePrice,TimeToBeat,Metascore,MetaUser,GrandTotal,Status,lastplay,DateUpdated#tablestart">Un-Updated</a></li>
 		<li><a href="calculations.php?fav=Custom&hide=DateUpdated,gt,0,Playable,eq,0,Status,eq,Never,Status,eq,Broken&sort=PurchaseDate&dir=3&col=TitleEdit,All Bundles,PurchaseDate,LaunchPrice,MSRP,HistoricLow,Paid,SalePrice,TimeToBeat,Metascore,MetaUser,GrandTotal,Status,lastplay,DateUpdated#tablestart">Un-Updated (Counted)</a></li>
 		<li><a href="calculations.php?fav=Custom&hide=Playable,eq,0,Status,eq,Never,Status,eq,Broken,MSRP,ne,0,Paid,eq,0&sort=PurchaseDate&dir=3&col=TitleEdit,All Bundles,PurchaseDate,LaunchPrice,MSRP,HistoricLow,Paid,SalePrice,TimeToBeat,Metascore,MetaUser,Status,lastplay,DateUpdated#tablestart">No Price</a></li>
-		<li><a href="calculations.php?fav=Custom&hide=Playable,eq,0,Status,eq,Never,Status,eq,Broken,TimeToBeat,eq,0&sort=PurchaseDate&dir=3&col=TitleEdit,All Bundles,PurchaseDate,LaunchPrice,MSRP,HistoricLow,Paid,SalePrice,TimeToBeat,Metascore,MetaUser,Status,lastplay,DateUpdated#tablestart">No Time</a></li>
-		</ul>
+		<li><a href="calculations.php?fav=Custom&hide=Playable,eq,0,Status,eq,Never,Status,eq,Broken,TimeToBeat,ne,&sort=PurchaseDate&dir=3&col=TitleEdit,All Bundles,PurchaseDate,LaunchPrice,MSRP,HistoricLow,Paid,SalePrice,TimeToBeat,Metascore,MetaUser,Status,lastplay,DateUpdated#tablestart">No Time</a></li>
+		</ul></li>
+	<li>Active Set
+		<ul>
+		<li><a href="calculations.php?fav=Custom&sort=SaleLess1&dir=3&hide=Playable,eq,0,Status,eq,Never,Status,eq,Done,Status,eq,Broken,Review,eq,1,Review,eq,2&col=Title,Type,All%20Bundles,GrandTotal,AltSalePrice,Altperhr,AltLess1,SalePrice,Saleperhr,SaleLess1">1 Hour reduces Sale by x</a></li>
+		<li><a href="http://games.stuffiknowabout.com/gl6/calculations.php?fav=Custom&sort=AltLess1&dir=3&hide=Playable,eq,0,Status,eq,Never,Status,eq,Done,Status,eq,Broken,Review,eq,1,Review,eq,2&col=Title,Type,All%20Bundles,GrandTotal,AltSalePrice,Altperhr,AltLess1,SalePrice,Saleperhr,SaleLess1">1 Hour reduces Alt by x</a></li>
+		<li class="hidden"><a href="calculations.php?fav=Custom&sort=Saleperhr&dir=3&hide=Playable,eq,0,Status,eq,Never,Status,eq,Done,Status,eq,Broken,Review,eq,1,Review,eq,2&col=Title,Type,LaunchDate,PurchaseDate,SalePrice,TimeToBeat,Metascore,MetaUser,GrandTotal,lastplay,Saleperhr,SaleLess1,SaleLess2">Sale Price $/hr</a></li>
+		<li class="hidden"><a href="calculations.php?fav=Custom&sort=Altperhr&dir=3&hide=Playable,eq,0,Status,eq,Never,Status,eq,Done,Status,eq,Broken,Review,eq,1,Review,eq,2&col=Title,Type,All%20Bundles,Review,AltSalePrice,TimeToBeat,GrandTotal,Altperhr,AltLess1,AltLess2">Alt Sale</a></li>
+		</ul></li>
+	
 	<li class="hidden"><a href="calculations.php?fav=Custom&hide=lastplay,gt,0,Playable,eq,0,Status,eq,Never,Status,eq,Broken&sort=Saleperhr&dir=3&col=Title,All Bundles,PurchaseDate,LaunchPrice,MSRP,HistoricLow,Paid,SalePrice,TimeToBeat,Metascore,MetaUser,GrandTotal,Status,lastplay,DateUpdated,Paidperhr,Saleperhr,PaidLess1,SaleLess1,PaidLess2,SaleLess2#tablestart">Un-Played</a></li>
 	<li><a href="calculations.php?fav=Custom&sort=LaunchDateValue&dir=4&hide=Playable,eq,0,LaunchDateValue,gt,946713600&col=Title,Type,ParentGame,Platforms,All%20Bundles,LaunchDate,PurchaseDate,LaunchPrice,Paid,SalePrice,AltSalePrice,TimeToBeat,Metascore,MetaUser,GrandTotal,lastplay,Paidperhr,Saleperhr,Altperhr,PaidLess1,SaleLess1,AltLess1,PaidLess2,SaleLess2,AltLess2">DOS?</a></li>
 	<li><a href="calculations.php?fav=Custom&hide=SteamAchievements,eq,0,lastplay,gt,0,Playable,eq,0,Status,eq,Never,Status,eq,Broken&sort=SteamAchievements&dir=3&col=Title,All Bundles,PurchaseDate,LaunchPrice,MSRP,HistoricLow,Paid,SalePrice,TimeToBeat,Metascore,MetaUser,GrandTotal,Status,lastplay,DateUpdated,Paidperhr,Saleperhr,PaidLess1,SaleLess1,PaidLess2,SaleLess2,Achievements#tablestart">Un-Played with Achievements</a></li>
@@ -73,7 +81,7 @@ $settings=getsettings($conn);
 	<ul><li><a href="http://games.stuffiknowabout.com/gl6/calculations.php?fav=Custom&sort=PurchaseDate&dir=3&hide=None&col=Title,Type,ParentGame,All%20Bundles,MainLibrary,LaunchDate,PurchaseDate,Want,TimeToBeat,Metascore,MetaUser">All by Purchase Date</a></li>
 	<li><a href="http://games.stuffiknowabout.com/gl6/calculations.php?fav=Custom&sort=LaunchDateValue&dir=3&hide=None&col=Title,Type,ParentGame,All%20Bundles,MainLibrary,OtherLibrary,LaunchDate,PurchaseDate,Want,TimeToBeat,Metascore,MetaUser">All by Launch Date</a></li></ul>
 	
-	<li><a href="http://games.stuffiknowabout.com/gl6/calculations.php?fav=Custom&sort=PurchaseDate&dir=3&hide=Playable,eq,0,Status,eq,Never,Status,eq,Broken,GrandTotal,ne,0&col=Title,Type,ParentGame,MainLibrary,All%20Bundles,LaunchDate,PurchaseDate,LaunchPrice,Paid,TimeToBeat,Metascore,MetaUser,GrandTotal,lastplay">Unplayed All</a></li>
+	<li>[[ <a href="http://games.stuffiknowabout.com/gl6/calculations.php?fav=Custom&sort=PurchaseDate&dir=3&hide=Playable,eq,0,Status,eq,Never,Status,eq,Broken,GrandTotal,ne,0&col=Title,Type,ParentGame,MainLibrary,All%20Bundles,LaunchDate,PurchaseDate,LaunchPrice,Paid,TimeToBeat,Metascore,MetaUser,GrandTotal,lastplay">Unplayed All</a> ]]</li>
 	<ul><li><a href="http://games.stuffiknowabout.com/gl6/calculations.php?fav=Custom&sort=PurchaseDate&dir=3&hide=Playable,eq,0,Status,eq,Never,Status,eq,Broken,GrandTotal,ne,0,MainLibrary,ne,Steam&col=Title,Type,ParentGame,MainLibrary,All%20Bundles,LaunchDate,PurchaseDate,LaunchPrice,Paid,TimeToBeat,Metascore,MetaUser,GrandTotal,lastplay">Unplayed Steam</a></li>
 	<li><a href="http://games.stuffiknowabout.com/gl6/calculations.php?fav=Custom&sort=PurchaseDate&dir=3&hide=Playable,eq,0,Status,eq,Never,Status,eq,Broken,GrandTotal,ne,0,MainLibrary,ne,GOG&col=Title,Type,ParentGame,MainLibrary,All%20Bundles,LaunchDate,PurchaseDate,LaunchPrice,Paid,TimeToBeat,Metascore,MetaUser,GrandTotal,lastplay">Unplayed GOG</a></li>
 	<li><a href="http://games.stuffiknowabout.com/gl6/calculations.php?fav=Custom&sort=PurchaseDate&dir=3&hide=Playable,eq,0,Status,eq,Never,Status,eq,Broken,GrandTotal,ne,0,MainLibrary,ne,Twitch&col=Title,Type,ParentGame,MainLibrary,All%20Bundles,LaunchDate,PurchaseDate,LaunchPrice,Paid,TimeToBeat,Metascore,MetaUser,GrandTotal,lastplay">Unplayed Twitch</a></li>
@@ -173,7 +181,7 @@ $sortnext = "&sort=Altperhr&dir=3";
 		<td><a href="<?php echo $urlbase.$sortSale.$filterItems.$salecolumns;?>">All Items</a></td>
 		<td><a href="<?php echo $urlbase.$sortSale.$filterGames.$salecolumns;?>">All Games</a></td>
 		<td class='greencell'><a href="<?php echo $urlbase.$sortSale.$filterGames2.$salecolumns;?>">Games</a></td>
-		<td class='greencell'><a href="<?php echo $urlbase.$sortSale.$filterGames3.$salecolumns;?>">Games+</a></td>
+		<td class='greencell2'><a href="<?php echo $urlbase.$sortSale.$filterGames3.$salecolumns;?>">Games+</a></td>
 		<td class='greencell'><a href="<?php echo $urlbase.$sortSale.$filterActive.$salecolumns;?>">Active Games</a></td>
 		<td><a href="<?php echo $urlbase.$sortSale.$filterUnplayed.$salecolumns;?>">Un-Played Games</a></td>
 		<td><a href="<?php echo $urlbase.$sortSale.$filterunbeat.$salecolumns;?>">Un-Finished Games</a></td></tr>
@@ -218,18 +226,18 @@ $sortnext = "&sort=Altperhr&dir=3";
 		<td><a href="<?php echo $urlbase.$sortPlay.$filterUnplayed.$lastplaycols;?>">Un-Played Games</a></td>
 		<td><a href="<?php echo $urlbase.$sortPlay.$filterunbeat.$lastplaycols;?>">Un-Finished Games</a></td></tr>
 	<tr><td>Last Played OR Purchased</td>
-		<td><a href="<?php echo $urlbase.$sortPlayP.$filterItems.$lastplaycols;?>,LastPlayORPurchase">All Items</a></td>
-		<td><a href="<?php echo $urlbase.$sortPlayP.$filterGames.$lastplaycols;?>,LastPlayORPurchase">All Games</a></td>
-		<td class='greencell'><a href="<?php echo $urlbase.$sortPlayP.$filterGames2.$lastplaycols;?>,LastPlayORPurchase">Games</a></td>
-		<td class='greencell'><a href="<?php echo $urlbase.$sortPlayP.$filterGames3.$lastplaycols;?>,LastPlayORPurchase">Games+</a></td>
-		<td><a href="<?php echo $urlbase.$sortPlayP.$filterActive.$lastplaycols;?>,LastPlayORPurchase">Active Games</a></td>
-		<td><a href="<?php echo $urlbase.$sortPlayP.$filterUnplayed.$lastplaycols;?>,LastPlayORPurchase">Un-Played Games</a></td>
-		<td><a href="<?php echo $urlbase.$sortPlayP.$filterunbeat.$lastplaycols;?>,LastPlayORPurchase">Un-Finished Games</a></td></tr>
+		<td><a href="<?php echo $urlbase.$sortPlayP.$filterItems.$lastplaycols;?>">All Items</a></td>
+		<td><a href="<?php echo $urlbase.$sortPlayP.$filterGames.$lastplaycols;?>">All Games</a></td>
+		<td class='greencell'><a href="<?php echo $urlbase.$sortPlayP.$filterGames2.$lastplaycols;?>">Games</a></td>
+		<td class='greencell2'><a href="<?php echo $urlbase.$sortPlayP.$filterGames3.$lastplaycols;?>">Games+</a></td>
+		<td><a href="<?php echo $urlbase.$sortPlayP.$filterActive.$lastplaycols;?>">Active Games</a></td>
+		<td><a href="<?php echo $urlbase.$sortPlayP.$filterUnplayed.$lastplaycols;?>">Un-Played Games</a></td>
+		<td><a href="<?php echo $urlbase.$sortPlayP.$filterunbeat.$lastplaycols;?>">Un-Finished Games</a></td></tr>
 	<tr><td>Play Next (Alt Sale)</td>
 		<td><a href="<?php echo $urlbase.$sortnext.$filterItems.$extrafilternext.$nextcols;?>">All Items</a></td>
 		<td><a href="<?php echo $urlbase.$sortnext.$filterGames.$extrafilternext.$nextcols;?>">All Games</a></td>
 		<td class='greencell'><a href="<?php echo $urlbase.$sortnext.$filterGames2.$extrafilternext.$nextcols;?>">Games</a></td>
-		<td class='greencell'><a href="<?php echo $urlbase.$sortnext.$filterGames3.$extrafilternext.$nextcols;?>">Games+</a></td>
+		<td class='greencell2'><a href="<?php echo $urlbase.$sortnext.$filterGames3.$nextcols;?>">Games+</a></td>
 		<td><a href="<?php echo $urlbase.$sortnext.$filterActive.$extrafilternext.$nextcols;?>">Active Games</a></td>
 		<td><a href="<?php echo $urlbase.$sortnext.$filterUnplayed.$extrafilternext.$nextcols;?>">Un-Played Games</a></td>
 		<td><a href="<?php echo $urlbase.$sortnext.$filterunbeat.$extrafilternext.$nextcols;?>">Un-Finished Games</a></td></tr>
@@ -237,7 +245,7 @@ $sortnext = "&sort=Altperhr&dir=3";
 		<td><a href="<?php echo $urlbase.$sortPlayP.$filterItems.$extrafilternext.$lastplaycols;?>">All Items</a></td>
 		<td><a href="<?php echo $urlbase.$sortPlayP.$filterGames.$extrafilternext.$lastplaycols;?>">All Games</a></td>
 		<td class='greencell'><a href="<?php echo $urlbase.$sortPlayP.$filterGames2.$extrafilternext.$lastplaycols;?>">Games</a></td>
-		<td class='greencell'><a href="<?php echo $urlbase.$sortPlayP.$filterGames3.$extrafilternext.$lastplaycols;?>">Games+</a></td>
+		<td class='greencell'><a href="<?php echo $urlbase.$sortPlayP.$filterGames3.$lastplaycols;?>">Games+</a></td>
 		<td><a href="<?php echo $urlbase.$sortPlayP.$filterActive.$extrafilternext.$lastplaycols;?>">Active Games</a></td>
 		<td><a href="<?php echo $urlbase.$sortPlayP.$filterUnplayed.$extrafilternext.$lastplaycols;?>">Un-Played Games</a></td>
 		<td><a href="<?php echo $urlbase.$sortPlayP.$filterunbeat.$extrafilternext.$lastplaycols;?>">Un-Finished Games</a></td></tr>
@@ -912,6 +920,10 @@ foreach ($calculations as $game) {
 		
 		//TODO: errors out if there are no results in the filtered list
 		$counters['Median']=$counters['data'][round($counters['countall'] / 2)-1];
+		if($counters['Median'] instanceof DateTime) {
+			//$counters['Median']=$counters['Median']->getTimestamp();
+			$counters['Median']=$counters['Median']->format("n/j/Y g:i:s");
+		}
 
 		//print_r($usearray);
 

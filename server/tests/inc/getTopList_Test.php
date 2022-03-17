@@ -2,13 +2,9 @@
 declare(strict_types=1);
 use PHPUnit\Framework\TestCase;
 
-// We require the file we need to test.
-// Relative path to the current working dir (root of xampp)
 $GLOBALS['rootpath'] = $GLOBALS['rootpath'] ?? "htdocs\Game-Library\server";
 require_once $GLOBALS['rootpath']."\inc\getTopList.inc.php";
 
-//Time: 00:54.240, Memory: 292.00 MB
-//(2 tests, 13 assertions)
 /**
  * @group include
  */
@@ -33,10 +29,8 @@ final class getTopList_Test extends TestCase
     }
 	
 	/**
-	 * @group slow
 	 * @large
 	 * @covers getTopList
-	 * @uses CalculateGameRow
 	 * @uses PriceCalculation
 	 * @uses combinedate
 	 * @uses daysSinceDate
@@ -52,7 +46,6 @@ final class getTopList_Test extends TestCase
 	 * @uses getNextPosition
 	 * @uses getPriceSort
 	 * @uses getPriceperhour
-	 * @uses getPurchases
 	 * @uses getTimeLeft
 	 * @uses getsettings
 	 * @uses makeIndex
@@ -61,8 +54,6 @@ final class getTopList_Test extends TestCase
 	 * @uses timeduration
 	 * @uses getGames
 	 * @uses get_db_connection
-	 * Time: 00:24.243, Memory: 292.00 MB
-	 * OK (1 test, 3 assertions)
 	 */
     public function test_getTopList_base() {
 		$output=getTopList("");
@@ -76,10 +67,8 @@ final class getTopList_Test extends TestCase
 	}
 
 	/**
-	 * @group slow
 	 * @large
 	 * @covers getTopList
-	 * @uses CalculateGameRow
 	 * @uses PriceCalculation
 	 * @uses combinedate
 	 * @uses daysSinceDate
@@ -95,7 +84,6 @@ final class getTopList_Test extends TestCase
 	 * @uses getNextPosition
 	 * @uses getPriceSort
 	 * @uses getPriceperhour
-	 * @uses getPurchases
 	 * @uses getTimeLeft
 	 * @uses getsettings
 	 * @uses makeIndex
@@ -104,8 +92,6 @@ final class getTopList_Test extends TestCase
 	 * @uses timeduration
 	 * @uses getGames
 	 * @uses get_db_connection
-	 * Time: 00:26.980, Memory: 284.00 MB
-	 * OK (1 test, 10 assertions)
 	 */
     public function test_getTopList_Alt() {
 		$conn=get_db_connection();
@@ -125,10 +111,8 @@ final class getTopList_Test extends TestCase
 	}
 	
 	/* *
-	 * @group slow
 	 * @large
 	 * @covers getTopList
-	 * @uses CalculateGameRow
 	 * @uses PriceCalculation
 	 * @uses combinedate
 	 * @uses daysSinceDate
@@ -144,7 +128,6 @@ final class getTopList_Test extends TestCase
 	 * @uses getNextPosition
 	 * @uses getPriceSort
 	 * @uses getPriceperhour
-	 * @uses getPurchases
 	 * @uses getTimeLeft
 	 * @uses getsettings
 	 * @uses makeIndex
@@ -163,9 +146,6 @@ final class getTopList_Test extends TestCase
 	 *           ["SteamR", 2]
 	 *           ["PYear", 2]
 	 *           ["LYear", 2]
-	 
-	 * Time: 03:14.870, Memory: 278.00 MB
-	 * OK (10 tests, 10 assertions)
 	 * /
     public function test_getTopList_keywords($group,$size) {
 		//ARRANGE

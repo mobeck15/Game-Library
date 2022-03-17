@@ -2,13 +2,12 @@
 $GLOBALS['rootpath']=$GLOBALS['rootpath'] ?? ".";
 require_once $GLOBALS['rootpath']."/inc/php.ini.inc.php";
 require_once $GLOBALS['rootpath']."/inc/functions.inc.php";
+require_once $GLOBALS['rootpath']."/inc/SteamAPI.class.php";
 
 $title="Steam API All Games";
 echo Get_Header($title);
 
 $conn=get_db_connection();
-
-include "inc/auth.inc.php";
 
 $hitory=getHistoryCalculations("",$conn);
 $games=getCalculations("",$conn);
@@ -25,7 +24,9 @@ foreach($hitory as $historyrow){
 }
 //print_r($historyrow);
 
-$resultarray=GetOwnedGames();
+//$resultarray=GetOwnedGames();
+$steamAPI= new SteamAPI();
+$resultarray=$steamAPI->GetSteamAPI("GetOwnedGames");
 ?>
 	<table>
 	<thead>
@@ -150,7 +151,10 @@ $resultarray=GetOwnedGames();
 	<?php
 	foreach($missing_ids as $id) {
 		
-		$schemaresultarray=GetSchemaForGame($id);
+		//$schemaresultarray=GetSchemaForGame($id);
+		$steamAPI= new SteamAPI($id);
+		$schemaresultarray=$steamAPI->GetSteamAPI("GetSchemaForGame");
+		
 		//$appdetails=GetAppDetails($id);
 		//$stats=GetUserStatsForGame($id);
 		//$playerach=GetPlayerAchievements($id);

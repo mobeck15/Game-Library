@@ -17,8 +17,7 @@ function getCalculations($gameID="",$connection=false,$start=false,$end=false){
 		return $GLOBALS["CALCULATIONS"];
 	} else {
 		if($connection==false){
-			include "auth.inc.php";
-			$conn = new mysqli($servername, $username, $password, $dbname);
+			$conn = get_db_connection();
 		} else {
 			$conn = $connection;
 		}
@@ -29,8 +28,10 @@ function getCalculations($gameID="",$connection=false,$start=false,$end=false){
 		$history=getHistoryCalculations($gameID,$conn);
 		$activity=getActivityCalculations($gameID,$history,$conn);
 		$keywords=getKeywords($gameID,$conn);
-		$purchases=getPurchases("",$conn,$items,$games);
-		
+		//$purchases=getPurchases("",$conn,$items,$games);
+		$purchaseobj=new Purchases("",$conn,$items,$games);
+		$purchases=$purchaseobj->getPurchases();
+
 		foreach ($history as $row) {
 			//Group the history records by GameID
 			$historyByGame[$row['ParentGameID']][]=$row;
@@ -127,9 +128,12 @@ function getCalculations($gameID="",$connection=false,$start=false,$end=false){
 						if(isset($purchases[$purchaseIndex[$record['TransID']]])){
 							$useBundleID=$purchases[$purchaseIndex[$record['TransID']]]['TopBundleID'];
 							if(!isset($game['TopBundleIDs'][$useBundleID])){
-								$game['FirstBundle']=$useBundleID;
 								$game['TopBundleIDs'][$useBundleID]=$useBundleID;
-								$game['PurchaseDateTime']=$purchases[$purchaseIndex[$record['TransID']]]['PurchaseDateTime'];
+								if(!isset($game['AddedDateTime']) OR $game['AddedDateTime'] > $record['AddedDateTime']) {
+									$game['FirstBundle']=$useBundleID;
+									$game['AddedDateTime']=$record['AddedDateTime'];
+									$game['PurchaseDateTime']=$purchases[$purchaseIndex[$record['TransID']]]['PurchaseDateTime'];
+								}
 								
 								if($game['PrintBundles']==""){
 									//$game['PrintBundles'] .= "(" . $useBundleID .") ";
@@ -190,8 +194,6 @@ function getCalculations($gameID="",$connection=false,$start=false,$end=false){
 						$game['Inactive']=true;
 						$game['Key']=$record['ActivationKey'];
 					}
-					
-					$game['AddedDateTime']=$record['AddedDateTime'];
 				}
 				$game['Platforms']=trim($game['Platforms'] ,"\n\r, ");
 				$game['PrintBundles']=trim($game['PrintBundles'] ,"\n\r| ");
@@ -265,10 +267,13 @@ function getCalculations($gameID="",$connection=false,$start=false,$end=false){
 			}
 			*/
 			
+			//TODO: LastPlayORPurchaseValue includes duplicate purchases when it should only take the max of first purchase or last played.
 			if(isset($game['AddedDateTime'])) {
 				$game['LastPlayORPurchaseValue']=max($game['lastplaySort'],$game['AddedDateTime']->getTimestamp());
 			} else {
+				//@codeCoverageIgnoreStart
 				$game['LastPlayORPurchaseValue']=max($game['lastplaySort'],0);
+				//@codeCoverageIgnoreEnd
 			}
 			$game['LastPlayORPurchase']=getCleanStringDate($game['LastPlayORPurchaseValue']);
 			$game['DaysSinceLastPlay']=daysSinceDate($game['lastplaySort']);
