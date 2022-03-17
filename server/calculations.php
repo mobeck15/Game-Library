@@ -63,9 +63,8 @@ $settings=getsettings($conn);
 		<ul>
 		<li><a href="calculations.php?fav=Custom&sort=SaleLess1&dir=3&hide=Playable,eq,0,Status,eq,Never,Status,eq,Done,Status,eq,Broken,Review,eq,1,Review,eq,2&col=Title,Type,All%20Bundles,GrandTotal,AltSalePrice,Altperhr,AltLess1,SalePrice,Saleperhr,SaleLess1">1 Hour reduces Sale by x</a></li>
 		<li><a href="http://games.stuffiknowabout.com/gl6/calculations.php?fav=Custom&sort=AltLess1&dir=3&hide=Playable,eq,0,Status,eq,Never,Status,eq,Done,Status,eq,Broken,Review,eq,1,Review,eq,2&col=Title,Type,All%20Bundles,GrandTotal,AltSalePrice,Altperhr,AltLess1,SalePrice,Saleperhr,SaleLess1">1 Hour reduces Alt by x</a></li>
-		<li><a href="calculations.php?fav=Custom&sort=Saleperhr&dir=3&hide=Playable,eq,0,Status,eq,Never,Status,eq,Done,Status,eq,Broken,Review,eq,1,Review,eq,2&col=Title,Type,LaunchDate,PurchaseDate,SalePrice,TimeToBeat,Metascore,MetaUser,GrandTotal,lastplay,Saleperhr,SaleLess1,SaleLess2">Sale Price $/hr</a></li>
-		<li><a href="calculations.php?fav=Custom&sort=Altperhr&dir=3&hide=Playable,eq,0,Status,eq,Never,Status,eq,Done,Status,eq,Broken,Review,eq,1,Review,eq,2&col=Title,Type,All%20Bundles,Review,AltSalePrice,TimeToBeat,GrandTotal,Altperhr,AltLess1,AltLess2">Alt Sale</a></li>
-		<li><a href="calculations.php?fav=Custom&sort=LastPlayORPurchase&dir=4&hide=Review,eq,1,Review,eq,2,Playable,eq,0,Status,eq,Never,Status,eq,Done,Status,eq,Broken&col=Title,Type,All%20Bundles,Review,AltSalePrice,TimeToBeat,GrandTotal,Altperhr,AltLess1,AltLess2,LastPlayORPurchase">Last Play/Purchase</a></li>
+		<li class="hidden"><a href="calculations.php?fav=Custom&sort=Saleperhr&dir=3&hide=Playable,eq,0,Status,eq,Never,Status,eq,Done,Status,eq,Broken,Review,eq,1,Review,eq,2&col=Title,Type,LaunchDate,PurchaseDate,SalePrice,TimeToBeat,Metascore,MetaUser,GrandTotal,lastplay,Saleperhr,SaleLess1,SaleLess2">Sale Price $/hr</a></li>
+		<li class="hidden"><a href="calculations.php?fav=Custom&sort=Altperhr&dir=3&hide=Playable,eq,0,Status,eq,Never,Status,eq,Done,Status,eq,Broken,Review,eq,1,Review,eq,2&col=Title,Type,All%20Bundles,Review,AltSalePrice,TimeToBeat,GrandTotal,Altperhr,AltLess1,AltLess2">Alt Sale</a></li>
 		</ul></li>
 	
 	<li class="hidden"><a href="calculations.php?fav=Custom&hide=lastplay,gt,0,Playable,eq,0,Status,eq,Never,Status,eq,Broken&sort=Saleperhr&dir=3&col=Title,All Bundles,PurchaseDate,LaunchPrice,MSRP,HistoricLow,Paid,SalePrice,TimeToBeat,Metascore,MetaUser,GrandTotal,Status,lastplay,DateUpdated,Paidperhr,Saleperhr,PaidLess1,SaleLess1,PaidLess2,SaleLess2#tablestart">Un-Played</a></li>
@@ -182,7 +181,7 @@ $sortnext = "&sort=Altperhr&dir=3";
 		<td><a href="<?php echo $urlbase.$sortSale.$filterItems.$salecolumns;?>">All Items</a></td>
 		<td><a href="<?php echo $urlbase.$sortSale.$filterGames.$salecolumns;?>">All Games</a></td>
 		<td class='greencell'><a href="<?php echo $urlbase.$sortSale.$filterGames2.$salecolumns;?>">Games</a></td>
-		<td class='greencell'><a href="<?php echo $urlbase.$sortSale.$filterGames3.$salecolumns;?>">Games+</a></td>
+		<td class='greencell2'><a href="<?php echo $urlbase.$sortSale.$filterGames3.$salecolumns;?>">Games+</a></td>
 		<td class='greencell'><a href="<?php echo $urlbase.$sortSale.$filterActive.$salecolumns;?>">Active Games</a></td>
 		<td><a href="<?php echo $urlbase.$sortSale.$filterUnplayed.$salecolumns;?>">Un-Played Games</a></td>
 		<td><a href="<?php echo $urlbase.$sortSale.$filterunbeat.$salecolumns;?>">Un-Finished Games</a></td></tr>
@@ -227,18 +226,18 @@ $sortnext = "&sort=Altperhr&dir=3";
 		<td><a href="<?php echo $urlbase.$sortPlay.$filterUnplayed.$lastplaycols;?>">Un-Played Games</a></td>
 		<td><a href="<?php echo $urlbase.$sortPlay.$filterunbeat.$lastplaycols;?>">Un-Finished Games</a></td></tr>
 	<tr><td>Last Played OR Purchased</td>
-		<td><a href="<?php echo $urlbase.$sortPlayP.$filterItems.$lastplaycols;?>,LastPlayORPurchase">All Items</a></td>
-		<td><a href="<?php echo $urlbase.$sortPlayP.$filterGames.$lastplaycols;?>,LastPlayORPurchase">All Games</a></td>
-		<td class='greencell'><a href="<?php echo $urlbase.$sortPlayP.$filterGames2.$lastplaycols;?>,LastPlayORPurchase">Games</a></td>
-		<td class='greencell'><a href="<?php echo $urlbase.$sortPlayP.$filterGames3.$lastplaycols;?>,LastPlayORPurchase">Games+</a></td>
-		<td><a href="<?php echo $urlbase.$sortPlayP.$filterActive.$lastplaycols;?>,LastPlayORPurchase">Active Games</a></td>
-		<td><a href="<?php echo $urlbase.$sortPlayP.$filterUnplayed.$lastplaycols;?>,LastPlayORPurchase">Un-Played Games</a></td>
-		<td><a href="<?php echo $urlbase.$sortPlayP.$filterunbeat.$lastplaycols;?>,LastPlayORPurchase">Un-Finished Games</a></td></tr>
+		<td><a href="<?php echo $urlbase.$sortPlayP.$filterItems.$lastplaycols;?>">All Items</a></td>
+		<td><a href="<?php echo $urlbase.$sortPlayP.$filterGames.$lastplaycols;?>">All Games</a></td>
+		<td class='greencell'><a href="<?php echo $urlbase.$sortPlayP.$filterGames2.$lastplaycols;?>">Games</a></td>
+		<td class='greencell2'><a href="<?php echo $urlbase.$sortPlayP.$filterGames3.$lastplaycols;?>">Games+</a></td>
+		<td><a href="<?php echo $urlbase.$sortPlayP.$filterActive.$lastplaycols;?>">Active Games</a></td>
+		<td><a href="<?php echo $urlbase.$sortPlayP.$filterUnplayed.$lastplaycols;?>">Un-Played Games</a></td>
+		<td><a href="<?php echo $urlbase.$sortPlayP.$filterunbeat.$lastplaycols;?>">Un-Finished Games</a></td></tr>
 	<tr><td>Play Next (Alt Sale)</td>
 		<td><a href="<?php echo $urlbase.$sortnext.$filterItems.$extrafilternext.$nextcols;?>">All Items</a></td>
 		<td><a href="<?php echo $urlbase.$sortnext.$filterGames.$extrafilternext.$nextcols;?>">All Games</a></td>
 		<td class='greencell'><a href="<?php echo $urlbase.$sortnext.$filterGames2.$extrafilternext.$nextcols;?>">Games</a></td>
-		<td class='greencell'><a href="<?php echo $urlbase.$sortnext.$filterGames3.$extrafilternext.$nextcols;?>">Games+</a></td>
+		<td class='greencell2'><a href="<?php echo $urlbase.$sortnext.$filterGames3.$nextcols;?>">Games+</a></td>
 		<td><a href="<?php echo $urlbase.$sortnext.$filterActive.$extrafilternext.$nextcols;?>">Active Games</a></td>
 		<td><a href="<?php echo $urlbase.$sortnext.$filterUnplayed.$extrafilternext.$nextcols;?>">Un-Played Games</a></td>
 		<td><a href="<?php echo $urlbase.$sortnext.$filterunbeat.$extrafilternext.$nextcols;?>">Un-Finished Games</a></td></tr>
@@ -246,7 +245,7 @@ $sortnext = "&sort=Altperhr&dir=3";
 		<td><a href="<?php echo $urlbase.$sortPlayP.$filterItems.$extrafilternext.$lastplaycols;?>">All Items</a></td>
 		<td><a href="<?php echo $urlbase.$sortPlayP.$filterGames.$extrafilternext.$lastplaycols;?>">All Games</a></td>
 		<td class='greencell'><a href="<?php echo $urlbase.$sortPlayP.$filterGames2.$extrafilternext.$lastplaycols;?>">Games</a></td>
-		<td class='greencell'><a href="<?php echo $urlbase.$sortPlayP.$filterGames3.$extrafilternext.$lastplaycols;?>">Games+</a></td>
+		<td class='greencell'><a href="<?php echo $urlbase.$sortPlayP.$filterGames3.$lastplaycols;?>">Games+</a></td>
 		<td><a href="<?php echo $urlbase.$sortPlayP.$filterActive.$extrafilternext.$lastplaycols;?>">Active Games</a></td>
 		<td><a href="<?php echo $urlbase.$sortPlayP.$filterUnplayed.$extrafilternext.$lastplaycols;?>">Un-Played Games</a></td>
 		<td><a href="<?php echo $urlbase.$sortPlayP.$filterunbeat.$extrafilternext.$lastplaycols;?>">Un-Finished Games</a></td></tr>

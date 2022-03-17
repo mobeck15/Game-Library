@@ -140,6 +140,15 @@ td.greenCell{
 	color: #000000;
 	background-color: #b7e1cd;
 }
+td.greenCell2{
+	color: #000000;
+	background-color: #c2e1b7;
+}
+td.greenCell2 a{
+	color: #000000;
+}
+
+
 td.redCell{
 	color: #000000;
 	background-color: #f4cccc;
@@ -216,6 +225,10 @@ thead th {
 //TODO: Stickey column headings show behind CSS fancy checkboxes
 //TODO: CSS fancy checkboxes appear below inline text
 */
+
+ul {
+	margin-top: 0px;
+}
 
 /* The switch - the box around the slider */
 .switch {

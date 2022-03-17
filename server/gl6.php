@@ -70,16 +70,6 @@ $directory    = ".";
 //$scanned_directory = array_diff(scandir($directory), array('..', '.'));
 $scanned_directory=dirToArray($directory);
 
-//print_r($scanned_directory);
-?>
-<?php
-//DONE: Fix Dynamic todo list to not have blank lines (there is some issue with extra ul tags)
-//DONE: Fix Dynamic todo list to not show files and folders with no todo items.
-//DONE: Dynamic todo list only looks one folder deep, make recursive.
-//DONE: Add page titles for easier read.
-//DONE: Add filename links to jump to relevant page
-//DONE: Dynamic todo not detecting comments that are not indented at least one character.
-
 $list="";
 foreach ($scanned_directory as $key => $file) {
 	//echo $key." "; var_dump($file);echo "<br>";
@@ -88,8 +78,6 @@ foreach ($scanned_directory as $key => $file) {
 echo "<ul>".$list."</ul>";
 
 ?>
-
-
 </td></tr></table>
 <?php echo Get_Footer(); ?>
 
