@@ -34,4 +34,11 @@ class testaddhistory extends TestCase {
         $this->assertisString($this->_execute($args));
     }
 
+	/**
+	 * @small
+	 */
+    public function test_addhistory_Edit() {
+        $args = array("HistID"=>1);
+        $this->assertisString($this->_execute($args));
+    }
 }

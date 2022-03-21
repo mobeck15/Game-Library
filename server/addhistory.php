@@ -675,7 +675,8 @@ if(isset($_GET['mode']) && $_GET['mode']=="steam") {
 		if($defaultData=="") {$defaultData="New Total";}
 		
 		if(isset($LastGameRecord['SteamID']) && $LastGameRecord['SteamID']>0) {
-			$resultarray=GetSchemaForGame($LastGameRecord['SteamID']);
+			$api = new SteamAPI($LastGameRecord['SteamID']);
+			$result = $api->GetSteamAPI("GetSchemaForGame");
 
 			$achtotal=0;
 			$achearned=0;
@@ -687,7 +688,7 @@ if(isset($_GET['mode']) && $_GET['mode']=="steam") {
 				}
 			}
 			
-			$resultarray2=GetUserStatsForGame($LastGameRecord['SteamID']);
+			$resultarray2 = $api->GetSteamAPI("GetUserStatsForGame");
 			//echo "---DEBUG---";
 			//var_dump($resultarray2);
 			//echo "---DEBUG---";
@@ -699,7 +700,7 @@ if(isset($_GET['mode']) && $_GET['mode']=="steam") {
 				}
 			}	
 
-			$resultarray3=GetOwnedGames();
+			$resultarray3 = $api->GetSteamAPI("GetOwnedGames");
 			
 			foreach($resultarray3['response']['games'] as $row){
 				if($row['appid']==$LastGameRecord['SteamID']){
@@ -852,14 +853,16 @@ if(isset($_GET['mode']) && $_GET['mode']=="steam") {
 				
 				if(isset($thisgamedata['SteamID']) && $thisgamedata['SteamID']>0) {
 					$achearned=0;
-					$resultarray=GetSchemaForGame($thisgamedata['SteamID']);
+					$api2 = new SteamAPI($thisgamedata['SteamID']);
+					$resultarray = $api2->GetSteamAPI("GetSchemaForGame");
+
 					//var_dump($resultarray['game']);
 					if(isset($resultarray['game']['availableGameStats'])) {
 						$acharray=regroupArray($resultarray['game']['availableGameStats']['achievements'],"name");
 					}
 					//var_dump($acharray);
 					
-					$userstatsarray=GetPlayerAchievements($thisgamedata['SteamID']);
+					$userstatsarray = $api2->GetSteamAPI("GetPlayerAchievements");
 					if(isset($userstatsarray['playerstats']['achievements'])){
 						$debug = "Last Record Time: " . $LastGameRecord['Timestamp']."<br>";
 						$debug .= "Current Record Time: ". $usedate." ".$usetime . "<br>";
