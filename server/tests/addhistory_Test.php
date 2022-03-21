@@ -35,7 +35,8 @@ class testaddhistory extends TestCase {
     }
 
 	/**
-	 * @small
+	 * @large
+	 * @group steamapi
 	 */
     public function test_addhistory_Edit() {
         $args = array("HistID"=>1);
