@@ -1,8 +1,13 @@
 <?php
 $GLOBALS['rootpath']=$GLOBALS['rootpath'] ?? ".";
 require_once $GLOBALS['rootpath']."/inc/php.ini.inc.php";
-require_once $GLOBALS['rootpath']."/inc/functions.inc.php";
+//require_once $GLOBALS['rootpath']."/inc/functions.inc.php";
 
+require_once $GLOBALS['rootpath']."/page/activity.class.php";
+$page = new activityPage();
+$page->outputHtml();
+
+/*
 $title="Activity";
 echo Get_Header($title);
 
@@ -76,4 +81,4 @@ foreach ($activity as $totals) { ?>
 </tbody>
 </table>
 
-<?php echo Get_Footer(); ?>
+<?php echo Get_Footer(); ?> */
