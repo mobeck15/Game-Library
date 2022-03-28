@@ -1,5 +1,5 @@
 <?php
-//declare(strict_types=1);
+declare(strict_types=1);
 require_once $GLOBALS['rootpath']."/page/_page.class.php";
 include_once $GLOBALS['rootpath']."/inc/template.inc.php";
 include_once $GLOBALS['rootpath']."/inc/utility.inc.php";
