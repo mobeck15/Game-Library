@@ -236,7 +236,7 @@ class dataAccess {
 		while($result = $query->fetch(PDO::FETCH_ASSOC)) {
 			if ($result->num_rows > 0){
 				$row = $result->fetch_assoc();
-				$query2=$this->getConnection()->prepare("SELECT count(*) as count FROM `gl_history` where `GameID`= ? AND `Data`='Start/Stop' order by `Timestamp` DESC";
+				$query2=$this->getConnection()->prepare("SELECT count(*) as count FROM `gl_history` where `GameID`= ? AND `Data`='Start/Stop' order by `Timestamp` DESC");
 				$query2->bindvalue(1,$row['GameID']);
 				$query2->execute();
 				$row2 = $result->fetch_assoc();

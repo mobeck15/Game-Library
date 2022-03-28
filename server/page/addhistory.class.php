@@ -80,7 +80,7 @@ class activityPage extends Page
 		return $this->body;
 	}
 	
-	public functino steamMode(){
+	public function steamMode(){
 		$hitory=getHistoryCalculations("",$conn);
 		$games=getCalculations("",$conn);
 		$steamindex=makeIndex($games,"SteamID");
