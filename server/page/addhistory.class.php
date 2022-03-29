@@ -115,8 +115,91 @@ class activityPage extends Page
 			</tr>
 			</thead>
 			<tbody>";
+			
+			$steamAPI= new SteamAPI();
+			$resultarray=$steamAPI->GetSteamAPI("GetRecentlyPlayedGames");
+			
+			$missing_count=0;
+			$updatelist=array();
+			
+			foreach($resultarray['response']['games'] as $row){
+				$rowclass="unknown";
+				if(isset($steamindex[$row['appid']])){
+					$thisgamedata=$games[$steamindex[$row['appid']]];
+				
+					if(isset($lastrecord[$thisgamedata['Game_ID']]['Time']) && round($lastrecord[$thisgamedata['Game_ID']]['Time']*60)==round($row['playtime_forever'])) {
+						$rowclass="greenRow";
+					} else {
+						$rowclass="redRow";
+						$updatelist[]=array("GameID"=>$thisgamedata['Game_ID'], "Time"=>$row['playtime_forever']);
+					}
+				} else {
+					$rowclass="redRow";
+				}
+				
+				$htmloutput .= "<tr class='".$rowclass."'>";
+				
+				if(isset($steamindex[$row['appid']])){
+					$htmloutput .="<td class='Text'>
+						<a href='addhistory.php?GameID=" . $thisgamedata['Game_ID'] . "' target='_blank'>+</a>
+						<a href='viewgame.php?id=" . $thisgamedata['Game_ID'] . "' target='_blank'>" . $thisgamedata['Title'] . "</a>
+						<span style='font-size: 70%;'>(<a href='http://store.steampowered.com/app/" . $row['appid'] ."' target='_blank'>Store</a>)</span>
+					</td>";
+				} else {
+					$resultarray2=$steamAPI->GetSteamAPI("GetUserStatsForGame");
+					$gamename="";
+					if(isset($resultarray2['playerstats']['gameName'])){
+						$gamename=$resultarray2['playerstats']['gameName'];
+					}
+					
+					$htmloutput .= "<td class='Text'>&nbsp;&nbsp;&nbsp;MISSING: <a href='http://store.steampowered.com/app/" . $row['appid'] . "' target='_blank'>" . $gamename . "</a></td>";
+					$missing_count++;
+					$missing_ids[]=$row['appid'];
+					unset($thisgamedata);
+				}
+				$htmloutput .= "<td class='numeric'>" . $row['playtime_forever'] . "</td>
+				<td class='numeric'>" . round($row['playtime_forever']/60,1) . "</td>";
+				if(isset($row['playtime_2weeks'])){
+					$htmloutput .= "<td class='numeric'>" . $row['playtime_2weeks'] . "</td>
+					<td class='numeric'>" . round($row['playtime_2weeks']/60,1) . "</td>";
+				} else {
+					$htmloutput .= "<td>&nbsp;</td>
+					<td>&nbsp;</td>";
+				}
+				if (isset($thisgamedata)){
+					$htmloutput .= "<td class='numeric'>" . timeduration($thisgamedata['GrandTotal'],"seconds") . "</td>";
+					if (isset($lastrecord[$thisgamedata['Game_ID']])) {
+						$htmloutput .= "<td class='numeric'>" . ($lastrecord[$thisgamedata['Game_ID']]['Time']*60) . "</td>
+						<td class='numeric'>" . round($lastrecord[$thisgamedata['Game_ID']]['Time'],1) . "</td>
+						<td class='numeric'>" . timeduration($lastrecord[$thisgamedata['Game_ID']]['Time'],"hours") . "</td>
+						<td class='Text'>" . $lastrecord[$thisgamedata['Game_ID']]['KeyWords'] . "</td>";
+					} else {
+						$htmloutput .= "<td>&nbsp;</td>";
+						$htmloutput .= "<td>&nbsp;</td>";
+						$htmloutput .= "<td>&nbsp;</td>";
+						$htmloutput .= "<td>&nbsp;</td>";
+					}
+				} else {
+					$htmloutput .= "<td>&nbsp;</td>";
+					$htmloutput .= "<td>&nbsp;</td>";
+					$htmloutput .= "<td>&nbsp;</td>";
+					$htmloutput .= "<td>&nbsp;</td>";
+					$htmloutput .= "<td>&nbsp;</td>";
+				}
+				
+				unset($thisgamedata);
+				$htmloutput .= "</tr>";
+			}
+		unset($resultarray);
+		$htmloutput .= "</tbody>";
+		$htmloutput .= "</table>";
+		
 		
 		return $htmloutput;
+	}
+	
+	public function UpdateList(){
+		
 	}
 	
 	public function captureInsert($datarow,$timestamp){
