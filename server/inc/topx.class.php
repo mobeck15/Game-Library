@@ -25,9 +25,15 @@ class topx
 	}
 	
 	public function displaytop($gameidList,$stat){
+		$metastat = $this->getMetaStat($stat,"");
 		$output ="<div style='float:right; margin: 5px;'>";
 		$output .="<table>";
-		$output .="<thead><tr><th>Rank</th><th>Title</th><th>".$this->getHeaderText($stat)."</th></tr></thead>";
+		$output .="<thead><tr><th>Rank</th><th>Title</th><th>".$this->getHeaderText($stat)."</th>";
+		if($metastat) {
+			$output .="<th>".$this->getHeaderText($metastat. "1")."</th>";
+			$output .="<th>".$this->getHeaderText($metastat. "2")."</th>";
+		}
+		$output .="</tr></thead>";
 		$output .="<tbody>";
 		foreach($gameidList as $key=> $gameid) {
 			$rank=count($gameidList) -$key;
@@ -35,6 +41,10 @@ class topx
 			$output .="<td>".$rank."</td>";
 			$output .="<td><a href='viewgame.php?id=".$gameid."'>".$this->calculations[$gameid]["Title"]."</a></td>";
 			$output .="<td>".$this->statformat($this->calculations[$gameid][$stat],$stat)."</td>";
+			if($metastat){
+				$output .="<td>". $this->statformat($this->calculations[$gameid][$metastat. "1"],$metastat. "1") ."</td>";
+				$output .="<td>". $this->statformat($this->calculations[$gameid][$metastat. "2"],$metastat. "2") ."</td>";
+			}
 			
 			$output .="</tr>";
 		}
@@ -250,6 +260,22 @@ class topx
 		return $list;
 	}
 	
+	private function getMetaStat($stat,$index=1){
+		$statlist["Launchperhr"]="LaunchHrsNext";
+		$statlist["MSRPperhr"]="MSRPHrsNext";
+		$statlist["Currentperhr"]="CurrentHrsNext";
+		$statlist["Historicperhr"]="HistoricLess";
+		$statlist["Paidperhr"]="PaidHrsNext";
+		$statlist["Saleperhr"]="SaleHrsNext";
+		$statlist["Altperhr"]="AltHrsNext";
+		
+		if(isset($statlist[$stat])){
+			return $statlist[$stat] . $index;
+		} else {
+			return false;
+		}
+	}
+
 	private function getHeaderText($stat){
 		$header_Index=array(
 			"ParentGame" => "Parent Game",
