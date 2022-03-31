@@ -84,14 +84,12 @@ class dataAccess {
 	
 	public function getMaxHistoryId() {
 		$maxID=1;
-		$query=$this->getConnection()->prepare("SELECT * FROM `gl_history` order by `HistoryID` DESC Limit 1");
+		$query=$this->getConnection()->prepare("SELECT * FROM `gl_history` order by `HistoryID` DESC Limit 2");
 		$query->execute();
 		
 		while($result = $query->fetch(PDO::FETCH_ASSOC)) {
-			if ($result->num_rows > 0){
-				$row = $result->fetch_assoc();
-				$maxID=$row['HistoryID']+1;
-			}
+			//var_dump($result);
+			$maxID=$result['HistoryID']+1;
 		}
 		
 		return $maxID;
@@ -109,7 +107,7 @@ class dataAccess {
 		return $allrows;
 	}
 
-	public function insertHistory($datarow,$timestamp){
+	public function insertHistory($datarow,$timestamp,$maxID){
 		$sql  = "INSERT INTO `gl_history` (";
 		$sql .= "`HistoryID`, ";
 		$sql .= "`Timestamp`, ";

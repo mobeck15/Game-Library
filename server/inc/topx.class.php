@@ -47,7 +47,7 @@ class topx
 	private function statformat($value,$statname){
 		$currency=["Launchperhr","MSRPperhr", "Currentperhr", "Historicperhr", "Paidperhr", "Saleperhr", "Altperhr", "LaunchLess1", "MSRPLess1", "CurrentLess1", "HistoricLess1", "PaidLess1", "SaleLess1", "AltLess1"];
 		
-		$duration_hours=["TimeLeftToBeat"];
+		$duration_hours=["TimeLeftToBeat", "LaunchLess2", "HistoricLess2", "MSRPLess2", "AltLess2", "SaleLess2", "PaidLess2", "MSRPHrsNext1", "LaunchHrsNext1", "PaidHrsNext1", "HistoricHrsNext1", "AltHrsNext1", "SaleHrsNext1", "MSRPHrsNext2", "LaunchHrsNext2", "PaidHrsNext2", "HistoricHrsNext2", "AltHrsNext2", "SaleHrsNext2"];
 		$duration_seconds=["GrandTotal"];
 		
 		$output=$value;
@@ -177,16 +177,6 @@ class topx
 		return $list;
 	}
 	
-	/*
-	public function gettopx2($stat,$metastat){
-		$calculations=$this->sortbystat($stat,SORT_ASC);
-		
-		
-		$filter=$this->parseFilter($this->defaultFilterString($stat));
-		
-	}
-	*/
-	
 	private function defaultFilterString($stat){
 		switch($stat){
 			case "GrandTotal":
@@ -211,48 +201,51 @@ class topx
 
 	}
 	
-	public function statlist(){
-		$list = array(
-			"LastPlayORPurchase",
-			"SaleLess1",
-			"Saleperhr",
-			"AltLess1",
-			"Altperhr",
-			"Launchperhr",
-			"MSRPperhr",
-			"Historicperhr",
-			"Paidperhr",
-			"LaunchLess1",
-			"MSRPLess1",
-			//"CurrentLess1",
-			"HistoricLess1",
-			"PaidLess1",
-			"LaunchLess2",
-			"MSRPLess2",
-			//"CurrentLess2",
-			"HistoricLess2",
-			"PaidLess2",
-			"SaleLess2",
-			"AltLess2",
+	public function statlist($filter="all"){
+		$list[] = "LastPlayORPurchase";
+		$list[] = "SaleLess1";
+		$list[] = "Saleperhr";
+		$list[] = "AltLess1";
+		$list[] = "Altperhr";
+		$list[] = "Launchperhr";
+		$list[] = "MSRPperhr";
+		$list[] = "Historicperhr";
+		$list[] = "Paidperhr";
+		$list[] = "LaunchLess1";
+		$list[] = "MSRPLess1";
+		//$list[] = "CurrentLess1";
+		$list[] = "HistoricLess1";
+		$list[] = "PaidLess1";
+		$list[] = "LaunchLess2";
+		$list[] = "MSRPLess2";
+		//$list[] = "CurrentLess2";
+		$list[] = "HistoricLess2";
+		$list[] = "PaidLess2";
+		$list[] = "SaleLess2";
+		$list[] = "AltLess2";
 
-			"LaunchHrsNext1",
-			"MSRPHrsNext1",
-			//"CurrentHrsNext1",
-			"HistoricHrsNext1",
-			"PaidHrsNext1",
-			"SaleHrsNext1",
-			"AltHrsNext1",
-
-			"LaunchHrsNext2",
-			"MSRPHrsNext2",
-			//"CurrentHrsNext2",
-			"HistoricHrsNext2",
-			"PaidHrsNext2",
-			"SaleHrsNext2",
-			"AltHrsNext2",
-			"TimeLeftToBeat",
-			"GrandTotal",
-		);
+		if($filter=="all") {
+			$list[] = "LaunchHrsNext1";
+			$list[] = "MSRPHrsNext1";
+			//$list[] = "CurrentHrsNext1";
+			$list[] = "HistoricHrsNext1";
+			$list[] = "PaidHrsNext1";
+			$list[] = "SaleHrsNext1";
+			$list[] = "AltHrsNext1";
+		}
+		
+		if($filter=="all") {
+			$list[] = "LaunchHrsNext2";
+			$list[] = "MSRPHrsNext2";
+			//$list[] = "CurrentHrsNext2";
+			$list[] = "HistoricHrsNext2";
+			$list[] = "PaidHrsNext2";
+			$list[] = "SaleHrsNext2";
+			$list[] = "AltHrsNext2";
+		}
+		
+		$list[] = "TimeLeftToBeat";
+		$list[] = "GrandTotal";
 		
 		return $list;
 	}

@@ -131,5 +131,17 @@ final class dataAccess_Test extends testprivate
 		$this->assertisArray($allrows);
 		$this->assertisArray($allrows[0]);
 		$this->assertEquals("Not Owned",$allrows[0]["Title"]);
+	}
+	
+	/**
+	 * @small
+	 * @covers dataAccess::getMaxHistoryId
+	 * @uses dataAccess
+	 */
+	public function test_getMaxHistoryId() {
+		$dataobject= new dataAccess();
+		$maxID=$dataobject->getMaxHistoryId();
+		$this->assertIsNumeric($maxID);
 	}	
+
 }

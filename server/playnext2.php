@@ -17,7 +17,8 @@ $topxobj= new topx($calculations);
 
 $totalranks=array();
 $output2="";
-foreach ($topxobj->statlist() as $stat) {
+$topxobj->setfilter("Playable,eq,0,Status,ne,Active,Review,eq,1,Review,eq,2");
+foreach ($topxobj->statlist("main") as $stat) {
 	$list = $topxobj->gettopx($stat);
 	foreach ($list as $key => $item){
 		//$totalranks[$item]["ranks"] = ($totalranks[$item]["ranks"] ?? 0) + count($list)-$key;
