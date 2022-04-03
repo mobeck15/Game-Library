@@ -183,8 +183,13 @@ class dataAccess {
 		}
 	}
 	
-	public function insertlog($query) {
-		$file = 'insertlog'.date("Y").'.txt';
+	public function logFileName(){
+		return $GLOBALS['rootpath'].'\insertlog'.date("Y").'.txt';
+	}
+	
+	public function insertlog($query,$file=null) {
+		$file = $file ?? $this->logFileName();
+		//var_dump($file);
 		// Write the contents to the file, 
 		// using the FILE_APPEND flag to append the content to the end of the file
 		// and the LOCK_EX flag to prevent anyone else writing to the file at the same time
@@ -193,60 +198,69 @@ class dataAccess {
 	
 	public function updateHistory($insertrow,$timestamp){
 		$sql ="UPDATE `gl_history` ";
-		$sql.="SET `Timestamp` = '" . date("Y-m-d H:i:s",strtotime($conn->real_escape_string($timestamp))) ."', "; //Timestamp  2015/09/18 22:08:55
-		$sql.=" `Game` = '".          $conn->real_escape_string($insertrow['Title'])        . "', "; //Game (Name)
-		$sql.=" `System` = '" .       $conn->real_escape_string($insertrow['System'])       . "', "; //System
-		$sql.=" `Data` = '" .         $conn->real_escape_string($insertrow['Data'])         . "', "; //Data
-		$sql.=" `Time` = '" .         $conn->real_escape_string($insertrow['hours'])        . "', "; //Time
-		$sql.=" `Notes` = '" .        $conn->real_escape_string($insertrow['notes'])        . "', "; //Notes
-		$sql.=" `RowType` = '" .      $conn->real_escape_string($insertrow['source'])       . "', "; //Source / RowType
-		$sql.=" `Achievements` = '" . $conn->real_escape_string($insertrow['achievements']) . "', "; //Achivements
-		$sql.=" `Status` = '" .       $conn->real_escape_string($insertrow['status'])       . "', "; //Status
-		$sql.=" `Review` = '" .       $conn->real_escape_string($insertrow['review'])       . "', "; //Review
-		$sql.=" `BaseGame` = '" .      (isset($insertrow['basegame']) && $insertrow['basegame'] == "on" ? 1 : 0)        . "', "; //BaseGame
-		$sql.=" `kwMinutes` = '" .     (isset($insertrow['minutes']) && $insertrow['minutes'] == "on" ? 1 : 0)          . "', "; //Keyword Minutes
-		$sql.=" `kwIdle` = '" .        (isset($insertrow['idle']) && $insertrow['idle'] == "on" ? 1 : 0)                . "', "; //Keyword Idle
-		$sql.=" `kwCardFarming` = '" . (isset($insertrow['cardfarming']) && $insertrow['cardfarming'] == "on" ? 1 : 0)  . "', "; //Keyword Card Farming
-		$sql.=" `kwCheating` = '" .    (isset($insertrow['cheating']) && $insertrow['cheating'] == "on" ? 1 : 0)        . "', "; //Keyword Cheating
-		$sql.=" `kwBeatGame` = '" .    (isset($insertrow['beatgame']) && $insertrow['beatgame'] == "on" ? 1 : 0)        . "', "; //Keyword Beat Game
-		$sql.=" `kwShare` = '" .       (isset($insertrow['share']) && $insertrow['share'] == "on" ? 1 : 0)              . "', "; //Keyword Share
-		$sql.=" `GameID` = '".        $conn->real_escape_string($insertrow['ProductID'])    ."'"; //GameID
-		$sql.=" WHERE `gl_history`.`HistoryID` = ".$conn->real_escape_string($insertrow['id']);
+		$sql.="SET `Timestamp` = :date, "; //Timestamp  2015/09/18 22:08:55
+		$sql.=" `Game` = :title, "; //Game (Name)
+		$sql.=" `System` = :system, "; //System
+		$sql.=" `Data` = :data, "; //Data
+		$sql.=" `Time` = :hours, "; //Time
+		$sql.=" `Notes` = :notes, "; //Notes
+		$sql.=" `RowType` = :source, "; //Source / RowType
+		$sql.=" `Achievements` = :achievements, "; //Achivements
+		$sql.=" `Status` = :status, "; //Status
+		$sql.=" `Review` = :review, "; //Review
+		$sql.=" `BaseGame` = :basegame, "; //BaseGame
+		$sql.=" `kwMinutes` = :minutes, "; //Keyword Minutes
+		$sql.=" `kwIdle` = :idle, "; //Keyword Idle
+		$sql.=" `kwCardFarming` = :cardfarming, "; //Keyword Card Farming
+		$sql.=" `kwCheating` = :cheating, "; //Keyword Cheating
+		$sql.=" `kwBeatGame` = :beatgame, "; //Keyword Beat Game
+		$sql.=" `kwShare` = :share, "; //Keyword Share
+		$sql.=" `GameID` = :gameid"; //GameID
+		$sql.=" WHERE `gl_history`.`HistoryID` = :insertid";
 		
 		$query = $this->getConnection()->prepare($sql);
 		
-		//$query->bindvalue(1,$transactionid);
-		//$query->bindvalue(2,$transactionid);
+		$query->bindvalue(':date',date("Y-m-d H:i:s",$timestamp ));
+		$query->bindvalue(':title',$insertrow['Title']);
+		$query->bindvalue(':system',$insertrow['System']);
+		$query->bindvalue(':data',$insertrow['Data']);
+		$query->bindvalue(':hours',$insertrow['hours']);
+		$query->bindvalue(':notes',$insertrow['notes']);
+		$query->bindvalue(':source',$insertrow['source']);
+		$query->bindvalue(':achievements',$insertrow['achievements']);
+		$query->bindvalue(':status',$insertrow['status']);
+		$query->bindvalue(':review',$insertrow['review']);
+		$query->bindvalue(':basegame',isset($insertrow['basegame']) && $insertrow['basegame'] == "on" ? 1 : 0);
+		$query->bindvalue(':minutes',isset($insertrow['minutes']) && $insertrow['minutes'] == "on" ? 1 : 0);
+		$query->bindvalue(':idle',isset($insertrow['idle']) && $insertrow['idle'] == "on" ? 1 : 0);
+		$query->bindvalue(':cardfarming',isset($insertrow['cardfarming']) && $insertrow['cardfarming'] == "on" ? 1 : 0);
+		$query->bindvalue(':cheating',isset($insertrow['cheating']) && $insertrow['cheating'] == "on" ? 1 : 0);
+		$query->bindvalue(':beatgame',isset($insertrow['beatgame']) && $insertrow['beatgame'] == "on" ? 1 : 0);
+		$query->bindvalue(':share',isset($insertrow['share']) && $insertrow['share'] == "on" ? 1 : 0);
+		$query->bindvalue(':gameid',$insertrow['ProductID']);
+		$query->bindvalue(':insertid',$insertrow['id']);
 		
 		if ($query->execute() === TRUE) {
-			echo "Record updated successfully<br>";
-			$this->insertlog($sql);
-		} else {
-			trigger_error( "Error Running Query: " . $sql ,E_USER_NOTICE   );
+			//return "Record updated successfully<br>";
+			$this->insertlog("Update: " . date("Y-m-d H:i:s",$timestamp ) . " " . print_r($insertrow,true));
 		}
 	}
 
-	public function isGameStarted() {
-		$maxID=1;
+	public function getLatestHistory(){
 		$query=$this->getConnection()->prepare("SELECT * FROM `gl_history` order by `Timestamp` DESC Limit 1");
 		$query->execute();
-		
-		while($result = $query->fetch(PDO::FETCH_ASSOC)) {
-			if ($result->num_rows > 0){
-				$row = $result->fetch_assoc();
-				$query2=$this->getConnection()->prepare("SELECT count(*) as count FROM `gl_history` where `GameID`= ? AND `Data`='Start/Stop' order by `Timestamp` DESC");
-				$query2->bindvalue(1,$row['GameID']);
-				$query2->execute();
-				$row2 = $result->fetch_assoc();
-				if($row2['count'] % 2 == 0) {
-					//$GameStarted=false;
-					return false;
-				} else {
-					//$_GET['GameID']=$row['GameID'];
-					//$GameStarted=true;
-					return $row['GameID'];
-				}
-			}
+		return $query->fetch(PDO::FETCH_ASSOC);
+	}
+	
+	public function isGameStarted($historyarray) {
+		if($historyarray["Data"]=='Start/Stop'){
+			return $historyarray['GameID'];
+		} else {
+			return false;
 		}
+	}
+	
+	public function getStartedGame(){
+		return $this->isGameStarted($this->getLatestHistory());
 	}
 }

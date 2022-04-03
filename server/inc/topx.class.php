@@ -25,13 +25,12 @@ class topx
 	}
 	
 	public function displaytop($gameidList,$stat){
-		$metastat = $this->getMetaStat($stat,"");
+		$metastat = $this->getMetaStat($stat);
 		$output ="<div style='float:right; margin: 5px;'>";
 		$output .="<table>";
 		$output .="<thead><tr><th>Rank</th><th>Title</th><th>".$this->getHeaderText($stat)."</th>";
-		if($metastat) {
-			$output .="<th>".$this->getHeaderText($metastat. "1")."</th>";
-			$output .="<th>".$this->getHeaderText($metastat. "2")."</th>";
+		foreach($metastat as $meta){
+			$output .="<th>".$this->getHeaderText($meta)."</th>";
 		}
 		$output .="</tr></thead>";
 		$output .="<tbody>";
@@ -41,9 +40,8 @@ class topx
 			$output .="<td>".$rank."</td>";
 			$output .="<td><a href='viewgame.php?id=".$gameid."'>".$this->calculations[$gameid]["Title"]."</a></td>";
 			$output .="<td>".$this->statformat($this->calculations[$gameid][$stat],$stat)."</td>";
-			if($metastat){
-				$output .="<td>". $this->statformat($this->calculations[$gameid][$metastat. "1"],$metastat. "1") ."</td>";
-				$output .="<td>". $this->statformat($this->calculations[$gameid][$metastat. "2"],$metastat. "2") ."</td>";
+			foreach($metastat as $meta){
+				$output .="<td>". $this->statformat($this->calculations[$gameid][$meta],$meta) ."</td>";
 			}
 			
 			$output .="</tr>";
@@ -260,19 +258,19 @@ class topx
 		return $list;
 	}
 	
-	private function getMetaStat($stat,$index=1){
-		$statlist["Launchperhr"]="LaunchHrsNext";
-		$statlist["MSRPperhr"]="MSRPHrsNext";
-		$statlist["Currentperhr"]="CurrentHrsNext";
-		$statlist["Historicperhr"]="HistoricLess";
-		$statlist["Paidperhr"]="PaidHrsNext";
-		$statlist["Saleperhr"]="SaleHrsNext";
-		$statlist["Altperhr"]="AltHrsNext";
+	private function getMetaStat($stat){
+		$statlist["Launchperhr"]=["LaunchHrsNext1","LaunchHrsNext2"];
+		$statlist["MSRPperhr"]=["MSRPHrsNext1","MSRPHrsNext2"];
+		$statlist["Currentperhr"]=["CurrentHrsNext1","CurrentHrsNext2"];
+		$statlist["Historicperhr"]=["HistoricLess1","HistoricLess2"];
+		$statlist["Paidperhr"]=["PaidHrsNext1","PaidHrsNext2"];
+		$statlist["Saleperhr"]=["SaleHrsNext1","SaleHrsNext2"];
+		$statlist["Altperhr"]=["AltHrsNext1","AltHrsNext2"];
 		
 		if(isset($statlist[$stat])){
-			return $statlist[$stat] . $index;
+			return $statlist[$stat];
 		} else {
-			return false;
+			return [];
 		}
 	}
 

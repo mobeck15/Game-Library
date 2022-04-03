@@ -26,20 +26,19 @@ final class topx_Test extends testprivate
 	/**
 	 * @small
 	 * @covers topx::displaytop
-	 * @uses topx::__construct
-	 * @uses topx::getHeaderText
-	 * @uses topx::statformat
+	 * @uses topx
+	 * @uses timeduration
 	 */
 	public function test_displaytop() {
 		$calculations=array(
-			1=>array("Status"=>"Active","LaunchDate"=>1,"Title"=>"Game1"),
-			2=>array("Status"=>"Active","LaunchDate"=>2,"Title"=>"Game2"),
+			1=>array("Status"=>"Active","Launchperhr"=>1,"Title"=>"Game1","LaunchHrsNext1"=>4,"LaunchHrsNext2"=>9),
+			2=>array("Status"=>"Active","Launchperhr"=>2,"Title"=>"Game2","LaunchHrsNext1"=>5,"LaunchHrsNext2"=>8),
 		);
 		$topxObject=new topx($calculations);
 		
 		$gameids=array(1,2);
 		
-		$this->assertisString($topxObject->displaytop($gameids,"LaunchDate"));
+		$this->assertisString($topxObject->displaytop($gameids,"Launchperhr"));
 	}
 
 	/**
@@ -311,7 +310,7 @@ final class topx_Test extends testprivate
 	/**
 	 * @small
 	 * @covers topx::parseFilter
-	 * @uses topx::__construct
+	 * @uses topx
 	 */
 	public function test_parseFilter() {
 		$filterstring="Playable,eq,0,Status,eq,Never,Status,eq,Done,Status,eq,Broken,Review,eq,1,Review,eq,2";
@@ -331,5 +330,21 @@ final class topx_Test extends testprivate
 		//$result=$topxObject->parseFilter($filterstring);
 		$this->assertisArray($result);
 		$this->assertEquals($filterarray,$result);
+	}
+	
+	/**
+	 * @small
+	 * @covers topx::getMetaStat
+	 * @uses topx
+	 * @testWith ["Launchperhr"]
+	 *           ["ParentGame"]
+	 */
+	public function test_getMetaStat_stat($testStat) {
+		$topxObject=new topx();
+
+		$method = $this->getPrivateMethod( 'topx', 'getMetaStat' );
+		$result = $method->invokeArgs($topxObject, array( $testStat ) );
+
+		$this->assertisArray($result);
 	}
 }
