@@ -6,26 +6,23 @@ require_once $GLOBALS['rootpath']."/page/addhistory.class.php";
 
 /**
  * @group page
- * @coversNothing
  */
 class addhistory_Test extends TestCase {
 	/**
 	 * @small
-	 * @covers addhistoryPage::outputHtml
-	 * @uses Get_Footer
-	 * @uses Get_Header
-	 * @uses addhistoryPage
-	 * @uses boolText
-	 * @uses dataAccess
-	 * @uses get_db_connection
-	 * @uses get_navmenu
-	 * @uses read_memory_usage
+	 * @covers addhistoryPage::buildHtmlBody
+	 * @covers addhistoryPage::__construct
+	 * @covers Get_Header
+	 * @covers boolText
+	 * @covers dataAccess
+	 * @covers get_db_connection
+	 * @covers get_navmenu
 	 */
 	public function test_outputHtml() {
 		$_SERVER['QUERY_STRING']="";
 		$page = new addhistoryPage();
 		ob_start();
-		$page->outputHtml();
+		$page->buildHtmlBody();
         $result = ob_get_clean();
 		
 		$this->assertisString($result);
