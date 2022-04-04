@@ -274,7 +274,7 @@ class dataAccess {
 	}
 
 	public function getLatestHistory(){
-		$query=$this->getConnection()->prepare("SELECT * FROM `gl_history` order by `Timestamp` DESC Limit 1");
+		$query=$this->getConnection()->prepare("SELECT * FROM `gl_history` order by `Timestamp` DESC, `HistoryID` DESC Limit 1");
 		$query->execute();
 		return $query->fetch(PDO::FETCH_ASSOC);
 	}

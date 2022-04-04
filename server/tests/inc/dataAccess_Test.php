@@ -329,7 +329,7 @@ final class dataAccess_Test extends testprivate
 			$dataobject->insertHistory($datarow,$timestamp,$maxID);
 			$history2 = $dataobject->getLatestHistory();
 			
-			$this->assertEquals($insertrow2["Title"],$history2["Game"]);
+			$this->assertEquals($insertrow3["Title"],$history2["Game"]);
 		} finally {
 			$CleanupQuery=$dataobject->getConnection()->prepare('DELETE FROM `gl_history` WHERE `gl_history`.`RowType` = "PHPUNIT Test"');
 			$CleanupQuery->execute();
@@ -381,7 +381,7 @@ final class dataAccess_Test extends testprivate
 			$dataobject->insertHistory($datarow,$timestamp,$maxID);
 			$history2 = $dataobject->getLatestHistory();
 			
-			$this->assertEquals($insertrow2["Title"],$history2["Game"]);
+			$this->assertEquals($insertrow3["Title"],$history2["Game"]);
 		} finally {
 			$CleanupQuery=$dataobject->getConnection()->prepare('DELETE FROM `gl_history` WHERE `gl_history`.`RowType` = "PHPUNIT Test"');
 			$CleanupQuery->execute();
