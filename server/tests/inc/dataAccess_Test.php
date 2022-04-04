@@ -285,4 +285,106 @@ final class dataAccess_Test extends testprivate
 		$this->assertEquals($history,$history2);
 	}
 	
+	/**
+	 * @small
+	 * @covers dataAccess::insertHistory
+	 * @uses dataAccess
+	 */
+	public function test_insertHistory_timeprovided() {
+		$dataobject= new dataAccess();
+		try{
+			$history = $dataobject->getLatestHistory();
+			$this->assertNotEquals("PHPUNIT Test",$history["RowType"]);
+			$maxID=$dataobject->getMaxHistoryId();
+			
+			$insertrow['Title']="Test Entry";
+			$insertrow['System']=$history["System"];
+			$insertrow['Data']=$history["Data"];
+			$insertrow['hours']=$history["Time"];
+			$insertrow['notes']="Insert History Test";
+			$insertrow['source']="PHPUNIT Test";
+			$insertrow['achievements']=$history["Achievements"];
+			$insertrow['status']=$history["Status"];
+			$insertrow['review']=$history["Review"];
+			$insertrow['basegame']=$history["BaseGame"] == "1" ? "on" : "";
+			$insertrow['minutes']=$history["kwMinutes"] == "1" ? "on" : "";
+			$insertrow['idle']=$history["kwIdle"] == "1" ? "on" : "";
+			$insertrow['cardfarming']=$history["kwCardFarming"] == "1" ? "on" : "";
+			$insertrow['cheating']=$history["kwCheating"] == "1" ? "on" : "";
+			$insertrow['beatgame']=$history["kwBeatGame"] == "1" ? "on" : "";
+			$insertrow['share']=$history["kwShare"] == "1" ? "on" : "";
+			$insertrow['ProductID']=$history["GameID"];
+			$insertrow['update']="on";
+			$timestamp=strtotime(date("Y-m-d H:i:s"));
+			
+			$insertrow2=$insertrow;
+			$insertrow2["Title"] .= " Test2";
+
+			$insertrow3=$insertrow;
+			$insertrow3["Title"] .= " Test3";
+			$insertrow3["id"] = $maxID+3;
+
+			$datarow=[$insertrow,$insertrow2,$insertrow3];
+			//var_dump([$insertrow,$insertrow2]);
+			$dataobject->insertHistory($datarow,$timestamp,$maxID);
+			$history2 = $dataobject->getLatestHistory();
+			
+			$this->assertEquals($insertrow2["Title"],$history2["Game"]);
+		} finally {
+			$CleanupQuery=$dataobject->getConnection()->prepare('DELETE FROM `gl_history` WHERE `gl_history`.`RowType` = "PHPUNIT Test"');
+			$CleanupQuery->execute();
+		}
+	}
+	
+	/**
+	 * @small
+	 * @covers dataAccess::insertHistory
+	 * @uses dataAccess
+	 */
+	public function test_insertHistory_current() {
+		$dataobject= new dataAccess();
+		$_POST['currenttime']="on";
+		try{
+			$history = $dataobject->getLatestHistory();
+			$this->assertNotEquals("PHPUNIT Test",$history["RowType"]);
+			$maxID=$dataobject->getMaxHistoryId();
+			
+			$insertrow['Title']="Test Entry";
+			$insertrow['System']=$history["System"];
+			$insertrow['Data']=$history["Data"];
+			$insertrow['hours']=$history["Time"];
+			$insertrow['notes']="Insert History Test";
+			$insertrow['source']="PHPUNIT Test";
+			$insertrow['achievements']=$history["Achievements"];
+			$insertrow['status']=$history["Status"];
+			$insertrow['review']=$history["Review"];
+			$insertrow['basegame']=$history["BaseGame"] == "1" ? "on" : "";
+			$insertrow['minutes']=$history["kwMinutes"] == "1" ? "on" : "";
+			$insertrow['idle']=$history["kwIdle"] == "1" ? "on" : "";
+			$insertrow['cardfarming']=$history["kwCardFarming"] == "1" ? "on" : "";
+			$insertrow['cheating']=$history["kwCheating"] == "1" ? "on" : "";
+			$insertrow['beatgame']=$history["kwBeatGame"] == "1" ? "on" : "";
+			$insertrow['share']=$history["kwShare"] == "1" ? "on" : "";
+			$insertrow['ProductID']=$history["GameID"];
+			$insertrow['update']="on";
+			$timestamp=strtotime(date("Y-m-d H:i:s"));
+			
+			$insertrow2=$insertrow;
+			$insertrow2["Title"] .= " Test2";
+
+			$insertrow3=$insertrow;
+			$insertrow3["Title"] .= " Test3";
+			$insertrow3["id"] = $maxID+3;
+
+			$datarow=[$insertrow,$insertrow2,$insertrow3];
+			//var_dump([$insertrow,$insertrow2]);
+			$dataobject->insertHistory($datarow,$timestamp,$maxID);
+			$history2 = $dataobject->getLatestHistory();
+			
+			$this->assertEquals($insertrow2["Title"],$history2["Game"]);
+		} finally {
+			$CleanupQuery=$dataobject->getConnection()->prepare('DELETE FROM `gl_history` WHERE `gl_history`.`RowType` = "PHPUNIT Test"');
+			$CleanupQuery->execute();
+		}
+	}
 }

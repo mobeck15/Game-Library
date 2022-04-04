@@ -84,7 +84,7 @@ class dataAccess {
 	
 	public function getMaxHistoryId() {
 		$maxID=1;
-		$query=$this->getConnection()->prepare("SELECT * FROM `gl_history` order by `HistoryID` DESC Limit 2");
+		$query=$this->getConnection()->prepare("SELECT * FROM `gl_history` order by `HistoryID` DESC Limit 1");
 		$query->execute();
 		
 		while($result = $query->fetch(PDO::FETCH_ASSOC)) {
@@ -132,54 +132,81 @@ class dataAccess {
 		
 		$sql2 = "";
 		//loop through all data rows
+		$loopcount=0;
 		foreach($datarow as $insertrow){
 			//Check if the indicator is on for update that row.
 			if(isset($insertrow['update']) && $insertrow['update']=="on"){
+				$loopcount++;
 				//print_r($insertrow);
-				if($sql2<>"") {$sql2.=",";}
+				if($sql2<>"") {
+					$sql2.=",";
+				}
 				
+				$sql2.="(:insertid$loopcount, "; // HistoryID
+				$sql2.=":date$loopcount, "; //Time
+				
+				$sql2.=":title$loopcount, "; //Game (Name)
+				$sql2.=":system$loopcount, "; //System
+				$sql2.=":data$loopcount, "; //Data
+				$sql2.=":hours$loopcount, "; //Time
+				$sql2.=":notes$loopcount, "; //Notes
+				$sql2.=":source$loopcount, "; //Source / RowType
+				$sql2.=":achievements$loopcount, "; //Achivements
+				$sql2.=":status$loopcount, "; //Status
+				$sql2.=":review$loopcount, "; //Review
+				$sql2.=":basegame$loopcount, "; //BaseGame
+				$sql2.=":minutes$loopcount, "; //Keyword Minutes
+				$sql2.=":idle$loopcount, "; //Keyword Idle
+				$sql2.=":cardfarming$loopcount, "; //Keyword Card Farming
+				$sql2.=":cheating$loopcount, "; //Keyword Cheating
+				$sql2.=":beatgame$loopcount, "; //Keyword Beat Game
+				$sql2.=":share$loopcount, "; //Keyword Share
+				$sql2.=":gameid$loopcount)"; //GameID			
+			}
+		}
+		//var_dump($sql2);
+
+		//var_dump($sql.$sql2);
+		$query = $this->getConnection()->prepare($sql.$sql2);
+		
+		$loopcount=0;
+		foreach($datarow as $insertrow){
+			if(isset($insertrow['update']) && $insertrow['update']=="on"){
+				$loopcount++;
 				if(isset($insertrow['id'])) {
-					$sql2.="('" . $conn->real_escape_string($insertrow['id']) . "', "; // HistoryID
+					$query->bindvalue(":insertid$loopcount",$insertrow['id']);
 				} else {
-					$sql2.="('" . ($maxID) . "', "; // HistoryID
+					$query->bindvalue(":insertid$loopcount",$maxID);
 					$maxID++;
 				}
-				
 				if( isset($_POST['currenttime']) && $_POST['currenttime'] == "on") {
-					$sql2.="'" . date("Y-m-d H:i:s") . "', "; //Time
+					$query->bindvalue(":date$loopcount",date("Y-m-d H:i:s"));
 				} else {
-					$sql2.="'" . date("Y-m-d H:i:s",strtotime($conn->real_escape_string($timestamp))) ."', "; //Timestamp  2015/09/18 22:08:55
+					$query->bindvalue(":date$loopcount",date("Y-m-d H:i:s",$timestamp));
 				}
-				$sql2.="'".$conn->real_escape_string($insertrow['Title'])."', "; //Game (Name)
-				$sql2.="'" . $conn->real_escape_string($insertrow['System']) . "', "; //System
-				$sql2.="'" . $conn->real_escape_string($insertrow['Data']) . "', "; //Data
-				$sql2.="'" . $conn->real_escape_string($insertrow['hours']) . "', "; //Time
-				$sql2.="'" . $conn->real_escape_string($insertrow['notes']) . "', "; //Notes
-				$sql2.="'" . $conn->real_escape_string($insertrow['source']) . "', "; //Source / RowType
-				$sql2.="'" . $conn->real_escape_string($insertrow['achievements']) . "', "; //Achivements
-				$sql2.="'" . $conn->real_escape_string($insertrow['status']) . "', "; //Status
-				$sql2.="'" . $conn->real_escape_string($insertrow['review']) . "', "; //Review
-				$sql2.="'" . (isset($insertrow['basegame']) && $insertrow['basegame'] == "on" ? 1 : 0)  . "', "; //BaseGame
-				$sql2.="'" . (isset($insertrow['minutes']) && $insertrow['minutes'] == "on" ? 1 : 0)  . "', "; //Keyword Minutes
-				$sql2.="'" . (isset($insertrow['idle']) && $insertrow['idle'] == "on" ? 1 : 0)  . "', "; //Keyword Idle
-				$sql2.="'" . (isset($insertrow['cardfarming']) && $insertrow['cardfarming'] == "on" ? 1 : 0)  . "', "; //Keyword Card Farming
-				$sql2.="'" . (isset($insertrow['cheating']) && $insertrow['cheating'] == "on" ? 1 : 0)  . "', "; //Keyword Cheating
-				$sql2.="'" . (isset($insertrow['beatgame']) && $insertrow['beatgame'] == "on" ? 1 : 0)  . "', "; //Keyword Beat Game
-				$sql2.="'" . (isset($insertrow['share']) && $insertrow['share'] == "on" ? 1 : 0)  . "', "; //Keyword Share
-				$sql2.="'". $conn->real_escape_string($insertrow['ProductID']) ."')"; //GameID			
+				$query->bindvalue(":title$loopcount",$insertrow['Title']);
+				$query->bindvalue(":system$loopcount",$insertrow['System']);
+				$query->bindvalue(":data$loopcount",$insertrow['Data']);
+				$query->bindvalue(":hours$loopcount",$insertrow['hours']);
+				$query->bindvalue(":notes$loopcount",$insertrow['notes']);
+				$query->bindvalue(":source$loopcount",$insertrow['source']);
+				$query->bindvalue(":achievements$loopcount",$insertrow['achievements']);
+				$query->bindvalue(":status$loopcount",$insertrow['status']);
+				$query->bindvalue(":review$loopcount",$insertrow['review']);
+				$query->bindvalue(":basegame$loopcount",isset($insertrow['basegame']) && $insertrow['basegame'] == "on" ? 1 : 0);
+				$query->bindvalue(":minutes$loopcount",isset($insertrow['minutes']) && $insertrow['minutes'] == "on" ? 1 : 0);
+				$query->bindvalue(":idle$loopcount",isset($insertrow['idle']) && $insertrow['idle'] == "on" ? 1 : 0);
+				$query->bindvalue(":cardfarming$loopcount",isset($insertrow['cardfarming']) && $insertrow['cardfarming'] == "on" ? 1 : 0);
+				$query->bindvalue(":cheating$loopcount",isset($insertrow['cheating']) && $insertrow['cheating'] == "on" ? 1 : 0);
+				$query->bindvalue(":beatgame$loopcount",isset($insertrow['beatgame']) && $insertrow['beatgame'] == "on" ? 1 : 0);
+				$query->bindvalue(":share$loopcount",isset($insertrow['share']) && $insertrow['share'] == "on" ? 1 : 0);
+				$query->bindvalue(":gameid$loopcount",$insertrow['ProductID']);
 			}
 		}
 		
-		$query = $this->getConnection()->prepare($sql.$sql2);
-		
-		//$query->bindvalue(1,$transactionid);
-		//$query->bindvalue(2,$transactionid);
-		
 		if ($query->execute() === TRUE) {
-			echo "Record updated successfully<br>";
-			$this->insertlog($sql.$sql2);
-		} else {
-			trigger_error( "Error Running Query: " . $sql.$sql2 ,E_USER_NOTICE   );
+			//return "Record updated successfully<br>";
+			$this->insertlog("Update: " . date("Y-m-d H:i:s",$timestamp ) . " " . print_r($datarow,true));
 		}
 	}
 	
