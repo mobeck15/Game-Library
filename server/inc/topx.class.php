@@ -25,7 +25,7 @@ class topx
 	}
 	
 	public function displaytop($gameidList,$stat){
-		$metastat = $this->getMetaStat($stat);
+		$metastat = $this->getMetaStat($stat,"active");
 		$output ="<div style='float:right; margin: 5px;'>";
 		$output .="<table>";
 		$output .="<thead><tr><th>Rank</th><th>Title</th><th>".$this->getHeaderText($stat)."</th>";
@@ -52,7 +52,7 @@ class topx
 		return $output;		
 	}
 	
-	private function statformat($value,$statname){
+	public function statformat($value,$statname){
 		$currency=["Launchperhr","MSRPperhr", "Currentperhr", "Historicperhr", "Paidperhr", "Saleperhr", "Altperhr", "LaunchLess1", "MSRPLess1", "CurrentLess1", "HistoricLess1", "PaidLess1", "SaleLess1", "AltLess1"];
 		
 		$duration_hours=["TimeLeftToBeat", "LaunchLess2", "HistoricLess2", "MSRPLess2", "AltLess2", "SaleLess2", "PaidLess2", "MSRPHrsNext1", "LaunchHrsNext1", "PaidHrsNext1", "HistoricHrsNext1", "AltHrsNext1", "SaleHrsNext1", "MSRPHrsNext2", "LaunchHrsNext2", "PaidHrsNext2", "HistoricHrsNext2", "AltHrsNext2", "SaleHrsNext2"];
@@ -224,13 +224,16 @@ class topx
 		//$list[] = "CurrentLess1";
 		$list[] = "HistoricLess1";
 		$list[] = "PaidLess1";
-		$list[] = "LaunchLess2";
-		$list[] = "MSRPLess2";
-		//$list[] = "CurrentLess2";
-		$list[] = "HistoricLess2";
-		$list[] = "PaidLess2";
-		$list[] = "SaleLess2";
-		$list[] = "AltLess2";
+		
+		if($filter=="all") {
+			$list[] = "LaunchLess2";
+			$list[] = "MSRPLess2";
+			//$list[] = "CurrentLess2";
+			$list[] = "HistoricLess2";
+			$list[] = "PaidLess2";
+			$list[] = "SaleLess2";
+			$list[] = "AltLess2";
+		}
 
 		if($filter=="all") {
 			$list[] = "LaunchHrsNext1";
@@ -258,14 +261,33 @@ class topx
 		return $list;
 	}
 	
-	private function getMetaStat($stat){
-		$statlist["Launchperhr"]=["LaunchHrsNext1","LaunchHrsNext2"];
-		$statlist["MSRPperhr"]=["MSRPHrsNext1","MSRPHrsNext2"];
-		$statlist["Currentperhr"]=["CurrentHrsNext1","CurrentHrsNext2"];
-		$statlist["Historicperhr"]=["HistoricLess1","HistoricLess2"];
-		$statlist["Paidperhr"]=["PaidHrsNext1","PaidHrsNext2"];
-		$statlist["Saleperhr"]=["SaleHrsNext1","SaleHrsNext2"];
-		$statlist["Altperhr"]=["AltHrsNext1","AltHrsNext2"];
+	public function getMetaStat($stat,$filter="all"){
+		if($filter == "all" OR $filter == "any") {
+			$statlist["Launchperhr"][]="LaunchHrsNext1";
+			$statlist["MSRPperhr"][]="MSRPHrsNext1";
+			$statlist["Currentperhr"][]="CurrentHrsNext1";
+			$statlist["Historicperhr"][]="HistoricHrsNext1";
+			$statlist["Paidperhr"][]="PaidHrsNext1";
+			$statlist["Saleperhr"][]="SaleHrsNext1";
+			$statlist["Altperhr"][]="AltHrsNext1";
+		}
+		if($filter == "all" OR $filter == "active") {
+			$statlist["Launchperhr"][]="LaunchHrsNext2";
+			$statlist["MSRPperhr"][]="MSRPHrsNext2";
+			$statlist["Currentperhr"][]="CurrentHrsNext1";
+			$statlist["Historicperhr"][]="HistoricHrsNext1";
+			$statlist["Paidperhr"][]="PaidHrsNext1";
+			$statlist["Saleperhr"][]="SaleHrsNext2";
+			$statlist["Altperhr"][]="AltHrsNext2";
+		}
+
+		$statlist["LaunchLess1"]=["LaunchLess2"];
+		$statlist["MSRPLess1"]=["MSRPLess2"];
+		$statlist["CurrentLess1"]=["CurrentLess2"];
+		$statlist["HistoricLess1"]=["HistoricLess2"];
+		$statlist["PaidLess1"]=["PaidLess2"];
+		$statlist["SaleLess1"]=["SaleLess2"];
+		$statlist["AltLess1"]=["AltLess2"];
 		
 		if(isset($statlist[$stat])){
 			return $statlist[$stat];
@@ -274,7 +296,7 @@ class topx
 		}
 	}
 
-	private function getHeaderText($stat){
+	public function getHeaderText($stat){
 		$header_Index=array(
 			"ParentGame" => "Parent Game",
 			"LaunchDate" => "Launch Date",
