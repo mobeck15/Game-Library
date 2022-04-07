@@ -615,6 +615,7 @@ final class Utility_Test extends TestCase
 	 *           ["P400D", 400]
 	 */
 	public function test_daysSinceDate_base($interval,$expected) {
+		//TODO: this still fails sometimes around DST
 		//Arrange
 		$date = new DateTime();
 		$days55 = new DateInterval($interval);

@@ -4,16 +4,22 @@ require_once $GLOBALS['rootpath']."/inc/template.inc.php";
 
 class Page
 {
-	private $title="Page Title";
-	private $body="";
+	protected $title="Page Title";
+	protected $body=" Body ";
 	
 	public function outputBody(){
 		return $this->body;
 	}
+
+	public function buildHtmlBody(){
+		$this->body = "Page Body";
+	}
 	
 	public function outputHtml(){
-		echo Get_Header($this->title);
-		echo $this->outputBody();
-		echo Get_Footer();
+		$output = Get_Header($this->title);
+		$output .= $this->buildHtmlBody();
+		//$output .= $this->body;
+		$output .= Get_Footer();
+		return $output;
 	}
 }
