@@ -7,48 +7,20 @@ require_once $GLOBALS['rootpath']."/inc/topx.class.php";
 $title="Play Next";
 echo Get_Header($title);
 
-$calculations=getCalculations();
+$topxobj = new topx(reIndexArray(getCalculations(),"Game_ID"));
 
-$calculations=reIndexArray($calculations,"Game_ID");
-
-$topxobj= new topx($calculations);
-
-//$filter = $topxobj->filterlist();
-
-$totalranks=array();
-$output2="";
-foreach ($topxobj->statlist() as $stat) {
-	$list = $topxobj->gettopx($stat);
-	foreach ($list as $key => $item){
-		//$totalranks[$item]["ranks"] = ($totalranks[$item]["ranks"] ?? 0) + count($list)-$key;
-		$totalranks[$item]["ranks"] = ($totalranks[$item]["ranks"] ?? 0) + (count($list)-$key)/count($list);
-		$sortranks[$item]=$totalranks[$item]["ranks"];
-		$totalranks[$item]["id"]=$item;
-	}
-	$output2 .= $topxobj->displaytop($list,$stat);
+if(isset($_GET["mode"]) && $_GET["mode"] == "Active"){
+	$topxobj->setfilter("Playable,eq,0,Status,ne,Active");
 }
 
-array_multisort($sortranks, SORT_DESC, $totalranks);		
+$totalranks=$topxobj->getTotalRanks();
 
-$output  ="";
-$output .="<table>";
-$output .="<thead><tr><th>Ranks</th><th>Title</th></tr></thead>";
-$output .="<tbody>";
-foreach($totalranks as $item){
-	$output .="<tr>";
-	$output .="<tr class='".$calculations[$item["id"]]['Status']."'>";
-	$output .="<td>".round($item["ranks"],1)."</td>";
-	$output .="<td><a href='viewgame.php?id=".$item["id"]."'>".$calculations[$item["id"]]["Title"]."</a></td>";
-	$output .="</tr>";
-}
-$output .="</tbody>";
-$output .="</table>";
-
-echo "<table><tr><td width=300 valign=top>";
-echo $output;
-echo "</td><td valign=top>";
-echo $output2;
-echo "</td></tr></table>";
+echo "<a href='?mode=Active'>Active</a> | <a href='?'>All</a>";
+echo "<table><tr><td valign=top>";
+echo $topxobj->makeDetailTable($totalranks);
+echo "</td><td valign=top><details><summary><b>Details</b></summary>";
+echo $topxobj->makeSourceCloud("main");
+echo "</summary></td></tr></table>";
 
 echo Get_Footer(); 
 

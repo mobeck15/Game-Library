@@ -538,6 +538,10 @@ function findgaps($sql,$conn,$idname) {
 						$stats['gaps'][]=$index;
 						$stats['gapsText'] .= $index . ", ";
 						$index++;
+						//TODO: BUG: infinite loop if there are two records with the same ID?!?
+						if($index>100000) {
+							break;
+						}
 					}
 					//$stats['gaps'][]=$index;
 					//$stats['gapsText'] .= $index . ", ";

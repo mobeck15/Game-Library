@@ -26,20 +26,19 @@ final class topx_Test extends testprivate
 	/**
 	 * @small
 	 * @covers topx::displaytop
-	 * @uses topx::__construct
-	 * @uses topx::getHeaderText
-	 * @uses topx::statformat
+	 * @uses topx
+	 * @uses timeduration
 	 */
 	public function test_displaytop() {
 		$calculations=array(
-			1=>array("Status"=>"Active","LaunchDate"=>1,"Title"=>"Game1"),
-			2=>array("Status"=>"Active","LaunchDate"=>2,"Title"=>"Game2"),
+			1=>array("Status"=>"Active","Launchperhr"=>1,"Title"=>"Game1","LaunchHrsNext1"=>4,"LaunchHrsNext2"=>9),
+			2=>array("Status"=>"Active","Launchperhr"=>2,"Title"=>"Game2","LaunchHrsNext1"=>5,"LaunchHrsNext2"=>8),
 		);
 		$topxObject=new topx($calculations);
 		
 		$gameids=array(1,2);
 		
-		$this->assertisString($topxObject->displaytop($gameids,"LaunchDate"));
+		$this->assertisString($topxObject->displaytop($gameids,"Launchperhr"));
 	}
 
 	/**
@@ -132,48 +131,7 @@ final class topx_Test extends testprivate
 	public function test_gettopx($stat) {
 		$topxObject=new topx();
 		
-		$calculations=array(
-			0=>array(
-				"AddedDateTime" => new DateTime('2011-01-10T15:03:01.012345Z'), 
-				"LaunchDate" => new DateTime('2011-01-13T15:03:01.012345Z'), 
-				"LastPlayORPurchase" => "2011-01-13 3:03:01 PM", 
-				"GrandTotal" => 12.50,
-				"Playable" => true,
-				"Status" => "Active",
-				"Review" => 4,
-				"Game_ID" => 1,
-			),
-			1=>array(
-				"AddedDateTime" => new DateTime('2011-01-13T15:03:01.012345Z'), 
-				"LaunchDate" => new DateTime('2011-01-11T15:03:01.012345Z'), 
-				"LastPlayORPurchase" => "2011-01-10 3:03:01 PM", 
-				"GrandTotal" => 12.53,
-				"Playable" => true,
-				"Status" => "Active",
-				"Review" => 4,
-				"Game_ID" => 2,
-			),
-			2=>array(
-				"AddedDateTime" => new DateTime('2011-01-11T15:03:01.012345Z'), 
-				"LaunchDate" => new DateTime('2011-01-10T15:03:01.012345Z'), 
-				"LastPlayORPurchase" => "2011-01-12 3:03:01 PM", 
-				"GrandTotal" => 12.51,
-				"Playable" => true,
-				"Status" => "Active",
-				"Review" => 4,
-				"Game_ID" => 3,
-			),
-			3=>array(
-				"AddedDateTime" => new DateTime('2011-01-12T15:03:01.012345Z'), 
-				"LaunchDate" => new DateTime('2011-01-12T15:03:01.012345Z'), 
-				"LastPlayORPurchase" => "2011-01-11 3:03:01 PM", 
-				"GrandTotal" => 12.52,
-				"Playable" => true,
-				"Status" => "Active",
-				"Review" => 4,
-				"Game_ID" => 4,
-			),
-		);
+		$calculations=$this->tesdata_Calculations();
 		
 		$property = $this->getPrivateProperty( 'topx', 'calculations' );
 		$property->setValue( $topxObject, $calculations );
@@ -229,33 +187,8 @@ final class topx_Test extends testprivate
 	 */
 	public function test_sortbystat($stat, $sortrow) {
 		$topxObject=new topx();
-		
-		$calculations=array(
-			0=>array(
-				"AddedDateTime" => new DateTime('2011-01-10T15:03:01.012345Z'), 
-				"LaunchDate" => new DateTime('2011-01-13T15:03:01.012345Z'), 
-				"LastPlayORPurchase" => "2011-01-13 3:03:01 PM", 
-				"Paid" => 12.50,
-			),
-			1=>array(
-				"AddedDateTime" => new DateTime('2011-01-13T15:03:01.012345Z'), 
-				"LaunchDate" => new DateTime('2011-01-11T15:03:01.012345Z'), 
-				"LastPlayORPurchase" => "2011-01-10 3:03:01 PM", 
-				"Paid" => 12.53,
-			),
-			2=>array(
-				"AddedDateTime" => new DateTime('2011-01-11T15:03:01.012345Z'), 
-				"LaunchDate" => new DateTime('2011-01-10T15:03:01.012345Z'), 
-				"LastPlayORPurchase" => "2011-01-12 3:03:01 PM", 
-				"Paid" => 12.51,
-			),
-			3=>array(
-				"AddedDateTime" => new DateTime('2011-01-12T15:03:01.012345Z'), 
-				"LaunchDate" => new DateTime('2011-01-12T15:03:01.012345Z'), 
-				"LastPlayORPurchase" => "2011-01-11 3:03:01 PM", 
-				"Paid" => 12.52,
-			),
-		);
+	
+		$calculations=$this->tesdata_Calculations();
 		
 		$property = $this->getPrivateProperty( 'topx', 'calculations' );
 		$property->setValue( $topxObject, $calculations );
@@ -311,7 +244,7 @@ final class topx_Test extends testprivate
 	/**
 	 * @small
 	 * @covers topx::parseFilter
-	 * @uses topx::__construct
+	 * @uses topx
 	 */
 	public function test_parseFilter() {
 		$filterstring="Playable,eq,0,Status,eq,Never,Status,eq,Done,Status,eq,Broken,Review,eq,1,Review,eq,2";
@@ -331,5 +264,144 @@ final class topx_Test extends testprivate
 		//$result=$topxObject->parseFilter($filterstring);
 		$this->assertisArray($result);
 		$this->assertEquals($filterarray,$result);
+	}
+	
+	/**
+	 * @small
+	 * @covers topx::getMetaStat
+	 * @uses topx
+	 * @testWith ["Launchperhr"]
+	 *           ["ParentGame"]
+	 */
+	public function test_getMetaStat_stat($testStat) {
+		$topxObject=new topx();
+
+		$method = $this->getPrivateMethod( 'topx', 'getMetaStat' );
+		$result = $method->invokeArgs($topxObject, array( $testStat ) );
+
+		$this->assertisArray($result);
+	}
+	
+	/**
+	 * @large
+	 * @covers topx::getTotalRanks
+	 * @uses topx
+	 */
+	public function test_getTotalRanks() {
+		//$topxObject = new topx(reIndexArray(getCalculations(),"Game_ID"));
+		$topxObject = new topx(reIndexArray($this->tesdata_Calculations(),"Game_ID"));
+
+		$result=$topxObject->getTotalRanks();
+
+		$this->assertisArray($result);
+	}
+	
+	/**
+	 * @small
+	 * @covers topx::makeDetailTable
+	 * @uses topx
+	 * @uses reIndexArray
+	 * @uses timeduration
+	 */
+	public function test_makeDetailTable() {
+		$topxObject = new topx(reIndexArray($this->tesdata_Calculations(),"Game_ID"));
+		$totalranks=[["id"=>1,"metastatname"=>"GrandTotal","ranks"=>.3],["id"=>2,"metastatname"=>"GrandTotal","ranks"=>1.7]];
+
+		$result=$topxObject->makeDetailTable($totalranks);
+
+		$this->assertisString($result);
+	}	
+	
+	/**
+	 * @small
+	 * @covers topx::makeSourceCloud
+	 * @uses topx
+	 * @uses reIndexArray
+	 * @uses timeduration
+	 */
+	public function test_makeSourceCloud() {
+		$topxObject = new topx(reIndexArray($this->tesdata_Calculations(),"Game_ID"));
+
+		$result=$topxObject->makeSourceCloud();
+
+		$this->assertisString($result);
+	}	
+	
+	public function tesdata_Calculations(){
+		return array(
+			0=>array(
+				"AddedDateTime" => new DateTime('2011-01-10T15:03:01.012345Z'), 
+				"LaunchDate" => new DateTime('2011-01-13T15:03:01.012345Z'), 
+				"LastPlayORPurchase" => "2011-01-13 3:03:01 PM", 
+				"Paid" => 12.50,
+				"GrandTotal" => 12.50, "TimeLeftToBeat" => 1,
+				"Playable" => true,
+				"Status" => "Active",
+				"Review" => 4,
+				"Game_ID" => 1,
+				"Title" => "Game 1",
+				"SaleLess1" => 1.23,	"SaleLess2" => 2.34,	"Saleperhr" => 3.45,	"SaleHrsNext2" => 1, "SaleHrsNext1" => 1, 
+				"AltLess1" => 1,	"AltLess2" => 1,	"Altperhr" => 1,	"AltHrsNext2" => 1, "AltHrsNext1" => 1, 
+				"LaunchLess1" => 1,	"LaunchLess2" => 1,	"Launchperhr" => 1,	"LaunchHrsNext2" => 1, "LaunchHrsNext1" => 1,
+				"MSRPLess1" => 1,	"MSRPLess2" => 1,	"MSRPperhr" => 1,	"MSRPHrsNext2" => 1, "MSRPHrsNext1" => 1, 
+				"HistoricLess1" => 1,	"HistoricLess2" => 1,	"Historicperhr" => 1,	"HistoricHrsNext2" => 1, "HistoricHrsNext1" => 1,
+				"PaidLess1" => 1,	"PaidLess2" => 1,	"Paidperhr" => 1,	"PaidHrsNext2" => 1, "PaidHrsNext1" => 1,
+				
+			),
+			1=>array(
+				"AddedDateTime" => new DateTime('2011-01-13T15:03:01.012345Z'), 
+				"LaunchDate" => new DateTime('2011-01-11T15:03:01.012345Z'), 
+				"LastPlayORPurchase" => "2011-01-10 3:03:01 PM", 
+				"Paid" => 12.53,
+				"GrandTotal" => 12.53, "TimeLeftToBeat" => 1,
+				"Playable" => true,
+				"Status" => "Active",
+				"Review" => 4,
+				"Game_ID" => 2,
+				"Title" => "Game 2",
+				"SaleLess1" => 1.23,	"SaleLess2" => 2.34,	"Saleperhr" => 3.45,	"SaleHrsNext2" => 1, "SaleHrsNext1" => 1, 
+				"AltLess1" => 1,	"AltLess2" => 1,	"Altperhr" => 1,	"AltHrsNext2" => 1, "AltHrsNext1" => 1, 
+				"LaunchLess1" => 1,	"LaunchLess2" => 1,	"Launchperhr" => 1,	"LaunchHrsNext2" => 1, "LaunchHrsNext1" => 1,
+				"MSRPLess1" => 1,	"MSRPLess2" => 1,	"MSRPperhr" => 1,	"MSRPHrsNext2" => 1, "MSRPHrsNext1" => 1, 
+				"HistoricLess1" => 1,	"HistoricLess2" => 1,	"Historicperhr" => 1,	"HistoricHrsNext2" => 1, "HistoricHrsNext1" => 1,
+				"PaidLess1" => 1,	"PaidLess2" => 1,	"Paidperhr" => 1,	"PaidHrsNext2" => 1, "PaidHrsNext1" => 1,
+			),
+			2=>array(
+				"AddedDateTime" => new DateTime('2011-01-11T15:03:01.012345Z'), 
+				"LaunchDate" => new DateTime('2011-01-10T15:03:01.012345Z'), 
+				"LastPlayORPurchase" => "2011-01-12 3:03:01 PM", 
+				"Paid" => 12.51,
+				"GrandTotal" => 12.51, "TimeLeftToBeat" => 1,
+				"Playable" => true,
+				"Status" => "Active",
+				"Review" => 4,
+				"Game_ID" => 3,
+				"Title" => "Game 3",
+				"SaleLess1" => 1.23,	"SaleLess2" => 2.34,	"Saleperhr" => 3.45,	"SaleHrsNext2" => 1, "SaleHrsNext1" => 1, 
+				"AltLess1" => 1,	"AltLess2" => 1,	"Altperhr" => 1,	"AltHrsNext2" => 1, "AltHrsNext1" => 1, 
+				"LaunchLess1" => 1,	"LaunchLess2" => 1,	"Launchperhr" => 1,	"LaunchHrsNext2" => 1, "LaunchHrsNext1" => 1,
+				"MSRPLess1" => 1,	"MSRPLess2" => 1,	"MSRPperhr" => 1,	"MSRPHrsNext2" => 1, "MSRPHrsNext1" => 1, 
+				"HistoricLess1" => 1,	"HistoricLess2" => 1,	"Historicperhr" => 1,	"HistoricHrsNext2" => 1, "HistoricHrsNext1" => 1,
+				"PaidLess1" => 1,	"PaidLess2" => 1,	"Paidperhr" => 1,	"PaidHrsNext2" => 1, "PaidHrsNext1" => 1,
+			),
+			3=>array(
+				"AddedDateTime" => new DateTime('2011-01-12T15:03:01.012345Z'), 
+				"LaunchDate" => new DateTime('2011-01-12T15:03:01.012345Z'), 
+				"LastPlayORPurchase" => "2011-01-11 3:03:01 PM", 
+				"Paid" => 12.52,
+				"GrandTotal" => 12.52, "TimeLeftToBeat" => 1,
+				"Playable" => true,
+				"Status" => "Active",
+				"Review" => 4,
+				"Game_ID" => 4,
+				"Title" => "Game 4",
+				"SaleLess1" => 1.23,	"SaleLess2" => 2.34,	"Saleperhr" => 3.45,	"SaleHrsNext2" => 1, "SaleHrsNext1" => 1, 
+				"AltLess1" => 1,	"AltLess2" => 1,	"Altperhr" => 1,	"AltHrsNext2" => 1, "AltHrsNext1" => 1, 
+				"LaunchLess1" => 1,	"LaunchLess2" => 1,	"Launchperhr" => 1,	"LaunchHrsNext2" => 1, "LaunchHrsNext1" => 1,
+				"MSRPLess1" => 1,	"MSRPLess2" => 1,	"MSRPperhr" => 1,	"MSRPHrsNext2" => 1, "MSRPHrsNext1" => 1, 
+				"HistoricLess1" => 1,	"HistoricLess2" => 1,	"Historicperhr" => 1,	"HistoricHrsNext2" => 1, "HistoricHrsNext1" => 1,
+				"PaidLess1" => 1,	"PaidLess2" => 1,	"Paidperhr" => 1,	"PaidHrsNext2" => 1, "PaidHrsNext1" => 1,
+			),
+		);
 	}
 }
