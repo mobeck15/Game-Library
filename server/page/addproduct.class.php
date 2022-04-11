@@ -4,9 +4,6 @@ require_once $GLOBALS['rootpath']."/page/_page.class.php";
 include_once $GLOBALS['rootpath']."/inc/utility.inc.php";
 include_once $GLOBALS['rootpath']."/inc/getsettings.inc.php";
 
-
-//TODO: Split into three files, Single form, SteamAPI, and Form Post (where both forms will go and show stats about recently played)
-
 class addproductPage extends Page
 {
 	public function __construct() {
