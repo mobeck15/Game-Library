@@ -5,7 +5,7 @@ $GLOBALS['rootpath'] = $GLOBALS['rootpath'] ?? "htdocs\Game-Library\server";
 require_once $GLOBALS['rootpath']."/page/additem.class.php";
 
 /**
- * @group page
+ * @group pageclass
  */
 class additem_Test extends TestCase {
 	/**

@@ -5,7 +5,7 @@ $GLOBALS['rootpath'] = $GLOBALS['rootpath'] ?? "htdocs\Game-Library\server";
 require_once $GLOBALS['rootpath']."/page/addhistory.class.php";
 
 /**
- * @group page
+ * @group pageclass
  */
 class addhistory_Test extends TestCase {
 	/**

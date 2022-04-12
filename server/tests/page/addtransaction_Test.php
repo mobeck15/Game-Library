@@ -5,7 +5,7 @@ $GLOBALS['rootpath'] = $GLOBALS['rootpath'] ?? "htdocs\Game-Library\server";
 require_once $GLOBALS['rootpath']."/page/addtransaction.class.php";
 
 /**
- * @group page
+ * @group pageclass
  */
 class addtranaction_Test extends TestCase {
 	/**
@@ -16,7 +16,6 @@ class addtranaction_Test extends TestCase {
 	 * @uses getsettings
 	 */
 	public function test_outputHtml() {
-		$_SERVER['QUERY_STRING']="";
 		$page = new addtransactionPage();
 		$result = $page->buildHtmlBody();
 		

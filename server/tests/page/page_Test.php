@@ -6,7 +6,7 @@ require_once $GLOBALS['rootpath']."/page/_page.class.php";
 require_once $GLOBALS['rootpath'].'\tests\inc\testprivate.inc.php';
 
 /**
- * @group page
+ * @group pageclass
  */
 class page_Test extends testprivate {
 	/**

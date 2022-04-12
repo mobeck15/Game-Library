@@ -4,8 +4,8 @@ use PHPUnit\Framework\TestCase;
 $GLOBALS['rootpath'] = $GLOBALS['rootpath'] ?? "htdocs\Game-Library\server";
 
 /**
- * @group page
- * @coversNothing
+ * @group htmlpage
+ * @covers additemPage
  */
 class testadditem extends TestCase {
 
