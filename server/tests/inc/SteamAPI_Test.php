@@ -16,9 +16,8 @@ final class SteamAPI_Test extends testprivate
 	 * @small
 	 * @covers SteamAPI::__construct
 	 * @covers SteamAPI::__destruct
-	 * @uses SteamAPI::setApiUrls
-	 * @uses SteamAPI::setAuth
-	 * @uses CurlRequest::__construct
+	 * @uses SteamAPI
+	 * @uses CurlRequest
 	 */
     public function test_construct() {
 		$api = new SteamAPI(4088);
@@ -31,10 +30,8 @@ final class SteamAPI_Test extends testprivate
 	/**
 	 * @small
 	 * @covers SteamAPI::setAuth
-	 * @uses SteamAPI::__construct
-	 * @uses SteamAPI::setApiUrls
-	 * @uses CurlRequest::__construct
-	 * @uses SteamAPI::__destruct
+	 * @uses SteamAPI
+	 * @uses CurlRequest
 	 */
 	public function test_setAuth() {
 		$api = new SteamAPI(4088);
@@ -49,10 +46,8 @@ final class SteamAPI_Test extends testprivate
 	/**
 	 * @small
 	 * @covers SteamAPI::setApiUrls
-	 * @uses SteamAPI::__construct
-	 * @uses SteamAPI::setAuth
-	 * @uses CurlRequest::__construct
-	 * @uses SteamAPI::__destruct
+	 * @uses SteamAPI
+	 * @uses CurlRequest
 	 * @testWith ["GetOwnedGamesURL"]
 	 *           ["GetRecentlyPlayedGamesURL"]
 	 *           ["GetPlayerAchievementsURL"]
@@ -72,10 +67,8 @@ final class SteamAPI_Test extends testprivate
 	/**
 	 * @small
 	 * @covers SteamAPI::setApiUrls
-	 * @uses SteamAPI::__construct
-	 * @uses SteamAPI::setAuth
-	 * @uses CurlRequest::__construct
-	 * @uses SteamAPI::__destruct
+	 * @uses SteamAPI
+	 * @uses CurlRequest
 	 * @testWith ["GetPlayerAchievementsURL"]
 	 *           ["GetUserStatsForGameURL"]
 	 *           ["GetGameNewsURL"]
@@ -93,10 +86,7 @@ final class SteamAPI_Test extends testprivate
 	/**
 	 * @small
 	 * @covers SteamAPI::CallAPI
-	 * @uses SteamAPI::__construct
-	 * @uses SteamAPI::setApiUrls
-	 * @uses SteamAPI::setAuth
-	 * @uses SteamAPI::__destruct
+	 * @uses SteamAPI
 	 */
 	public function test_CallAPI() {
         // Create a stub for the SomeClass class.
@@ -114,10 +104,7 @@ final class SteamAPI_Test extends testprivate
 	/**
 	 * @small
 	 * @covers SteamAPI::CallAPI
-	 * @uses SteamAPI::__construct
-	 * @uses SteamAPI::setApiUrls
-	 * @uses SteamAPI::setAuth
-	 * @uses SteamAPI::__destruct
+	 * @uses SteamAPI
 	 */
 	public function test_CallAPI_null() {
         // Create a stub for the SomeClass class.
@@ -138,11 +125,7 @@ final class SteamAPI_Test extends testprivate
 	/**
 	 * @small
 	 * @covers SteamAPI::GetSteamAPI
-	 * @uses SteamAPI::CallAPI
-	 * @uses SteamAPI::__construct
-	 * @uses SteamAPI::setApiUrls
-	 * @uses SteamAPI::setAuth
-	 * @uses SteamAPI::__destruct
+	 * @uses SteamAPI
 	 * @testWith ["GetOwnedGames"]
 	 *           ["GetRecentlyPlayedGames"]
 	 *           ["GetPlayerAchievements"]
@@ -169,11 +152,7 @@ final class SteamAPI_Test extends testprivate
 	/**
 	 * @small
 	 * @covers SteamAPI::GetSteamAPI
-	 * @uses SteamAPI::CallAPI
-	 * @uses SteamAPI::__construct
-	 * @uses SteamAPI::setApiUrls
-	 * @uses SteamAPI::setAuth
-	 * @uses SteamAPI::__destruct
+	 * @uses SteamAPI
 	 * @testWith ["GetOwnedGames"]
 	 *           ["GetRecentlyPlayedGames"]
 	 */
@@ -193,11 +172,7 @@ final class SteamAPI_Test extends testprivate
 	/**
 	 * @small
 	 * @covers SteamAPI::GetSteamAPI
-	 * @uses SteamAPI::CallAPI
-	 * @uses SteamAPI::__construct
-	 * @uses SteamAPI::setApiUrls
-	 * @uses SteamAPI::setAuth
-	 * @uses SteamAPI::__destruct
+	 * @uses SteamAPI
 	 * @testWith ["GetPlayerAchievements"]
 	 *           ["GetUserStatsForGame"]
 	 *           ["GetGameNews"]

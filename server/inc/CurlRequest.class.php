@@ -28,9 +28,7 @@ class CurlRequest implements HttpRequest
         return curl_getinfo($this->handle, $name);
     }
 
-	//@codeCoverageIgnoreStart
     public function close() {
         curl_close($this->handle);
     }
-	//@codeCoverageIgnoreEnd
 }

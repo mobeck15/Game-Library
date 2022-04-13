@@ -21,10 +21,7 @@ class addhistory_Test extends TestCase {
 	public function test_outputHtml() {
 		$_SERVER['QUERY_STRING']="";
 		$page = new addhistoryPage();
-		ob_start();
-		$page->buildHtmlBody();
-        $result = ob_get_clean();
-		
+		$result = $page->buildHtmlBody();
 		$this->assertisString($result);
 	}
 

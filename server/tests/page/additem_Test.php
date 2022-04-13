@@ -5,10 +5,12 @@ $GLOBALS['rootpath'] = $GLOBALS['rootpath'] ?? "htdocs\Game-Library\server";
 require_once $GLOBALS['rootpath']."/page/additem.class.php";
 
 /**
+ * @testdox additem_Test.php testing additem.class.php
  * @group pageclass
  */
 class additem_Test extends TestCase {
 	/**
+	 * @testdox __construct & buildHtmlBody
 	 * @small
 	 * @covers additemPage::buildHtmlBody
 	 * @covers additemPage::__construct
@@ -20,7 +22,6 @@ class additem_Test extends TestCase {
 	 * @uses getsettings
 	 */
 	public function test_outputHtml() {
-		$_SERVER['QUERY_STRING']="";
 		$page = new additemPage();
 		$result = $page->buildHtmlBody();
 		

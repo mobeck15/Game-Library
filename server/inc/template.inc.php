@@ -1,8 +1,5 @@
 <?php
-if(isset($GLOBALS[__FILE__])){
-	trigger_error("File already included once ".__FILE__.". ");
-}
-$GLOBALS[__FILE__]=1;
+include_once $GLOBALS['rootpath']."/inc/utility.inc.php";
 
 /*
  * Creates an HTML & CSS Header for each page to ensure uniform look & Feel 

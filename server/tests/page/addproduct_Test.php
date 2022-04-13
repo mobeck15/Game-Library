@@ -5,10 +5,12 @@ $GLOBALS['rootpath'] = $GLOBALS['rootpath'] ?? "htdocs\Game-Library\server";
 require_once $GLOBALS['rootpath']."/page/addproduct.class.php";
 
 /**
+ * @testdox addproduct_Test.php testing addproduct.class.php
  * @group pageclass
  */
 class addproduct_Test extends TestCase {
 	/**
+	 * @testdox __construct & buildHtmlBody
 	 * @small
 	 * @covers addproductPage::buildHtmlBody
 	 * @covers addproductPage::__construct
@@ -16,7 +18,7 @@ class addproduct_Test extends TestCase {
 	 * @uses getsettings
 	 */
 	public function test_outputHtml() {
-		$_SERVER['QUERY_STRING']="";
+		//$_SERVER['QUERY_STRING']="";
 		$page = new addproductPage();
 		$result = $page->buildHtmlBody();
 		

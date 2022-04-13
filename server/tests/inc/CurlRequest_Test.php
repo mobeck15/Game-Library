@@ -3,15 +3,18 @@ declare(strict_types=1);
 use PHPUnit\Framework\TestCase;
 
 $GLOBALS['rootpath'] = "htdocs\Game-Library\server";
+require_once $GLOBALS['rootpath'].'\tests\inc\testprivate.inc.php';
 require_once $GLOBALS['rootpath']."\inc\CurlRequest.class.php";
 
 /**
+ * @testdox CurlRequest_Test.php testing CurlRequest.class.php
  * @group include
  * @group classtest
  */
-final class CurlRequest_Test extends TestCase
+final class CurlRequest_Test extends testprivate
 {
 	/**
+	 * @testdox __construct
 	 * @small
 	 * @covers CurlRequest::__construct
 	 */
@@ -21,11 +24,11 @@ final class CurlRequest_Test extends TestCase
     }
 
 	/**
+	 * @testdox setOption & execute
 	 * @small
 	 * @covers CurlRequest::setOption
-	 * @uses CurlRequest::__construct
-	 * @uses CurlRequest::getInfo
-	 * @uses CurlRequest::execute
+	 * @covers CurlRequest::execute
+	 * @uses CurlRequest
 	 */
     public function test_setOption() {
 		$req = new CurlRequest("localhost");
@@ -34,18 +37,7 @@ final class CurlRequest_Test extends TestCase
     }
 
 	/**
-	 * @small
-	 * @covers CurlRequest::execute
-	 * @uses CurlRequest::__construct
-	 * @uses CurlRequest::setOption
-	 */
-    public function test_execute() {
-		$req = new CurlRequest("localhost");
-		$req->setOption(CURLOPT_RETURNTRANSFER, true);
-		$this->assertisString($req->execute());
-    }
-
-	/**
+	 * @testdox getInfo
 	 * @small
 	 * @covers CurlRequest::getInfo
 	 * @uses CurlRequest::__construct
@@ -61,13 +53,23 @@ final class CurlRequest_Test extends TestCase
     }
 
 	/**
+	 * @testdox close
 	 * @small
 	 * @covers CurlRequest::close
-	 * @uses CurlRequest::__construct
-	 * @doesNotPerformAssertions
+	 * @uses CurlRequest
 	 */
     public function test_close() {
-		$req = new CurlRequest("http://localhost");
+		$req = new CurlRequest("localhost");
+		
+		$property = $this->getPrivateProperty( 'CurlRequest', 'handle' );
+		$handle=$property->getValue( $req );
+		$this->assertNotNull($handle);
+		$this->assertEquals("resource",gettype($handle));
+
 		$req->close();
+
+		$property = $this->getPrivateProperty( 'CurlRequest', 'handle' );
+		$handle=$property->getValue( $req );
+		$this->assertEquals("resource (closed)",gettype($handle));
     }
 }

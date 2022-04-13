@@ -7,9 +7,12 @@ require_once $GLOBALS['rootpath'].'\tests\inc\testprivate.inc.php';
 
 /**
  * @group pageclass
+ * @testdox page_Test.php testing _page.class.php
  */
 class page_Test extends testprivate {
 	/**
+	 * @testdox outputHtml
+	 * @small
 	 * @covers Page
 	 * @uses Get_Footer
 	 * @uses Get_Header
@@ -23,6 +26,8 @@ class page_Test extends testprivate {
 	}
 
 	/**
+	 * @testdox buildHtmlBody
+	 * @small
 	 * @covers Page
 	 */
 	public function test_buildHtmlBody() {
