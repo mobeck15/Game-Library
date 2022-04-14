@@ -646,6 +646,7 @@ foreach ($calculations as $game) {
 	//if(true==true){
 		$output .= '<tr class="'. $game['Status'].'">';
 		foreach ($filter['Columns'] as $key => $row) {
+			$game[$row] = $game[$row] ?? "";
 			switch($row){
 				case "Game_ID":
 					$output .= '<td>'. $game['Game_ID'].'</td>';

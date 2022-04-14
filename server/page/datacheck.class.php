@@ -69,6 +69,7 @@ if($result = $conn->query($sql)) {
 	
 	/* */
 	foreach ($rowdata as $key => &$row) {
+		$row['Credit Used']=$row['Credit Used']+0;
 		if(!isset($totalCredit[$row['Store']])){
 			$totalCredit[$row['Store']]=array('Earned'=>0,'Spent'=>0,'Total'=>0);
 		}
