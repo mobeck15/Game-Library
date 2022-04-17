@@ -64,12 +64,14 @@ final class CurlRequest_Test extends testprivate
 		$property = $this->getPrivateProperty( 'CurlRequest', 'handle' );
 		$handle=$property->getValue( $req );
 		$this->assertNotNull($handle);
-		$this->assertEquals("resource",gettype($handle));
-
+		//$this->assertEquals("resource",gettype($handle));
+		$this->assertEquals("CurlHandle",get_class($handle));
+		
 		$req->close();
 
 		$property = $this->getPrivateProperty( 'CurlRequest', 'handle' );
 		$handle=$property->getValue( $req );
-		$this->assertEquals("resource (closed)",gettype($handle));
+		//$this->assertEquals("resource (closed)",gettype($handle));
+		$this->assertEquals("CurlHandle",get_class($handle));
     }
 }

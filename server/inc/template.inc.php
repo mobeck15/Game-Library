@@ -164,7 +164,7 @@ function get_navmenu($dropbar=true){
 			$navmenu .= "\t\t<li><a href=\"".$GLOBALS['rootpath']."/playnext.php\"><img src=\"".$GLOBALS['rootpath']."/img/favicon.ico\" height=15 />Play Next</a></li>\r\n";
 			$navmenu .= "\t\t<li><a href=\"".$GLOBALS['rootpath']."/playnext2.php\"><img src=\"".$GLOBALS['rootpath']."/img/favicon.ico\" height=15 />Play Next 2</a></li>\r\n";
 			$navmenu .= "\t\t<li><a href=\"".$GLOBALS['rootpath']."/gamestatuschart.php\"><img src=\"".$GLOBALS['rootpath']."/img/favicon.ico\" height=15 />Status Charts</a></li>\r\n";
-			$navmenu .= "\t\t<li><a href=\"".$GLOBALS['rootpath']."/goty.php\"><img src=\"".$GLOBALS['rootpath']."/img/favicon.ico\" height=15 />GOTY</a></li>\r\n";
+			//$navmenu .= "\t\t<li><a href=\"".$GLOBALS['rootpath']."/goty.php\"><img src=\"".$GLOBALS['rootpath']."/img/favicon.ico\" height=15 />GOTY</a></li>\r\n";
 		$navmenu .= "\t</ul></li>\r\n";
 //REFERENCE
 		$navmenu .= "\t<li><a>Reference</a>\r\n";
