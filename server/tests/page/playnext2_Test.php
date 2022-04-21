@@ -2,18 +2,17 @@
 declare(strict_types=1);
 use PHPUnit\Framework\TestCase;
 $GLOBALS['rootpath'] = $GLOBALS['rootpath'] ?? "htdocs\Game-Library\server";
-require_once $GLOBALS['rootpath']."/page/playnext.class.php";
+require_once $GLOBALS['rootpath']."/page/playnext2.class.php";
 
 /**
  * @group pageclass
- * @testdox playnext_Test.php testing playnext.class.php
+ * @testdox playnext2_Test.php testing playnext2.class.php
  */
-class playnext_Test extends TestCase {
+class playnext2_Test extends TestCase {
 	/**
 	 * @large
-	 * @covers playnextPage::buildHtmlBody
-	 * @covers playnextPage::__construct
-	 * @uses playnextPage
+	 * @covers playnext2Page::buildHtmlBody
+	 * @covers playnext2Page::__construct
 	 * @uses Games
 	 * @uses PriceCalculation
 	 * @uses Purchases
@@ -33,18 +32,19 @@ class playnext_Test extends TestCase {
 	 * @uses getPriceSort
 	 * @uses getPriceperhour
 	 * @uses getTimeLeft
-	 * @uses getTopList
 	 * @uses get_db_connection
 	 * @uses getsettings
 	 * @uses makeIndex
 	 * @uses reIndexArray
 	 * @uses regroupArray
 	 * @uses timeduration
+	 * @uses topx
 	 * @testdox __construct & buildHtmlBody
 	 */
 	public function test_outputHtml() {
-		$page = new playnextPage();
+		$page = new playnext2Page();
 		$result = $page->buildHtmlBody();
 		$this->assertisString($result);
 	}
+
 }

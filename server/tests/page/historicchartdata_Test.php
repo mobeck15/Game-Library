@@ -9,7 +9,7 @@ require_once $GLOBALS['rootpath']."/page/historicchartdata.class.php";
  */
 class historicchartdata_Test extends TestCase {
 	/**
-	 * @small
+	 * @medium
 	 * @covers historicchartdataPage::buildHtmlBody
 	 * @covers historicchartdataPage::__construct
 	 * @uses getHistoryCalculations

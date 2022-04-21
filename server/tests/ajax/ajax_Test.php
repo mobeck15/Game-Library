@@ -4,7 +4,7 @@ use PHPUnit\Framework\TestCase;
 $GLOBALS['rootpath'] = $GLOBALS['rootpath'] ?? "htdocs\Game-Library\server";
 
 /**
- * @testdox Calling search.ajax.php with an Ajax request
+ * @testdox ajax_Test.php calling search.ajax.php 
  * @group page
  * @coversNothing
  */

@@ -2,21 +2,23 @@
 declare(strict_types=1);
 use PHPUnit\Framework\TestCase;
 $GLOBALS['rootpath'] = $GLOBALS['rootpath'] ?? "htdocs\Game-Library\server";
-require_once $GLOBALS['rootpath']."/page/playnext.class.php";
+require_once $GLOBALS['rootpath']."/page/steamapi_ownedgames.class.php";
 
 /**
  * @group pageclass
- * @testdox playnext_Test.php testing playnext.class.php
+ * @testdox steamapi_ownedgames_Test.php testing cpi.class.php
  */
-class playnext_Test extends TestCase {
+class steamapi_ownedgames_Test extends TestCase {
 	/**
 	 * @large
-	 * @covers playnextPage::buildHtmlBody
-	 * @covers playnextPage::__construct
-	 * @uses playnextPage
+	 * @covers steamapi_ownedgamesPage::buildHtmlBody
+	 * @covers steamapi_ownedgamesPage::__construct
+	 * @testdox __construct & buildHtmlBody
+	 * @uses CurlRequest
 	 * @uses Games
 	 * @uses PriceCalculation
 	 * @uses Purchases
+	 * @uses SteamAPI
 	 * @uses combinedate
 	 * @uses dataAccess
 	 * @uses daysSinceDate
@@ -33,18 +35,16 @@ class playnext_Test extends TestCase {
 	 * @uses getPriceSort
 	 * @uses getPriceperhour
 	 * @uses getTimeLeft
-	 * @uses getTopList
-	 * @uses get_db_connection
 	 * @uses getsettings
 	 * @uses makeIndex
-	 * @uses reIndexArray
 	 * @uses regroupArray
 	 * @uses timeduration
-	 * @testdox __construct & buildHtmlBody
+	 * @uses get_db_connection
 	 */
 	public function test_outputHtml() {
-		$page = new playnextPage();
+		$page = new steamapi_ownedgamesPage();
 		$result = $page->buildHtmlBody();
 		$this->assertisString($result);
 	}
+
 }

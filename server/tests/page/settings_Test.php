@@ -2,23 +2,24 @@
 declare(strict_types=1);
 use PHPUnit\Framework\TestCase;
 $GLOBALS['rootpath'] = $GLOBALS['rootpath'] ?? "htdocs\Game-Library\server";
-require_once $GLOBALS['rootpath']."/page/cpi.class.php";
+require_once $GLOBALS['rootpath']."/page/settings.class.php";
 
 /**
  * @group pageclass
- * @testdox cpi_Test.php testing cpi.class.php
+ * @testdox settings_Test.php testing settings.class.php
  */
-class cpi_Test extends TestCase {
+class settings_Test extends TestCase {
 	/**
 	 * @small
-	 * @covers cpiPage::buildHtmlBody
-	 * @covers cpiPage::__construct
-	 * @uses getAllCpi
-	 * @uses get_db_connection
+	 * @covers settingsPage::buildHtmlBody
+	 * @covers settingsPage::__construct
 	 * @testdox __construct & buildHtmlBody
+	 * @uses get_db_connection
+	 * @uses getsettings
+	 * @uses timeduration
 	 */
 	public function test_outputHtml() {
-		$page = new cpiPage();
+		$page = new settingsPage();
 		$result = $page->buildHtmlBody();
 		$this->assertisString($result);
 	}

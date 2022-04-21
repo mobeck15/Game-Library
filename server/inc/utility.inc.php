@@ -92,7 +92,7 @@ function getAllCpi($connection=false){
 			$cpi['Current']=$row['cpi'];
 		}
 	} else {
-		trigger_error("SQL Query Failed: " . mysqli_error($conn) . "</br>Query: ". $sql); // @codeCoverageIgnore
+		trigger_error("SQL Query Failed: " . mysqli_error($conn) . "</br>Query: ". $sql); 
 	}
 	if($connection==false){
 		$conn->close();	
@@ -107,13 +107,13 @@ function get_db_connection(){
 
 	/* check connection */
 	if (mysqli_connect_errno()) {
-		trigger_error("Connect failed: %s\n", mysqli_connect_error()); // @codeCoverageIgnore
+		trigger_error("Connect failed: %s\n", mysqli_connect_error()); 
 		exit(); // @codeCoverageIgnore
 	}
 
 	/* change character set to utf8 */
 	if (!$conn->set_charset("utf8")) {
-		trigger_error("Error loading character set utf8: %s\n", $conn->error); // @codeCoverageIgnore
+		trigger_error("Error loading character set utf8: %s\n", $conn->error); 
 	}
 	
 	return $conn;
@@ -589,7 +589,7 @@ function getPriceperhour($price,$time){
 	//$priceperhour=sprintf("%.2f",$priceperhour);
 	return $priceperhour;
 }
-
+/*
 // @codeCoverageIgnoreStart
 function getVariance($price,$msrp) {
 	//Depricated
@@ -650,7 +650,7 @@ function getHourstoXless($price,$time,$xless=.01){
 function phpfile(){
 	//function present for code coverage warnings
 	return true;
-}
+} */
 // @codeCoverageIgnoreEnd
 //REMOVE END
 ?>

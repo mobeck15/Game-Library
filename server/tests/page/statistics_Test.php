@@ -2,21 +2,21 @@
 declare(strict_types=1);
 use PHPUnit\Framework\TestCase;
 $GLOBALS['rootpath'] = $GLOBALS['rootpath'] ?? "htdocs\Game-Library\server";
-require_once $GLOBALS['rootpath']."/page/gamestatuschart.class.php";
+require_once $GLOBALS['rootpath']."/page/statistics.class.php";
 
 /**
  * @group pageclass
- * @testdox gamestatuschart_Test.php testing gamestatuschart.class.php
+ * @testdox statistics_Test.php testing cpi.class.php
  */
-class gamestatuschart_Test extends TestCase {
+class statistics_Test extends TestCase {
 	/**
-	 * @large
-	 * @covers gamestatuschartPage::buildHtmlBody
-	 * @covers gamestatuschartPage::__construct
+	 * @small
+	 * @covers statisticsPage::buildHtmlBody
+	 * @covers statisticsPage::__construct
 	 * @testdox __construct & buildHtmlBody
 	 */
 	public function test_outputHtml() {
-		$page = new gamestatuschartPage();
+		$page = new statisticsPage();
 		$result = $page->buildHtmlBody();
 		$this->assertisString($result);
 	}

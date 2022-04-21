@@ -6,10 +6,11 @@ require_once $GLOBALS['rootpath']."/page/gl6.class.php";
 
 /**
  * @group pageclass
+ * @testdox gl6_Test.php testing gl6.class.php
  */
 class gl6_Test extends TestCase {
 	/**
-	 * @small
+	 * @large
 	 * @covers gl6Page::buildHtmlBody
 	 * @covers gl6Page::__construct
 	 * @uses SteamFormat
@@ -17,6 +18,7 @@ class gl6_Test extends TestCase {
 	 * @uses get_navmenu
 	 * @uses getsettings
 	 * @uses gl6Page
+	 * @testdox __construct & buildHtmlBody
 	 */
 	public function test_outputHtml() {
 		$page = new gl6Page();

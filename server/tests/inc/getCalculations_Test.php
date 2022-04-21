@@ -8,12 +8,14 @@ require_once $GLOBALS['rootpath']."\inc\getCalculations.inc.php";
 /**
  * @group include
  * @group purchases
+ * @testdox getCalculations_Test.php testing getCalculations.inc.php
  */
 final class getCalculations_Test extends TestCase
 {
 	/**
 	 * @small
 	 * @covers getCalculations
+	 * @testdox getCalculations with globals set
 	 */
     public function test_getCalculations_Global() {
 		$GLOBALS["CALCULATIONS"]=array("preset calculations");
@@ -24,7 +26,7 @@ final class getCalculations_Test extends TestCase
 	}
 
 	/**
-	 * @medium
+	 * @large
 	 * @covers getCalculations
 	 * @uses PriceCalculation
 	 * @uses combinedate
@@ -47,6 +49,7 @@ final class getCalculations_Test extends TestCase
 	 * @uses regroupArray
 	 * @uses timeduration
 	 * @uses get_db_connection
+	 * @testdox getCalculations with no parameters
 	 */
     public function test_getCalculations_Base() {
 		$output=getCalculations();
@@ -77,6 +80,7 @@ final class getCalculations_Test extends TestCase
 	 * @uses makeIndex
 	 * @uses regroupArray
 	 * @uses timeduration
+	 * @testdox getCalculations with connection provided
 	 */
 	public function test_getCalculations_Connection() {
 		$conn=get_db_connection();
@@ -88,6 +92,7 @@ final class getCalculations_Test extends TestCase
 	 * @small
 	 * @covers getPriceSort
 	 * @uses PriceCalculation
+	 * @testdox getPriceSort
 	 */
 	public function test_getPriceSort() {
 		
