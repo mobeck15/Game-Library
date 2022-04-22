@@ -2,22 +2,21 @@
 declare(strict_types=1);
 use PHPUnit\Framework\TestCase;
 $GLOBALS['rootpath'] = $GLOBALS['rootpath'] ?? "htdocs\Game-Library\server";
-require_once $GLOBALS['rootpath']."/page/toplevel.class.php";
+require_once $GLOBALS['rootpath']."/page/waste.class.php";
 
 /**
  * @group pageclass
- * @testdox toplevel_Test.php testing toplevel.class.php
+ * @testdox waste_Test.php testing waste.class.php
  */
-class toplevel_Test extends TestCase {
+class waste_Test extends TestCase {
 	/**
 	 * @large
-	 * @covers toplevelPage::buildHtmlBody
-	 * @covers toplevelPage::__construct
+	 * @covers wastePage::buildHtmlBody
+	 * @covers wastePage::__construct
 	 * @testdox __construct & buildHtmlBody
 	 * @uses Games
 	 * @uses PriceCalculation
 	 * @uses Purchases
-	 * @uses boolText
 	 * @uses combinedate
 	 * @uses dataAccess
 	 * @uses daysSinceDate
@@ -41,11 +40,9 @@ class toplevel_Test extends TestCase {
 	 * @uses reIndexArray
 	 * @uses regroupArray
 	 * @uses timeduration
-	 * @uses toplevelPage
-
 	 */
 	public function test_outputHtml() {
-		$page = new toplevelPage();
+		$page = new wastePage();
 		$result = $page->buildHtmlBody();
 		$this->assertisString($result);
 	}
