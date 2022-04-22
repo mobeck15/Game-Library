@@ -283,7 +283,7 @@ final class topx_Test extends testprivate
 	}
 	
 	/**
-	 * @large
+	 * @small
 	 * @covers topx::getTotalRanks
 	 * @uses topx
 	 */

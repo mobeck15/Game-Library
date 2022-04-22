@@ -284,7 +284,7 @@ final class getmetastats_Test extends TestCase
 	}
 
 	/**
-	 * @large
+	 * @small
 	 * @covers getStatRow
 	 * @uses PriceCalculation
 	 * @uses combinedate
@@ -321,7 +321,7 @@ final class getmetastats_Test extends TestCase
 	}
 
 	/**
-	 * @large
+	 * @small
 	 * @covers getStatRow
 	 * @uses PriceCalculation
 	 * @uses combinedate
