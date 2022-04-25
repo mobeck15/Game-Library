@@ -295,6 +295,7 @@ if (!(isset($_GET['id']) && is_numeric($_GET['id']))) {
 		//if($result!=false) {
 		if($SteamPage->pageExists) {
 			//$description=parse_game_description($result);
+			//TODO: fatal error when vieing GameMaker Studio Pro (id=1343) Call to a member function find() on bool
 			$description=$SteamPage->getDescription();
 
 			$allkeywordarray=array();

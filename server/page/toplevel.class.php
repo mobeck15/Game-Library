@@ -183,7 +183,7 @@ private function echoRow($top){
 	//$id=$top['ID']; // Broken when sorting the list
 	$id=$top['key']; // Needed to get the right bundle after sorting.
 	$output .= "\t<td><a href='".$_SERVER['SCRIPT_NAME']."?Group=".$_GET['Group']."&Detail=".$id."##Detail'>".$top['Title']."</a></td>\r\n";
-	$output .= "\t<td class=\"numeric\">$".round($top['Paid'],2)."</td>\r\n";
+	$output .= "\t<td class=\"numeric\">$".round(($top['Paid']+0),2)."</td>\r\n";
 	//$output .= "\t<td class=\"numeric\">". "" ."</td>\r\n"; //Return
 	//$output .= "\t<td class=\"numeric\">". "" ."</td>\r\n"; //Mod Paid
 	$output .= "\t<td class=\"numeric\">";
