@@ -18,6 +18,8 @@ class gamestatuschartPage extends Page
 	public function buildHtmlBody(){
 		$output="";
 	
+	//TODO: add code for presets
+	/*
 if(isset($_GET['preset'])){
 	switch($_GET['preset']) { 
 		case "7days":
@@ -32,6 +34,7 @@ if(isset($_GET['preset'])){
 			break;
 	}
 }
+*/
 
 if(isset($_GET['start'])){
 	$startDate=strtotime($_GET['start']);
@@ -66,9 +69,9 @@ Date Range: '. date("Y/m/d",$startDate) .' - '. date("Y/m/d",$endDate).'
 <li>Year</li><ul>';
 $useyear=date("Y");
 do {
-	$output .= "<li><a href='". $_SERVER['SCRIPT_NAME']."?start=". $useyear.">-1-1&end=". $useyear.">-12-31'>". $useyear."</a>";
+	$output .= "<li><a href='". $_SERVER['SCRIPT_NAME']."?start=". $useyear."-1-1&end=". $useyear.">-12-31'>". $useyear."</a>";
 	if($useyear==date("Y")) { 
-		$output .= "This Year"; 
+		$output .= " This Year"; 
 	}
 	$output .= "</li>";
 	$useyear--;
@@ -176,8 +179,8 @@ $output .= '</tbody>
 </table>
 </td><td valign=top><table>';
 
-$GoogleChartDataString="['Status', 'Count']";
-$GoogleChartDataString2="['Status', 'Count']";
+$GoogleChartDataString="['Status',		'Count']";
+$GoogleChartDataString2="['Status',		'Count']";
 
 /* * /
 foreach ($statuscount as $key => $count){
@@ -203,31 +206,19 @@ $output .= '<tr class="Done">    <td>Done</td>    <td>'. $statuscount['Done'].'<
 <tr class="Broken">  <td>Broken</td>  <td>'. $statuscount['Broken'].'</td></tr>
 </table>';
 
-$GoogleChartDataString.=",
-  ['Done',	".$statuscount['Done']."]";
-$GoogleChartDataString.=",
-  ['Active',	".$statuscount['Active']."]";
-$GoogleChartDataString.=",
-  ['On Hold',	".$statuscount['On Hold']."]";
-$GoogleChartDataString.=",
-  ['Inactive',	".$statuscount['Inactive']."]";
-$GoogleChartDataString.=",
-  ['Unplayed',	".$statuscount['Unplayed']."]";
-$GoogleChartDataString.=",
-  ['Never',	".$statuscount['Never']."]";
-$GoogleChartDataString.=",
-  ['Broken',	".$statuscount['Broken']."]";
+$GoogleChartDataString.=",\n\r	['Done',		".$statuscount['Done']."]";
+$GoogleChartDataString.=",\n\r	['Active',		".$statuscount['Active']."]";
+$GoogleChartDataString.=",\n\r	['On Hold',		".$statuscount['On Hold']."]";
+$GoogleChartDataString.=",\n\r	['Inactive',	".$statuscount['Inactive']."]";
+$GoogleChartDataString.=",\n\r	['Unplayed',	".$statuscount['Unplayed']."]";
+$GoogleChartDataString.=",\n\r	['Never',		".$statuscount['Never']."]";
+$GoogleChartDataString.=",\n\r	['Broken',		".$statuscount['Broken']."]";
 
-$GoogleChartDataString2.=",
-  ['Done',	".$statuscount['Done']."]";
-$GoogleChartDataString2.=",
-  ['Active',	".$statuscount['Active']."]";
-$GoogleChartDataString2.=",
-  ['On Hold',	".$statuscount['On Hold']."]";
-$GoogleChartDataString2.=",
-  ['Inactive',	".$statuscount['Inactive']."]";
-$GoogleChartDataString2.=",
-  ['Unplayed',	".$statuscount['Unplayed']."]";
+$GoogleChartDataString2.=",\n\r	['Done',		".$statuscount['Done']."]";
+$GoogleChartDataString2.=",\n\r	['Active',		".$statuscount['Active']."]";
+$GoogleChartDataString2.=",\n\r	['On Hold',		".$statuscount['On Hold']."]";
+$GoogleChartDataString2.=",\n\r	['Inactive',	".$statuscount['Inactive']."]";
+$GoogleChartDataString2.=",\n\r	['Unplayed',	".$statuscount['Unplayed']."]";
 
 	/***** Dynamic Chart *****/
 //$output .= $GoogleChartDataString;
