@@ -9,6 +9,7 @@ require_once $GLOBALS['rootpath']."\inc\SteamScrape.class.php";
 /**
  * @group include
  * @group classtest
+ * @testdox SteamScrape_Test.php SteamScrape.class.php
  */
 final class SteamScrape_Test extends testprivate
 {
@@ -17,6 +18,7 @@ final class SteamScrape_Test extends testprivate
 	protected function setUp(): void {
 		//807120 = Iratus: Lord of the Dead (Developer not loading)
 		//17390 = Spore (all good)
+		//1343 = GameMaker Studio Pro (Removed from Steam)
 		
         $this->SteamScrape_obj = new SteamScrape(17390);
     }	
@@ -32,6 +34,7 @@ final class SteamScrape_Test extends testprivate
 	 * @uses simple_html_dom
 	 * @uses simple_html_dom_node
 	 * @uses str_get_html
+	 * @testdox getdom() basic functionality
 	 */
     public function test_getdom_base() {
         $stub = $this->createStub(CurlRequest::class);
@@ -54,6 +57,7 @@ final class SteamScrape_Test extends testprivate
 	 * @uses simple_html_dom
 	 * @uses simple_html_dom_node
 	 * @uses str_get_html
+	 * @testdox getStorePage() basic functionality
 	 */
     public function test_getStorePage_base() {
         $stub = $this->createStub(CurlRequest::class);
@@ -73,6 +77,7 @@ final class SteamScrape_Test extends testprivate
 	 * @small
 	 * @covers SteamScrape::getStorePage
 	 * @covers SteamScrape::__construct
+	 * @testdox getStorePage() when no gameid is provided
 	 */
     public function test_getStorePage_null() {
 		$scrapeobj=new SteamScrape();
@@ -83,14 +88,13 @@ final class SteamScrape_Test extends testprivate
 	 * @small
 	 * @covers SteamScrape::getStorePage
 	 * @uses SteamScrape::__construct
+	 * @testdox getStorePage() when SteamScrape_obj is set
 	 */
     public function test_getStorePage_pagetext() {
-		$scrapeobj=new SteamScrape(17390);
-		
 		$property = $this->getPrivateProperty( 'SteamScrape', 'rawPageText' );
-		$property->setValue( $scrapeobj, "raw text" );
+		$property->setValue( $this->SteamScrape_obj, "raw text" );
 		
-		$this->assertEquals("raw text",$scrapeobj->getStorePage());
+		$this->assertEquals("raw text",$this->SteamScrape_obj->getStorePage());
     }
 	
 	/**
@@ -100,6 +104,7 @@ final class SteamScrape_Test extends testprivate
 	 * @uses simple_html_dom
 	 * @uses simple_html_dom_node
 	 * @uses str_get_html
+	 * @testdox getStorePage() when steam home page is returned
 	 */
     public function test_getStorePage_title() {
         $stub = $this->createStub(CurlRequest::class);
@@ -109,13 +114,36 @@ final class SteamScrape_Test extends testprivate
 		$property = $this->getPrivateProperty( 'SteamScrape', 'curlHandle' );
 		$property->setValue( $this->SteamScrape_obj, $stub );
 
-		$this->assertFalse($this->SteamScrape_obj->getStorePage());
+		//$this->assertFalse($this->SteamScrape_obj->getStorePage());
+		$this->assertEquals("simple_html_dom",get_class($this->SteamScrape_obj->getStorePage()));
+    }
+	
+	/**
+	 * @small
+	 * @coversNothing
+	 * @uses SteamScrape
+	 * @uses simple_html_dom
+	 * @uses simple_html_dom_node
+	 * @uses str_get_html
+	 * @testdox getDescription() when steam home page is returned
+	 */
+    public function test_getDescription_nopage() {
+        $stub = $this->createStub(CurlRequest::class);
+        $stub->method('execute')
+             ->willReturn(file_get_contents($GLOBALS['rootpath']."/tests/testdata/steam.htm"));
+			 
+		$property = $this->getPrivateProperty( 'SteamScrape', 'curlHandle' );
+		$property->setValue( $this->SteamScrape_obj, $stub );
+
+		$result=$this->SteamScrape_obj->getDescription();
+		$this->assertisString($result);
     }
 	
 	/**
 	 * @small
 	 * @covers SteamScrape::getPage
 	 * @uses SteamScrape::__construct
+	 * @testdox getPage() basic functionality
 	 */
     public function test_getPage_base() {
         $stub = $this->createStub(CurlRequest::class);
@@ -134,6 +162,7 @@ final class SteamScrape_Test extends testprivate
 	 * @small
 	 * @covers SteamScrape::getPage
 	 * @uses SteamScrape::__construct
+	 * @testdox getPage() with null parameter
 	 */
     public function test_getPage_null() {
         $stub = $this->createStub(CurlRequest::class);
@@ -155,6 +184,7 @@ final class SteamScrape_Test extends testprivate
 	 * @uses simple_html_dom
 	 * @uses simple_html_dom_node
 	 * @uses str_get_html
+	 * @testdox getPageTitle() basic functionality
 	 */
     public function test_getPageTitle_base() {
         $stub = $this->createStub(CurlRequest::class);
@@ -176,6 +206,7 @@ final class SteamScrape_Test extends testprivate
 	 * @uses simple_html_dom
 	 * @uses simple_html_dom_node
 	 * @uses str_get_html
+	 * @testdox getPageTitle() basic functionality
 	 */
     public function test_getPageTitle_blank() {
 		$property = $this->getPrivateProperty( 'SteamScrape', 'rawPageText' );
@@ -190,6 +221,7 @@ final class SteamScrape_Test extends testprivate
 	 * @small
 	 * @covers SteamScrape::getPageTitle
 	 * @uses SteamScrape::__construct
+	 * @testdox getPageTitle() with title already set
 	 */
     public function test_getPageTitle_exists() {
 		$property = $this->getPrivateProperty( 'SteamScrape', 'pageTitle' );
@@ -207,6 +239,7 @@ final class SteamScrape_Test extends testprivate
 	 * @uses simple_html_dom
 	 * @uses simple_html_dom_node
 	 * @uses str_get_html
+	 * @testdox getDescription() basic functionality
 	 */
     public function test_getDescription_base() {
         $stub = $this->createStub(CurlRequest::class);
@@ -228,6 +261,7 @@ final class SteamScrape_Test extends testprivate
 	 * @uses simple_html_dom
 	 * @uses simple_html_dom_node
 	 * @uses str_get_html
+	 * @testdox getDescription() when steam home page is returned
 	 */
     public function test_getDescription_blank() {
 		$property = $this->getPrivateProperty( 'SteamScrape', 'rawPageText' );
@@ -242,6 +276,7 @@ final class SteamScrape_Test extends testprivate
 	 * @small
 	 * @covers SteamScrape::getDescription
 	 * @uses SteamScrape::__construct
+	 * @testdox getDescription() with description already set
 	 */
     public function test_getDescription_exists() {
 		$property = $this->getPrivateProperty( 'SteamScrape', 'description' );
@@ -259,6 +294,7 @@ final class SteamScrape_Test extends testprivate
 	 * @uses simple_html_dom
 	 * @uses simple_html_dom_node
 	 * @uses str_get_html
+	 * @testdox getTags() basic functionality
 	 */
     public function test_getTags_base() {
         $stub = $this->createStub(CurlRequest::class);
@@ -302,6 +338,7 @@ final class SteamScrape_Test extends testprivate
 	 * @uses simple_html_dom
 	 * @uses simple_html_dom_node
 	 * @uses str_get_html
+	 * @testdox getTags() when steam home page is returned 
 	 */
     public function test_getTags_blank() {
 		$property = $this->getPrivateProperty( 'SteamScrape', 'rawPageText' );
@@ -316,7 +353,7 @@ final class SteamScrape_Test extends testprivate
 	 * @small
 	 * @covers SteamScrape::getTags
 	 * @uses SteamScrape::__construct
-	 * Time: 
+	 * @testdox getTags() with tags already set
 	 */
     public function test_getTags_exists() {
 		$expected=array("open world"=>"Open World","exploration"=>"Exploration","casual"=>"Casual");
@@ -334,6 +371,7 @@ final class SteamScrape_Test extends testprivate
 	 * @covers SteamScrape::getTagList
 	 * @uses SteamScrape::getTags
 	 * @uses SteamScrape::__construct
+	 * @testdox getTagList()
 	 */
     public function test_getTagList() {
 		$source=array("open world"=>"Open World","exploration"=>"Exploration","casual"=>"Casual");
@@ -354,6 +392,7 @@ final class SteamScrape_Test extends testprivate
 	 * @uses simple_html_dom
 	 * @uses simple_html_dom_node
 	 * @uses str_get_html
+	 * @testdox getDetails() basic functionality
 	 */
     public function test_getDetails_base() {
         $stub = $this->createStub(CurlRequest::class);
@@ -377,6 +416,7 @@ final class SteamScrape_Test extends testprivate
 	 * @uses simple_html_dom
 	 * @uses simple_html_dom_node
 	 * @uses str_get_html
+	 * @testdox getDetails() when steam home page is returned
 	 */
     public function test_getDetails_blank() {
 		$property = $this->getPrivateProperty( 'SteamScrape', 'rawPageText' );
@@ -391,6 +431,7 @@ final class SteamScrape_Test extends testprivate
 	 * @small
 	 * @covers SteamScrape::getDetails
 	 * @uses SteamScrape::__construct
+	 * @testdox getDetails() with tags already set
 	 */
     public function test_getDetails_exists() {
 		$expected=array("single-player"=>"Single-player","steam trading cards"=>"Steam Trading Cards");
@@ -408,6 +449,7 @@ final class SteamScrape_Test extends testprivate
 	 * @covers SteamScrape::getDetailList
 	 * @uses SteamScrape::getDetails
 	 * @uses SteamScrape::__construct
+	 * @testdox getDetailList()
 	 */
     public function test_getDetailList() {
 		$source=array("single-player"=>"Single-player","steam trading cards"=>"Steam Trading Cards");
@@ -428,6 +470,7 @@ final class SteamScrape_Test extends testprivate
 	 * @uses simple_html_dom
 	 * @uses simple_html_dom_node
 	 * @uses str_get_html
+	 * @testdox getGenre() basic functionality
 	 */
     public function test_getGenre_base() {
         $stub = $this->createStub(CurlRequest::class);
@@ -448,6 +491,7 @@ final class SteamScrape_Test extends testprivate
 	 * @medium
 	 * @covers SteamScrape::getGenre
 	 * @uses SteamScrape
+	 * @testdox getGenre() when steam home page is returned
 	 */
     public function test_getGenre_blank() {
 		$property = $this->getPrivateProperty( 'SteamScrape', 'rawPageText' );
@@ -462,6 +506,7 @@ final class SteamScrape_Test extends testprivate
 	 * @small
 	 * @covers SteamScrape::getGenre
 	 * @uses SteamScrape::__construct
+	 * @testdox getGenre() with Genre already set
 	 */
     public function test_getGenre_exists() {
 		$expected=array("action"=>"Action","casual"=>"Casual","simulation"=>"Simulation","strategy"=>"Strategy","adventure"=>"Adventure","rpg"=>"RPG",);
@@ -479,6 +524,7 @@ final class SteamScrape_Test extends testprivate
 	 * @covers SteamScrape::getGenreList
 	 * @uses SteamScrape::getGenre
 	 * @uses SteamScrape::__construct
+	 * @testdox getGenreList()
 	 */
     public function test_getGenreList() {
 		$source=array("action"=>"Action","casual"=>"Casual","simulation"=>"Simulation","strategy"=>"Strategy","adventure"=>"Adventure","rpg"=>"RPG",);
@@ -499,6 +545,7 @@ final class SteamScrape_Test extends testprivate
 	 * @uses simple_html_dom
 	 * @uses simple_html_dom_node
 	 * @uses str_get_html
+	 * @testdox getReview() basic functionality
 	 */
     public function test_getReview_base() {
         $stub = $this->createStub(CurlRequest::class);
@@ -520,6 +567,7 @@ final class SteamScrape_Test extends testprivate
 	 * @uses simple_html_dom
 	 * @uses simple_html_dom_node
 	 * @uses str_get_html
+	 * @testdox getReview() when steam home page is returned
 	 */
     public function test_getReview_blank() {
 		$property = $this->getPrivateProperty( 'SteamScrape', 'rawPageText' );
@@ -537,6 +585,7 @@ final class SteamScrape_Test extends testprivate
 	 * @uses simple_html_dom
 	 * @uses simple_html_dom_node
 	 * @uses str_get_html
+	 * @testdox getReview() when only 1 review is given
 	 */
     public function test_getReview_1entry() {
 		$property = $this->getPrivateProperty( 'SteamScrape', 'rawPageText' );
@@ -551,6 +600,7 @@ final class SteamScrape_Test extends testprivate
 	 * @small
 	 * @covers SteamScrape::getReview
 	 * @uses SteamScrape::__construct
+	 * @testdox getReview() with review already set
 	 */
     public function test_getReview_exists() {
 		$property = $this->getPrivateProperty( 'SteamScrape', 'review' );
@@ -568,6 +618,7 @@ final class SteamScrape_Test extends testprivate
 	 * @uses simple_html_dom
 	 * @uses simple_html_dom_node
 	 * @uses str_get_html
+	 * @testdox getReleaseDate() basic functionality
 	 */
     public function test_getReleaseDate_base() {
         $stub = $this->createStub(CurlRequest::class);
@@ -589,6 +640,7 @@ final class SteamScrape_Test extends testprivate
 	 * @uses simple_html_dom
 	 * @uses simple_html_dom_node
 	 * @uses str_get_html
+	 * @testdox getReleaseDate() when steam home page is returned
 	 */
     public function test_getReleaseDate_blank() {
 		$property = $this->getPrivateProperty( 'SteamScrape', 'rawPageText' );
@@ -603,6 +655,7 @@ final class SteamScrape_Test extends testprivate
 	 * @small
 	 * @covers SteamScrape::getReleaseDate
 	 * @uses SteamScrape::__construct
+	 * @testdox getReleaseDate() with releaseDate already set
 	 */
     public function test_getReleaseDate_exists() {
 		$property = $this->getPrivateProperty( 'SteamScrape', 'releaseDate' );
@@ -622,6 +675,7 @@ final class SteamScrape_Test extends testprivate
 	 * @uses str_get_html
 	 * @testWith ["steam17390.htm", "Maxis™"]
 	 *           ["steam1807120.htm", "Unfrozen"]
+	 * @testdox getDeveloper() given $testfilename, $expecteddev is found
 	 */
     public function test_getDeveloper_base(string $testfilename, string $expecteddev) {
         $stub = $this->createStub(CurlRequest::class);
@@ -643,6 +697,7 @@ final class SteamScrape_Test extends testprivate
 	 * @uses simple_html_dom
 	 * @uses simple_html_dom_node
 	 * @uses str_get_html
+	 * @testdox getDeveloper() when Developer is not found
 	 */
     public function test_getDeveloper_blank() {
 		$property = $this->getPrivateProperty( 'SteamScrape', 'rawPageText' );
@@ -662,6 +717,7 @@ final class SteamScrape_Test extends testprivate
 	 * @small
 	 * @covers SteamScrape::getDeveloper
 	 * @uses SteamScrape::__construct
+	 * @testdox getDeveloper() with Developer already set
 	 */
     public function test_getDeveloper_exists() {
 		$property = $this->getPrivateProperty( 'SteamScrape', 'developer' );
@@ -681,6 +737,7 @@ final class SteamScrape_Test extends testprivate
 	 * @uses str_get_html
 	 * @testWith ["steam17390.htm", "Electronic Arts"]
 	 *           ["steam1807120.htm", "Daedalic Entertainment"]
+	 * @testdox getPublisher() given $testfilename, $expectedpub is found
 	 */
     public function test_getPublisher_base(string $testfilename, string $expectedpub) {
         $stub = $this->createStub(CurlRequest::class);
@@ -701,6 +758,7 @@ final class SteamScrape_Test extends testprivate
 	 * @uses SteamScrape::__construct
 	 * @uses SteamScrape::getStorePage
 	 * @uses SteamScrape::getdom
+	 * @testdox getPublisher() when Publisher is not found
 	 */
     public function test_getPublisher_blank() {
 		$property = $this->getPrivateProperty( 'SteamScrape', 'rawPageText' );
@@ -722,6 +780,7 @@ final class SteamScrape_Test extends testprivate
 	 * @small
 	 * @covers SteamScrape::getPublisher
 	 * @uses SteamScrape::__construct
+	 * @testdox getPublisher() with Publisher already set
 	 */
     public function test_getPublisher_exists() {
 		$property = $this->getPrivateProperty( 'SteamScrape', 'publisher' );

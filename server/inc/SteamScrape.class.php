@@ -52,9 +52,9 @@ class SteamScrape
 		
 		if($this->getPageTitle()=="Welcome to Steam"){
 			$this->pageExists=false;
-			$this->rawPageText=false;
-			$this->htmldom=false;
-			return false;
+			$this->rawPageText=" ";
+			$this->htmldom=str_get_html(" ");
+			return $this->htmldom;
 		}
 		
 		return $result;
@@ -105,7 +105,8 @@ class SteamScrape
 		
 		$this->description = "";
 		//TODO: fatal error when viewing GameMaker Studio Pro (id=1343) Call to a member function find() on bool
-		$search_results = $this->getdom()->find(".game_description_snippet");
+		$dom=$this->getdom();
+		$search_results = $dom->find(".game_description_snippet");
 		if(isset($search_results[0])){
 			$this->description = trim($search_results[0]->innertext);
 		}

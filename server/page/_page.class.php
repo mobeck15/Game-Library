@@ -16,10 +16,16 @@ class Page
 	}
 	
 	public function outputHtml(){
-		$output = Get_Header($this->title);
-		$output .= $this->buildHtmlBody();
-		//$output .= $this->body;
-		$output .= Get_Footer();
-		return $output;
+		//Need to use echo here so any PHP errors generated during buildHtmlBody show below the Header.
+		//Otherwise they will be under the top navigation bar.
+		
+		//$output = Get_Header($this->title);
+		echo Get_Header($this->title);
+		//$output .= $this->buildHtmlBody();
+		echo $this->buildHtmlBody();
+		//$output .= Get_Footer();
+		echo Get_Footer();
+		//return $output;
+		return "";
 	}
 }

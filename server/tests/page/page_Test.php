@@ -21,8 +21,11 @@ class page_Test extends testprivate {
 	 */
 	public function test_outputHtml() {
 		$page = new Page();
-		$result = $page->outputHtml();
+        ob_start();
+		$result1 = $page->outputHtml();
+		$result = ob_get_clean();
 		$this->assertisString($result);
+		$this->assertEquals("",$result1);
 	}
 
 	/**
