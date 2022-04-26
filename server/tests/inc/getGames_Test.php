@@ -62,7 +62,6 @@ final class getGames_Test extends testprivate
         $this->assertEquals(true,count($result)>0);
 		$this->assertisArray(makeIndex($result,"Game_ID"));
 	}
-
 	
 	/**
 	 * @small
@@ -79,18 +78,6 @@ final class getGames_Test extends testprivate
 		$this->assertisArray(getGames("",$conn));
 		$conn->close();
 	}
-	
-	/**
-	 * @small
-	 * @covers Games::getGames
-	 * @covers getGames
-	 * @uses get_db_connection
-	 * /
-    public function test_getGames_error() {
-        $this->expectNotice();
-		$this->assertisArray(getGames(";"));
-	}
-	/* */
 
 	/**
 	 * @small

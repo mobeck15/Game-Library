@@ -10,6 +10,7 @@ require_once $GLOBALS['rootpath']."\inc\dataAccess.class.php";
  * @group include
  * @group classtest
  * @group getGames
+ * @group addhistory
  */
 final class dataAccess_Test extends testprivate
 {
@@ -218,7 +219,7 @@ final class dataAccess_Test extends testprivate
 		
 		$this->assertFileExists($file);
 		$content = file_get_contents($file);
-		$this->assertEquals("Insert1;\r\n",$content);
+		$this->assertEquals("Insert1\r\n\r\n",$content);
 	}
 	
 	/**
@@ -240,7 +241,7 @@ final class dataAccess_Test extends testprivate
 		
 		$this->assertFileExists($file);
 		$content = file_get_contents($file);
-		$this->assertEquals("Insert1;\r\nInsert2;\r\n",$content);
+		$this->assertEquals("Insert1\r\n\r\nInsert2\r\n\r\n",$content);
 	}
 	
 	/**

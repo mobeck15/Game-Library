@@ -12,6 +12,8 @@ include_once $GLOBALS['rootpath']."/inc/getGames.inc.php";
 class addhistoryPage extends Page
 {
 	private $dataAccessObject;
+	private $maxID;
+	
 	public function __construct() {
 		$this->title="Add History";
 	}
@@ -19,9 +21,6 @@ class addhistoryPage extends Page
 	public function buildHtmlBody(){
 		$output="";
 		//TODO: Split into three files, Single form, SteamAPI, and Form Post (where both forms will go and show stats about recently played)
-
-		$title="Add History";
-		$output .= Get_Header($title);
 
 		$conn=get_db_connection();
 
@@ -38,13 +37,17 @@ class addhistoryPage extends Page
 		$reviewValues=array(1,2,3,4);
 
 		$this->dataAccessObject= new dataAccess();
-		$maxID=$this->dataAccessObject->getMaxHistoryId();
+		$this->maxID=$this->dataAccessObject->getMaxHistoryId();
 		
-//		if (isset($_POST['datarow'])){
-//			//TODO: cleanse post data
-//			$this->captureInsert($_POST['datarow'],$_POST['timestamp']);
-//		}
+		//var_dump($_POST);
 		
+		/* */
+		if (isset($_POST['datarow'])){
+			//TODO: cleanse post data
+			$this->captureInsert($_POST['datarow'],$_POST['timestamp']);
+		}
+		
+		/* * /
 //Capture Inserts
 if (isset($_POST['datarow'])){
 	//var_dump($_POST['datarow']);
@@ -53,7 +56,7 @@ if (isset($_POST['datarow'])){
 	if(isset($_POST['datarow'][1]['ProductID'])) {
 		$_GET['GameID']=$_POST['datarow'][1]['ProductID']; 
 	} else {
-		$_GET['HistID']=$maxID;
+		$_GET['HistID']=$this->maxID;
 	}
 
 
@@ -114,8 +117,8 @@ if (isset($_POST['datarow'])){
 				if(isset($insertrow['id'])) {
 					$sql2.="('" . $conn->real_escape_string($insertrow['id']) . "', "; // HistoryID
 				} else {
-					$sql2.="('" . ($maxID) . "', "; // HistoryID
-					$maxID++;
+					$sql2.="('" . ($this->maxID) . "', "; // HistoryID
+					$this->maxID++;
 				}
 				
 				if( isset($_POST['currenttime']) && $_POST['currenttime'] == "on") {
@@ -158,7 +161,8 @@ if (isset($_POST['datarow'])){
 		trigger_error( "Error inserting record: " . $conn->error ,E_USER_ERROR );
 	}
 }
-
+ /* */
+ 
 //determines if a game is active or not.
 //If a game is active, overrides chosen input and forces a second entry of active game.
 $GameStarted=false;
@@ -938,7 +942,7 @@ return $output;
 		$reviewValues=array(1,2,3,4);
 
 		$dataobject= new dataAccess();
-		$maxID=$dataobject->getMaxHistoryId();
+		$this->maxID=$dataobject->getMaxHistoryId();
 		
 		if (isset($_POST['datarow'])){
 			//TODO: cleanse post data
@@ -1275,24 +1279,24 @@ return $output;
 		if(isset($datarow[1]['ProductID'])) {
 			$_GET['GameID']=$datarow[1]['ProductID']; 
 		} else {
-			$_GET['HistID']=$maxID;
+			$_GET['HistID']=$this->maxID;
 		}
 		/*	
-		Post array:	array(1) {
+		Post array:	array (1) {
 		  [1]=>	  array(13) {
-			["update"]=>		string(2) "on"
-			["id"]=>		string(4) "9406"
-			["ProductID"]=>		string(4) "3407"
-			["Title"]=>		string(14) "SOULCALIBUR VI"
-			["System"]=>		string(5) "Steam"
-			["Data"]=>		string(9) "New Total"
-			["hours"]=>		string(2) "82"
-			["notes"]=>		string(0) ""
+			["update"]=>		string(2)  "on"
+			["id"]=>			string(4)  "9406"
+			["ProductID"]=>		string(4)  "3407"
+			["Title"]=>			string(14) "SOULCALIBUR VI"
+			["System"]=>		string(5)  "Steam"
+			["Data"]=>			string(9)  "New Total"
+			["hours"]=>			string(2)  "82"
+			["notes"]=>			string(0)  ""
 			["source"]=>		string(14) "Game Library 5"
-			["achievements"]=>		string(1) "0"
-			["status"]=>		string(8) "Inactive"
-			["review"]=>		string(1) "1"
-			["minutes"]=>		string(2) "on"
+			["achievements"]=>	string(1)  "0"
+			["status"]=>		string(8)  "Inactive"
+			["review"]=>		string(1)  "1"
+			["minutes"]=>		string(2)  "on"
 		  }
 		}
 		*/
@@ -1301,7 +1305,7 @@ return $output;
 		if(isset($datarow[1]['id'])) {
 			$this->dataAccessObject->updateHistory($datarow[1],$timestamp);
 		} else {
-			$this->dataAccessObject->insertHistory($datarow,$timestamp,$maxID);
+			$this->dataAccessObject->insertHistory($datarow,$timestamp,$this->maxID);
 		}
 	}
 }

@@ -172,6 +172,7 @@ class dataAccess {
 		$loopcount=0;
 		foreach($datarow as $insertrow){
 			if(isset($insertrow['update']) && $insertrow['update']=="on"){
+				$inserted[]=$insertrow;
 				$loopcount++;
 				if(isset($insertrow['id'])) {
 					$query->bindvalue(":insertid$loopcount",$insertrow['id']);
@@ -206,7 +207,8 @@ class dataAccess {
 		
 		if ($query->execute() === TRUE) {
 			//return "Record updated successfully<br>";
-			$this->insertlog("Update: " . date("Y-m-d H:i:s",$timestamp ) . " " . print_r($datarow,true));
+			//TODO: The print_r makes the insertlog look weird.
+			$this->insertlog("Update: " . $timestamp . " " . print_r($inserted,true));
 		}
 	}
 	
@@ -214,13 +216,13 @@ class dataAccess {
 		return $GLOBALS['rootpath'].'\insertlog'.date("Y").'.txt';
 	}
 	
-	public function insertlog($query,$file=null) {
+	public function insertlog($content,$file=null) {
 		$file = $file ?? $this->logFileName();
 		//var_dump($file);
 		// Write the contents to the file, 
 		// using the FILE_APPEND flag to append the content to the end of the file
 		// and the LOCK_EX flag to prevent anyone else writing to the file at the same time
-		file_put_contents($file, $query.";\r\n", FILE_APPEND | LOCK_EX);
+		file_put_contents($file, $content."\r\n\r\n", FILE_APPEND | LOCK_EX);
 	}
 	
 	public function updateHistory($insertrow,$timestamp){
@@ -269,7 +271,8 @@ class dataAccess {
 		
 		if ($query->execute() === TRUE) {
 			//return "Record updated successfully<br>";
-			$this->insertlog("Update: " . date("Y-m-d H:i:s",$timestamp ) . " " . print_r($insertrow,true));
+			//TODO: The print_r makes the insertlog look weird.
+			$this->insertlog("Update: " . $timestamp . " " . print_r($insertrow,true));
 		}
 	}
 
