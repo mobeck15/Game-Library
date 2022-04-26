@@ -153,7 +153,7 @@ $output .= "<ul>
 
 		<tbody>
 		<tr class="hidden"><td colspan = 100>';
-		$output .= print_r($topList[$_GET['Detail']],false);
+		$output .= print_r($topList[$_GET['Detail']],true);
 		$output .= '</td></tr>';
 		foreach ($topList[$_GET['Detail']]['Products'] as $game){
 			$output .= '<tr class="'. $calculations[$game]['Status'].'">

@@ -13,6 +13,8 @@ class gl6_Test extends TestCase {
 	 * @large
 	 * @covers gl6Page::buildHtmlBody
 	 * @covers gl6Page::__construct
+	 * @covers gl6Page::dirToArray
+	 * @covers gl6Page::readFileLines
 	 * @uses SteamFormat
 	 * @uses get_db_connection
 	 * @uses get_navmenu

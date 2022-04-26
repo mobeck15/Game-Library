@@ -400,7 +400,9 @@ class SteamFormat
 			$output .= $this->formatStat("Mac Requirements",$appdetails['data']['mac_requirements']);
 			$output .= $this->formatStat("Linux Requirements",$appdetails['data']['linux_requirements']);
 			
-			$output .= $this->formatStat("Legal Notice",$appdetails['data']['legal_notice']);
+			if(isset($appdetails['data']['legal_notice'])){
+				$output .= $this->formatStat("Legal Notice",$appdetails['data']['legal_notice']);
+			}
 			$output .= $this->formatStat("Publishers",$appdetails['data']['publishers']);
 			$output .= $this->formatDemos("Demos",($appdetails['data']['demos'] ?? null));
 			$output .= $this->formatoverview("Price Overview",($appdetails['data']['price_overview'] ?? null));

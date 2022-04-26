@@ -13,7 +13,8 @@ class toplevel_Test extends TestCase {
 	 * @large
 	 * @covers toplevelPage::buildHtmlBody
 	 * @covers toplevelPage::__construct
-	 * @testdox __construct & buildHtmlBody
+	 * @covers toplevelPage::echoRow
+	 * @testdox __construct, buildHtmlBody & echoRow
 	 * @uses Games
 	 * @uses PriceCalculation
 	 * @uses Purchases
@@ -42,7 +43,6 @@ class toplevel_Test extends TestCase {
 	 * @uses regroupArray
 	 * @uses timeduration
 	 * @uses toplevelPage
-
 	 */
 	public function test_outputHtml() {
 		$page = new toplevelPage();
@@ -50,4 +50,16 @@ class toplevel_Test extends TestCase {
 		$this->assertisString($result);
 	}
 
+	/**
+	 * @large
+	 * @testdox buildHtmlBody() with Group parameter & detail
+	 * @covers toplevelPage::buildHtmlBody
+	 */
+	public function test_outputHtml_detail() {
+		$_GET['Group']="Bundle";
+		$_GET['Detail']="88";
+		$page = new toplevelPage();
+		$result = $page->buildHtmlBody();
+		$this->assertisString($result);
+	}
 }
