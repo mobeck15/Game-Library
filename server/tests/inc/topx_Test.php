@@ -283,9 +283,10 @@ final class topx_Test extends testprivate
 	}
 	
 	/**
-	 * @large
+	 * @small
 	 * @covers topx::getTotalRanks
 	 * @uses topx
+	 * @uses reIndexArray
 	 */
 	public function test_getTotalRanks() {
 		//$topxObject = new topx(reIndexArray(getCalculations(),"Game_ID"));

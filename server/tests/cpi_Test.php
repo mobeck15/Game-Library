@@ -4,7 +4,8 @@ use PHPUnit\Framework\TestCase;
 $GLOBALS['rootpath'] = $GLOBALS['rootpath'] ?? "htdocs\Game-Library\server";
 
 /**
- * @group page
+ * @testdox cpi_Test.php testing cpi.php
+ * @group htmlpage
  * @coversNothing
  */
 class testcpi extends TestCase {
@@ -17,6 +18,7 @@ class testcpi extends TestCase {
     }
 
 	/**
+	 * @testdox page load
 	 * @small
 	 */
     public function test_cpi_Load() {

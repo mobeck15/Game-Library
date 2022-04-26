@@ -14,7 +14,6 @@
 // if you have only one table then add your table name on $tables = 'your_table_name' of if you want add multi table then pass array on $tables, like $tables = array('tbl_1','tbl_2','tbl_3'); on line no.8. no need to define any other parameter.
 
 
-// @codeCoverageIgnoreStart
 function Create_Export($tables=false, $backup_name=false )
 {
 	ini_set('display_errors',0);
@@ -105,4 +104,3 @@ function Export_Database($tables=false, $backup_name=false )
 	echo $content; 
 	exit;
 }
-// @codeCoverageIgnoreEnd

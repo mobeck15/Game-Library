@@ -1,37 +1,49 @@
 <?php
-//TODO: Based on Chartdata.php, Update this to show top played games for each year.
+declare(strict_types=1);
+require_once $GLOBALS['rootpath']."/page/_page.class.php";
+include_once $GLOBALS['rootpath']."/inc/utility.inc.php";
+include_once $GLOBALS['rootpath']."/inc/getsettings.inc.php";
+include_once $GLOBALS['rootpath']."/inc/getCalculations.inc.php";
+include_once $GLOBALS['rootpath']."/inc/getGames.inc.php";
 
-$GLOBALS['rootpath']=$GLOBALS['rootpath'] ?? ".";
-require_once $GLOBALS['rootpath']."/inc/php.ini.inc.php";
-require_once $GLOBALS['rootpath']."/inc/functions.inc.php";
-
-$title="Game of the Year";
-echo Get_Header($title);
-
+class chartdataPage extends Page
+{
+	private $dataAccessObject;
+	public function __construct() {
+		$this->title="Chart Data (Calendar)";
+	}
+	
+	public function buildHtmlBody(){
+		$output="";
+		
 $conn=get_db_connection();
 $settings=getsettings($conn);
+//$settings['CountFree']=0;
 
-?>
-<form>
-	View by: <input type="radio" id="Month" name="group" value="month" 
-	<?php if (!isset($_GET['group']) or $_GET['group']!="year") { echo " CHECKED"; } ?>
-	>
+//TODO: Add function to override CountFree setting if CountFree=0 (Currently only works if CountFree=1)
+$output .= '<form>
+	View by: <input type="radio" id="Month" name="group" value="month" ';
+	if (!isset($_GET['group']) or $_GET['group']!="year") { $output .= " CHECKED"; }
+	$output .= '>
 	<label for="Month">Month</label>
 	|
-	<input type="radio" id="Year" name="group" value="year"
-	<?php if (isset($_GET['group']) && $_GET['group']=="year") { echo " CHECKED"; } ?>
-	>
-	<label for="Year">Year</label><?php if($settings['CountFree']==1) { ?>
-	|
-	Hide Free Games: <label class="switch"><input type="checkbox" name="CountFree" value='0'<?php 
-	if($settings['CountFree']==0) { echo " CHECKED "; }
-	?>><span class="slider round"></span></label>
-	<?php }
+	<input type="radio" id="Year" name="group" value="year"';
+	if (isset($_GET['group']) && $_GET['group']=="year") { $output .= " CHECKED"; }
+	$output .= '>
+	<label for="Year">Year</label>';
+	if($settings['CountFree']==1) {
+	$output .= '|
+	Hide Free Games: <label class="switch"><input type="checkbox" name="CountFree" value="0"';
+	if($settings['CountFree']==0) { $output .= " CHECKED "; }
+	$output .= '><span class="slider round"></span></label>';
+	}
 
-	if (isset($_GET['detail'])) { ?>
-	<input type="hidden" id="Detail" name="detail" value="<?php echo $_GET['detail']; ?>">
-	<?php } ?>
-	<input type="submit">
+	if (isset($_GET['detail'])) { 
+	$output .= '<input type="hidden" id="Detail" name="detail" value="';
+	$output .= $_GET['detail']; 
+	$output .= '">';
+	}
+	$output .= '<input type="submit">
 </form>
 
 <table>
@@ -43,17 +55,16 @@ $settings=getsettings($conn);
 <th rowspan=2>Spending</th>
 <th rowspan=2>Games</th>
 <th rowspan=2>Avg Game $</th>
-<th class="hidden" rowspan=2>Total$</th>
-<?php 
+<th class="hidden" rowspan=2>Total$</th>';
+
 if(isset($_GET['group']) && $_GET['group']=="year") {
-echo "<th rowspan=2>$/Yr</th>
+$output .= "<th rowspan=2>$/Yr</th>
 <th rowspan=2>Games/Yr</th>";
 } else {
-echo "<th rowspan=2>$/Mo</th>
+$output .= "<th rowspan=2>$/Mo</th>
 <th rowspan=2>Games/Mo</th>";
 }
-?>
-<th rowspan=2>New Play</th>
+$output .= '<th rowspan=2>New Play</th>
 <th rowspan=2>Avg all $</th>
 <th rowspan=2>Spent</th>
 <th rowspan=2>Earned</th>
@@ -64,30 +75,26 @@ echo "<th rowspan=2>$/Mo</th>
 <th colspan=3>New Data</th>
 	
 </tr><tr>
-<th style='top:77px;'>Variance</th>
-<th style='top:77px;'>Balance</th>
-<?php 
+<th style="top:77px;">Variance</th>
+<th style="top:77px;">Balance</th>';
 if(isset($_GET['group']) && $_GET['group']=="year") {
-echo "<th style='top:77px;'>This Year</th>";
+$output .= "<th style='top:77px;'>This Year</th>";
 } else {
-echo "<th style='top:77px;'>This Month</th>";
+$output .= "<th style='top:77px;'>This Month</th>";
 }
-?>
 	
-<th style='top:77px;'>Variance</th>
-<th style='top:77px;'>Balance</th>
-<?php 
-if(isset($_GET['group']) && $_GET['group']=="year") {
-echo "<th style='top:77px;'>This Year</th>";
-} else {
-echo "<th style='top:77px;'>This Month</th>";
-}
-?>
+$output .= "<th style='top:77px;'>Variance</th>
+<th style='top:77px;'>Balance</th>";
 
-<th class="hidden">Debug</th>
+if(isset($_GET['group']) && $_GET['group']=="year") {
+$output .= "<th style='top:77px;'>This Year</th>";
+} else {
+$output .= "<th style='top:77px;'>This Month</th>";
+}
+
+$output .= '<th class="hidden">Debug</th>
 </tr></thead>
-<tbody>
-<?php
+<tbody>';
 	if(isset($_GET['group']) && $_GET['group']=="year") {
 		$sql="SELECT DISTINCT Year(`DateAdded`) as Year FROM `gl_items` ";
 		$groupbyyear=true;
@@ -107,14 +114,14 @@ echo "<th style='top:77px;'>This Month</th>";
 				$key=$row['Year'];
 				
 				//DEBUG
-				//echo "Key:" . $key . "<br>";
+				//$output .= "Key:" . $key . "<br>";
 				
 				if($groupbyyear==false){ 
 					$key.="-".$row['Month']; 
-					$date=mktime(0, 0, 0, $row['Month'], 10,$row['Year']);
+					$date=mktime(0, 0, 0, intval($row['Month']), 10, intval($row['Year']));
 					$chart[$key]['MonthNum']=$row['Month'];
 				} else {
-					$date=mktime(0, 0, 0, 1, 10,$row['Year']);
+					$date=mktime(0, 0, 0, 1, 10,intval($row['Year']));
 					$chart[$key]['MonthNum']=1;
 				}
 				$chart[$key]['Date']=date($dateformat2, $date);
@@ -167,7 +174,7 @@ echo "<th style='top:77px;'>This Month</th>";
 	//$settings=getsettings($conn);
 	$calculations=getCalculations("",$conn);
 	foreach($calculations as $key => $row) {
-		$key=date($dateformat, $row['PurchaseDateTime']->getTimestamp());
+		$key=date($dateformat, $row['AddedDateTime']->getTimestamp());
 		if($row['CountGame']==true && $row['Playable']==true
 		  && (0+$row['Paid']>0 OR $settings['CountFree']==true)){
 			
@@ -239,7 +246,7 @@ echo "<th style='top:77px;'>This Month</th>";
 			if(!isset($chart[$key]['Hours'])){$chart[$key]['Hours']=0;}
 			if($row['Elapsed']=="") {$row['Elapsed']=0;}
 			
-			//var_dump($chart[$key]['Hours']); echo " += "; var_dump($row['Elapsed']); echo " ;<br>";
+			//var_dump($chart[$key]['Hours']); $output .= " += "; var_dump($row['Elapsed']); $output .= " ;<br>";
 			$chart[$key]['Hours']+=$row['Elapsed'];
 			
 			if(!isset($chart[$key]['Date'])){
@@ -361,66 +368,65 @@ echo "<th style='top:77px;'>This Month</th>";
 		}
 		
 		//DEBUG:
-		//var_dump($row); echo "<br>";
-		//echo "Year=". $row['Date'];
-		//echo " - key=". $key;
-		//echo " - detail=".$_GET['detail']."<br>";
+		//var_dump($row); $output .= "<br>";
+		//$output .= "Year=". $row['Date'];
+		//$output .= " - key=". $key;
+		//$output .= " - detail=".$_GET['detail']."<br>";
 		
-		if (isset($_GET['detail']) && ($_GET['detail']==$key or $_GET['detail']==$row['Date'])) { ?>
-			<tr class='Selected'>
-		<?php } else { ?>
-			<tr>
-		<?php } ?>
-		<td class="hidden"><?php echo $row['Month']; ?></td>
-		<td class="hidden"><?php echo $row['MonthNum']; ?></td>
-		<td class="hidden"><?php echo $row['Year']; ?></td>
-		<?php if(!isset($row['Date']) || $row['Date']=="") {$row['Date']="Blank";}
+		if (isset($_GET['detail']) && ($_GET['detail']==$key or $_GET['detail']==$row['Date'])) {
+			$output .= "<tr class='Selected'>";
+		} else {
+			$output .= "<tr>";
+		}
+		$output .= '<td class="hidden">'. $row['Month'].'</td>
+		<td class="hidden">'. $row['MonthNum'].'</td>
+		<td class="hidden">'. $row['Year'].'</td>';
+		if(!isset($row['Date']) || $row['Date']=="") {$row['Date']="Blank";}
 		$countparm="";
 		if(isset($_GET['CountFree'])) {$countparm="&CountFree=0";}
-		?>
-		<td class="numeric"><a href='<?php echo $_SERVER['PHP_SELF'];?>?detail=<?php 
+		$output .= '<td class="numeric"><a href="'. $_SERVER['PHP_SELF'].'?detail=';
 			if($groupbyyear==true){
-				echo $row['Date']."&group=year";
+				$output .= $row['Date']."&group=year";
 			} else {
-				echo $key.$countparm;
+				$output .= $key.$countparm;
 			} 
 			//DONE: Update this to read the settings value instead of _GET
-			//settings is respected but you can't turn it off and override with the switch.
+			//TODO: settings is respected but you can't turn it off and override with the switch.
 			if(isset($_GET['CountFree'])) {
-				echo "&CountFree=0";
+				$output .= "&CountFree=0";
 			}
-			?>'><?php echo $row['Date'];?></a></td>
-		<td class="numeric">$<?php echo number_format($row['Spending'], 2); ?></td>
-		<td class="numeric"><?php echo $row['Games']; ?></td>
-		<td class="numeric">$<?php echo number_format($row['Avg'], 2); ?></td>
-		<td class="hidden numeric">$<?php echo number_format($row['TotalSpend'], 2); ?></td>
-		<td class="numeric">$<?php echo number_format($row['AvgSpent'], 2); ?></td>
-		<td class="numeric"><?php echo number_format($row['AvgGames'],0); ?></td>
-		<td class="numeric"><?php echo $row['NewPlay']; ?></td>
-		<td class="numeric">$<?php echo number_format($row['AvgTotal'], 2); ?></td>
-		<td class="numeric">$<?php echo number_format($row['Spent'], 2); ?></td>
-		<td class="numeric">$<?php echo number_format($row['Earned'], 2); ?></td>
-		<td class="numeric"><?php echo timeduration($row['Hours'],"seconds"); ?></td>
-		<td class="numeric">$<?php echo number_format($row['CostHour'], 2); ?></td>
-		<?php
+			$output .= '">'. $row['Date'].'</a></td>';
+		$output .= '<td class="numeric">$'. number_format($row['Spending'], 2).'</td>
+		<td class="numeric">'.$row['Games'].'</td>
+		<td class="numeric">$'.number_format($row['Avg'], 2).'</td>
+		<td class="hidden numeric">$'.number_format($row['TotalSpend'], 2).'</td>
+		<td class="numeric">$'.number_format($row['AvgSpent'], 2).'</td>
+		<td class="numeric">'.number_format($row['AvgGames'],0).'</td>
+		<td class="numeric">'.$row['NewPlay'].'</td>
+		<td class="numeric">$'.number_format($row['AvgTotal'], 2).'</td>
+		<td class="numeric">$'.number_format($row['Spent'], 2).'</td>
+		<td class="numeric">$'.number_format($row['Earned'], 2).'</td>
+		<td class="numeric">'.timeduration($row['Hours'],"seconds").'</td>
+		<td class="numeric">$'.number_format($row['CostHour'], 2).'</td>';
+		
 		if($row['Variance']>=0) {
 			$cellcolor="greenCell";
 		} else {
 			$cellcolor="redCell";
 		}
-		echo "<td class=\"numeric $cellcolor\">".$row['Variance']."</td>";
+		$output .= "<td class=\"numeric $cellcolor\">".$row['Variance']."</td>";
 		if($row['Balance']<=0) {
 			$cellcolor="greenCell";
 		} else {
 			$cellcolor="redCell";
 		}
-		echo "<td class=\"numeric $cellcolor\">".$row['Balance']."</td>";
+		$output .= "<td class=\"numeric $cellcolor\">".$row['Balance']."</td>";
 		if($row['leftThisMonth']==0) {
 			$cellcolor="greenCell";
 		} else {
 			$cellcolor="redCell";
 		}
-		echo "<td class=\"numeric $cellcolor\">".$row['leftThisMonth']."</td>";
+		$output .= "<td class=\"numeric $cellcolor\">".$row['leftThisMonth']."</td>";
 		
 		
 		if($row['DataVariance']>=0) {
@@ -428,29 +434,29 @@ echo "<th style='top:77px;'>This Month</th>";
 		} else {
 			$cellcolor="redCell";
 		}
-		echo "<td class=\"numeric $cellcolor\">".$row['DataVariance']."</td>";
+		$output .= "<td class=\"numeric $cellcolor\">".$row['DataVariance']."</td>";
 		if($row['DataBalance']<=0) {
 			$cellcolor="greenCell";
 		} else {
 			$cellcolor="redCell";
 		}
-		echo "<td class=\"numeric $cellcolor\">".$row['DataBalance']."</td>";
+		$output .= "<td class=\"numeric $cellcolor\">".$row['DataBalance']."</td>";
 		if($row['DataleftThisMonth']==0) {
 			$cellcolor="greenCell";
 		} else {
 			$cellcolor="redCell";
 		}
-		echo "<td class=\"numeric $cellcolor\">".$row['DataleftThisMonth']."</td>";
+		$output .= "<td class=\"numeric $cellcolor\">".$row['DataleftThisMonth']."</td>";
 		
 		
-		//echo "<td>".$row['NewData']."</td>";
+		//$output .= "<td>".$row['NewData']."</td>";
 		
 		
-		//echo "<td></td>";
-		//echo "<td>$key ".print_r($row,true)."</td>";
+		//$output .= "<td></td>";
+		//$output .= "<td>$key ".print_r($row,true)."</td>";
 		
-		//echo"<td>";		Var_dump($key);		echo"</td>";
-		echo "</tr>";
+		//$output .="<td>";		Var_dump($key);		$output .="</td>";
+		$output .= "</tr>";
 		
 		if($row['Balance']>1) {$lastBalance=$row['Balance'];}
 		if($row['leftThisMonth']>1) {$lastLeft=$row['leftThisMonth'];}
@@ -467,7 +473,7 @@ echo "<th style='top:77px;'>This Month</th>";
 		}
 	}
 	
-	echo "</tbody>";
+	$output .= "</tbody>";
 	
 	/***** Footer *****/
 	
@@ -478,58 +484,58 @@ echo "<th style='top:77px;'>This Month</th>";
 	}
 
 	
-	echo "<tfoot>";
-	echo "<tr>";
-	echo "<td></td>";
-	echo "<td></td>";
-	echo "<td></td>";
-	echo "<td></td>";
-	echo "<td></td>";
-	echo "<td></td>";
-	echo "<td></td>";
-	echo "<td></td>";
-	echo "<td></td>";
-	echo "<td></td>";
-	echo "<td></td>";
-	echo "<td></td>";
-	echo "<td></td>";
-	echo "<td colspan=2>Goal/Day</td>";
-	echo "<td></td>";
-	echo "<td colspan=2>Goal/Day</td>";
-	echo "</tr>";
+	$output .= "<tfoot>";
+	$output .= "<tr>";
+	$output .= "<td></td>";
+	$output .= "<td></td>";
+	$output .= "<td></td>";
+	$output .= "<td></td>";
+	$output .= "<td></td>";
+	$output .= "<td></td>";
+	$output .= "<td></td>";
+	$output .= "<td></td>";
+	$output .= "<td></td>";
+	$output .= "<td></td>";
+	$output .= "<td></td>";
+	$output .= "<td></td>";
+	$output .= "<td></td>";
+	$output .= "<td colspan=2>Goal/Day</td>";
+	$output .= "<td></td>";
+	$output .= "<td colspan=2>Goal/Day</td>";
+	$output .= "</tr>";
 	
-	echo "<tr>";
-	//echo "<td>ALL</td>";
-	//echo "<td>ALL</td>";
-	//echo "<td>ALL</td>";
-	echo "<th class=\"text\">Totals</th>";
-	echo "<td class=\"numeric\">$".number_format($TotalSpending, 2)."</td>";
-	echo "<td class=\"numeric\">".$TotalGames."</td>";
-	echo "<td class=\"numeric\">$".number_format($TotalSpending/$TotalGames, 2)."</td>";
-	//echo "<td class=\"numeric\">$".number_format($row['TotalSpend'], 2)."</td>";
-	echo "<td class=\"numeric\">$".number_format($row['AvgSpent'], 2)."</td>";
-	echo "<td class=\"numeric\">".number_format($row['AvgGames'],0)."</td>";
-	echo "<td class=\"numeric\">".$TotalPlay."</td>";
-	echo "<td class=\"numeric\">$".number_format($row['AvgTotal'], 2)."</td>";
-	echo "<td class=\"numeric\">$".number_format($TotalSpent, 2)."</td>";
-	echo "<td class=\"numeric\">$".number_format($TotalEarned, 2)."</td>";
-	echo "<td class=\"numeric\">".timeduration($TotalHours,"seconds")."</td>";
-	echo "<td class=\"numeric\">$".number_format($TotalSpending/($TotalHours/60/60), 2)."</td>";
-	echo "<td class=\"numeric\">".($TotalPlay-$TotalGames)."</td>"; //Unplayed Variance
-	echo "<td class=\"numeric\">".ceil($lastBalance/$daysTilNextMonth)."</td>"; //Unplayed Balance
-	echo "<td class=\"numeric\">".ceil($lastLeft/$daysTilNextMonth)."</td>"; //Unplayed This x
-	echo "<td class=\"numeric\"></td>";
-	echo "<td class=\"numeric\">".ceil($lastData/$daysTilNextMonth)."</td>";
-	echo "<td class=\"numeric\">".ceil($lastDataLeft/$daysTilNextMonth)."</td>";
-	//echo "<td>$key ".print_r($row,true)."</td>";
-	echo "</tr>";
-	echo "</tfoot>";
-	echo "</table>";
+	$output .= "<tr>";
+	//$output .= "<td>ALL</td>";
+	//$output .= "<td>ALL</td>";
+	//$output .= "<td>ALL</td>";
+	$output .= "<th class=\"text\">Totals</th>";
+	$output .= "<td class=\"numeric\">$".number_format($TotalSpending, 2)."</td>";
+	$output .= "<td class=\"numeric\">".$TotalGames."</td>";
+	$output .= "<td class=\"numeric\">$".number_format($TotalSpending/$TotalGames, 2)."</td>";
+	//$output .= "<td class=\"numeric\">$".number_format($row['TotalSpend'], 2)."</td>";
+	$output .= "<td class=\"numeric\">$".number_format($row['AvgSpent'], 2)."</td>";
+	$output .= "<td class=\"numeric\">".number_format($row['AvgGames'],0)."</td>";
+	$output .= "<td class=\"numeric\">".$TotalPlay."</td>";
+	$output .= "<td class=\"numeric\">$".number_format($row['AvgTotal'], 2)."</td>";
+	$output .= "<td class=\"numeric\">$".number_format($TotalSpent, 2)."</td>";
+	$output .= "<td class=\"numeric\">$".number_format($TotalEarned, 2)."</td>";
+	$output .= "<td class=\"numeric\">".timeduration($TotalHours,"seconds")."</td>";
+	$output .= "<td class=\"numeric\">$".number_format($TotalSpending/($TotalHours/60/60), 2)."</td>";
+	$output .= "<td class=\"numeric\">".($TotalPlay-$TotalGames)."</td>"; //Unplayed Variance
+	$output .= "<td class=\"numeric\">".ceil($lastBalance/$daysTilNextMonth)."</td>"; //Unplayed Balance
+	$output .= "<td class=\"numeric\">".ceil($lastLeft/$daysTilNextMonth)."</td>"; //Unplayed This x
+	$output .= "<td class=\"numeric\"></td>";
+	$output .= "<td class=\"numeric\">".ceil($lastData/$daysTilNextMonth)."</td>";
+	$output .= "<td class=\"numeric\">".ceil($lastDataLeft/$daysTilNextMonth)."</td>";
+	//$output .= "<td>$key ".print_r($row,true)."</td>";
+	$output .= "</tr>";
+	$output .= "</tfoot>";
+	$output .= "</table>";
 
 	$conn->close();
 
 	/***** Dynamic Chart *****/
-	//echo $GoogleChartDataString;
+	//$output .= $GoogleChartDataString;
 		//$GoogleChartDataString="";
 	/* * /
 	      $GoogleChartDataString="
@@ -571,8 +577,8 @@ echo "<th style='top:77px;'>This Month</th>";
         [new Date(2016, 2), 25.86, 9, 21.68, 32, 3],
 		";
 		
-		  echo "<br>";
-		//echo $GoogleChartDataString;
+		  $output .= "<br>";
+		//$output .= $GoogleChartDataString;
 	/* */
 	
 	///https://developers.google.com/chart/interactive/docs/gallery/linechart
@@ -585,10 +591,9 @@ echo "<th style='top:77px;'>This Month</th>";
 		$percaption="/Mo";
 		$chartmax="90";
 	}
-?>
-<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-    <script type="text/javascript">
-google.charts.load('current', {packages: ['corechart', 'line']});
+$output .= '<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">';
+$output .= "google.charts.load('current', {packages: ['corechart', 'line']});
 google.charts.setOnLoadCallback(drawCurveTypes);
 
 function drawCurveTypes() {
@@ -596,12 +601,12 @@ function drawCurveTypes() {
       data.addColumn('date', 'Date');
       data.addColumn('number', 'Spending');
       data.addColumn('number', 'Games');
-      data.addColumn('number', '$<?php echo $percaption; ?>');
-      data.addColumn('number', 'Game<?php echo $percaption; ?>');
+      data.addColumn('number', '$". $percaption ."');
+      data.addColumn('number', 'Game".$percaption."');
       data.addColumn('number', 'New Play');
 
       data.addRows([
-		<?php echo $GoogleChartDataString; ?>
+		".$GoogleChartDataString."
       ]);
 
       var options = {
@@ -613,7 +618,7 @@ function drawCurveTypes() {
 		  viewWindow: {
 			  //max: 130,
 			  //min: -51
-			  max: <?php echo $chartmax; ?>,
+			  max: ".$chartmax.",
 			  min: 0
 			  
 		  }
@@ -628,46 +633,43 @@ function drawCurveTypes() {
     }
 
 
-    </script>	
-	<p>
-       <div id="chart_div" style="height:500px;"></div>
+    </script>	";
+	$output .= '<p>
+       <div id="chart_div" style="height:500px;"></div>';
 
-<?php		
-	
-	
-	//echo "Days left in month: ".$daysTilNextMonth;
+	//$output .= "Days left in month: ".$daysTilNextMonth;
 	
 	/***** Details *****/
-	echo "<br>";
-	//echo nl2br($Debug['2015-1']);
+	$output .= "<br>";
+	//$output .= nl2br($Debug['2015-1']);
 	if (isset($_GET['detail'])) {
-		echo "<table>";
-		echo "<thead>";
-		echo "<tr><th colspan=3>Detail for ".$_GET['detail']."</th></tr>";
-		echo "<tr>";
-		//echo "<th>Transactions</th>";
-		echo "<th>Games Purchased</th><th>Games Played</th></tr>";
-		echo "</thead>";
-		echo "<tbody>";
-		echo "<tr>";
+		$output .= "<table>";
+		$output .= "<thead>";
+		$output .= "<tr><th colspan=3>Detail for ".$_GET['detail']."</th></tr>";
+		$output .= "<tr>";
+		//$output .= "<th>Transactions</th>";
+		$output .= "<th>Games Purchased</th><th>Games Played</th></tr>";
+		$output .= "</thead>";
+		$output .= "<tbody>";
+		$output .= "<tr>";
 		
-			//echo "<td valign=top><table>";
-			//echo "<thead></tr>";
-			//echo "<th>Bundle</th>";
-			//echo "<th>Parent Bundle</th>";
-			//echo "<th>Paid</th>";
-			//echo "</tr></thead>";
-			//echo "<tbody>";
-			//echo "</tbody>";
-			//echo "</table></td>";
+			//$output .= "<td valign=top><table>";
+			//$output .= "<thead></tr>";
+			//$output .= "<th>Bundle</th>";
+			//$output .= "<th>Parent Bundle</th>";
+			//$output .= "<th>Paid</th>";
+			//$output .= "</tr></thead>";
+			//$output .= "<tbody>";
+			//$output .= "</tbody>";
+			//$output .= "</table></td>";
 
 
-			echo "<td valign=top><table>";
-			echo "<thead></tr>";
-			echo "<th>Game</th>";
-			echo "<th>Played</th>";
-			echo "</tr></thead>";
-			echo "<tbody>";
+			$output .= "<td valign=top><table>";
+			$output .= "<thead></tr>";
+			$output .= "<th>Game</th>";
+			$output .= "<th>Played</th>";
+			$output .= "</tr></thead>";
+			$output .= "<tbody>";
 			$purchasedgames=array();
 			if(isset($detail['purchased'])){
 				//DONE: Sort this table with unplayed at top, then rest in alphabetical order
@@ -683,26 +685,26 @@ function drawCurveTypes() {
 				//var_dump($detail['purchased']);
 
 				foreach($detail['purchased'] as $key => $purchased){
-					echo "<tr>";
-					echo "<td><a href='viewgame.php?id=".$purchased['ID']."' target='_blank'>" . $purchased['Game'] . "</a></td>"; //". print_r($purchased,true) ."
+					$output .= "<tr>";
+					$output .= "<td><a href='viewgame.php?id=".$purchased['ID']."' target='_blank'>" . $purchased['Game'] . "</a></td>"; //". print_r($purchased,true) ."
 					if($purchased['SteamID']<>0) {
-						echo "<td><a href='steam://run/".$purchased['SteamID']."'>" . $purchased['Played'] . "</a></td>";
+						$output .= "<td><a href='steam://run/".$purchased['SteamID']."'>" . $purchased['Played'] . "</a></td>";
 					} else {
-						echo "<td>" . $purchased['Played'] . "</td>";
+						$output .= "<td>" . $purchased['Played'] . "</td>";
 					}
 					//Link to run game: steam://run/428430
-					echo "</tr>";
+					$output .= "</tr>";
 				}
 			}
-			echo "</tbody>";
-			echo "</table></td>";
+			$output .= "</tbody>";
+			$output .= "</table></td>";
 
-			echo "<td valign=top><table>";
-			echo "<thead></tr>";
-			echo "<th>Game</th>";
-			echo "<th>Elapsed</th>";
-			echo "</tr></thead>";
-			echo "<tbody>";
+			$output .= "<td valign=top><table>";
+			$output .= "<thead></tr>";
+			$output .= "<th>Game</th>";
+			$output .= "<th>Elapsed</th>";
+			$output .= "</tr></thead>";
+			$output .= "<tbody>";
 			if(isset($detail['played'])){
 				//DONE: maybe mod this table to give GOTY data: Total playtime this period (sorted by most) and hilight those that were also gained in the same period.
 				//The total hours played already counts for the period queried.
@@ -717,25 +719,26 @@ function drawCurveTypes() {
 				foreach($detail['played'] as $key => $played){
 					if(in_array($played['id'],$purchasedgames)) { 
 						$rowcolor="blue"; 
-						echo "<tr class='greenRow'>";
+						$output .= "<tr class='greenRow'>";
 					} else {
-						echo "<tr>";
+						$output .= "<tr>";
 						$rowcolor="red"; 
 					} 
-					//echo "<tr style='background-color: $rowcolor'>";
-					//echo "<tr>";
-					echo "<td><a href='viewgame.php?id=".$played['id']."' target='_blank'>" . $played['Game'] . "</a></td>";
-					echo "<td class='Numeric'>" . timeduration($played['Time'],"seconds") . " <a href='addhistory.php?GameID=".$played['id']."'>+</a></td>";
-					//echo "<td>" . print_r($played,true) . "</td>";
-					echo "</tr>";
+					//$output .= "<tr style='background-color: $rowcolor'>";
+					//$output .= "<tr>";
+					$output .= "<td><a href='viewgame.php?id=".$played['id']."' target='_blank'>" . $played['Game'] . "</a></td>";
+					$output .= "<td class='Numeric'>" . timeduration($played['Time'],"seconds") . " <a href='addhistory.php?GameID=".$played['id']."'>+</a></td>";
+					//$output .= "<td>" . print_r($played,true) . "</td>";
+					$output .= "</tr>";
 				}
 			}
-			echo "</tbody>";
-			echo "</table></td>";
-		echo "</tr>";
-		echo "</tbody>";
-		echo "</table>";
+			$output .= "</tbody>";
+			$output .= "</table></td>";
+		$output .= "</tr>";
+		$output .= "</tbody>";
+		$output .= "</table>";
+	}		
+		
+		return $output;
 	}
-
-?>
-<?php echo Get_Footer(); ?>
+}	

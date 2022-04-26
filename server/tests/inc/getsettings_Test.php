@@ -7,6 +7,7 @@ require_once $GLOBALS['rootpath']."\inc\getsettings.inc.php";
 require_once $GLOBALS['rootpath']."\inc\utility.inc.php";
 
 /**
+ * @testdox getsettings_Test.php testing getsettings.inc.php
  * @group include
  */
 final class getsettings_Test extends TestCase
@@ -15,6 +16,7 @@ final class getsettings_Test extends TestCase
 	 * @small
 	 * @covers getsettings
 	 * @uses get_db_connection
+	 * @testdox getsettings with no parameters
 	 */
     public function test_getsettings_global() {
         $this->assertisArray(getsettings());
@@ -26,6 +28,7 @@ final class getsettings_Test extends TestCase
 	 * @small
 	 * @covers getsettings
 	 * @uses get_db_connection
+	 * @testdox getsettings with connection provided
 	 */
     public function test_getsettings_conn() {
 		$_GET['CountFree']=0;
@@ -39,6 +42,7 @@ final class getsettings_Test extends TestCase
 	 * @small
 	 * @covers getsettings
 	 * @uses get_db_connection
+	 * @testdox getsettings Debug Enabled
 	 */
     public function test_getsettings_debug() {
 		$GLOBALS['Debug_Enabled']=true;

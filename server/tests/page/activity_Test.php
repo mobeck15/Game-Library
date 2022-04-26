@@ -5,7 +5,7 @@ $GLOBALS['rootpath'] = $GLOBALS['rootpath'] ?? "htdocs\Game-Library\server";
 require_once $GLOBALS['rootpath']."/page/activity.class.php";
 
 /**
- * @group page
+ * @group pageclass
  */
 class activity_Test extends TestCase {
 	/**

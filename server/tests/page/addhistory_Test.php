@@ -5,11 +5,13 @@ $GLOBALS['rootpath'] = $GLOBALS['rootpath'] ?? "htdocs\Game-Library\server";
 require_once $GLOBALS['rootpath']."/page/addhistory.class.php";
 
 /**
- * @group page
+ * @testdox addhistory_Test.php testing addhistory.class.php
+ * @group pageclass
  */
 class addhistory_Test extends TestCase {
 	/**
 	 * @small
+	 * @testdox __construct & buildHtmlBody
 	 * @covers addhistoryPage::buildHtmlBody
 	 * @covers addhistoryPage::__construct
 	 * @uses Get_Header
@@ -21,10 +23,7 @@ class addhistory_Test extends TestCase {
 	public function test_outputHtml() {
 		$_SERVER['QUERY_STRING']="";
 		$page = new addhistoryPage();
-		ob_start();
-		$page->buildHtmlBody();
-        $result = ob_get_clean();
-		
+		$result = $page->buildHtmlBody();
 		$this->assertisString($result);
 	}
 
