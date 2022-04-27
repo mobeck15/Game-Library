@@ -108,4 +108,24 @@ class addhistory_Test extends testprivate {
 		
 		$result = $page->captureInsert($datarow,$timestamp);
 	}
+	
+	/**
+	 * @small
+	 * @testdox UpdateList()
+	 * @covers addhistoryPage::UpdateList
+	 * @uses addhistoryPage
+	 * /
+	public function test_UpdateList() {
+		$updatelist[1]["GameID"]="200";
+		$gameIndex[200]=1;
+		$games[1]=1;
+		$page = new addhistoryPage();
+		$maxID = $this->getPrivateProperty( 'addhistoryPage', 'gameIndex' );
+		$maxID->setValue( $page , $gameIndex );
+		$maxID = $this->getPrivateProperty( 'addhistoryPage', 'games' );
+		$maxID->setValue( $page , $games );
+		
+		$this->assertisString($page->UpdateList($updatelist));
+	}
+	/* */
 }

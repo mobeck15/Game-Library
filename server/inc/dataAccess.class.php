@@ -2,6 +2,7 @@
 $GLOBALS['rootpath']= $GLOBALS['rootpath'] ?? "..";
 
 class dataAccess {
+	//TODO: Split into dataAccess.class and dataProcess.class
 	private $dbConnection;
 	// @codeCoverageIgnoreStart
 	function __construct($conn=null) {
@@ -282,15 +283,36 @@ class dataAccess {
 		return $query->fetch(PDO::FETCH_ASSOC);
 	}
 	
+	public function countGameStartStop($gameid){
+		$query = $this->getConnection()->prepare("SELECT count(*) c FROM `gl_history` where `GameID` = ? and `Data` = 'Start/Stop';");
+		$query->bindvalue(1,$gameid);
+		$query->execute();
+		$result= $query->fetch(PDO::FETCH_ASSOC);
+		return $result["c"];
+	}
+	
+	public function isEven($number){
+		return 1-$number&1;
+	}
+	
+	public function isOdd($number){
+		return $number&1;
+	}
+	
 	public function isGameStarted($historyarray) {
 		if($historyarray["Data"]=='Start/Stop'){
-			return $historyarray['GameID'];
+			if($this->isEven($this->countGameStartStop($historyarray['GameID']))){
+				return false;
+			} else {
+				return $historyarray['GameID'];
+			}
 		} else {
 			return false;
 		}
 	}
 	
 	public function getStartedGame(){
-		return $this->isGameStarted($this->getLatestHistory());
+		$historyarray=$this->getLatestHistory();
+		return $this->isGameStarted($historyarray);
 	}
 }

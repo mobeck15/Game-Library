@@ -11,6 +11,7 @@ require_once $GLOBALS['rootpath']."\inc\dataAccess.class.php";
  * @group classtest
  * @group getGames
  * @group addhistory
+ * @testdox dataAccess_Test.php testing dataAccess.class.php
  */
 final class dataAccess_Test extends testprivate
 {
@@ -18,6 +19,7 @@ final class dataAccess_Test extends testprivate
 	 * @small
 	 * @covers dataAccess::getConnection
 	 * @uses dataAccess
+	 * @testdox getConnection()
 	 */
 	public function test_getConnection() {
 		$dataobject= new dataAccess();
@@ -32,6 +34,7 @@ final class dataAccess_Test extends testprivate
 	 * @small
 	 * @covers dataAccess::closeConnection
 	 * @uses dataAccess
+	 * @testdox closeConnection()
 	 */
 	public function test_closeConnection() {
 		$dataobject= new dataAccess();
@@ -49,6 +52,7 @@ final class dataAccess_Test extends testprivate
 	 * @small
 	 * @covers dataAccess::getGames
 	 * @uses dataAccess
+	 * @testdox getGames() with no parameters
 	 */
 	public function test_getGames() {
 		$dataobject= new dataAccess();
@@ -61,6 +65,7 @@ final class dataAccess_Test extends testprivate
 	 * @small
 	 * @covers dataAccess::getGames
 	 * @uses dataAccess
+	 * @testdox getGames() one specific game
 	 */
 	public function test_getGames_One() {
 		$dataobject= new dataAccess();
@@ -73,6 +78,7 @@ final class dataAccess_Test extends testprivate
 	 * @small
 	 * @covers dataAccess::getGames
 	 * @uses dataAccess
+	 * @testdox getGames() multiple specific games
 	 */
 	public function test_getGames_Many() {
 		$dataobject= new dataAccess();
@@ -85,6 +91,7 @@ final class dataAccess_Test extends testprivate
 	 * @small
 	 * @covers dataAccess::getPurchases
 	 * @uses dataAccess
+	 * @testdox getPurchases() with no parameters
 	 */
 	public function test_getPurchases() {
 		$dataobject= new dataAccess();
@@ -97,6 +104,7 @@ final class dataAccess_Test extends testprivate
 	 * @small
 	 * @covers dataAccess::getPurchases
 	 * @uses dataAccess
+	 * @testdox getPurchases() one specific bundle
 	 */
 	public function test_getPurchases_One() {
 		$dataobject= new dataAccess();
@@ -110,6 +118,7 @@ final class dataAccess_Test extends testprivate
 	 * @covers dataAccess::getAllRows
 	 * @uses dataAccess
 	 * @uses simple_html_dom
+	 * @testdox getAllRows() with a key provided
 	 */
 	public function test_getAllRows() {
 		$dataobject= new dataAccess();
@@ -124,6 +133,7 @@ final class dataAccess_Test extends testprivate
 	 * @small
 	 * @covers dataAccess::getAllRows
 	 * @uses dataAccess
+	 * @testdox getAllRows() no key provided
 	 */
 	public function test_getAllRows_index() {
 		$dataobject= new dataAccess();
@@ -138,6 +148,7 @@ final class dataAccess_Test extends testprivate
 	 * @small
 	 * @covers dataAccess::getMaxHistoryId
 	 * @uses dataAccess
+	 * @testdox getMaxHistoryId()
 	 */
 	public function test_getMaxHistoryId() {
 		$dataobject= new dataAccess();
@@ -149,29 +160,74 @@ final class dataAccess_Test extends testprivate
 	 * @small
 	 * @covers dataAccess::isGameStarted
 	 * @uses dataAccess
+	 * @testdox isGameStarted() false
 	 */
-	public function test_isGameStarted_false() {
+	public function test_isGameStarted_false1() {
 		$historyArray=['Data'=>'New Total'];
 		$dataobject= new dataAccess();
 		$result=$dataobject->isGameStarted($historyArray);
 		$this->assertFalse($result);
 	}
+
 	/**
 	 * @small
 	 * @covers dataAccess::isGameStarted
 	 * @uses dataAccess
+	 * @testdox isGameStarted() true
 	 */
 	public function test_isGameStarted_true() {
 		$historyArray=['Data'=>'Start/Stop','GameID'=>200];
 		$dataobject= new dataAccess();
+		
+		$returnvalue["c"]="3";
+		
+		$statementStub = $this->createStub(PDOStatement::class);
+		$statementStub->method('fetch')
+					  ->willReturn($returnvalue);
+			 
+		$dataStub = $this->createStub(PDO::class);
+		$dataStub->method('prepare')
+				 ->willReturn($statementStub);
+			 
+		$property = $this->getPrivateProperty( 'dataAccess', 'dbConnection' );
+		$property->setValue( $dataobject, $dataStub );
+			 
 		$result=$dataobject->isGameStarted($historyArray);
 		$this->assertEquals(200,$result);
 	}
 
 	/**
 	 * @small
+	 * @covers dataAccess::isGameStarted
+	 * @uses dataAccess
+	 * @testdox isGameStarted() false
+	 */
+	public function test_isGameStarted_false2() {
+		$historyArray=['Data'=>'Start/Stop','GameID'=>200];
+		$dataobject= new dataAccess();
+		
+		$returnvalue["c"]="4";
+		
+		$statementStub = $this->createStub(PDOStatement::class);
+		$statementStub->method('fetch')
+					  ->willReturn($returnvalue);
+			 
+		$dataStub = $this->createStub(PDO::class);
+		$dataStub->method('prepare')
+				 ->willReturn($statementStub);
+			 
+		$property = $this->getPrivateProperty( 'dataAccess', 'dbConnection' );
+		$property->setValue( $dataobject, $dataStub );
+			 
+		$result=$dataobject->isGameStarted($historyArray);
+		$this->assertFalse($result);
+	}
+
+	/**
+	 * @small
 	 * @covers dataAccess::getLatestHistory
 	 * @uses dataAccess
+	 * @testdox getLatestHistory()
 	 */
 	public function test_getLatestHistory() {
 		$dataobject= new dataAccess();
@@ -183,6 +239,7 @@ final class dataAccess_Test extends testprivate
 	 * @small
 	 * @covers dataAccess::getStartedGame
 	 * @uses dataAccess
+	 * @testdox getStartedGame()
 	 */
 	public function test_getStartedGame() {
 		$dataobject= new dataAccess();
@@ -194,6 +251,7 @@ final class dataAccess_Test extends testprivate
 	 * @small
 	 * @covers dataAccess::logFileName
 	 * @uses dataAccess
+	 * @testdox logFileName()
 	 */
 	public function test_logFileName() {
 		$dataobject= new dataAccess();
@@ -205,6 +263,7 @@ final class dataAccess_Test extends testprivate
 	 * @small
 	 * @covers dataAccess::insertlog
 	 * @uses dataAccess
+	 * @testdox insertlog() new file
 	 */
 	public function test_insertlog_new() {
 		$dataobject= new dataAccess();
@@ -226,6 +285,7 @@ final class dataAccess_Test extends testprivate
 	 * @small
 	 * @covers dataAccess::insertlog
 	 * @uses dataAccess
+	 * @testdox insertlog() existing file
 	 */
 	public function test_insertlog_append() {
 		$dataobject= new dataAccess();
@@ -248,6 +308,7 @@ final class dataAccess_Test extends testprivate
 	 * @small
 	 * @covers dataAccess::updateHistory
 	 * @uses dataAccess
+	 * @testdox updateHistory()
 	 */
 	public function test_updateHistory() {
 		$dataobject= new dataAccess();
@@ -290,6 +351,7 @@ final class dataAccess_Test extends testprivate
 	 * @small
 	 * @covers dataAccess::insertHistory
 	 * @uses dataAccess
+	 * @testdox insertHistory() timestamp provided
 	 */
 	public function test_insertHistory_timeprovided() {
 		$dataobject= new dataAccess();
@@ -341,6 +403,7 @@ final class dataAccess_Test extends testprivate
 	 * @small
 	 * @covers dataAccess::insertHistory
 	 * @uses dataAccess
+	 * @testdox insertHistory() use current time
 	 */
 	public function test_insertHistory_current() {
 		$dataobject= new dataAccess();
@@ -387,5 +450,42 @@ final class dataAccess_Test extends testprivate
 			$CleanupQuery=$dataobject->getConnection()->prepare('DELETE FROM `gl_history` WHERE `gl_history`.`RowType` = "PHPUNIT Test"');
 			$CleanupQuery->execute();
 		}
+	}
+
+	/**
+	 * @small
+	 * @covers dataAccess::countGameStartStop
+	 * @uses dataAccess
+	 * @testdox countGameStartStop()
+	 */
+	public function test_countGameStartStop() {
+		$dataobject= new dataAccess();
+		$this->assertisNumeric($dataobject->countGameStartStop(2));
+	}
+	
+	/**
+	 * @small
+	 * @covers dataAccess::isEven
+	 * @uses dataAccess
+	 * @testdox isEven() $number returns $expectedresult
+	 * @testWith [5,0]
+	 *           [6,1]
+	 */
+	public function test_isEven($number,$expectedresult) {
+		$dataobject= new dataAccess();
+		$this->assertEquals($expectedresult,$dataobject->isEven($number));
+	}
+	
+	/**
+	 * @small
+	 * @covers dataAccess::isOdd
+	 * @uses dataAccess
+	 * @testdox isOdd() $number returns $expectedresult
+	 * @testWith [5,1]
+	 *           [6,0]
+	 */
+	public function test_isOdd($number,$expectedresult) {
+		$dataobject= new dataAccess();
+		$this->assertEquals($expectedresult,$dataobject->isOdd($number));
 	}
 }
