@@ -488,4 +488,57 @@ final class dataAccess_Test extends testprivate
 		$dataobject= new dataAccess();
 		$this->assertEquals($expectedresult,$dataobject->isOdd($number));
 	}
+
+	/**
+	 * @small
+	 * @covers dataAccess::fillIfBlank
+	 * @uses dataAccess
+	 * @testdox fillIfBlank() '$target' and '$value' provided, '$output' given
+	 * @testWith ["","good","good"]
+	 *           ["good","","good"]
+	 */
+	public function test_fillIfBlank($target,$value,$output) {
+		$dataobject= new dataAccess();
+		$this->assertEquals($output,$dataobject->fillIfBlank($target,$value));
+	}
+
+	/**
+	 * @small
+	 * @covers dataAccess::getHistoryRecord
+	 * @uses dataAccess
+	 * @testdox getHistoryRecord()
+	 */
+	public function test_getHistoryRecord() {
+		$historyArray=['Data'=>'Start/Stop','GameID'=>200];
+		$dataobject= new dataAccess();
+		
+		$returnvalue1["Review"]="";
+		$returnvalue1["Status"]="4";
+
+		$returnvalue2["Review"]="4";
+		$returnvalue2["Status"]="";
+
+		$returnvalue3["Review"]="1";
+		$returnvalue3["Status"]="1";
+		
+		$returnvalue4["Review"]="";
+		$returnvalue4["Status"]="";
+
+		$expectedvalue["Review"]="4";
+		$expectedvalue["Status"]="4";
+
+		$statementStub = $this->createStub(PDOStatement::class);
+		$statementStub->method('fetch')
+					  ->will($this->onConsecutiveCalls($returnvalue1, $returnvalue2, $returnvalue3, $returnvalue4));
+		
+		$dataStub = $this->createStub(PDO::class);
+		$dataStub->method('prepare')
+				 ->willReturn($statementStub);
+		
+		$property = $this->getPrivateProperty( 'dataAccess', 'dbConnection' );
+		$property->setValue( $dataobject, $dataStub );
+		
+		$result=$dataobject->getHistoryRecord(1);
+		$this->assertEquals($expectedvalue,$result);
+	}
 }

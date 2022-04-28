@@ -315,4 +315,34 @@ class dataAccess {
 		$historyarray=$this->getLatestHistory();
 		return $this->isGameStarted($historyarray);
 	}
+	
+	public function getHistoryRecord($gameid){
+		$query=$this->getConnection()->prepare("SELECT `Title`, `gl_history`.*, `SteamID` 
+				FROM `gl_products` 
+				left join `gl_history` on `gl_history`.`GameID` = `gl_products`.`Game_ID` 
+				WHERE `Game_ID`=? 
+				ORDER by `Timestamp` desc;");
+		$query->bindvalue(1,$gameid);
+		$query->execute();
+		while($row = $query->fetch(PDO::FETCH_ASSOC)) {
+			if(!isset($lastgamerecord)){
+				$lastgamerecord=$row;
+			}
+			
+			$lastgamerecord['Status']=$this->fillIfBlank($lastgamerecord['Status'],$row['Status']);
+			$lastgamerecord['Review']=$this->fillIfBlank($lastgamerecord['Review'],$row['Review']);
+			
+			if($lastgamerecord['Status']<>"" && $lastgamerecord['Review']<>""){
+				break;
+			}
+		}
+		return $lastgamerecord ?? array();
+	}
+	
+	public function fillIfBlank($target,$value){
+		if($target=="" && $value<>""){
+			return $value;
+		}
+		return $target;
+	}
 }
