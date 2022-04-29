@@ -114,12 +114,21 @@ class addhistory_Test extends testprivate {
 	 * @testdox UpdateList()
 	 * @covers addhistoryPage::UpdateList
 	 * @uses addhistoryPage
-	 * /
+	 * @uses CurlRequest
+	 * @uses SteamAPI
+	 * @uses dataAccess
+	 */
 	public function test_UpdateList() {
-		$updatelist[1]["GameID"]="200";
-		$gameIndex[200]=1;
-		$games[1]=1;
 		$page = new addhistoryPage();
+		$dataobject= new dataAccess();
+		$pagedata = $this->getPrivateProperty( 'addhistoryPage', 'dataAccessObject' );
+		$pagedata->setValue( $page , $dataobject );
+		
+		$updatelist[1]["GameID"]="200";
+		$updatelist[1]['Time']="23.32";
+		$gameIndex[200]=1;
+		$games[1]['Title']="Thegame";
+		$games[1]['SteamID']="20";
 		$maxID = $this->getPrivateProperty( 'addhistoryPage', 'gameIndex' );
 		$maxID->setValue( $page , $gameIndex );
 		$maxID = $this->getPrivateProperty( 'addhistoryPage', 'games' );
@@ -127,5 +136,45 @@ class addhistory_Test extends testprivate {
 		
 		$this->assertisString($page->UpdateList($updatelist));
 	}
-	/* */
+
+	/**
+	 * @large
+	 * @testdox steamMode()
+	 * @covers addhistoryPage::steamMode
+	 * @uses addhistoryPage
+	 * @uses CurlRequest
+	 * @uses SteamAPI
+	 * @uses dataAccess
+	 * @uses Games
+	 * @uses PriceCalculation
+	 * @uses Purchases
+	 * @uses combinedate
+	 * @uses daysSinceDate
+	 * @uses getActivityCalculations
+	 * @uses getAllItems
+	 * @uses getCalculations
+	 * @uses getCleanStringDate
+	 * @uses getGames
+	 * @uses getHistoryCalculations
+	 * @uses getHrsNextPosition
+	 * @uses getHrsToTarget
+	 * @uses getKeywords
+	 * @uses getNextPosition
+	 * @uses getPriceSort
+	 * @uses getPriceperhour
+	 * @uses getTimeLeft
+	 * @uses get_db_connection
+	 * @uses getsettings
+	 * @uses makeIndex
+	 * @uses regroupArray
+	 * @uses timeduration
+	 */
+	public function test_steamMode() {
+		$page = new addhistoryPage();
+		$dataobject= new dataAccess();
+		$pagedata = $this->getPrivateProperty( 'addhistoryPage', 'dataAccessObject' );
+		$pagedata->setValue( $page , $dataobject );
+		
+		$this->assertisString($page->steamMode());
+	}
 }

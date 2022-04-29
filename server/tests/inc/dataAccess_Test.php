@@ -541,4 +541,29 @@ final class dataAccess_Test extends testprivate
 		$result=$dataobject->getHistoryRecord(1);
 		$this->assertEquals($expectedvalue,$result);
 	}
+	
+	/**
+	 * @small
+	 * @covers dataAccess::getStatusList
+	 * @uses dataAccess
+	 * @testdox getStatusList()
+	 */
+	public function test_getStatusList(){
+		$dataobject= new dataAccess();
+		$result=$dataobject->getStatusList();
+		$this->assertIsArray($result);
+	}
+	
+	/**
+	 * @small
+	 * @covers dataAccess::getProductTitle
+	 * @uses dataAccess
+	 * @testdox getProductTitle()
+	 */
+	public function test_getProductTitle(){
+		$dataobject= new dataAccess();
+		$result=$dataobject->getProductTitle(111);
+		$this->assertIsString($result);
+	}
+	
 }

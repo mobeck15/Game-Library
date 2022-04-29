@@ -17,20 +17,23 @@ class addhistoryPage extends Page
 	private $games;
 	private $steamindex;
 	private $gameIndex;
+
+	private $reviewValues=array(1,2,3,4);
+	private $usedate;
+	private $usetime;
+		
 	
 	public function __construct() {
 		$this->title="Add History";
+		$this->usedate=date("Y-m-d");
+		$this->usetime=date("H:i:s");
 	}
 	
 	public function buildHtmlBody(){
 		$output="";
 		//TODO: Split into three files, Single form, SteamAPI, and Form Post (where both forms will go and show stats about recently played)
 
-		$conn=get_db_connection();
-
 		//Hard Coded Default Values
-		$usedate=date("Y-m-d");
-		$usetime=date("H:i:s");
 		$defaultSystem="Steam";
 		$defaultData="Add Time";
 		$defaultStatus="Inactive";
@@ -38,12 +41,9 @@ class addhistoryPage extends Page
 		$gameTitle="";
 		$ptForever="";
 		$achearned=0;
-		$reviewValues=array(1,2,3,4);
 
 		$this->dataAccessObject= new dataAccess();
 		$this->maxID=$this->dataAccessObject->getMaxHistoryId();
-		
-		//var_dump($_POST);
 		
 		/* */
 		if (isset($_POST['datarow'])){
@@ -67,283 +67,9 @@ class addhistoryPage extends Page
 		<span class="hidden"> | <a href="">Game Time Tracker DB</a></span>
 		<span class="hidden"> | <a href="">Game Time Tracker Export</a></span>';
 
+		$conn=get_db_connection();
 		if(isset($_GET['mode']) && $_GET['mode']=="steam") {
-			$this->hitory=getHistoryCalculations("",$conn);
-			$this->games=getCalculations("",$conn);
-			$this->steamindex=makeIndex($this->games,"SteamID");
-			$this->gameIndex=makeIndex($this->games,"Game_ID");
-			
-			foreach($this->hitory as $historyrow){
-				if($historyrow['System']=="Steam"){
-					$lastrecord[$historyrow['GameID']]=$historyrow;
-					if ($historyrow['BaseGame']==1){
-						$lastrecord[$historyrow['ParentGameID']]=$historyrow;
-					}
-				}
-			}
-
-			$output .= "<table>
-			<thead>
-			<tr>
-			<th rowspan=2>Title</th>
-			<th colspan=2>Playtime Forever</th>
-			<th colspan=2>Playtime two weeks</th>
-			<th rowspan=2>Total Time</th>
-			<th colspan=4>Last Time Entry</th>
-			</tr>
-			<tr>
-			<th style='top:77px;'>Minutes</th>
-			<th style='top:77px;'>Hours</th>
-			<th style='top:77px;'>Minutes</th>
-			<th style='top:77px;'>Hours</th>
-			<th style='top:77px;'>Minutes</th>
-			<th style='top:77px;'>Hours</th>
-			<th style='top:77px;'>Time</th>
-			<th style='top:77px;'>Keywords</th>
-			</tr>
-			</thead>
-			<tbody>";
-
-			$steamAPI= new SteamAPI();
-			$resultarray=$steamAPI->GetSteamAPI("GetRecentlyPlayedGames");
-			
-			$missing_count=0;
-			$updatelist=array();
-			foreach($resultarray['response']['games'] as $row){
-				$rowclass="unknown";
-				if(isset($steamindex[$row['appid']])){
-					$thisgamedata=$this->games[$steamindex[$row['appid']]];
-				
-					if(isset($lastrecord[$thisgamedata['Game_ID']]['Time']) && round($lastrecord[$thisgamedata['Game_ID']]['Time']*60)==round($row['playtime_forever'])) {
-						$rowclass="greenRow";
-					} else {
-						$rowclass="redRow";
-						$updatelist[]=array("GameID"=>$thisgamedata['Game_ID'], "Time"=>$row['playtime_forever']);
-					}
-				} else {
-					$rowclass="redRow";
-				}
-				
-				$output .= "<tr class='".$rowclass."'>";
-				
-				if(isset($steamindex[$row['appid']])){
-					$output .= '<td class="Text">
-						<a href="addhistory.php?GameID='. $thisgamedata['Game_ID'].'" target="_blank">+</a>
-						<a href="viewgame.php?id='. $thisgamedata['Game_ID'].'" target="_blank">'. $thisgamedata['Title'].'</a>
-						<span style="font-size: 70%;">(<a href="http://store.steampowered.com/app/'. $row['appid'].'" target="_blank">Store</a>)</span>
-					</td>';
-				} else {
-					$resultarray2=$steamAPI->GetSteamAPI("GetUserStatsForGame");
-					$gamename="";
-					if(isset($resultarray2['playerstats']['gameName'])){
-						$gamename=$resultarray2['playerstats']['gameName'];
-					}
-					
-					$output .= '<td class="Text">&nbsp;&nbsp;&nbsp;MISSING: <a href="http://store.steampowered.com/app/'. $row['appid'].'" target="_blank">'. $gamename.'</a></td>';
-					$missing_count++;
-					$missing_ids[]=$row['appid'];
-					unset($thisgamedata);
-				}
-				
-				$output .= '<td class="numeric">'. $row['playtime_forever'].'</td>
-				<td class="numeric">'. round($row['playtime_forever']/60,1).'</td>';
-				if(isset($row['playtime_2weeks'])){
-					$output .= '<td class="numeric">'. $row['playtime_2weeks'].'</td>
-					<td class="numeric">'.round($row['playtime_2weeks']/60,1).'</td>';
-				} else {
-					$output .= '<td>&nbsp;</td>
-					<td>&nbsp;</td>';
-				}
-				if (isset($thisgamedata)){
-					$output .= '<td class="numeric">'. timeduration($thisgamedata['GrandTotal'],"seconds").'</td>';
-					if (isset($lastrecord[$thisgamedata['Game_ID']])) {
-						$output .= '<td class="numeric">'. ($lastrecord[$thisgamedata['Game_ID']]['Time']*60).'</td>
-						<td class="numeric">'. round($lastrecord[$thisgamedata['Game_ID']]['Time'],1).'</td>
-						<td class="numeric">'. timeduration($lastrecord[$thisgamedata['Game_ID']]['Time'],"hours").'</td>
-						<td class="Text">'. $lastrecord[$thisgamedata['Game_ID']]['KeyWords'].'</td>';
-					} else {
-						$output .= '<td>&nbsp;</td>
-						<td>&nbsp;</td>
-						<td>&nbsp;</td>
-						<td>&nbsp;</td>';
-					}
-				} else {
-					$output .= '<td>&nbsp;</td>
-					<td>&nbsp;</td>
-					<td>&nbsp;</td>
-					<td>&nbsp;</td>
-					<td>&nbsp;</td>';
-				}
-				
-				unset($thisgamedata);
-				$output .= '</tr>';
-			}
-			
-			unset($resultarray);
-			
-
-			$output .= "	</tbody>
-			</table>";
-
-			if (count($updatelist)>0){
-				$output .= '<hr>
-				<form action="'. $_SERVER['PHP_SELF'].'?mode=steam" method="post">
-				<table class="ui-widget">
-				<thead>
-					<tr>
-						<th>Update</th>
-						<th>Game ID</th>
-						<th>Title</th>
-						<th>Time</th>
-						<th>Notes</th>
-						<th>Achievements</th>
-						<th>Status</th>
-						<th>Review</th>
-						<th>Base Game</th>
-						<th>Minutes</th>
-						<th>Idle</th>
-						<th>Card Farming</th>
-						<th>Beat Game</th>
-						<th class="hidden">Share</th>
-						<th>Cheating</th>
-					</tr>
-				</thead>
-				<tbody>';
-
-				$counter=0;
-				foreach($updatelist as $record){
-					$counter++;
-					$notes="";
-					$thisgamedata=$this->games[$this->gameIndex[$record['GameID']]];
-					//print_r($record);
-					
-					$sql="SELECT `Title`, `gl_history`.*, `SteamID` 
-						FROM `gl_products` 
-						left join `gl_history` on `gl_history`.`GameID` = `gl_products`.`Game_ID` 
-						WHERE `Game_ID`=".$record['GameID']." 
-						ORDER by `Timestamp` desc;";
-					if($result = $conn->query($sql)){
-						if ($result->num_rows > 0){
-							$LastGameRecord = $result->fetch_assoc();
-							while(($LastGameRecord['Status']=="" OR $LastGameRecord['Review']=="") AND $row = $result->fetch_assoc()) {
-								if($row['Status']<>"" AND $LastGameRecord['Status']==""){
-									$LastGameRecord['Status']=$row['Status'];
-								}
-								
-								if($row['Review']<>"" AND $LastGameRecord['Review']==""){
-									$LastGameRecord['Review']=$row['Review'];
-								}
-							}
-						}
-					}
-
-					/* */
-					if(isset($thisgamedata['SteamID']) && $thisgamedata['SteamID']>0) {
-						$achearned=0;
-						//$resultarray=GetSchemaForGame($thisgamedata['SteamID']);
-						$steamAPI= new SteamAPI($thisgamedata['SteamID']);
-						$resultarray=$steamAPI->GetSteamAPI("GetSchemaForGame");
-						//var_dump($resultarray['game']);
-						if(isset($resultarray['game']['availableGameStats']['achievements'])) {
-							$acharray=regroupArray($resultarray['game']['availableGameStats']['achievements'],"name");
-						}
-						//var_dump($acharray);
-						
-						//$userstatsarray=GetPlayerAchievements($thisgamedata['SteamID']);
-						$userstatsarray=$steamAPI->GetSteamAPI("GetPlayerAchievements");
-						if(isset($userstatsarray['playerstats']['achievements'])){
-							foreach ($userstatsarray['playerstats']['achievements'] as $achievement2){
-								//Count achievements earned
-								if($achievement2['achieved']==1){
-									
-									if(strtotime($LastGameRecord['Timestamp']) < $achievement2['unlocktime']){
-										//DONE: get names of achievements earned and add them to the notes field.
-										
-										//var_dump($achievement2); $output .= "<br>";
-										//$output .= $thisgamedata['SteamID']. " " . $thisgamedata['Title'] . ": " . $LastGameRecord['Timestamp'] . " >?< " . date("Y-m-d h:m:s",$achievement2['unlocktime']);
-										//$output .= " - " .$achievement2['apiname'];
-										//$output .= " - " . $acharray[$achievement2['apiname']][0]['displayName'];
-										//var_dump($acharray[$achievement2['apiname']]);
-										//$output .= "<br>";
-										
-										$notes .=$acharray[$achievement2['apiname']][0]['displayName']."\r\n";
-									}
-									
-									$achearned++;
-								}
-								//$output .= $achearned."<br>";
-							}
-						}
-					}
-					/* */
-					
-					//$output .= "<tr><td colspan=15>"; var_dump($record); $output .="</td></tr>";
-					//$output .= "<tr><td colspan=15>"; var_dump($thisgamedata); $output .="</td></tr>";
-					
-					$output .= '<tr>
-					<td><label class="switch"><input type="checkbox" name="datarow['. $counter.'][update]" CHECKED><span class="slider round"></span></label></td>
-					<td><input type="number"   name="datarow['. $counter.'][ProductID]" value="'. $record['GameID'].'" min="0" max="99999"></td>
-					<td><a href="viewgame.php?id='. $record['GameID'].'" target="_blank">'. $thisgamedata['Title'].'</a></td>
-						<input type="hidden"   name="datarow['.$counter.'][Title]"  value=\''. htmlspecialchars($thisgamedata['Title']).'\' >
-						<input type="hidden"   name="datarow['.$counter.'][System]" value="Steam" >
-						<input type="hidden"   name="datarow['.$counter.'][Data]"   value="New Total" >
-						<input type="hidden"   name="datarow['.$counter.'][source]" value="Game Library 6" >
-					<td><input type="number"   name="datarow['.$counter.'][hours]"  value="'. $record['Time'].'" min="0" max="999999"></td>
-					<td><textarea align=top rows=2 cols=18 name="datarow['.$counter.'][notes]">'. trim($notes).'</textarea></td>
-					<td><input type="number"   name="datarow['. $counter.'][achievements]" value="'. $achearned.'"  min="0" max="9999"></td>';
-					$defaultStatus=$LastGameRecord['Status'];
-					if($defaultStatus==""){
-						$defaultStatus="Inactive";
-					}
-					$defaultReview=$LastGameRecord['Review'];
-					
-					//var_dump($LastGameRecord);	$output .= "<p>";
-					
-					$output .= "<td><select  name=\"datarow[".$counter."][status]\">";
-					$sql="SELECT `Status` FROM `gl_status` order by `Active` DESC, `Count` DESC";
-					if($result = $conn->query($sql)){
-						if ($result->num_rows > 0){
-							while($row = $result->fetch_assoc()) {
-								if($defaultStatus==$row['Status']) {$selected=" SELECTED "; } else {$selected="";}
-								$output .= "<option value='".$row['Status']."'".$selected.">".$row['Status']."</option>";
-							}
-						}
-					} else {
-						trigger_error("SQL Query Failed: " . mysqli_error($conn) . "</br>Query: ". $sql);
-					}
-					
-					$output .= "</select></td>";
-					$output .= "<td><Select name=\"datarow[".$counter."][review]\">";
-					$output .= "<option value=''> </option>";
-					foreach($reviewValues as $review){
-						if($defaultReview==$review) {$selected=" SELECTED "; } else {$selected="";}
-						$output .= "<option value='".$review."'".$selected.">".$review."</option>";
-					}			
-					$output .= "</select></td>";
-					$output .= '<td><label class="switch"><input type="checkbox" name="datarow['. $counter.'][basegame]"       ><span class="slider round"></span></label></td>
-					<td><label class="switch"><input type="checkbox" name="datarow['. $counter.'][minutes]" CHECKED><span class="slider round"></span></label></td>
-					<td><label class="switch"><input type="checkbox" name="datarow['.$counter.'][idle]"           ><span class="slider round"></span></label></td>
-					<td><label class="switch"><input type="checkbox" name="datarow['.$counter.'][cardfarming]"    ><span class="slider round"></span></label></td>
-					<td><label class="switch"><input type="checkbox" name="datarow['.$counter.'][beatgame]"       ><span class="slider round"></span></label></td>';
-					//$output .= '<td class="hidden"><label class="switch"><input type="checkbox" name="datarow['.$counter.'][share]"          ><span class="slider round"></span></label></td>';
-					$output .= '<td><label class="switch"><input type="checkbox" name="datarow['.$counter.'][cheating]"       ><span class="slider round"></span></label></td>
-					</tr>';
-					unset($thisgamedata);
-				}
-				$output .= '<tr><td colspan=15>
-				<input type="datetime-local" name="timestamp" id="timestamp" value='. "'".$usedate."T".$usetime."'".'>';
-				
-				$output .= '<label class="switch"><input type="checkbox" name="currenttime" checked><span class="slider round"></span></label>
-				Ignore and use current time
-				</td></tr>
-				
-				<tr><td colspan=15>
-				<input type="submit" name="Submit" value="Submit"><p>
-				</td></tr>
-				
-				</tbody></table>';
-			}
-			
+			$output .= $this->steamMode();
 		} else {
 			
 			if (isset($_GET['HistID']) && $GameStarted == False) {
@@ -353,8 +79,8 @@ class addhistoryPage extends Page
 					if ($result->num_rows > 0){
 						$HistoryRecord = $result->fetch_assoc();
 						$_GET['GameID']=$HistoryRecord['GameID'];
-						$usedate=date("Y-m-d",strtotime($HistoryRecord['Timestamp']));
-						$usetime=date("H:i:s",strtotime($HistoryRecord['Timestamp']));
+						$this->usedate=date("Y-m-d",strtotime($HistoryRecord['Timestamp']));
+						$this->usetime=date("H:i:s",strtotime($HistoryRecord['Timestamp']));
 					}
 				}
 			}
@@ -396,38 +122,13 @@ class addhistoryPage extends Page
 					$LastGameRecord=$HistoryRecord;
 					$LastGameRecord['Title']=$HistoryRecord['Game'];
 				} else {
-					//DONE: update to scan full query and populate values for rating, status etc.
-					$sql="SELECT `Title`, `gl_history`.*, `SteamID` 
-						FROM `gl_products` 
-						left join `gl_history` on `gl_history`.`GameID` = `gl_products`.`Game_ID` 
-						WHERE `Game_ID`=".$_GET['GameID']." 
-						ORDER by `Timestamp` desc;";
-						//limit 1";
-					if($result = $conn->query($sql)){
-						if ($result->num_rows > 0){
-							$LastGameRecord = $result->fetch_assoc();
-							while(($LastGameRecord['Status']=="" OR $LastGameRecord['Review']=="") AND $row = $result->fetch_assoc()) {
-								if($row['Status']<>"" AND $LastGameRecord['Status']==""){
-									$LastGameRecord['Status']=$row['Status'];
-								}
-								
-								if($row['Review']<>"" AND $LastGameRecord['Review']==""){
-									$LastGameRecord['Review']=$row['Review'];
-								}
-							}
-						} else {
-							$sql="SELECT `Title` FROM `gl_products` WHERE `Game_ID`=".$_GET['GameID']." limit 1";
-							if($result2 = $conn->query($sql)){
-								if ($result2->num_rows > 0){
-									$record=$result2->fetch_assoc();
-									$LastGameRecord['Title']=$record['Title'];
-									$LastGameRecord['System']="Steam";
-									$LastGameRecord['Data']="New Total";
-									$LastGameRecord['Status']="";
-									$LastGameRecord['Review']="";
-								}
-							}
-						}
+					$LastGameRecord=$this->dataAccessObject->getHistoryRecord($_GET['GameID']);
+					if(!isset($LastGameRecord['GameID'])){
+						$LastGameRecord['Title']=$this->dataAccessObject->getProductTitle($_GET['GameID']);
+						$LastGameRecord['System']="Steam";
+						$LastGameRecord['Data']="New Total";
+						$LastGameRecord['Status']="";
+						$LastGameRecord['Review']="";
 					}
 				}
 
@@ -501,7 +202,7 @@ class addhistoryPage extends Page
 			
 			<tr>
 				<th>Timestamp *</th>
-				<td colspan=4><input type="datetime-local" name="timestamp" id="timestamp" value='. "'".$usedate."T".$usetime."'".'>';
+				<td colspan=4><input type="datetime-local" name="timestamp" id="timestamp" value='. "'".$this->usedate."T".$this->usetime."'".'>';
 				//Only include this checkbox if there is no existing history record being edited.
 				if (!isset($HistoryRecord)) { 
 				$output .= '<br>
@@ -580,35 +281,7 @@ class addhistoryPage extends Page
 						$this->games=getCalculations("",$conn);
 						$this->gameIndex=makeIndex($this->games,"Game_ID");
 						$thisgamedata=$this->games[$this->gameIndex[$_GET['GameID']]];
-						//var_dump($thisgamedata); $output .= "<br>";
-
-						$sql="SELECT `Title`, `gl_history`.*, `SteamID` 
-							FROM `gl_products` 
-							left join `gl_history` on `gl_history`.`GameID` = `gl_products`.`Game_ID` 
-							WHERE `Game_ID`=".$_GET['GameID']." 
-							AND `Timestamp` < '".date("Y-m-d H:i:s",strtotime($usedate." ".$usetime))."'
-							ORDER by `gl_history`.`Timestamp` desc;";
-							//$output .= $sql ."<p>";
-						if($result = $conn->query($sql)){
-							if ($result->num_rows > 0){
-								$LastGameRecord = $result->fetch_assoc();
-								//$output .= "<p>Lastgamerecord: "; var_dump($LastGameRecord); //2020-04-18 23:54:45
-								while(($LastGameRecord['Status']=="" OR $LastGameRecord['Review']=="") AND $row = $result->fetch_assoc()) {
-								//while($row = $result->fetch_assoc()) {
-									//$output .= "<p>Record: "; var_dump($LastGameRecord); //2020-04-18 23:54:45
-									if($row['Status']<>"" AND $LastGameRecord['Status']==""){
-										$LastGameRecord['Status']=$row['Status'];
-									}
-									
-									if($row['Review']<>"" AND $LastGameRecord['Review']==""){
-										$LastGameRecord['Review']=$row['Review'];
-									}
-								}
-								//$output .= "<p>Lastgamerecord: "; var_dump($LastGameRecord); //2020-04-18 23:54:45
-							} else {
-								$LastGameRecord['Timestamp']=0;
-							}
-						}
+						$LastGameRecord=$this->dataAccessObject->getHistoryRecord($_GET['GameID']);
 						
 						if(isset($thisgamedata['SteamID']) && $thisgamedata['SteamID']>0) {
 							$achearned=0;
@@ -624,7 +297,7 @@ class addhistoryPage extends Page
 							$userstatsarray = $api2->GetSteamAPI("GetPlayerAchievements");
 							if(isset($userstatsarray['playerstats']['achievements'])){
 								$debug = "Last Record Time: " . $LastGameRecord['Timestamp']."<br>";
-								$debug .= "Current Record Time: ". $usedate." ".$usetime . "<br>";
+								$debug .= "Current Record Time: ". $this->usedate." ".$this->usetime . "<br>";
 								$debug .= "<table><tr><th>apiname</th><th>achieved</th><th>unlocktime</th><th>afterlast</th><th>beforecurrent</th></tr>";
 								foreach ($userstatsarray['playerstats']['achievements'] as $achievement2){
 									//Count achievements earned
@@ -637,12 +310,12 @@ class addhistoryPage extends Page
 										if($achievement2['unlocktime'] > strtotime($LastGameRecord['Timestamp'])){ $debug .= "TRUE";}
 										$debug .= "</td>";
 										$debug .= "<td>";
-										if($achievement2['unlocktime'] < strtotime($usedate." ".$usetime)){ $debug .= "TRUE";}
+										if($achievement2['unlocktime'] < strtotime($this->usedate." ".$this->usetime)){ $debug .= "TRUE";}
 										$debug .= "</td>";
 										$debug .= "</tr>";
 										
-										//$output .= "<p>". strtotime($LastGameRecord['Timestamp']) ." < " . $achievement2['unlocktime'] . " AND " . strtotime($LastGameRecord['Timestamp']) ." >= ". strtotime($usedate." ".$usetime);
-										if(strtotime($LastGameRecord['Timestamp']) < $achievement2['unlocktime'] AND $achievement2['unlocktime'] <= strtotime($usedate." ".$usetime)){
+										//$output .= "<p>". strtotime($LastGameRecord['Timestamp']) ." < " . $achievement2['unlocktime'] . " AND " . strtotime($LastGameRecord['Timestamp']) ." >= ". strtotime($this->usedate." ".$this->usetime);
+										if(strtotime($LastGameRecord['Timestamp']) < $achievement2['unlocktime'] AND $achievement2['unlocktime'] <= strtotime($this->usedate." ".$this->usetime)){
 											//DONE: get names of achievements earned and add them to the notes field. (single record)
 											//DONE: get names of achievements earned and add them to the notes field. (past record edit)
 											
@@ -712,7 +385,7 @@ class addhistoryPage extends Page
 				<th>Review *</th>
 				<td colspan=4><select name="datarow[1][review]">';
 					$output .= "<option value=''> </option>";
-					foreach($reviewValues as $review){
+					foreach($this->reviewValues as $review){
 						if($defaultReview==$review) {$selected=" SELECTED "; } else {$selected="";}
 						$output .= "<option value='".$review."'".$selected.">".$review."</option>";
 					}
@@ -789,80 +462,12 @@ class addhistoryPage extends Page
 		</form>';
 		} //end if(else) mode=steam
 
-return $output;
+		return $output;
 
-}
-	
-	public function buildHtmlBody1(){
-		$conn=get_db_connection();
-
-		//Hard Coded Default Values
-		$usedate=date("Y-m-d");
-		$usetime=date("H:i:s");
-		$defaultSystem="Steam";
-		$defaultData="Add Time";
-		$defaultStatus="Inactive";
-		$defaultReview=1;
-		$gameTitle="";
-		$ptForever="";
-		$achearned=0;
-		$reviewValues=array(1,2,3,4);
-
-		$dataobject= new dataAccess();
-		$this->maxID=$dataobject->getMaxHistoryId();
-		
-		if (isset($_POST['datarow'])){
-			//TODO: cleanse post data
-			$this->captureInsert($_POST['datarow'],$_POST['timestamp']);
-		}
-		
-		//determines if a game is active or not.
-		//If a game is active, overrides chosen input and forces a second entry of active game.
-		$GameStarted=isGameStarted();
-		
-		echo "Game Started: ".booltext($GameStarted);
-		
-		/* Features
-		Default action: DONE
-			Single blank input form
-			Submit causes input
-			
-		Start/Stop in progress: DONE? -Untested
-			Input form will only accept a Stop option.
-			Submit causes input
-
-		HistID provided: 
-			Specific historical record is pre-loaded for edit. -DONE
-			Submit results in update query. -DONE
-
-		GameID provided: DONE? -Untested
-			Previous values pre-filled for that game.
-			Submit causes input
-
-		SteamAPI Recent Games: -DONE? Untested
-			List recent games via Steam API
-			Compare values to history record
-			Submit form with multiple rows for input
-		*/
-
-		$this->body .= '<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
-		  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-
-		<br/>
-		<span>   <a href="' . $_SERVER['PHP_SELF'] . '">Manual Entry</a></span>
-		<span> | <a href="' . $_SERVER['PHP_SELF'] . '?mode=steam">Steam API</a></span>
-		<span class="hidden"> | <a href="">Local Time Log</a></span>
-		<span class="hidden"> | <a href="">Game Time Tracker DB</a></span>
-		<span class="hidden"> | <a href="">Game Time Tracker Export</a></span>';
-		
-		if(isset($_GET['mode']) && $_GET['mode']=="steam") {
-			$this->body .= steamMode();
-		}
-		
-		return $this->body;
 	}
 	
 	public function steamMode(){
+		$conn=get_db_connection();
 		$this->hitory=getHistoryCalculations("",$conn);
 		$this->games=getCalculations("",$conn);
 		$this->steamindex=makeIndex($this->games,"SteamID");
@@ -907,8 +512,8 @@ return $output;
 		
 		foreach($resultarray['response']['games'] as $row){
 			$rowclass="unknown";
-			if(isset($steamindex[$row['appid']])){
-				$thisgamedata=$this->games[$steamindex[$row['appid']]];
+			if(isset($this->steamindex[$row['appid']])){
+				$thisgamedata=$this->games[$this->steamindex[$row['appid']]];
 			
 				if(isset($lastrecord[$thisgamedata['Game_ID']]['Time']) && round($lastrecord[$thisgamedata['Game_ID']]['Time']*60)==round($row['playtime_forever'])) {
 					$rowclass="greenRow";
@@ -922,7 +527,7 @@ return $output;
 			
 			$htmloutput .= "<tr class='".$rowclass."'>";
 			
-			if(isset($steamindex[$row['appid']])){
+			if(isset($this->steamindex[$row['appid']])){
 				$htmloutput .="<td class='Text'>
 					<a href='addhistory.php?GameID=" . $thisgamedata['Game_ID'] . "' target='_blank'>+</a>
 					<a href='viewgame.php?id=" . $thisgamedata['Game_ID'] . "' target='_blank'>" . $thisgamedata['Title'] . "</a>
@@ -979,7 +584,7 @@ return $output;
 		$htmloutput .= "</table>";
 		
 		if (count($updatelist)>0){
-			$htmloutput .= updatelist($updatelist);
+			$htmloutput .= $this->updatelist($updatelist);
 		} else {
 			if (isset($_GET['HistID']) && $GameStarted == False) {
 				//If a game is not started and the HistID is set, load the time from the database instead.
@@ -988,8 +593,8 @@ return $output;
 					if ($result->num_rows > 0){
 						$HistoryRecord = $result->fetch_assoc();
 						$_GET['GameID']=$HistoryRecord['GameID'];
-						$usedate=date("Y-m-d",strtotime($HistoryRecord['Timestamp']));
-						$usetime=date("H:i:s",strtotime($HistoryRecord['Timestamp']));
+						$this->usedate=date("Y-m-d",strtotime($HistoryRecord['Timestamp']));
+						$this->usetime=date("H:i:s",strtotime($HistoryRecord['Timestamp']));
 					}
 				}
 			}
@@ -1024,30 +629,12 @@ return $output;
 		<tbody>";
 
 		$counter=0;
+
 		foreach($updatelist as $record){
 			$counter++;
 			$notes="";
 			$thisgamedata=$this->games[$this->gameIndex[$record['GameID']]];
-			
-			$sql="SELECT `Title`, `gl_history`.*, `SteamID` 
-				FROM `gl_products` 
-				left join `gl_history` on `gl_history`.`GameID` = `gl_products`.`Game_ID` 
-				WHERE `Game_ID`=".$record['GameID']." 
-				ORDER by `Timestamp` desc;";
-			if($result = $conn->query($sql)){
-				if ($result->num_rows > 0){
-					$LastGameRecord = $result->fetch_assoc();
-					while(($LastGameRecord['Status']=="" OR $LastGameRecord['Review']=="") AND $row = $result->fetch_assoc()) {
-						if($row['Status']<>"" AND $LastGameRecord['Status']==""){
-							$LastGameRecord['Status']=$row['Status'];
-						}
-						
-						if($row['Review']<>"" AND $LastGameRecord['Review']==""){
-							$LastGameRecord['Review']=$row['Review'];
-						}
-					}
-				}
-			}
+			$LastGameRecord=$this->dataAccessObject->getHistoryRecord($record['GameID']);
 
 			if(isset($thisgamedata['SteamID']) && $thisgamedata['SteamID']>0) {
 				$achearned=0;
@@ -1075,11 +662,16 @@ return $output;
 			$htmloutput .= "<tr>";
 			$htmloutput .= '<td><label class="switch"><input type="checkbox" name="datarow[' .  $counter . '][update]" CHECKED><span class="slider round"></span></label></td>';
 			$htmloutput .= '<td><input type="number"   name="datarow[' . $counter . '][ProductID]" value="' . $record['GameID'] . '" min="0" max="99999"></td>';
+			
+			//var_dump($record);
+			//var_dump($thisgamedata);
+			
 			$htmloutput .= "<td><a href='viewgame.php?id=" . $record['GameID'] . "' target='_blank'>" . $thisgamedata['Title'] . "</a></td>";
-				$htmloutput .= '<input type="hidden"   name="datarow[' .  $counter . '][Title]"  value="' . htmlspecialchars($thisgamedata['Title']) . '" >';
-				$htmloutput .= '<input type="hidden"   name="datarow[' .  $counter . '][System]" value="Steam" >';
-				$htmloutput .= '<input type="hidden"   name="datarow[' .  $counter . '][Data]"   value="New Total" >';
-				$htmloutput .= '<input type="hidden"   name="datarow[' .  $counter . '][source]" value="Game Library 6" >';
+			
+			$htmloutput .= '<input type="hidden"   name="datarow[' .  $counter . '][Title]"  value="' . htmlspecialchars($thisgamedata['Title']) . '" >';
+			$htmloutput .= '<input type="hidden"   name="datarow[' .  $counter . '][System]" value="Steam" >';
+			$htmloutput .= '<input type="hidden"   name="datarow[' .  $counter . '][Data]"   value="New Total" >';
+			$htmloutput .= '<input type="hidden"   name="datarow[' .  $counter . '][source]" value="Game Library 6" >';
 			$htmloutput .= '<td><input type="number"   name="datarow[' .  $counter . '][hours]"  value="' . $record['Time'] . '" min="0" max="999999"></td>';
 			$htmloutput .= '<td><textarea align=top rows=2 cols=18 name="datarow[' .  $counter . '][notes]">' . trim($notes) . '</textarea></td>';
 			$htmloutput .= '<td><input type="number"   name="datarow[' .  $counter . '][achievements]" value="' . $achearned . '"  min="0" max="9999"></td>';
@@ -1091,6 +683,17 @@ return $output;
 			$defaultReview=$LastGameRecord['Review'];
 			
 			$htmloutput .= '<td><select name="datarow['.$counter.'][status]">';
+			$statuslist=$this->dataAccessObject->getStatusList();
+			foreach($statuslist as $statusrow){
+						if($defaultStatus==$statusrow['Status']) {
+							$selected=" SELECTED "; 
+						} else {
+							$selected="";
+						}
+						$htmloutput .= "<option value='".$statusrow['Status']."'".$selected.">".$statusrow['Status']."</option>";
+			}
+			
+			/*
 			$sql="SELECT `Status` FROM `gl_status` order by `Active` DESC, `Count` DESC";
 			if($result = $conn->query($sql)){
 				if ($result->num_rows > 0){
@@ -1106,11 +709,12 @@ return $output;
 			} else {
 				trigger_error("SQL Query Failed: " . mysqli_error($conn) . "</br>Query: ". $sql);
 			}
+			*/
 			
 			$htmloutput .= "</select></td>";
 			$htmloutput .= "<td><Select name=\"datarow[".$counter."][review]\">";
 			$htmloutput .= "<option value=''> </option>";
-			foreach($reviewValues as $review){
+			foreach($this->reviewValues as $review){
 				if($defaultReview==$review) {$selected=" SELECTED "; } else {$selected="";}
 				$htmloutput .= "<option value='".$review."'".$selected.">".$review."</option>";
 			}			
@@ -1129,7 +733,7 @@ return $output;
 		}
 
 		$htmloutput .= '<tr><td colspan=15>';
-		$htmloutput .= '<input type="datetime-local" name="timestamp" id="timestamp" value=' . "'".$usedate."T".$usetime."'" . '>';
+		$htmloutput .= '<input type="datetime-local" name="timestamp" id="timestamp" value=' . "'".$this->usedate."T".$this->usetime."'" . '>';
 		
 		$htmloutput .= '<label class="switch"><input type="checkbox" name="currenttime" checked><span class="slider round"></span></label>';
 		$htmloutput .= 'Ignore and use current time';

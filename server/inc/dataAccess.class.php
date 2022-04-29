@@ -345,4 +345,30 @@ class dataAccess {
 		}
 		return $target;
 	}
+	
+	public function getStatusList(){
+		$query=$this->getConnection()->prepare("SELECT `Status` FROM `gl_status` order by `Active` DESC, `Count` DESC");
+		$query->execute();
+		return $this->getAllRows($query);
+		
+		/*
+		array(7) {
+		  [0]=> array(1) { ["Status"]=> string(6) "Active"	}
+		  [1]=> array(1) { ["Status"]=> string(4) "Done"	}
+		  [2]=> array(1) { ["Status"]=> string(8) "Inactive"}
+		  [3]=> array(1) { ["Status"]=> string(7) "On Hold"	}
+		  [4]=> array(1) { ["Status"]=> string(8) "Unplayed"}
+		  [5]=> array(1) { ["Status"]=> string(6) "Broken"	}
+		  [6]=> array(1) { ["Status"]=> string(5) "Never"	}
+		}
+		*/
+	}
+	
+	public function getProductTitle($gameid){
+		$query=$this->getConnection()->prepare("SELECT `Title` FROM `gl_products` WHERE `Game_ID`=? limit 1");
+		$query->bindvalue(1,$gameid);
+		$query->execute();
+		return $this->getAllRows($query)[0]['Title'] ?? "";
+		//return $this->getAllRows($query);
+	}
 }

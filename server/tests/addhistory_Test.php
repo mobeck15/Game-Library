@@ -6,7 +6,6 @@ $GLOBALS['rootpath'] = $GLOBALS['rootpath'] ?? "htdocs\Game-Library\server";
 /**
  * @group htmlpage
  * @coversNothing
- * @group addhistory
  */
 class testaddhistory extends TestCase {
 
