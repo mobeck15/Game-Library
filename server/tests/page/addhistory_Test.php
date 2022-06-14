@@ -149,13 +149,17 @@ class addhistory_Test extends testprivate {
 	 */
 	public function test_MakeRecord() {
 		$page = new addhistoryPage();
-		$dataobject= new dataAccess();
+        $dataobject = $this->createStub(dataAccess::class);
+		$dataobject->method('getHistoryRecord') 
+			->willReturn(["Timestamp"=>"2014-09-05 18:46:58","Status"=>"", "Review"=>"3"]);
+		$dataobject->method('getStatusList') 
+			->willReturn([["Status"=>"Active"],["Status"=>"Broken"],["Status"=>"Done"],["Status"=>"Inactive"],["Status"=>"Never"],["Status"=>"On Hold"],["Status"=>"Unplayed"]]);
 		$pagedata = $this->getPrivateProperty( 'addhistoryPage', 'dataAccessObject' );
 		$pagedata->setValue( $page , $dataobject );
-		
-		$updatelist["GameID"]="200";
+
+		$updatelist["GameID"]="555";
 		$updatelist['Time']="23.32";
-		$gameIndex[200]=1;
+		$gameIndex[555]=1;
 		$games[1]['Title']="Thegame";
 		$games[1]['SteamID']="20";
 		$maxID = $this->getPrivateProperty( 'addhistoryPage', 'gameIndex' );
@@ -169,7 +173,8 @@ class addhistory_Test extends testprivate {
 				'availableGameStats'=>array(
 					'achievements'=>array(
 						array(
-							"name"=>"name1"
+							"name"=>"name1",
+							"displayName"=>"Name 1"
 						)
 					)
 				)
@@ -180,21 +185,18 @@ class addhistory_Test extends testprivate {
 				'achievements'=>array(
 					array(
 						"achieved"=>1,
-						"unlocktime"=>1000000,
-						"apiname"=>array(
-							array(
-								"displayName"=>"display Name"
-							)
-						)
+						"unlocktime"=>1500000000,
+						"apiname"=>"name1"
 					)
 				)
 			)
 		);
+		
 		$map = [
 			['GetSchemaForGame', $schema ],
 			['GetPlayerAchievements', $achievements]
 		];
-        $stub->method('GetSteamAPI') //("GetSchemaForGame")
+        $stub->method('GetSteamAPI') 
              ->will($this->returnValueMap($map));
 		$maxID = $this->getPrivateProperty( 'addhistoryPage', 'steamAPI' );
 		$maxID->setValue( $page , $stub );
@@ -242,4 +244,126 @@ class addhistory_Test extends testprivate {
 		
 		$this->assertisString($page->steamMode());
 	}
+	
+	/**
+	 * @Small
+	 * @testdox getSteamAPI()
+	 * @covers addhistoryPage::getSteamAPI
+	 * @uses addhistoryPage
+	 * @uses CurlRequest
+	 * @uses SteamAPI
+	 */
+	public function test_getSteamAPI() {
+		$page = new addhistoryPage();
+		
+		$method = $this->getPrivateMethod( 'addhistoryPage', 'getSteamAPI' );
+		$result = $method->invokeArgs( $page,array() );
+		$this->assertThat($result,
+			$this->isInstanceOf("SteamAPI")
+		);
+	}
+
+	/**
+	 * @Small
+	 * @testdox getGameAttribute()
+	 * @covers addhistoryPage::getGameAttribute
+	 * @uses addhistoryPage
+	 */
+	public function test_getGameAttribute() {
+		$page = new addhistoryPage();
+		
+		$games[1]['Title']="Thegame";
+		$games[1]['SteamID']="20";
+		$games[1]['Game_ID']="1";
+		$steamindex[20]=1;
+		
+		$maxID = $this->getPrivateProperty( 'addhistoryPage', 'games' );
+		$maxID->setValue( $page , $games );
+		$maxID = $this->getPrivateProperty( 'addhistoryPage', 'steamindex' );
+		$maxID->setValue( $page , $steamindex );
+
+		$method = $this->getPrivateMethod( 'addhistoryPage', 'getGameAttribute' );
+		$result = $method->invokeArgs( $page,array(20) );
+		$this->assertEquals($result,"1");
+	}	
+
+	/**
+	 * @Small
+	 * @testdox steamAppIDexists()
+	 * @covers addhistoryPage::steamAppIDexists
+	 * @uses addhistoryPage
+	 */
+	public function test_steamAppIDexists() {
+		$page = new addhistoryPage();
+		
+		$steamindex[20]=1;
+		
+		$maxID = $this->getPrivateProperty( 'addhistoryPage', 'steamindex' );
+		$maxID->setValue( $page , $steamindex );
+
+		$method = $this->getPrivateMethod( 'addhistoryPage', 'steamAppIDexists' );
+		$result = $method->invokeArgs( $page,array(20) );
+		$this->assertTrue($result);
+	}
+
+	/**
+	 * @Small
+	 * @testdox getUpdateList()
+	 * @covers addhistoryPage::getUpdateList
+	 * @uses addhistoryPage
+	 */
+	public function test_getUpdateList() {
+		$page = new addhistoryPage();
+		
+		$games[1]['Title']="Thegame";
+		$games[1]['SteamID']="20";
+		$games[1]['Game_ID']="1";
+		$steamindex[20]=1;
+		
+		$maxID = $this->getPrivateProperty( 'addhistoryPage', 'games' );
+		$maxID->setValue( $page , $games );
+		$maxID = $this->getPrivateProperty( 'addhistoryPage', 'steamindex' );
+		$maxID->setValue( $page , $steamindex );
+
+		$row['appid']=20;
+		$row['playtime_forever']=60;
+		$lastrecord[1]['Time']=2;
+		$updatelist=array();
+		
+		$method = $this->getPrivateMethod( 'addhistoryPage', 'getUpdateList' );
+		$result = $method->invokeArgs( $page,array($row,$lastrecord,$updatelist) );
+		$this->assertisArray($result);
+		$this->assertTrue(count($result)>0);
+	}
+
+	/**
+	 * @Small
+	 * @testdox getRowClass()
+	 * @covers addhistoryPage::getRowClass
+	 * @uses addhistoryPage
+	 * @testWith [20, 1]
+	 *           [10, 1]
+	 */
+	public function test_getRowClass($appid, $time) {
+		$page = new addhistoryPage();
+		
+		$games[1]['Title']="Thegame";
+		$games[1]['SteamID']="20";
+		$games[1]['Game_ID']="1";
+		$steamindex[20]=1;
+		
+		$maxID = $this->getPrivateProperty( 'addhistoryPage', 'games' );
+		$maxID->setValue( $page , $games );
+		$maxID = $this->getPrivateProperty( 'addhistoryPage', 'steamindex' );
+		$maxID->setValue( $page , $steamindex );
+
+		$row['appid']=$appid;
+		$row['playtime_forever']=60;
+		$lastrecord[1]['Time']=$time;
+
+		$method = $this->getPrivateMethod( 'addhistoryPage', 'getRowClass' );
+		$result = $method->invokeArgs( $page,array($row,$lastrecord) );
+		$this->assertisString($result);
+	}
+	
 }

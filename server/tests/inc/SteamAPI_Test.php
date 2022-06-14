@@ -182,4 +182,20 @@ final class SteamAPI_Test extends testprivate
 		$result = $api->GetSteamAPI($APIname);
 		$this->assertNull($result);
 	}
+	
+	/**
+	 * @small
+	 * @covers SteamAPI::setSteamGameID
+	 * @uses SteamAPI
+	 * @uses CurlRequest
+	 */
+	public function test_setSteamGameID() {
+		$api = new SteamAPI();
+		$api->setSteamGameID(200);
+		
+		$pProp = $this->getPrivateProperty( 'SteamAPI', 'steamGameID' );
+		$result = $pProp->getValue( $api );
+		
+		$this->assertEquals(200,$result);
+	}
 }
