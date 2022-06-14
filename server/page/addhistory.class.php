@@ -17,16 +17,25 @@ class addhistoryPage extends Page
 	private $games;
 	private $steamindex;
 	private $gameIndex;
+	
+	private $steamAPI;
 
 	private $reviewValues=array(1,2,3,4);
 	private $usedate;
 	private $usetime;
-		
 	
 	public function __construct() {
 		$this->title="Add History";
 		$this->usedate=date("Y-m-d");
 		$this->usetime=date("H:i:s");
+		//$this->steamAPI=new SteamAPI();
+	}
+	
+	private function getSteamAPI(){
+		if(!isset($this->steamAPI)){
+			$this->steamAPI=new SteamAPI();
+		}
+		return $this->steamAPI;
 	}
 	
 	public function buildHtmlBody(){
@@ -631,105 +640,7 @@ class addhistoryPage extends Page
 		$counter=0;
 
 		foreach($updatelist as $record){
-			$counter++;
-			$notes="";
-			$thisgamedata=$this->games[$this->gameIndex[$record['GameID']]];
-			$LastGameRecord=$this->dataAccessObject->getHistoryRecord($record['GameID']);
-
-			if(isset($thisgamedata['SteamID']) && $thisgamedata['SteamID']>0) {
-				$achearned=0;
-				$steamAPI= new SteamAPI($thisgamedata['SteamID']);
-				$resultarray=$steamAPI->GetSteamAPI("GetSchemaForGame");
-				if(isset($resultarray['game']['availableGameStats']['achievements'])) {
-					$acharray=regroupArray($resultarray['game']['availableGameStats']['achievements'],"name");
-				}
-
-				$userstatsarray=$steamAPI->GetSteamAPI("GetPlayerAchievements");
-				if(isset($userstatsarray['playerstats']['achievements'])){
-					foreach ($userstatsarray['playerstats']['achievements'] as $achievement2){
-						//Count achievements earned
-						if($achievement2['achieved']==1){
-							
-							if(strtotime($LastGameRecord['Timestamp']) < $achievement2['unlocktime']){
-								$notes .=$acharray[$achievement2['apiname']][0]['displayName']."\r\n";
-							}
-							$achearned++;
-						}
-					}
-				}
-			}
-			
-			$htmloutput .= "<tr>";
-			$htmloutput .= '<td><label class="switch"><input type="checkbox" name="datarow[' .  $counter . '][update]" CHECKED><span class="slider round"></span></label></td>';
-			$htmloutput .= '<td><input type="number"   name="datarow[' . $counter . '][ProductID]" value="' . $record['GameID'] . '" min="0" max="99999"></td>';
-			
-			//var_dump($record);
-			//var_dump($thisgamedata);
-			
-			$htmloutput .= "<td><a href='viewgame.php?id=" . $record['GameID'] . "' target='_blank'>" . $thisgamedata['Title'] . "</a></td>";
-			
-			$htmloutput .= '<input type="hidden"   name="datarow[' .  $counter . '][Title]"  value="' . htmlspecialchars($thisgamedata['Title']) . '" >';
-			$htmloutput .= '<input type="hidden"   name="datarow[' .  $counter . '][System]" value="Steam" >';
-			$htmloutput .= '<input type="hidden"   name="datarow[' .  $counter . '][Data]"   value="New Total" >';
-			$htmloutput .= '<input type="hidden"   name="datarow[' .  $counter . '][source]" value="Game Library 6" >';
-			$htmloutput .= '<td><input type="number"   name="datarow[' .  $counter . '][hours]"  value="' . $record['Time'] . '" min="0" max="999999"></td>';
-			$htmloutput .= '<td><textarea align=top rows=2 cols=18 name="datarow[' .  $counter . '][notes]">' . trim($notes) . '</textarea></td>';
-			$htmloutput .= '<td><input type="number"   name="datarow[' .  $counter . '][achievements]" value="' . $achearned . '"  min="0" max="9999"></td>';
-
-			$defaultStatus=$LastGameRecord['Status'];
-			if($defaultStatus==""){
-				$defaultStatus="Inactive";
-			}
-			$defaultReview=$LastGameRecord['Review'];
-			
-			$htmloutput .= '<td><select name="datarow['.$counter.'][status]">';
-			$statuslist=$this->dataAccessObject->getStatusList();
-			foreach($statuslist as $statusrow){
-						if($defaultStatus==$statusrow['Status']) {
-							$selected=" SELECTED "; 
-						} else {
-							$selected="";
-						}
-						$htmloutput .= "<option value='".$statusrow['Status']."'".$selected.">".$statusrow['Status']."</option>";
-			}
-			
-			/*
-			$sql="SELECT `Status` FROM `gl_status` order by `Active` DESC, `Count` DESC";
-			if($result = $conn->query($sql)){
-				if ($result->num_rows > 0){
-					while($row = $result->fetch_assoc()) {
-						if($defaultStatus==$row['Status']) {
-							$selected=" SELECTED "; 
-						} else {
-							$selected="";
-						}
-						$htmloutput .= "<option value='".$row['Status']."'".$selected.">".$row['Status']."</option>";
-					}
-				}
-			} else {
-				trigger_error("SQL Query Failed: " . mysqli_error($conn) . "</br>Query: ". $sql);
-			}
-			*/
-			
-			$htmloutput .= "</select></td>";
-			$htmloutput .= "<td><Select name=\"datarow[".$counter."][review]\">";
-			$htmloutput .= "<option value=''> </option>";
-			foreach($this->reviewValues as $review){
-				if($defaultReview==$review) {$selected=" SELECTED "; } else {$selected="";}
-				$htmloutput .= "<option value='".$review."'".$selected.">".$review."</option>";
-			}			
-			$htmloutput .= "</select></td>";
-
-			$htmloutput .= '<td><label class="switch"><input type="checkbox" name="datarow[' .  $counter . '][basegame]"       ><span class="slider round"></span></label></td>';
-			$htmloutput .= '<td><label class="switch"><input type="checkbox" name="datarow[' .  $counter . '][minutes]" CHECKED><span class="slider round"></span></label></td>';
-			$htmloutput .= '<td><label class="switch"><input type="checkbox" name="datarow[' .  $counter . '][idle]"           ><span class="slider round"></span></label></td>';
-			$htmloutput .= '<td><label class="switch"><input type="checkbox" name="datarow[' .  $counter . '][cardfarming]"    ><span class="slider round"></span></label></td>';
-			$htmloutput .= '<td><label class="switch"><input type="checkbox" name="datarow[' .  $counter . '][beatgame]"       ><span class="slider round"></span></label></td>';
-			$htmloutput .= '<td class="hidden"><label class="switch"><input type="checkbox" name="datarow[' .  $counter . '][share]"          ><span class="slider round"></span></label></td>';
-			$htmloutput .= '<td><label class="switch"><input type="checkbox" name="datarow[' .  $counter . '][cheating]"       ><span class="slider round"></span></label></td>';
-			$htmloutput .= '</tr>';
-
-			unset($thisgamedata);
+			$htmloutput .= $this->MakeRecord($record,$counter);
 		}
 
 		$htmloutput .= '<tr><td colspan=15>';
@@ -745,6 +656,90 @@ class addhistoryPage extends Page
 		
 		$htmloutput .= '</tbody></table>';
 		
+		return $htmloutput;
+	}
+	
+	public function MakeRecord($record,$counter){
+		$counter++;
+		$notes="";
+		$thisgamedata=$this->games[$this->gameIndex[$record['GameID']]];
+		$LastGameRecord=$this->dataAccessObject->getHistoryRecord($record['GameID']);
+
+		if(isset($thisgamedata['SteamID']) && $thisgamedata['SteamID']>0) {
+			$achearned=0;
+			$this->getSteamAPI()->setSteamGameID($thisgamedata['SteamID']);
+			$resultarray=$this->getSteamAPI()->GetSteamAPI("GetSchemaForGame");
+			if(isset($resultarray['game']['availableGameStats']['achievements'])) {
+				$acharray=regroupArray($resultarray['game']['availableGameStats']['achievements'],"name");
+			}
+
+			$userstatsarray=$this->getSteamAPI()->GetSteamAPI("GetPlayerAchievements");
+			if(isset($userstatsarray['playerstats']['achievements'])){
+				foreach ($userstatsarray['playerstats']['achievements'] as $achievement2){
+					//Count achievements earned
+					if($achievement2['achieved']==1){
+						
+						if(strtotime($LastGameRecord['Timestamp']) < $achievement2['unlocktime']){
+							$notes .=$acharray[$achievement2['apiname']][0]['displayName']."\r\n";
+						}
+						$achearned++;
+					}
+				}
+			}
+		}
+		
+		$htmloutput  = "<tr>";
+		$htmloutput .= '<td><label class="switch"><input type="checkbox" name="datarow[' .  $counter . '][update]" CHECKED><span class="slider round"></span></label></td>';
+		$htmloutput .= '<td><input type="number"   name="datarow[' . $counter . '][ProductID]" value="' . $record['GameID'] . '" min="0" max="99999"></td>';
+		
+		//var_dump($record);
+		//var_dump($thisgamedata);
+		
+		$htmloutput .= "<td><a href='viewgame.php?id=" . $record['GameID'] . "' target='_blank'>" . $thisgamedata['Title'] . "</a></td>";
+		
+		$htmloutput .= '<input type="hidden"   name="datarow[' .  $counter . '][Title]"  value="' . htmlspecialchars($thisgamedata['Title']) . '" >';
+		$htmloutput .= '<input type="hidden"   name="datarow[' .  $counter . '][System]" value="Steam" >';
+		$htmloutput .= '<input type="hidden"   name="datarow[' .  $counter . '][Data]"   value="New Total" >';
+		$htmloutput .= '<input type="hidden"   name="datarow[' .  $counter . '][source]" value="Game Library 6" >';
+		$htmloutput .= '<td><input type="number"   name="datarow[' .  $counter . '][hours]"  value="' . $record['Time'] . '" min="0" max="999999"></td>';
+		$htmloutput .= '<td><textarea align=top rows=2 cols=18 name="datarow[' .  $counter . '][notes]">' . trim($notes) . '</textarea></td>';
+		$htmloutput .= '<td><input type="number"   name="datarow[' .  $counter . '][achievements]" value="' . $achearned . '"  min="0" max="9999"></td>';
+
+		$defaultStatus=$LastGameRecord['Status'];
+		if($defaultStatus==""){
+			$defaultStatus="Inactive";
+		}
+		$defaultReview=$LastGameRecord['Review'];
+		
+		$htmloutput .= '<td><select name="datarow['.$counter.'][status]">';
+		$statuslist=$this->dataAccessObject->getStatusList();
+		foreach($statuslist as $statusrow){
+			if($defaultStatus==$statusrow['Status']) {
+				$selected=" SELECTED "; 
+			} else {
+				$selected="";
+			}
+			$htmloutput .= "<option value='".$statusrow['Status']."'".$selected.">".$statusrow['Status']."</option>";
+		}
+		
+		$htmloutput .= "</select></td>";
+		$htmloutput .= "<td><Select name=\"datarow[".$counter."][review]\">";
+		$htmloutput .= "<option value=''> </option>";
+		foreach($this->reviewValues as $review){
+			if($defaultReview==$review) {$selected=" SELECTED "; } else {$selected="";}
+			$htmloutput .= "<option value='".$review."'".$selected.">".$review."</option>";
+		}
+		$htmloutput .= "</select></td>";
+
+		$htmloutput .= '<td><label class="switch"><input type="checkbox" name="datarow[' .  $counter . '][basegame]"       ><span class="slider round"></span></label></td>';
+		$htmloutput .= '<td><label class="switch"><input type="checkbox" name="datarow[' .  $counter . '][minutes]" CHECKED><span class="slider round"></span></label></td>';
+		$htmloutput .= '<td><label class="switch"><input type="checkbox" name="datarow[' .  $counter . '][idle]"           ><span class="slider round"></span></label></td>';
+		$htmloutput .= '<td><label class="switch"><input type="checkbox" name="datarow[' .  $counter . '][cardfarming]"    ><span class="slider round"></span></label></td>';
+		$htmloutput .= '<td><label class="switch"><input type="checkbox" name="datarow[' .  $counter . '][beatgame]"       ><span class="slider round"></span></label></td>';
+		$htmloutput .= '<td class="hidden"><label class="switch"><input type="checkbox" name="datarow[' .  $counter . '][share]"          ><span class="slider round"></span></label></td>';
+		$htmloutput .= '<td><label class="switch"><input type="checkbox" name="datarow[' .  $counter . '][cheating]"       ><span class="slider round"></span></label></td>';
+		$htmloutput .= '</tr>';
+
 		return $htmloutput;
 	}
 	

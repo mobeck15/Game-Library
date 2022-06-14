@@ -138,6 +138,71 @@ class addhistory_Test extends testprivate {
 	}
 
 	/**
+	 * @small
+	 * @testdox MakeRecord()
+	 * @covers addhistoryPage::MakeRecord
+	 * @uses addhistoryPage
+	 * @uses CurlRequest
+	 * @uses SteamAPI
+	 * @uses dataAccess
+	 * @uses regroupArray
+	 */
+	public function test_MakeRecord() {
+		$page = new addhistoryPage();
+		$dataobject= new dataAccess();
+		$pagedata = $this->getPrivateProperty( 'addhistoryPage', 'dataAccessObject' );
+		$pagedata->setValue( $page , $dataobject );
+		
+		$updatelist["GameID"]="200";
+		$updatelist['Time']="23.32";
+		$gameIndex[200]=1;
+		$games[1]['Title']="Thegame";
+		$games[1]['SteamID']="20";
+		$maxID = $this->getPrivateProperty( 'addhistoryPage', 'gameIndex' );
+		$maxID->setValue( $page , $gameIndex );
+		$maxID = $this->getPrivateProperty( 'addhistoryPage', 'games' );
+		$maxID->setValue( $page , $games );
+		
+        $stub = $this->createStub(SteamAPI::class);
+		$schema = array(
+			'game'=>array(
+				'availableGameStats'=>array(
+					'achievements'=>array(
+						array(
+							"name"=>"name1"
+						)
+					)
+				)
+			)
+		);
+		$achievements = array(
+			'playerstats'=>array(
+				'achievements'=>array(
+					array(
+						"achieved"=>1,
+						"unlocktime"=>1000000,
+						"apiname"=>array(
+							array(
+								"displayName"=>"display Name"
+							)
+						)
+					)
+				)
+			)
+		);
+		$map = [
+			['GetSchemaForGame', $schema ],
+			['GetPlayerAchievements', $achievements]
+		];
+        $stub->method('GetSteamAPI') //("GetSchemaForGame")
+             ->will($this->returnValueMap($map));
+		$maxID = $this->getPrivateProperty( 'addhistoryPage', 'steamAPI' );
+		$maxID->setValue( $page , $stub );
+		
+		$this->assertisString($page->MakeRecord($updatelist,1));
+	}
+	
+	/**
 	 * @large
 	 * @testdox steamMode()
 	 * @covers addhistoryPage::steamMode
