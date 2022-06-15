@@ -28,7 +28,6 @@ class addhistoryPage extends Page
 		$this->title="Add History";
 		$this->usedate=date("Y-m-d");
 		$this->usetime=date("H:i:s");
-		//$this->steamAPI=new SteamAPI();
 	}
 	
 	private function getSteamAPI(){
@@ -362,7 +361,7 @@ class addhistoryPage extends Page
 			<tr>
 				<th>Source</th>
 				<td colspan=4><input type="text" name="datarow[1][source]" id="source" value="'. (isset($HistoryRecord) ? $HistoryRecord['RowType'] : "Game Library 6").'"></td>
-				<td>Where the data for this record is comping from</td>
+				<td>Where the data for this record is coming from</td>
 				<td></td>
 			</tr>
 			<tr>
@@ -399,7 +398,7 @@ class addhistoryPage extends Page
 						$output .= "<option value='".$review."'".$selected.">".$review."</option>";
 					}
 				$output .= '</select></td>
-				<td><ol><li>Hated it</li><li>Did not like it</li><li>liked it</li><li>Loved it</li></ol></td>
+				<td><ol><li>Hated it</li><li>Did not like it</li><li>Liked it</li><li>Loved it</li></ol></td>
 				<td></td>
 			</tr>
 			<tr>
@@ -523,54 +522,51 @@ class addhistoryPage extends Page
 			$rowclass=$this->getRowClass($row,$lastrecord);
 			$updatelist=$this->getUpdateList($row,$lastrecord,$updatelist);
 			
-			$htmloutput .= "<tr class='".$rowclass."'>";
-			
+			$data['totaltime']="&nbsp;";
+			$data['lastmin']="&nbsp;";
+			$data['lasthrs']="&nbsp;";
+			$data['lasttime']="&nbsp;";
+			$data['lastkw']="&nbsp;";
+			$data['play2wkmin']="&nbsp;";
+			$data['play2wkhrs']="&nbsp;";
+
+			//TD TITLE
 			if($this->steamAppIDexists($row['appid'])){
-				$htmloutput .="<td class='Text'>
-					<a href='addhistory.php?GameID=" . $this->getGameAttribute($row['appid']) . "' target='_blank'>+</a>
-					<a href='viewgame.php?id=" . $this->getGameAttribute($row['appid']) . "' target='_blank'>" . $this->getGameAttribute($row['appid'],'Title') . "</a>
-					<span style='font-size: 70%;'>(<a href='http://store.steampowered.com/app/" . $row['appid'] ."' target='_blank'>Store</a>)</span>
-				</td>";
-			} else {
-				$resultarray2=$steamAPI->GetSteamAPI("GetUserStatsForGame");
-				$gamename="";
-				if(isset($resultarray2['playerstats']['gameName'])){
-					$gamename=$resultarray2['playerstats']['gameName'];
+				$data['title'] ="<a href='addhistory.php?GameID=" . $this->getGameAttribute($row['appid']) . "' target='_blank'>+</a>
+				<a href='viewgame.php?id=" . $this->getGameAttribute($row['appid']) . "' target='_blank'>" . $this->getGameAttribute($row['appid'],'Title') . "</a>
+				<span style='font-size: 70%;'>(<a href='http://store.steampowered.com/app/" . $row['appid'] ."' target='_blank'>Store</a>)</span>";
+				$data['totaltime']=timeduration($this->getGameAttribute($row['appid'],'GrandTotal'),"seconds");
+				if (isset($lastrecord[$this->getGameAttribute($row['appid'])])) {
+					$data['lastmin']=($lastrecord[$this->getGameAttribute($row['appid'])]['Time']*60);
+					$data['lasthrs']=round($lastrecord[$this->getGameAttribute($row['appid'])]['Time'],1);
+					$data['lasttime']=timeduration($lastrecord[$this->getGameAttribute($row['appid'])]['Time'],"hours");
+					$data['lastkw']=$lastrecord[$this->getGameAttribute($row['appid'])]['KeyWords'];
 				}
+			} else {
+				$gamename=$steamAPI->GetSteamAPI("GetUserStatsForGame")['playerstats']['gameName'] ?? "";
 				
-				$htmloutput .= "<td class='Text'>&nbsp;&nbsp;&nbsp;MISSING: <a href='http://store.steampowered.com/app/" . $row['appid'] . "' target='_blank'>" . $gamename . "</a></td>";
+				$data['title'] ="&nbsp;&nbsp;&nbsp;MISSING: <a href='http://store.steampowered.com/app/" . $row['appid'] . "' target='_blank'>" . $gamename . "</a>";
 				$missing_count++;
 				$missing_ids[]=$row['appid'];
 			}
-			$htmloutput .= "<td class='numeric'>" . $row['playtime_forever'] . "</td>
-			<td class='numeric'>" . round($row['playtime_forever']/60,1) . "</td>";
+			//TD Playtime two weeks - Minutes & Hours
 			if(isset($row['playtime_2weeks'])){
-				$htmloutput .= "<td class='numeric'>" . $row['playtime_2weeks'] . "</td>
-				<td class='numeric'>" . round($row['playtime_2weeks']/60,1) . "</td>";
-			} else {
-				$htmloutput .= "<td>&nbsp;</td>
-				<td>&nbsp;</td>";
+				$data['play2wkmin']=$row['playtime_2weeks'];
+				$data['play2wkhrs']=round($row['playtime_2weeks']/60,1);
 			}
-			if($this->steamAppIDexists($row['appid'])){
-				$htmloutput .= "<td class='numeric'>" . timeduration($this->getGameAttribute($row['appid'],'GrandTotal'),"seconds") . "</td>";
-				if (isset($lastrecord[$this->getGameAttribute($row['appid'])])) {
-					$htmloutput .= "<td class='numeric'>" . ($lastrecord[$this->getGameAttribute($row['appid'])]['Time']*60) . "</td>
-					<td class='numeric'>" . round($lastrecord[$this->getGameAttribute($row['appid'])]['Time'],1) . "</td>
-					<td class='numeric'>" . timeduration($lastrecord[$this->getGameAttribute($row['appid'])]['Time'],"hours") . "</td>
-					<td class='Text'>" . $lastrecord[$this->getGameAttribute($row['appid'])]['KeyWords'] . "</td>";
-				} else {
-					$htmloutput .= "<td>&nbsp;</td>";
-					$htmloutput .= "<td>&nbsp;</td>";
-					$htmloutput .= "<td>&nbsp;</td>";
-					$htmloutput .= "<td>&nbsp;</td>";
-				}
-			} else {
-				$htmloutput .= "<td>&nbsp;</td>";
-				$htmloutput .= "<td>&nbsp;</td>";
-				$htmloutput .= "<td>&nbsp;</td>";
-				$htmloutput .= "<td>&nbsp;</td>";
-				$htmloutput .= "<td>&nbsp;</td>";
-			}
+			
+			$htmloutput .= "<tr class='".$rowclass."'>";
+			
+			$htmloutput .= "<td class='Text'>" . $data['title'] . "</td>"; //Title
+			$htmloutput .= "<td class='numeric'>" . $row['playtime_forever'] . "</td>"; //Playtime Forever - Minutes
+			$htmloutput .= "<td class='numeric'>" . round($row['playtime_forever']/60,1) . "</td>"; //Playtime Forever - Hours
+			$htmloutput .= "<td class='numeric'>" . $data['play2wkmin'] . "</td>"; //Playtime two weeks - Minutes
+			$htmloutput .= "<td class='numeric'>" . $data['play2wkhrs'] . "</td>"; //Playtime two weeks - Hours
+			$htmloutput .= "<td class='numeric'>" . $data['totaltime'] . "</td>"; //Total Time
+			$htmloutput .= "<td class='numeric'>" . $data['lastmin'] . "</td>"; //Last Entry - Minutes
+			$htmloutput .= "<td class='numeric'>" . $data['lasthrs'] . "</td>"; //Last Entry - Hours
+			$htmloutput .= "<td class='numeric'>" . $data['lasttime'] . "</td>"; //Last Entry - Time
+			$htmloutput .= "<td class='Text'>" . $data['lastkw'] . "</td>"; //Last Entry - Time
 			
 			$htmloutput .= "</tr>";
 		}
@@ -581,19 +577,6 @@ class addhistoryPage extends Page
 		
 		if (count($updatelist)>0){
 			$htmloutput .= $this->updatelist($updatelist);
-		} else {
-			if (isset($_GET['HistID']) && $GameStarted == False) {
-				//If a game is not started and the HistID is set, load the time from the database instead.
-				$sql="SELECT * FROM `gl_history` join `gl_products` on `gl_history`.`GameID` = `gl_products`.`Game_ID` WHERE `HistoryID`=".$_GET['HistID'];
-				if($result = $conn->query($sql)){
-					if ($result->num_rows > 0){
-						$HistoryRecord = $result->fetch_assoc();
-						$_GET['GameID']=$HistoryRecord['GameID'];
-						$this->usedate=date("Y-m-d",strtotime($HistoryRecord['Timestamp']));
-						$this->usetime=date("H:i:s",strtotime($HistoryRecord['Timestamp']));
-					}
-				}
-			}
 		}
 		
 		return $htmloutput;
@@ -601,13 +584,10 @@ class addhistoryPage extends Page
 	
 	private function getRowClass($row,$lastrecord){
 		$rowclass="unknown";
-		if($this->steamAppIDexists($row['appid'])){
-			if(isset($lastrecord[$this->getGameAttribute($row['appid'])]['Time']) 
-				&& round($lastrecord[$this->getGameAttribute($row['appid'])]['Time']*60)==round($row['playtime_forever'])) {
-				$rowclass="greenRow";
-			} else {
-				$rowclass="redRow";
-			}
+		if($this->steamAppIDexists($row['appid'])
+			&& isset($lastrecord[$this->getGameAttribute($row['appid'])]['Time']) 
+			&& round($lastrecord[$this->getGameAttribute($row['appid'])]['Time']*60)==round($row['playtime_forever'])) {
+			$rowclass="greenRow";
 		} else {
 			$rowclass="redRow";
 		}
@@ -616,11 +596,10 @@ class addhistoryPage extends Page
 	}
 	
 	private function getUpdateList($row,$lastrecord,$updatelist){
-		if($this->steamAppIDexists($row['appid'])){
-			if(!(isset($lastrecord[$this->getGameAttribute($row['appid'])]['Time']) 
-				&& round($lastrecord[$this->getGameAttribute($row['appid'])]['Time']*60)==round($row['playtime_forever']))) {
-				$updatelist[]=array("GameID"=> $this->getGameAttribute($row['appid']) , "Time"=>$row['playtime_forever']);
-			}
+		if($this->steamAppIDexists($row['appid'])
+			&& !(isset($lastrecord[$this->getGameAttribute($row['appid'])]['Time']) 
+			&& round($lastrecord[$this->getGameAttribute($row['appid'])]['Time']*60)==round($row['playtime_forever']))) {
+			$updatelist[]=array("GameID"=> $this->getGameAttribute($row['appid']) , "Time"=>$row['playtime_forever']);
 		}
 		
 		return $updatelist;
