@@ -512,54 +512,18 @@ class addhistoryPage extends Page
 		</thead>
 		<tbody>";
 		
-		$steamAPI= new SteamAPI();
-		$resultarray=$steamAPI->GetSteamAPI("GetRecentlyPlayedGames");
-		
-		$missing_count=0;
+		$resultarray=$this->getSteamAPI()->GetSteamAPI("GetRecentlyPlayedGames");
 		$updatelist=array();
 		
 		foreach($resultarray['response']['games'] as $row){
-			$rowclass=$this->getRowClass($row,$lastrecord);
+			$data=$this->getSteamTableData($row,$lastrecord);
 			$updatelist=$this->getUpdateList($row,$lastrecord,$updatelist);
 			
-			$data['totaltime']="&nbsp;";
-			$data['lastmin']="&nbsp;";
-			$data['lasthrs']="&nbsp;";
-			$data['lasttime']="&nbsp;";
-			$data['lastkw']="&nbsp;";
-			$data['play2wkmin']="&nbsp;";
-			$data['play2wkhrs']="&nbsp;";
-
-			//TD TITLE
-			if($this->steamAppIDexists($row['appid'])){
-				$data['title'] ="<a href='addhistory.php?GameID=" . $this->getGameAttribute($row['appid']) . "' target='_blank'>+</a>
-				<a href='viewgame.php?id=" . $this->getGameAttribute($row['appid']) . "' target='_blank'>" . $this->getGameAttribute($row['appid'],'Title') . "</a>
-				<span style='font-size: 70%;'>(<a href='http://store.steampowered.com/app/" . $row['appid'] ."' target='_blank'>Store</a>)</span>";
-				$data['totaltime']=timeduration($this->getGameAttribute($row['appid'],'GrandTotal'),"seconds");
-				if (isset($lastrecord[$this->getGameAttribute($row['appid'])])) {
-					$data['lastmin']=($lastrecord[$this->getGameAttribute($row['appid'])]['Time']*60);
-					$data['lasthrs']=round($lastrecord[$this->getGameAttribute($row['appid'])]['Time'],1);
-					$data['lasttime']=timeduration($lastrecord[$this->getGameAttribute($row['appid'])]['Time'],"hours");
-					$data['lastkw']=$lastrecord[$this->getGameAttribute($row['appid'])]['KeyWords'];
-				}
-			} else {
-				$gamename=$steamAPI->GetSteamAPI("GetUserStatsForGame")['playerstats']['gameName'] ?? "";
-				
-				$data['title'] ="&nbsp;&nbsp;&nbsp;MISSING: <a href='http://store.steampowered.com/app/" . $row['appid'] . "' target='_blank'>" . $gamename . "</a>";
-				$missing_count++;
-				$missing_ids[]=$row['appid'];
-			}
-			//TD Playtime two weeks - Minutes & Hours
-			if(isset($row['playtime_2weeks'])){
-				$data['play2wkmin']=$row['playtime_2weeks'];
-				$data['play2wkhrs']=round($row['playtime_2weeks']/60,1);
-			}
-			
-			$htmloutput .= "<tr class='".$rowclass."'>";
+			$htmloutput .= "<tr class='".$data['rowclass']."'>";
 			
 			$htmloutput .= "<td class='Text'>" . $data['title'] . "</td>"; //Title
-			$htmloutput .= "<td class='numeric'>" . $row['playtime_forever'] . "</td>"; //Playtime Forever - Minutes
-			$htmloutput .= "<td class='numeric'>" . round($row['playtime_forever']/60,1) . "</td>"; //Playtime Forever - Hours
+			$htmloutput .= "<td class='numeric'>" . $data['playallmin'] . "</td>"; //Playtime Forever - Minutes
+			$htmloutput .= "<td class='numeric'>" . $data['playallhrs'] . "</td>"; //Playtime Forever - Hours
 			$htmloutput .= "<td class='numeric'>" . $data['play2wkmin'] . "</td>"; //Playtime two weeks - Minutes
 			$htmloutput .= "<td class='numeric'>" . $data['play2wkhrs'] . "</td>"; //Playtime two weeks - Hours
 			$htmloutput .= "<td class='numeric'>" . $data['totaltime'] . "</td>"; //Total Time
@@ -570,8 +534,7 @@ class addhistoryPage extends Page
 			
 			$htmloutput .= "</tr>";
 		}
-			
-		unset($resultarray);
+		
 		$htmloutput .= "</tbody>";
 		$htmloutput .= "</table>";
 		
@@ -580,6 +543,42 @@ class addhistoryPage extends Page
 		}
 		
 		return $htmloutput;
+	}
+	
+	private function getSteamTableData($row,$lastrecord){
+		$data['rowclass']=$this->getRowClass($row,$lastrecord);
+		
+		$data['totaltime']="&nbsp;";
+		$data['lastmin']="&nbsp;";
+		$data['lasthrs']="&nbsp;";
+		$data['lasttime']="&nbsp;";
+		$data['lastkw']="&nbsp;";
+		$data['play2wkmin']="&nbsp;";
+		$data['play2wkhrs']="&nbsp;";
+		$data['playallmin']=$row['playtime_forever'];
+		$data['playallhrs']=round($row['playtime_forever']/60,1);
+		
+		if($this->steamAppIDexists($row['appid'])){
+			$data['title'] ="<a href='addhistory.php?GameID=" . $this->getGameAttribute($row['appid']) . "' target='_blank'>+</a>
+			<a href='viewgame.php?id=" . $this->getGameAttribute($row['appid']) . "' target='_blank'>" . $this->getGameAttribute($row['appid'],'Title') . "</a>
+			<span style='font-size: 70%;'>(<a href='http://store.steampowered.com/app/" . $row['appid'] ."' target='_blank'>Store</a>)</span>";
+			$data['totaltime']=timeduration($this->getGameAttribute($row['appid'],'GrandTotal'),"seconds");
+			if (isset($lastrecord[$this->getGameAttribute($row['appid'])])) {
+				$data['lastmin']=($lastrecord[$this->getGameAttribute($row['appid'])]['Time']*60);
+				$data['lasthrs']=round($lastrecord[$this->getGameAttribute($row['appid'])]['Time'],1);
+				$data['lasttime']=timeduration($lastrecord[$this->getGameAttribute($row['appid'])]['Time'],"hours");
+				$data['lastkw']=$lastrecord[$this->getGameAttribute($row['appid'])]['KeyWords'];
+			}
+		} else {
+			$gamename=$this->getSteamAPI()->GetSteamAPI("GetUserStatsForGame")['playerstats']['gameName'] ?? "";
+			$data['title'] ="&nbsp;&nbsp;&nbsp; <a href='http://store.steampowered.com/app/" . $row['appid'] . "' target='_blank'>MISSING: " . $gamename . "</a>";
+		}
+		if(isset($row['playtime_2weeks'])){
+			$data['play2wkmin']=$row['playtime_2weeks'];
+			$data['play2wkhrs']=round($row['playtime_2weeks']/60,1);
+		}
+		
+		return $data;
 	}
 	
 	private function getRowClass($row,$lastrecord){

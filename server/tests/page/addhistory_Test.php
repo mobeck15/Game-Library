@@ -241,8 +241,86 @@ class addhistory_Test extends testprivate {
 		$dataobject= new dataAccess();
 		$pagedata = $this->getPrivateProperty( 'addhistoryPage', 'dataAccessObject' );
 		$pagedata->setValue( $page , $dataobject );
+
+		$stats=array('playerstats'=>array('gameName'=>"game name 1"));
+		$recent=array('response'=>array('games'=>array(
+			"appid"=> "20",
+			"name"=>  "Half-Life 2: Update",
+			"playtime_2weeks"=>  9,
+			"playtime_forever"=>  33,
+			"img_icon_url"=>  "adbeb780aad083eb92f3fccce82e9f54ab060867",
+			"playtime_windows_forever"=>  9,
+			"playtime_mac_forever"=>  0,
+			"playtime_linux_forever"=>  0
+		)));
+        $stub = $this->createStub(SteamAPI::class);
+		$map = [
+			['GetUserStatsForGame', $stats ],
+			['GetRecentlyPlayedGames', $recent ]
+		];
+        $stub->method('GetSteamAPI') 
+             ->will($this->returnValueMap($map));
+		$maxID = $this->getPrivateProperty( 'addhistoryPage', 'steamAPI' );
+		$maxID->setValue( $page , $stub );
 		
 		$this->assertisString($page->steamMode());
+	}
+
+	/**
+	 * @Small
+	 * @testdox getSteamTableData()
+	 * @covers addhistoryPage::getSteamTableData
+	 * @uses addhistoryPage
+	 * @uses timeduration
+	 * @testWith [20]
+	 *           [10]
+	 */
+	public function test_getSteamTableData($appid) {
+		$page = new addhistoryPage();
+
+		$games[1]['Title']="Thegame";
+		$games[1]['SteamID']="20";
+		$games[1]['Game_ID']="1";
+		$games[1]['GrandTotal']="5";
+		$steamindex[20]=1;
+		
+		$maxID = $this->getPrivateProperty( 'addhistoryPage', 'games' );
+		$maxID->setValue( $page , $games );
+		$maxID = $this->getPrivateProperty( 'addhistoryPage', 'steamindex' );
+		$maxID->setValue( $page , $steamindex );
+
+		$stats=array('playerstats'=>array('gameName'=>"game name 1"));
+        $stub = $this->createStub(SteamAPI::class);
+		$map = [
+			['GetUserStatsForGame', $stats ]
+		];
+        $stub->method('GetSteamAPI') 
+             ->will($this->returnValueMap($map));
+		$maxID = $this->getPrivateProperty( 'addhistoryPage', 'steamAPI' );
+		$maxID->setValue( $page , $stub );
+		
+		$row=array(
+			"appid"=>  $appid,
+			"name"=>  "Half-Life 2: Update",
+			"playtime_2weeks"=>  9,
+			"playtime_forever"=>  33,
+			"img_icon_url"=>  "adbeb780aad083eb92f3fccce82e9f54ab060867",
+			"playtime_windows_forever"=>  9,
+			"playtime_mac_forever"=>  0,
+			"playtime_linux_forever"=>  0
+		);
+
+		$lastrecord=array(
+			'1'=>array(
+				'Time'=>0.65,
+				'KeyWords'=>"Minutes",
+			)
+		);
+
+		$method = $this->getPrivateMethod( 'addhistoryPage', 'getSteamTableData' );
+		$result = $method->invokeArgs( $page,array($row, $lastrecord) );
+		
+		$this->assertisArray($result);
 	}
 	
 	/**
