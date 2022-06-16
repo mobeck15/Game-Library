@@ -16,6 +16,7 @@ class addhistory_Test extends testprivate {
 	 * @testdox __construct & buildHtmlBody
 	 * @covers addhistoryPage::buildHtmlBody
 	 * @covers addhistoryPage::__construct
+	 * @uses addhistoryPage
 	 * @uses Get_Header
 	 * @uses boolText
 	 * @uses dataAccess
@@ -205,35 +206,12 @@ class addhistory_Test extends testprivate {
 	}
 	
 	/**
-	 * @large
+	 * @small
 	 * @testdox steamMode()
 	 * @covers addhistoryPage::steamMode
 	 * @uses addhistoryPage
-	 * @uses CurlRequest
-	 * @uses SteamAPI
 	 * @uses dataAccess
-	 * @uses Games
-	 * @uses PriceCalculation
-	 * @uses Purchases
-	 * @uses combinedate
-	 * @uses daysSinceDate
-	 * @uses getActivityCalculations
-	 * @uses getAllItems
-	 * @uses getCalculations
-	 * @uses getCleanStringDate
-	 * @uses getGames
-	 * @uses getHistoryCalculations
-	 * @uses getHrsNextPosition
-	 * @uses getHrsToTarget
-	 * @uses getKeywords
-	 * @uses getNextPosition
-	 * @uses getPriceSort
-	 * @uses getPriceperhour
-	 * @uses getTimeLeft
-	 * @uses get_db_connection
-	 * @uses getsettings
 	 * @uses makeIndex
-	 * @uses regroupArray
 	 * @uses timeduration
 	 */
 	public function test_steamMode() {
@@ -243,7 +221,7 @@ class addhistory_Test extends testprivate {
 		$pagedata->setValue( $page , $dataobject );
 
 		$stats=array('playerstats'=>array('gameName'=>"game name 1"));
-		$recent=array('response'=>array('games'=>array(
+		$recent=array('response'=>array('games'=>array(array(
 			"appid"=> "20",
 			"name"=>  "Half-Life 2: Update",
 			"playtime_2weeks"=>  9,
@@ -252,22 +230,43 @@ class addhistory_Test extends testprivate {
 			"playtime_windows_forever"=>  9,
 			"playtime_mac_forever"=>  0,
 			"playtime_linux_forever"=>  0
-		)));
-        $stub = $this->createStub(SteamAPI::class);
+		))));
+        $apistub = $this->createStub(SteamAPI::class);
 		$map = [
 			['GetUserStatsForGame', $stats ],
 			['GetRecentlyPlayedGames', $recent ]
 		];
-        $stub->method('GetSteamAPI') 
+        $apistub->method('GetSteamAPI') 
              ->will($this->returnValueMap($map));
-		$maxID = $this->getPrivateProperty( 'addhistoryPage', 'steamAPI' );
-		$maxID->setValue( $page , $stub );
+		$this->getPrivateProperty( 'addhistoryPage', 'steamAPI' )->setValue( $page , $apistub );
+		
+		$history=array(
+			array(
+				'System'=>"Steam",
+				'GameID'=>"0",
+				'BaseGame'=>"1",
+				'ParentGameID'=>"0",
+				'Time'=>0.65,
+				'KeyWords'=>"List of Keywords",
+			)
+		);
+		$this->getPrivateProperty( 'addhistoryPage', 'history' )->setValue( $page , $history );
+		$games=array(
+			array(
+				'SteamID'=>"20",
+				'Game_ID'=>"0",
+				'Title'=>"the game",
+				'GrandTotal'=>"5",
+			)
+		);
+		$this->getPrivateProperty( 'addhistoryPage', 'games' )->setValue( $page , $games );
+		
 		
 		$this->assertisString($page->steamMode());
 	}
 
 	/**
-	 * @Small
+	 * @small
 	 * @testdox getSteamTableData()
 	 * @covers addhistoryPage::getSteamTableData
 	 * @uses addhistoryPage
@@ -324,7 +323,7 @@ class addhistory_Test extends testprivate {
 	}
 	
 	/**
-	 * @Small
+	 * @small
 	 * @testdox getSteamAPI()
 	 * @covers addhistoryPage::getSteamAPI
 	 * @uses addhistoryPage
@@ -342,7 +341,7 @@ class addhistory_Test extends testprivate {
 	}
 
 	/**
-	 * @Small
+	 * @small
 	 * @testdox getGameAttribute()
 	 * @covers addhistoryPage::getGameAttribute
 	 * @uses addhistoryPage
@@ -366,7 +365,7 @@ class addhistory_Test extends testprivate {
 	}	
 
 	/**
-	 * @Small
+	 * @small
 	 * @testdox steamAppIDexists()
 	 * @covers addhistoryPage::steamAppIDexists
 	 * @uses addhistoryPage
@@ -385,7 +384,7 @@ class addhistory_Test extends testprivate {
 	}
 
 	/**
-	 * @Small
+	 * @small
 	 * @testdox getUpdateList()
 	 * @covers addhistoryPage::getUpdateList
 	 * @uses addhistoryPage
@@ -415,7 +414,7 @@ class addhistory_Test extends testprivate {
 	}
 
 	/**
-	 * @Small
+	 * @small
 	 * @testdox getRowClass()
 	 * @covers addhistoryPage::getRowClass
 	 * @uses addhistoryPage
@@ -441,6 +440,82 @@ class addhistory_Test extends testprivate {
 
 		$method = $this->getPrivateMethod( 'addhistoryPage', 'getRowClass' );
 		$result = $method->invokeArgs( $page,array($row,$lastrecord) );
+		$this->assertisString($result);
+	}
+
+	/**
+	 * @medium
+	 * @testdox getHistory()
+	 * @covers addhistoryPage::getHistory
+	 * @uses addhistoryPage
+	 * @uses getHistoryCalculations
+	 * @uses get_db_connection
+	 * @uses getsettings
+	 */
+	public function test_getHistory() {
+		$page = new addhistoryPage();
+
+		$method = $this->getPrivateMethod( 'addhistoryPage', 'getHistory' );
+		$result = $method->invokeArgs( $page,array() );
+		$this->assertisArray($result);
+	}
+	
+	/**
+	 * @large
+	 * @testdox getGames()
+	 * @covers addhistoryPage::getGames
+	 * @uses addhistoryPage
+	 * @uses Games
+	 * @uses PriceCalculation
+	 * @uses Purchases
+	 * @uses combinedate
+	 * @uses dataAccess
+	 * @uses daysSinceDate
+	 * @uses getActivityCalculations
+	 * @uses getAllItems
+	 * @uses getCalculations
+	 * @uses getCleanStringDate
+	 * @uses getGames
+	 * @uses getHistoryCalculations
+	 * @uses getHrsNextPosition
+	 * @uses getHrsToTarget
+	 * @uses getKeywords
+	 * @uses getNextPosition
+	 * @uses getPriceSort
+	 * @uses getPriceperhour
+	 * @uses getTimeLeft
+	 * @uses get_db_connection
+	 * @uses getsettings
+	 * @uses makeIndex
+	 * @uses regroupArray
+	 * @uses timeduration
+	 */
+	public function test_getGames() {
+		$page = new addhistoryPage();
+
+		$method = $this->getPrivateMethod( 'addhistoryPage', 'getGames' );
+		$result = $method->invokeArgs( $page,array() );
+		$this->assertisArray($result);
+	}
+
+	/**
+	 * @small
+	 * @testdox manualMode()
+	 * @covers addhistoryPage::manualMode
+	 * @uses addhistoryPage
+	 * @uses get_db_connection
+	 * @uses dataAccess
+	 */
+	public function test_manualMode() {
+		$_SERVER['QUERY_STRING']="";
+		//$_GET["HistID"]=200;
+		$page = new addhistoryPage();
+		$dataobject= new dataAccess();
+		$pagedata = $this->getPrivateProperty( 'addhistoryPage', 'dataAccessObject' );
+		$pagedata->setValue( $page , $dataobject );
+		
+		$method = $this->getPrivateMethod( 'addhistoryPage', 'manualMode' );
+		$result = $method->invokeArgs( $page,array(false) );
 		$this->assertisString($result);
 	}
 	
