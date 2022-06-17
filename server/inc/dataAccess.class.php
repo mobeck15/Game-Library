@@ -283,6 +283,13 @@ class dataAccess {
 		return $query->fetch(PDO::FETCH_ASSOC);
 	}
 	
+	public function getHistoryRecrod($HistoryID){
+		$query=$this->getConnection()->prepare("SELECT * FROM `gl_history` join `gl_products` on `gl_history`.`GameID` = `gl_products`.`Game_ID` WHERE `HistoryID`=?");
+		$query->bindvalue(1,$HistoryID);
+		$query->execute();
+		return $query->fetch(PDO::FETCH_ASSOC);
+	}
+	
 	public function countGameStartStop($gameid){
 		$query = $this->getConnection()->prepare("SELECT count(*) c FROM `gl_history` where `GameID` = ? and `Data` = 'Start/Stop';");
 		$query->bindvalue(1,$gameid);
@@ -362,6 +369,18 @@ class dataAccess {
 		  [6]=> array(1) { ["Status"]=> string(5) "Never"	}
 		}
 		*/
+	}
+	
+	public function getHistoryDataTypes(){
+		$query=$this->getConnection()->prepare("SELECT DISTINCT `Data` FROM `gl_history` where `system` is not null	order by `system`");
+		$query->execute();
+		return $this->getAllRows($query);
+	}
+
+	public function getSystemList(){
+		$query=$this->getConnection()->prepare("SELECT DISTINCT `system` FROM `gl_history` where `system` is not null OR `system` <> '' order by `system`");
+		$query->execute();
+		return $this->getAllRows($query);
 	}
 	
 	public function getProductTitle($gameid){

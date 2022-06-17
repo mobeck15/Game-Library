@@ -499,16 +499,87 @@ class addhistory_Test extends testprivate {
 	}
 
 	/**
-	 * @small
-	 * @testdox manualMode()
+	 * @large
+	 * @testdox manualMode() with HistID set
 	 * @covers addhistoryPage::manualMode
 	 * @uses addhistoryPage
 	 * @uses get_db_connection
 	 * @uses dataAccess
+
+	 * @uses CurlRequest
+	 * @uses Games
+	 * @uses PriceCalculation
+	 * @uses Purchases
+	 * @uses SteamAPI
+	 * @uses combinedate
+	 * @uses daysSinceDate
+	 * @uses getActivityCalculations
+	 * @uses getAllItems
+	 * @uses getCalculations
+	 * @uses getCleanStringDate
+	 * @uses getGames
+	 * @uses getHistoryCalculations
+	 * @uses getHrsNextPosition
+	 * @uses getHrsToTarget
+	 * @uses getKeywords
+	 * @uses getNextPosition
+	 * @uses getPriceSort
+	 * @uses getPriceperhour
+	 * @uses getTimeLeft
+	 * @uses getsettings
+	 * @uses makeIndex
+	 * @uses regroupArray
+	 * @uses timeduration	 
 	 */
-	public function test_manualMode() {
+	public function test_manualMode_histid() {
 		$_SERVER['QUERY_STRING']="";
-		//$_GET["HistID"]=200;
+		$_GET["HistID"]=125;
+		$page = new addhistoryPage();
+		$dataobject= new dataAccess();
+		$pagedata = $this->getPrivateProperty( 'addhistoryPage', 'dataAccessObject' );
+		$pagedata->setValue( $page , $dataobject );
+		
+		$method = $this->getPrivateMethod( 'addhistoryPage', 'manualMode' );
+		$result = $method->invokeArgs( $page,array(false) );
+		$this->assertisString($result);
+	}
+
+	/**
+	 * @large
+	 * @testdox manualMode() with GameID set
+	 * @covers addhistoryPage::manualMode
+	 * @uses addhistoryPage
+	 * @uses get_db_connection
+	 * @uses dataAccess
+	 
+	 * @uses CurlRequest
+	 * @uses Games
+	 * @uses PriceCalculation
+	 * @uses Purchases
+	 * @uses SteamAPI
+	 * @uses combinedate
+	 * @uses daysSinceDate
+	 * @uses getActivityCalculations
+	 * @uses getAllItems
+	 * @uses getCalculations
+	 * @uses getCleanStringDate
+	 * @uses getGames
+	 * @uses getHistoryCalculations
+	 * @uses getHrsNextPosition
+	 * @uses getHrsToTarget
+	 * @uses getKeywords
+	 * @uses getNextPosition
+	 * @uses getPriceSort
+	 * @uses getPriceperhour
+	 * @uses getTimeLeft
+	 * @uses getsettings
+	 * @uses makeIndex
+	 * @uses regroupArray
+	 * @uses timeduration	 
+	 */
+	public function test_manualMode_gameid() {
+		$_SERVER['QUERY_STRING']="";
+		$_GET["GameID"]=825;
 		$page = new addhistoryPage();
 		$dataobject= new dataAccess();
 		$pagedata = $this->getPrivateProperty( 'addhistoryPage', 'dataAccessObject' );
@@ -519,4 +590,109 @@ class addhistory_Test extends testprivate {
 		$this->assertisString($result);
 	}
 	
+	/**
+	 * @small
+	 * @testdox manualMode() base
+	 * @covers addhistoryPage::manualMode
+	 * @uses addhistoryPage
+	 * @uses get_db_connection
+	 * @uses dataAccess
+	 */
+	public function test_manualMode_base() {
+		$_SERVER['QUERY_STRING']="";
+		$page = new addhistoryPage();
+		$dataobject= new dataAccess();
+		$pagedata = $this->getPrivateProperty( 'addhistoryPage', 'dataAccessObject' );
+		$pagedata->setValue( $page , $dataobject );
+		
+		$method = $this->getPrivateMethod( 'addhistoryPage', 'manualMode' );
+		$result = $method->invokeArgs( $page,array(false) );
+		$this->assertisString($result);
+	}
+
+	/**
+	 * @small
+	 * @testdox renderDropDown()
+	 * @covers addhistoryPage::renderDropDown
+	 * @uses addhistoryPage
+	 */
+	 public function test_renderDropDown() {
+		$page = new addhistoryPage();
+		
+		$list=array(array(1,"1 - Hated it"), array(2,"2 - Did not like it"), array(3,"3 - Liked it"), array(4,"4 - Loved it"));
+		
+		$method = $this->getPrivateMethod( 'addhistoryPage', 'renderDropDown' );
+		$result = $method->invokeArgs( $page,array('a',1,$list,2) );
+		$this->assertisString($result);
+	}
+
+	/**
+	 * @small
+	 * @testdox renderToggleCell()
+	 * @covers addhistoryPage::renderToggleCell
+	 * @uses addhistoryPage
+	 */
+	 public function test_renderToggleCell() {
+		$page = new addhistoryPage();
+		
+		$method = $this->getPrivateMethod( 'addhistoryPage', 'renderToggleCell' );
+		$result = $method->invokeArgs( $page,array('a','b',"") );
+		$this->assertisString($result);
+	}
+	
+	/**
+	 * @small
+	 * @testdox renderFormRow()
+	 * @covers addhistoryPage::renderFormRow
+	 * @uses addhistoryPage
+	 */
+	 public function test_renderFormRow() {
+		$page = new addhistoryPage();
+		
+		$method = $this->getPrivateMethod( 'addhistoryPage', 'renderFormRow' );
+		$result = $method->invokeArgs( $page,array('a','b','c','d') );
+		$this->assertisString($result);
+	}
+	
+	/**
+	 * @small
+	 * @testdox renderHTMLform()
+	 * @covers addhistoryPage::renderHTMLform
+	 * @uses addhistoryPage
+	 * @uses dataAccess
+	 */
+	 public function test_renderHTMLform() {
+		$page = new addhistoryPage();
+		
+		$formdata['HistoryID']="125";;
+		$formdata['gametitle']="";
+		$formdata['productid']="";
+		$formdata['timestamptoggle']="";
+		$formdata['timestamp']="2022-06-17T13:52:59";
+		$formdata['defaultsystem']="";
+		$formdata['defaultdatatype']="";
+		$formdata['duration']=0.64;
+		$formdata['notes']="";
+		$formdata['achnotes']="";
+		$formdata['Source']="Game Library 6";
+		$formdata['Achievements']="";
+		$formdata['defaultStatus']="";
+		$formdata['defaultReview']="";
+		$formdata['BaseGame']="";
+		$formdata['kwMinutes']="";
+		$formdata['kwIdle']="";
+		$formdata['kwCardFarming']="";
+		$formdata['kwBeatGame']="";
+		$formdata['kwShare']="";
+		$formdata['kwCheating']="";
+		$formdata['buttonvalue']="Save";
+		
+		$dataobject= new dataAccess();
+		$pagedata = $this->getPrivateProperty( 'addhistoryPage', 'dataAccessObject' );
+		$pagedata->setValue( $page , $dataobject );
+		
+		$method = $this->getPrivateMethod( 'addhistoryPage', 'renderHTMLform' );
+		$result = $method->invokeArgs( $page,array($formdata) );
+		$this->assertisString($result);
+	}
 }
