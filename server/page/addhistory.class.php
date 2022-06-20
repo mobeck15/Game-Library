@@ -19,6 +19,7 @@ class addhistoryPage extends Page
 	private $gameIndex;
 	
 	private $steamAPI;
+	private $steamScraper;
 
 	private $reviewValues=array(array(1,"1 - Hated it"), array(2,"2 - Did not like it"), array(3,"3 - Liked it"), array(4,"4 - Loved it"));
 	private $usedate;
@@ -37,14 +38,18 @@ class addhistoryPage extends Page
 		return $this->steamAPI;
 	}
 	
+	private function getDataAccessObject(){
+		if(!isset($this->dataAccessObject)){
+			$this->dataAccessObject= new dataAccess();
+		}
+		return $this->dataAccessObject;
+	}
+	
 	public function buildHtmlBody(){
 		$output="";
 		//TODO: Split into three files, Single form, SteamAPI, and Form Post (where both forms will go and show stats about recently played)
 
-
-
-		$this->dataAccessObject= new dataAccess();
-		$this->maxID=$this->dataAccessObject->getMaxHistoryId();
+		$this->maxID=$this->getDataAccessObject()->getMaxHistoryId();
 		
 		/* */
 		if (isset($_POST['datarow'])){
@@ -54,7 +59,7 @@ class addhistoryPage extends Page
 		
 		//determines if a game is active or not.
 		//If a game is active, overrides chosen input and forces a second entry of active game.
-		$GameStarted=$this->dataAccessObject->isGameStarted($this->dataAccessObject->getLatestHistory());
+		$GameStarted=$this->getDataAccessObject()->isGameStarted($this->getDataAccessObject()->getLatestHistory());
 
 		$output .= "Game Started: ".booltext($GameStarted);
 
@@ -89,7 +94,7 @@ class addhistoryPage extends Page
 		$achearned=0;
 
 		if (isset($_GET['HistID']) && $GameStarted == False) {
-			$HistoryRecord=$this->dataAccessObject->getHistoryRecrod($_GET['HistID']);
+			$HistoryRecord=$this->getDataAccessObject()->getHistoryRecrod($_GET['HistID']);
 			//TODO: catch errors when a bad HistID is provided
 			$_GET['GameID']=$HistoryRecord['GameID'];
 			$this->usedate=date("Y-m-d",strtotime($HistoryRecord['Timestamp']));
@@ -485,7 +490,8 @@ class addhistoryPage extends Page
 				$data['lastkw']=$lastrecord[$this->getGameAttribute($row['appid'])]['KeyWords'];
 			}
 		} else {
-			$gamename=$this->getSteamAPI()->GetSteamAPI("GetUserStatsForGame")['playerstats']['gameName'] ?? "";
+			$this->getSteamAPI()->setSteamGameID($row['appid']);
+			$gamename=$this->getSteamAPI()->GetSteamAPI("GetSchemaForGame")['game']['gameName'] ?? "";
 			$data['title'] ="&nbsp;&nbsp;&nbsp; <a href='http://store.steampowered.com/app/" . $row['appid'] . "' target='_blank'>MISSING: " . $gamename . "</a>";
 		}
 		if(isset($row['playtime_2weeks'])){

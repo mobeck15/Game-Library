@@ -32,11 +32,87 @@ class addhistory_Test extends testprivate {
 
 	/**
 	 * @small
+	 * @testdox buildHtmlBody with POST
+	 * @covers addhistoryPage::buildHtmlBody
+	 * @uses addhistoryPage
+	 * @uses Get_Header
+	 * @uses boolText
+	 * @uses dataAccess
+	 * @uses get_db_connection
+	 * @uses get_navmenu
+	 */
+	public function test_outputHtml_post() {
+		$page = new addhistoryPage();
+		
+		$_POST['datarow'][1]['id']="9406";
+		$_POST['timestamp']=date("Y-m-d H:i:s");
+		
+		$list=array(array(1,"1 - Hated it"), array(2,"2 - Did not like it"), array(3,"3 - Liked it"), array(4,"4 - Loved it"));
+		
+		$dataAccessMock = $this->createMock(dataAccess::class);
+		$dataAccessMock->expects($this->once())
+                       ->method('updateHistory')
+                       ->with($this->anything(),$this->anything());
+		$dataAccessMock->method('getSystemList')->willReturn($list);
+		$dataAccessMock->method('getHistoryDataTypes')->willReturn($list);
+		$dataAccessMock->method('getStatusList')->willReturn($list);
+		$maxID = $this->getPrivateProperty( 'addhistoryPage', 'dataAccessObject' );
+		$maxID->setValue( $page , $dataAccessMock );
+
+		$result = $page->buildHtmlBody();
+		$this->assertisString($result);
+	}
+
+	/**
+	 * @large
+	 * @testdox buildHtmlBody SteamMode
+	 * @covers addhistoryPage::buildHtmlBody
+	 * @uses addhistoryPage
+	 * @uses Get_Header
+	 * @uses boolText
+	 * @uses dataAccess
+	 * @uses get_db_connection
+	 * @uses get_navmenu
+	 * @uses CurlRequest
+	 * @uses Games
+	 * @uses PriceCalculation
+	 * @uses Purchases
+	 * @uses SteamAPI
+	 * @uses combinedate
+	 * @uses daysSinceDate
+	 * @uses getActivityCalculations
+	 * @uses getAllItems
+	 * @uses getCalculations
+	 * @uses getCleanStringDate
+	 * @uses getGames
+	 * @uses getHistoryCalculations
+	 * @uses getHrsNextPosition
+	 * @uses getHrsToTarget
+	 * @uses getKeywords
+	 * @uses getNextPosition
+   	 * @uses getPriceSort
+   	 * @uses getPriceperhour
+   	 * @uses getTimeLeft
+   	 * @uses getsettings
+   	 * @uses makeIndex
+   	 * @uses regroupArray
+   	 * @uses timeduration
+   */
+	public function test_outputHtml_steam() {
+		$_SERVER['QUERY_STRING']="";
+		$_GET['mode']="steam";
+		$page = new addhistoryPage();
+		$result = $page->buildHtmlBody();
+		$this->assertisString($result);
+	}
+
+	/**
+	 * @small
 	 * @testdox captureInsert()
 	 * @covers addhistoryPage::captureInsert
 	 * @uses addhistoryPage
 	 */
-	public function test_outputHtml_update() {
+	public function test_captureInsert() {
 		$page = new addhistoryPage();
 		$maxID = $this->getPrivateProperty( 'addhistoryPage', 'maxID' );
 		$maxID->setValue( $page , 1 );
@@ -337,6 +413,24 @@ class addhistory_Test extends testprivate {
 		$result = $method->invokeArgs( $page,array() );
 		$this->assertThat($result,
 			$this->isInstanceOf("SteamAPI")
+		);
+	}
+
+	/**
+	 * @small
+	 * @testdox getDataAccessObject()
+	 * @covers addhistoryPage::getDataAccessObject
+	 * @uses addhistoryPage
+	 * @uses CurlRequest
+	 * @uses SteamAPI
+	 */
+	public function test_getDataAccessObject() {
+		$page = new addhistoryPage();
+		
+		$method = $this->getPrivateMethod( 'addhistoryPage', 'getDataAccessObject' );
+		$result = $method->invokeArgs( $page,array() );
+		$this->assertThat($result,
+			$this->isInstanceOf("dataAccess")
 		);
 	}
 
