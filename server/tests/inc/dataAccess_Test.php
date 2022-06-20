@@ -566,4 +566,40 @@ final class dataAccess_Test extends testprivate
 		$this->assertIsString($result);
 	}
 	
+	/**
+	 * @small
+	 * @covers dataAccess::getHistoryRecrod
+	 * @uses dataAccess
+	 * @testdox getHistoryRecrod()
+	 */
+	public function test_getHistoryRecrod(){
+		$dataobject= new dataAccess();
+		$result=$dataobject->getHistoryRecrod(111);
+		$this->assertIsArray($result);
+	}
+	
+	/**
+	 * @small
+	 * @covers dataAccess::getHistoryDataTypes
+	 * @uses dataAccess
+	 * @testdox getHistoryDataTypes()
+	 */
+	public function test_getHistoryDataTypes(){
+		$dataobject= new dataAccess();
+		$result=$dataobject->getHistoryDataTypes();
+		$this->assertIsArray($result);
+	}
+	
+	/**
+	 * @small
+	 * @covers dataAccess::getSystemList
+	 * @uses dataAccess
+	 * @testdox getSystemList()
+	 */
+	public function test_getSystemList(){
+		$dataobject= new dataAccess();
+		$result=$dataobject->getSystemList();
+		$this->assertIsArray($result);
+	}
+	
 }
