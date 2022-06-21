@@ -83,6 +83,31 @@ class addhistoryPage extends Page
 
 	}
 	
+	private function historyNotes($thisgamedata,$LastGameRecord){
+		$notes="";
+		if(isset($thisgamedata['SteamID']) && $thisgamedata['SteamID']>0) {
+			$this->getSteamAPI()->setSteamGameID($thisgamedata['SteamID']);
+			$resultarray = $this->getSteamAPI()->GetSteamAPI("GetSchemaForGame");
+
+			if(isset($resultarray['game']['availableGameStats'])) {
+				$acharray=regroupArray($resultarray['game']['availableGameStats']['achievements'],"name");
+			}
+			
+			$userstatsarray = $this->getSteamAPI()->GetSteamAPI("GetPlayerAchievements");
+			if(isset($userstatsarray['playerstats']['achievements'])){
+				foreach ($userstatsarray['playerstats']['achievements'] as $achievement2){
+					//Count achievements earned
+					if($achievement2['achieved']==1){
+						if(strtotime($LastGameRecord['Timestamp']) < $achievement2['unlocktime'] AND $achievement2['unlocktime'] <= strtotime($this->usedate." ".$this->usetime)){
+							$notes .=$acharray[$achievement2['apiname']][0]['displayName']."\r\n";
+						}
+					}
+				}
+			}
+		}
+		return $notes;
+	}
+	
 	public function manualMode($GameStarted){
 		//Hard Coded Default Values
 		$defaultSystem="Steam";
@@ -102,56 +127,14 @@ class addhistoryPage extends Page
 		}
 		
 		if (isset($_GET['GameID']) OR isset($_GET['HistID'])) {
-			$notes="";
-			
-			$this->games=getCalculations();
-			$this->gameIndex=makeIndex($this->games,"Game_ID");
-			$thisgamedata=$this->games[$this->gameIndex[$_GET['GameID']]];
+			$this->gameIndex=makeIndex($this->getGames(),"Game_ID");
+			$thisgamedata=$this->getGames()[$this->gameIndex[$_GET['GameID']]];
 			$LastGameRecord=$this->dataAccessObject->getHistoryRecord($_GET['GameID']);
 			
-			if(isset($thisgamedata['SteamID']) && $thisgamedata['SteamID']>0) {
-				$achearned=0;
-				$api2 = new SteamAPI($thisgamedata['SteamID']);
-				$resultarray = $api2->GetSteamAPI("GetSchemaForGame");
-
-				if(isset($resultarray['game']['availableGameStats'])) {
-					$acharray=regroupArray($resultarray['game']['availableGameStats']['achievements'],"name");
-				}
-				
-				$userstatsarray = $api2->GetSteamAPI("GetPlayerAchievements");
-				if(isset($userstatsarray['playerstats']['achievements'])){
-					$debug = "Last Record Time: " . $LastGameRecord['Timestamp']."<br>";
-					$debug .= "Current Record Time: ". $this->usedate." ".$this->usetime . "<br>";
-					$debug .= "<table><tr><th>apiname</th><th>achieved</th><th>unlocktime</th><th>afterlast</th><th>beforecurrent</th></tr>";
-					foreach ($userstatsarray['playerstats']['achievements'] as $achievement2){
-						//Count achievements earned
-						if($achievement2['achieved']==1){
-							$debug .= "<tr><td>".$acharray[$achievement2['apiname']][0]['displayName']."</td>";
-							$debug .= "<td>".$achievement2['achieved']."</td>";
-							$debug .= "<td>".($achievement2['unlocktime']>0 ? date("Y-m-d h:m:s",$achievement2['unlocktime']):0)."</td>";
-							$debug .= "<td>";
-							if($achievement2['unlocktime'] > strtotime($LastGameRecord['Timestamp'])){ $debug .= "TRUE";}
-							$debug .= "</td>";
-							$debug .= "<td>";
-							if($achievement2['unlocktime'] < strtotime($this->usedate." ".$this->usetime)){ $debug .= "TRUE";}
-							$debug .= "</td>";
-							$debug .= "</tr>";
-							
-							if(strtotime($LastGameRecord['Timestamp']) < $achievement2['unlocktime'] AND $achievement2['unlocktime'] <= strtotime($this->usedate." ".$this->usetime)){
-								$notes .=$acharray[$achievement2['apiname']][0]['displayName']."\r\n";
-							}
-							
-							$achearned++;
-						}
-					}
-					$debug .= "</table>";
-					
-				}
-			}
 			if(isset($HistoryRecord) && $HistoryRecord['Notes']=="") {
-				$HistoryRecord['Notes'] = $notes;
+				$HistoryRecord['Notes'] = $this->historyNotes($thisgamedata,$LastGameRecord);
 			}
-		}		
+		}
 		
 		if (isset($_GET['GameID'])) {
 			if(isset($HistoryRecord)){
@@ -178,38 +161,16 @@ class addhistoryPage extends Page
 			if($defaultData=="") {$defaultData="New Total";}
 			
 			if(isset($LastGameRecord['SteamID']) && $LastGameRecord['SteamID']>0) {
-				$api = new SteamAPI($LastGameRecord['SteamID']);
-				$result = $api->GetSteamAPI("GetSchemaForGame");
+				$this->getSteamAPI()->setSteamGameID($LastGameRecord['SteamID']);
+				$result = $this->getSteamAPI()->GetSteamAPI("GetSchemaForGame");
 
-				$achtotal=0;
-				$achearned=0;
-
-				if(isset($resultarray['game']['availableGameStats']['achievements'])){
-					foreach ($resultarray['game']['availableGameStats']['achievements'] as $achievement){
-						//Count achievements
-						$achtotal++;
-					}
-				}
+				$achearned=$this->countAchievements($this->getSteamAPI()->GetSteamAPI("GetUserStatsForGame"));
 				
-				$resultarray2 = $api->GetSteamAPI("GetUserStatsForGame");
-
-				if(isset($resultarray2['playerstats']['achievements'])){
-					foreach ($resultarray2['playerstats']['achievements'] as $achievement2){
-						//Count achievements earned
-						$achearned++;
-					}
-				}	
-
-				$resultarray3 = $api->GetSteamAPI("GetOwnedGames");
+				$resultarray3 = $this->getSteamAPI()->GetSteamAPI("GetOwnedGames");
 				
 				foreach($resultarray3['response']['games'] as $row){
 					if($row['appid']==$LastGameRecord['SteamID']){
 						$ptForever=$row['playtime_forever'];
-						$ptForeverHrs = round($row['playtime_forever']/60,1);
-						if(isset($row['playtime_2weeks'])){
-							$pt2weeks=$row['playtime_2weeks'];
-							$pt2weeksHrs=round($row['playtime_2weeks']/60,1);
-						}
 					}
 				}
 			}
@@ -237,8 +198,19 @@ class addhistoryPage extends Page
 		$formdata['kwShare']=(isset($HistoryRecord['kwShare']) && $HistoryRecord['kwShare']==1) ? " CHECKED " : "";
 		$formdata['kwCheating']=(isset($HistoryRecord['kwCheating']) && $HistoryRecord['kwCheating']==1) ? " CHECKED " : "";
 		$formdata['buttonvalue']=isset($HistoryRecord) ? "Update" : "Save";
-	
+		
 		return $this->renderHTMLform($formdata);
+	}
+	
+	private function countAchievements($resultarray2){
+		$achearned=0;
+		if(isset($resultarray2['playerstats']['achievements'])){
+			foreach ($resultarray2['playerstats']['achievements'] as $achievement2){
+				//Count achievements earned
+				$achearned++;
+			}
+		}
+		return $achearned;
 	}
 	
 	private function renderHTMLform($formdata){

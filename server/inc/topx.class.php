@@ -206,24 +206,25 @@ class topx
 		}
 		
 		return $defaultsortdir;
-
 	}
 	
 	public function statlist($filter="all"){
 		$list[] = "LastPlayORPurchase";
-		$list[] = "SaleLess1";
-		$list[] = "Saleperhr";
-		$list[] = "AltLess1";
-		$list[] = "Altperhr";
 		$list[] = "Launchperhr";
 		$list[] = "MSRPperhr";
+		//$list[] = "Currentperhr";
 		$list[] = "Historicperhr";
 		$list[] = "Paidperhr";
+		$list[] = "Saleperhr";
+		$list[] = "Altperhr";
+		
 		$list[] = "LaunchLess1";
 		$list[] = "MSRPLess1";
 		//$list[] = "CurrentLess1";
 		$list[] = "HistoricLess1";
 		$list[] = "PaidLess1";
+		$list[] = "SaleLess1";
+		$list[] = "AltLess1";
 		
 		if($filter=="all") {
 			$list[] = "LaunchLess2";

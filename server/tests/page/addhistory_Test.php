@@ -64,44 +64,61 @@ class addhistory_Test extends testprivate {
 	}
 
 	/**
-	 * @large
+	 * @small
 	 * @testdox buildHtmlBody SteamMode
 	 * @covers addhistoryPage::buildHtmlBody
 	 * @uses addhistoryPage
-	 * @uses Get_Header
 	 * @uses boolText
 	 * @uses dataAccess
-	 * @uses get_db_connection
-	 * @uses get_navmenu
-	 * @uses CurlRequest
-	 * @uses Games
-	 * @uses PriceCalculation
-	 * @uses Purchases
-	 * @uses SteamAPI
-	 * @uses combinedate
-	 * @uses daysSinceDate
-	 * @uses getActivityCalculations
-	 * @uses getAllItems
-	 * @uses getCalculations
-	 * @uses getCleanStringDate
-	 * @uses getGames
-	 * @uses getHistoryCalculations
-	 * @uses getHrsNextPosition
-	 * @uses getHrsToTarget
-	 * @uses getKeywords
-	 * @uses getNextPosition
-   	 * @uses getPriceSort
-   	 * @uses getPriceperhour
-   	 * @uses getTimeLeft
-   	 * @uses getsettings
-   	 * @uses makeIndex
-   	 * @uses regroupArray
-   	 * @uses timeduration
+	 * @uses makeIndex
+	 * @uses timeduration
    */
 	public function test_outputHtml_steam() {
 		$_SERVER['QUERY_STRING']="";
 		$_GET['mode']="steam";
 		$page = new addhistoryPage();
+
+		$stats=array('playerstats'=>array('gameName'=>"game name 1"));
+		$recent=array('response'=>array('games'=>array(array(
+			"appid"=> "20",
+			"name"=>  "Half-Life 2: Update",
+			"playtime_2weeks"=>  9,
+			"playtime_forever"=>  33,
+			"img_icon_url"=>  "adbeb780aad083eb92f3fccce82e9f54ab060867",
+			"playtime_windows_forever"=>  9,
+			"playtime_mac_forever"=>  0,
+			"playtime_linux_forever"=>  0
+		))));
+        $apistub = $this->createStub(SteamAPI::class);
+		$map = [
+			['GetUserStatsForGame', $stats ],
+			['GetRecentlyPlayedGames', $recent ]
+		];
+        $apistub->method('GetSteamAPI') 
+             ->will($this->returnValueMap($map));
+		$this->getPrivateProperty( 'addhistoryPage', 'steamAPI' )->setValue( $page , $apistub );
+		
+		$history=array(
+			array(
+				'System'=>"Steam",
+				'GameID'=>"0",
+				'BaseGame'=>"1",
+				'ParentGameID'=>"0",
+				'Time'=>0.65,
+				'KeyWords'=>"List of Keywords",
+			)
+		);
+		$this->getPrivateProperty( 'addhistoryPage', 'history' )->setValue( $page , $history );
+		$games=array(
+			array(
+				'SteamID'=>"20",
+				'Game_ID'=>"0",
+				'Title'=>"the game",
+				'GrandTotal'=>"5",
+			)
+		);
+		$this->getPrivateProperty( 'addhistoryPage', 'games' )->setValue( $page , $games );
+		
 		$result = $page->buildHtmlBody();
 		$this->assertisString($result);
 	}
@@ -593,45 +610,29 @@ class addhistory_Test extends testprivate {
 	}
 
 	/**
-	 * @large
+	 * @small
 	 * @testdox manualMode() with HistID set
 	 * @covers addhistoryPage::manualMode
 	 * @uses addhistoryPage
 	 * @uses get_db_connection
 	 * @uses dataAccess
-
 	 * @uses CurlRequest
-	 * @uses Games
-	 * @uses PriceCalculation
-	 * @uses Purchases
 	 * @uses SteamAPI
-	 * @uses combinedate
-	 * @uses daysSinceDate
-	 * @uses getActivityCalculations
-	 * @uses getAllItems
-	 * @uses getCalculations
-	 * @uses getCleanStringDate
-	 * @uses getGames
-	 * @uses getHistoryCalculations
-	 * @uses getHrsNextPosition
-	 * @uses getHrsToTarget
-	 * @uses getKeywords
-	 * @uses getNextPosition
-	 * @uses getPriceSort
-	 * @uses getPriceperhour
-	 * @uses getTimeLeft
-	 * @uses getsettings
 	 * @uses makeIndex
-	 * @uses regroupArray
-	 * @uses timeduration	 
 	 */
 	public function test_manualMode_histid() {
 		$_SERVER['QUERY_STRING']="";
-		$_GET["HistID"]=125;
+		$_GET["HistID"]=126;
 		$page = new addhistoryPage();
 		$dataobject= new dataAccess();
 		$pagedata = $this->getPrivateProperty( 'addhistoryPage', 'dataAccessObject' );
 		$pagedata->setValue( $page , $dataobject );
+		
+		$games[1]['Title']="Thegame";
+		$games[1]['SteamID']="20";
+		$games[1]['Game_ID']="334";
+		$pagedata = $this->getPrivateProperty( 'addhistoryPage', 'games' );
+		$pagedata->setValue( $page , $games );
 		
 		$method = $this->getPrivateMethod( 'addhistoryPage', 'manualMode' );
 		$result = $method->invokeArgs( $page,array(false) );
@@ -639,45 +640,35 @@ class addhistory_Test extends testprivate {
 	}
 
 	/**
-	 * @large
+	 * @small
 	 * @testdox manualMode() with GameID set
 	 * @covers addhistoryPage::manualMode
-	 * @uses addhistoryPage
-	 * @uses get_db_connection
-	 * @uses dataAccess
-	 
+	 * @uses addhistoryPage	 
 	 * @uses CurlRequest
-	 * @uses Games
-	 * @uses PriceCalculation
-	 * @uses Purchases
 	 * @uses SteamAPI
-	 * @uses combinedate
-	 * @uses daysSinceDate
-	 * @uses getActivityCalculations
-	 * @uses getAllItems
-	 * @uses getCalculations
-	 * @uses getCleanStringDate
-	 * @uses getGames
-	 * @uses getHistoryCalculations
-	 * @uses getHrsNextPosition
-	 * @uses getHrsToTarget
-	 * @uses getKeywords
-	 * @uses getNextPosition
-	 * @uses getPriceSort
-	 * @uses getPriceperhour
-	 * @uses getTimeLeft
-	 * @uses getsettings
+	 * @uses dataAccess
 	 * @uses makeIndex
-	 * @uses regroupArray
-	 * @uses timeduration	 
 	 */
 	public function test_manualMode_gameid() {
 		$_SERVER['QUERY_STRING']="";
 		$_GET["GameID"]=825;
 		$page = new addhistoryPage();
 		$dataobject= new dataAccess();
+		$dataobject = $this->createStub(dataAccess::class);
 		$pagedata = $this->getPrivateProperty( 'addhistoryPage', 'dataAccessObject' );
 		$pagedata->setValue( $page , $dataobject );
+
+		$list=array(array(1,"1 - Hated it"), array(2,"2 - Did not like it"), array(3,"3 - Liked it"), array(4,"4 - Loved it"));
+		$dataobject->method('getHistoryRecord')->willReturn(array());
+		$dataobject->method('getSystemList')->willReturn($list);
+		$dataobject->method('getHistoryDataTypes')->willReturn($list);
+		$dataobject->method('getStatusList')->willReturn($list);
+
+		$games[1]['Title']="Thegame";
+		$games[1]['SteamID']="20";
+		$games[1]['Game_ID']="825";
+		$pagedata = $this->getPrivateProperty( 'addhistoryPage', 'games' );
+		$pagedata->setValue( $page , $games );
 		
 		$method = $this->getPrivateMethod( 'addhistoryPage', 'manualMode' );
 		$result = $method->invokeArgs( $page,array(false) );
@@ -789,4 +780,42 @@ class addhistory_Test extends testprivate {
 		$result = $method->invokeArgs( $page,array($formdata) );
 		$this->assertisString($result);
 	}
+
+	/**
+	 * @small
+	 * @testdox historyNotes()
+	 * @covers addhistoryPage::historyNotes
+	 * @uses addhistoryPage
+	 * @uses CurlRequest
+	 * @uses SteamAPI
+	 * @uses regroupArray
+	 */
+	 public function test_historyNotes() {
+		$page = new addhistoryPage();
+		
+		$thisgamedata['SteamID']="233740";
+		$LastGameRecord['Timestamp']="2000-06-17T13:52:59";
+		
+		$method = $this->getPrivateMethod( 'addhistoryPage', 'historyNotes' );
+		$result = $method->invokeArgs( $page,array($thisgamedata,$LastGameRecord) );
+		$this->assertisString($result);
+	}
+	
+	/**
+	 * @small
+	 * @testdox countAchievements()
+	 * @covers addhistoryPage::countAchievements
+	 * @uses addhistoryPage
+	 */
+	 public function test_countAchievements() {
+		$page = new addhistoryPage();
+		
+		$resultarray2['playerstats']['achievements']=array(1,2);
+		
+		$method = $this->getPrivateMethod( 'addhistoryPage', 'countAchievements' );
+		$result = $method->invokeArgs( $page,array($resultarray2) );
+		$this->assertEquals(2,$result);
+	}
+	
+
 }
