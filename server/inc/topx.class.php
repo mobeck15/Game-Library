@@ -56,7 +56,10 @@ class topx
 		$currency=["Launchperhr","MSRPperhr", "Currentperhr", "Historicperhr", "Paidperhr", "Saleperhr", "Altperhr", "LaunchLess1", "MSRPLess1", "CurrentLess1", "HistoricLess1", "PaidLess1", "SaleLess1", "AltLess1"];
 		
 		$duration_hours=["TimeLeftToBeat", "LaunchLess2", "HistoricLess2", "MSRPLess2", "AltLess2", "SaleLess2", "PaidLess2", "MSRPHrsNext1", "LaunchHrsNext1", "PaidHrsNext1", "HistoricHrsNext1", "AltHrsNext1", "SaleHrsNext1", "MSRPHrsNext2", "LaunchHrsNext2", "PaidHrsNext2", "HistoricHrsNext2", "AltHrsNext2", "SaleHrsNext2"];
+		
 		$duration_seconds=["GrandTotal"];
+		
+		$percentage=["AchievementsPct"];
 		
 		$output=$value;
 		
@@ -70,6 +73,10 @@ class topx
 
 		if (in_array($statname, $duration_seconds)) {
 			$output=timeduration($value,"seconds");
+		}
+
+		if (in_array($statname, $percentage)) {
+			$output=sprintf("%.2f%%",$value);
 		}
 
 		return $output;
@@ -190,6 +197,12 @@ class topx
 			case "GrandTotal":
 				return $this->filter;
 				break;
+			case "AchievementsLeft":
+				return $this->filter.",$stat,lte,0";
+				break;
+			case "AchievementsPct":
+				return $this->filter.",$stat,lte,0,$stat,gte,100";
+				break;
 			default:
 				return $this->filter.",$stat,eq,0";
 				break;
@@ -199,7 +212,7 @@ class topx
 	private function defaultSortDir($stat){
 		$defaultsortdir=SORT_DESC;
 		
-		$ascending=["LastPlayORPurchase", "LaunchLess2", "MSRPLess2", "CurrentLess2", "HistoricLess2", "PaidLess2", "SaleLess2", "AltLess2", "LaunchHrsNext1", "MSRPHrsNext1", "CurrentHrsNext1", "HistoricHrsNext1", "PaidHrsNext1", "SaleHrsNext1", "AltHrsNext1", "LaunchHrsNext2", "MSRPHrsNext2", "CurrentHrsNext2", "HistoricHrsNext2", "PaidHrsNext2", "SaleHrsNext2", "AltHrsNext2", "TimeLeftToBeat", "GrandTotal"];
+		$ascending=["LastPlayORPurchase", "LaunchLess2", "MSRPLess2", "CurrentLess2", "HistoricLess2", "PaidLess2", "SaleLess2", "AltLess2", "LaunchHrsNext1", "MSRPHrsNext1", "CurrentHrsNext1", "HistoricHrsNext1", "PaidHrsNext1", "SaleHrsNext1", "AltHrsNext1", "LaunchHrsNext2", "MSRPHrsNext2", "CurrentHrsNext2", "HistoricHrsNext2", "PaidHrsNext2", "SaleHrsNext2", "AltHrsNext2", "TimeLeftToBeat", "GrandTotal","AchievementsLeft"];
 		
 		if (in_array($stat, $ascending)) {
 			$defaultsortdir=SORT_ASC;
@@ -258,7 +271,14 @@ class topx
 		
 		$list[] = "TimeLeftToBeat";
 		$list[] = "GrandTotal";
-		
+		$list[] = "AchievementsLeft";
+		$list[] = "AchievementsPct";
+		$list[] = "Metascore";
+		$list[] = "UserMetascore";
+		$list[] = "SteamRating";
+		$list[] = "Review";
+
+		//TODO: enable both max and min stats at the same time.
 		return $list;
 	}
 	
@@ -368,7 +388,13 @@ class topx
 			"Key" => "Activation Key / Link",
 			
 			"MainLibrary" => "Main Library",
-			"OtherLibrary" => "Other Library"
+			"OtherLibrary" => "Other Library",
+			
+			"Metascore" => "Metascore",
+			"UserMetascore" => "User Metascore",
+			"SteamRating" => "Steam Rating",
+			"Review" => "My Review",
+			"AchievementsPct" => "Achievement %",
 		);		
 		return $header_Index[$stat];
 	}

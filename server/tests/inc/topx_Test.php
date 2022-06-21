@@ -289,7 +289,6 @@ final class topx_Test extends testprivate
 	 * @uses reIndexArray
 	 */
 	public function test_getTotalRanks() {
-		//$topxObject = new topx(reIndexArray(getCalculations(),"Game_ID"));
 		$topxObject = new topx(reIndexArray($this->tesdata_Calculations(),"Game_ID"));
 
 		$result=$topxObject->getTotalRanks();
@@ -347,7 +346,7 @@ final class topx_Test extends testprivate
 				"MSRPLess1" => 1,	"MSRPLess2" => 1,	"MSRPperhr" => 1,	"MSRPHrsNext2" => 1, "MSRPHrsNext1" => 1, 
 				"HistoricLess1" => 1,	"HistoricLess2" => 1,	"Historicperhr" => 1,	"HistoricHrsNext2" => 1, "HistoricHrsNext1" => 1,
 				"PaidLess1" => 1,	"PaidLess2" => 1,	"Paidperhr" => 1,	"PaidHrsNext2" => 1, "PaidHrsNext1" => 1,
-				
+				"AchievementsLeft" => 1,	"AchievementsPct"=>89,	"Metascore" => 1,	"UserMetascore"=> 1,	"SteamRating" => 1,	"Review"=>3.
 			),
 			1=>array(
 				"AddedDateTime" => new DateTime('2011-01-13T15:03:01.012345Z'), 
@@ -366,6 +365,7 @@ final class topx_Test extends testprivate
 				"MSRPLess1" => 1,	"MSRPLess2" => 1,	"MSRPperhr" => 1,	"MSRPHrsNext2" => 1, "MSRPHrsNext1" => 1, 
 				"HistoricLess1" => 1,	"HistoricLess2" => 1,	"Historicperhr" => 1,	"HistoricHrsNext2" => 1, "HistoricHrsNext1" => 1,
 				"PaidLess1" => 1,	"PaidLess2" => 1,	"Paidperhr" => 1,	"PaidHrsNext2" => 1, "PaidHrsNext1" => 1,
+				"AchievementsLeft" => 1,	"AchievementsPct"=>89,	"Metascore" => 1,	"UserMetascore"=> 1,	"SteamRating" => 1,	"Review"=>3.
 			),
 			2=>array(
 				"AddedDateTime" => new DateTime('2011-01-11T15:03:01.012345Z'), 
@@ -384,6 +384,7 @@ final class topx_Test extends testprivate
 				"MSRPLess1" => 1,	"MSRPLess2" => 1,	"MSRPperhr" => 1,	"MSRPHrsNext2" => 1, "MSRPHrsNext1" => 1, 
 				"HistoricLess1" => 1,	"HistoricLess2" => 1,	"Historicperhr" => 1,	"HistoricHrsNext2" => 1, "HistoricHrsNext1" => 1,
 				"PaidLess1" => 1,	"PaidLess2" => 1,	"Paidperhr" => 1,	"PaidHrsNext2" => 1, "PaidHrsNext1" => 1,
+				"AchievementsLeft" => 1,	"AchievementsPct"=>89,	"Metascore" => 1,	"UserMetascore"=> 1,	"SteamRating" => 1,	"Review"=>3.
 			),
 			3=>array(
 				"AddedDateTime" => new DateTime('2011-01-12T15:03:01.012345Z'), 
@@ -402,6 +403,7 @@ final class topx_Test extends testprivate
 				"MSRPLess1" => 1,	"MSRPLess2" => 1,	"MSRPperhr" => 1,	"MSRPHrsNext2" => 1, "MSRPHrsNext1" => 1, 
 				"HistoricLess1" => 1,	"HistoricLess2" => 1,	"Historicperhr" => 1,	"HistoricHrsNext2" => 1, "HistoricHrsNext1" => 1,
 				"PaidLess1" => 1,	"PaidLess2" => 1,	"Paidperhr" => 1,	"PaidHrsNext2" => 1, "PaidHrsNext1" => 1,
+				"AchievementsLeft" => 1,	"AchievementsPct"=>89,	"Metascore" => 1,	"UserMetascore"=> 1,	"SteamRating" => 1,	"Review"=>3.
 			),
 		);
 	}
