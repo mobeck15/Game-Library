@@ -184,7 +184,7 @@ class dataAccess {
 				if( isset($_POST['currenttime']) && $_POST['currenttime'] == "on") {
 					$query->bindvalue(":date$loopcount",date("Y-m-d H:i:s"));
 				} else {
-					$query->bindvalue(":date$loopcount",date("Y-m-d H:i:s",$timestamp));
+					$query->bindvalue(":date$loopcount",date("Y-m-d H:i:s",strtotime($timestamp)));
 				}
 				$query->bindvalue(":title$loopcount",$insertrow['Title']);
 				$query->bindvalue(":system$loopcount",$insertrow['System']);
@@ -250,7 +250,7 @@ class dataAccess {
 		
 		$query = $this->getConnection()->prepare($sql);
 		
-		$query->bindvalue(':date',date("Y-m-d H:i:s",$timestamp ));
+		$query->bindvalue(':date',date("Y-m-d H:i:s",strtotime($timestamp)));
 		$query->bindvalue(':title',$insertrow['Title']);
 		$query->bindvalue(':system',$insertrow['System']);
 		$query->bindvalue(':data',$insertrow['Data']);

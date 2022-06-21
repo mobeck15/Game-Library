@@ -48,10 +48,7 @@ class addhistoryPage extends Page
 	public function buildHtmlBody(){
 		$output="";
 		//TODO: Split into three files, Single form, SteamAPI, and Form Post (where both forms will go and show stats about recently played)
-
 		$this->maxID=$this->getDataAccessObject()->getMaxHistoryId();
-		
-		/* */
 		if (isset($_POST['datarow'])){
 			//TODO: cleanse post data
 			$this->captureInsert($_POST['datarow'],$_POST['timestamp']);
@@ -130,9 +127,11 @@ class addhistoryPage extends Page
 			$this->gameIndex=makeIndex($this->getGames(),"Game_ID");
 			$thisgamedata=$this->getGames()[$this->gameIndex[$_GET['GameID']]];
 			$LastGameRecord=$this->dataAccessObject->getHistoryRecord($_GET['GameID']);
+			//TODO: update so when editing old records the achievements are still listed.
+			$notes=$this->historyNotes($thisgamedata,$LastGameRecord);
 			
 			if(isset($HistoryRecord) && $HistoryRecord['Notes']=="") {
-				$HistoryRecord['Notes'] = $this->historyNotes($thisgamedata,$LastGameRecord);
+				$HistoryRecord['Notes'] = $notes;
 			}
 		}
 		
@@ -647,7 +646,7 @@ class addhistoryPage extends Page
 		  }
 		}
 		*/
-
+		
 		$sql2="";
 		if(isset($datarow[1]['id'])) {
 			$this->dataAccessObject->updateHistory($datarow[1],$timestamp);
