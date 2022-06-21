@@ -2,6 +2,7 @@
 $GLOBALS['rootpath']= $GLOBALS['rootpath'] ?? "..";
 
 class dataAccess {
+	//TODO: Split into dataAccess.class and dataProcess.class
 	private $dbConnection;
 	// @codeCoverageIgnoreStart
 	function __construct($conn=null) {
@@ -172,6 +173,7 @@ class dataAccess {
 		$loopcount=0;
 		foreach($datarow as $insertrow){
 			if(isset($insertrow['update']) && $insertrow['update']=="on"){
+				$inserted[]=$insertrow;
 				$loopcount++;
 				if(isset($insertrow['id'])) {
 					$query->bindvalue(":insertid$loopcount",$insertrow['id']);
@@ -182,7 +184,7 @@ class dataAccess {
 				if( isset($_POST['currenttime']) && $_POST['currenttime'] == "on") {
 					$query->bindvalue(":date$loopcount",date("Y-m-d H:i:s"));
 				} else {
-					$query->bindvalue(":date$loopcount",date("Y-m-d H:i:s",$timestamp));
+					$query->bindvalue(":date$loopcount",date("Y-m-d H:i:s",strtotime($timestamp)));
 				}
 				$query->bindvalue(":title$loopcount",$insertrow['Title']);
 				$query->bindvalue(":system$loopcount",$insertrow['System']);
@@ -206,7 +208,8 @@ class dataAccess {
 		
 		if ($query->execute() === TRUE) {
 			//return "Record updated successfully<br>";
-			$this->insertlog("Update: " . date("Y-m-d H:i:s",$timestamp ) . " " . print_r($datarow,true));
+			//TODO: The print_r makes the insertlog look weird.
+			$this->insertlog("Update: " . $timestamp . " " . print_r($inserted,true));
 		}
 	}
 	
@@ -214,13 +217,13 @@ class dataAccess {
 		return $GLOBALS['rootpath'].'\insertlog'.date("Y").'.txt';
 	}
 	
-	public function insertlog($query,$file=null) {
+	public function insertlog($content,$file=null) {
 		$file = $file ?? $this->logFileName();
 		//var_dump($file);
 		// Write the contents to the file, 
 		// using the FILE_APPEND flag to append the content to the end of the file
 		// and the LOCK_EX flag to prevent anyone else writing to the file at the same time
-		file_put_contents($file, $query.";\r\n", FILE_APPEND | LOCK_EX);
+		file_put_contents($file, $content."\r\n\r\n", FILE_APPEND | LOCK_EX);
 	}
 	
 	public function updateHistory($insertrow,$timestamp){
@@ -247,7 +250,7 @@ class dataAccess {
 		
 		$query = $this->getConnection()->prepare($sql);
 		
-		$query->bindvalue(':date',date("Y-m-d H:i:s",$timestamp ));
+		$query->bindvalue(':date',date("Y-m-d H:i:s",strtotime($timestamp)));
 		$query->bindvalue(':title',$insertrow['Title']);
 		$query->bindvalue(':system',$insertrow['System']);
 		$query->bindvalue(':data',$insertrow['Data']);
@@ -269,7 +272,8 @@ class dataAccess {
 		
 		if ($query->execute() === TRUE) {
 			//return "Record updated successfully<br>";
-			$this->insertlog("Update: " . date("Y-m-d H:i:s",$timestamp ) . " " . print_r($insertrow,true));
+			//TODO: The print_r makes the insertlog look weird.
+			$this->insertlog("Update: " . $timestamp . " " . print_r($insertrow,true));
 		}
 	}
 
@@ -279,15 +283,111 @@ class dataAccess {
 		return $query->fetch(PDO::FETCH_ASSOC);
 	}
 	
+	public function getHistoryRecrod($HistoryID){
+		$query=$this->getConnection()->prepare("SELECT * FROM `gl_history` join `gl_products` on `gl_history`.`GameID` = `gl_products`.`Game_ID` WHERE `HistoryID`=?");
+		$query->bindvalue(1,$HistoryID);
+		$query->execute();
+		return $query->fetch(PDO::FETCH_ASSOC);
+	}
+	
+	public function countGameStartStop($gameid){
+		$query = $this->getConnection()->prepare("SELECT count(*) c FROM `gl_history` where `GameID` = ? and `Data` = 'Start/Stop';");
+		$query->bindvalue(1,$gameid);
+		$query->execute();
+		$result= $query->fetch(PDO::FETCH_ASSOC);
+		return $result["c"];
+	}
+	
+	public function isEven($number){
+		return 1-$number&1;
+	}
+	
+	public function isOdd($number){
+		return $number&1;
+	}
+	
 	public function isGameStarted($historyarray) {
 		if($historyarray["Data"]=='Start/Stop'){
-			return $historyarray['GameID'];
+			if($this->isEven($this->countGameStartStop($historyarray['GameID']))){
+				return false;
+			} else {
+				return $historyarray['GameID'];
+			}
 		} else {
 			return false;
 		}
 	}
 	
 	public function getStartedGame(){
-		return $this->isGameStarted($this->getLatestHistory());
+		$historyarray=$this->getLatestHistory();
+		return $this->isGameStarted($historyarray);
+	}
+	
+	public function getHistoryRecord($gameid){
+		$query=$this->getConnection()->prepare("SELECT `Title`, `gl_history`.*, `SteamID` 
+				FROM `gl_products` 
+				left join `gl_history` on `gl_history`.`GameID` = `gl_products`.`Game_ID` 
+				WHERE `Game_ID`=? 
+				ORDER by `Timestamp` desc;");
+		$query->bindvalue(1,$gameid);
+		$query->execute();
+		while($row = $query->fetch(PDO::FETCH_ASSOC)) {
+			if(!isset($lastgamerecord)){
+				$lastgamerecord=$row;
+			}
+			
+			$lastgamerecord['Status']=$this->fillIfBlank($lastgamerecord['Status'],$row['Status']);
+			$lastgamerecord['Review']=$this->fillIfBlank($lastgamerecord['Review'],$row['Review']);
+			
+			if($lastgamerecord['Status']<>"" && $lastgamerecord['Review']<>""){
+				break;
+			}
+		}
+		return $lastgamerecord ?? array();
+	}
+	
+	public function fillIfBlank($target,$value){
+		if($target=="" && $value<>""){
+			return $value;
+		}
+		return $target;
+	}
+	
+	public function getStatusList(){
+		$query=$this->getConnection()->prepare("SELECT `Status` FROM `gl_status` order by `Active` DESC, `Count` DESC");
+		$query->execute();
+		return $this->getAllRows($query);
+		
+		/*
+		array(7) {
+		  [0]=> array(1) { ["Status"]=> string(6) "Active"	}
+		  [1]=> array(1) { ["Status"]=> string(4) "Done"	}
+		  [2]=> array(1) { ["Status"]=> string(8) "Inactive"}
+		  [3]=> array(1) { ["Status"]=> string(7) "On Hold"	}
+		  [4]=> array(1) { ["Status"]=> string(8) "Unplayed"}
+		  [5]=> array(1) { ["Status"]=> string(6) "Broken"	}
+		  [6]=> array(1) { ["Status"]=> string(5) "Never"	}
+		}
+		*/
+	}
+	
+	public function getHistoryDataTypes(){
+		$query=$this->getConnection()->prepare("SELECT DISTINCT `Data` FROM `gl_history` where `system` is not null	order by `system`");
+		$query->execute();
+		return $this->getAllRows($query);
+	}
+
+	public function getSystemList(){
+		$query=$this->getConnection()->prepare("SELECT DISTINCT `system` FROM `gl_history` where `system` is not null OR `system` <> '' order by `system`");
+		$query->execute();
+		return $this->getAllRows($query);
+	}
+	
+	public function getProductTitle($gameid){
+		$query=$this->getConnection()->prepare("SELECT `Title` FROM `gl_products` WHERE `Game_ID`=? limit 1");
+		$query->bindvalue(1,$gameid);
+		$query->execute();
+		return $this->getAllRows($query)[0]['Title'] ?? "";
+		//return $this->getAllRows($query);
 	}
 }

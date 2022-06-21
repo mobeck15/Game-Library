@@ -89,9 +89,7 @@ final class SteamAPI_Test extends testprivate
 	 * @uses SteamAPI
 	 */
 	public function test_CallAPI() {
-        // Create a stub for the SomeClass class.
         $stub = $this->createStub(CurlRequest::class);
-        // Configure the stub.
         $stub->method('execute')
              ->willReturn('{"foo": "bar"}');
 		$api = new SteamAPI(4088,$stub);
@@ -107,9 +105,7 @@ final class SteamAPI_Test extends testprivate
 	 * @uses SteamAPI
 	 */
 	public function test_CallAPI_null() {
-        // Create a stub for the SomeClass class.
         $stub = $this->createStub(CurlRequest::class);
-        // Configure the stub.
         $stub->method('execute')
              ->willReturn('{"foo": "bar"}');
 			 
@@ -136,12 +132,9 @@ final class SteamAPI_Test extends testprivate
 	 *           ["GetSteamPICS"]
 	 */
 	public function test_GetSteamAPI($APIname) {
-        // Create a stub for the SomeClass class.
         $stub = $this->createStub(CurlRequest::class);
-        // Configure the stub.
         $stub->method('execute')
              ->willReturn('{"foo": "bar"}');
-		//$stub=null;
 			 
 		$api = new SteamAPI(4088,$stub);
 		
@@ -157,9 +150,7 @@ final class SteamAPI_Test extends testprivate
 	 *           ["GetRecentlyPlayedGames"]
 	 */
 	public function test_GetSteamAPI_Nullarray($APIname) {
-        // Create a stub for the SomeClass class.
         $stub = $this->createStub(CurlRequest::class);
-        // Configure the stub.
         $stub->method('execute')
              ->willReturn('{"foo": "bar"}');
 
@@ -182,9 +173,7 @@ final class SteamAPI_Test extends testprivate
 	 *           ["other"]
 	 */
 	public function test_GetSteamAPI_Null($APIname) {
-        // Create a stub for the SomeClass class.
         $stub = $this->createStub(CurlRequest::class);
-        // Configure the stub.
         $stub->method('execute')
              ->willReturn('{"foo": "bar"}');
 
@@ -192,5 +181,21 @@ final class SteamAPI_Test extends testprivate
 		
 		$result = $api->GetSteamAPI($APIname);
 		$this->assertNull($result);
+	}
+	
+	/**
+	 * @small
+	 * @covers SteamAPI::setSteamGameID
+	 * @uses SteamAPI
+	 * @uses CurlRequest
+	 */
+	public function test_setSteamGameID() {
+		$api = new SteamAPI();
+		$api->setSteamGameID(200);
+		
+		$pProp = $this->getPrivateProperty( 'SteamAPI', 'steamGameID' );
+		$result = $pProp->getValue( $api );
+		
+		$this->assertEquals(200,$result);
 	}
 }

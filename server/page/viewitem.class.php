@@ -47,11 +47,11 @@ if(isset($_POST['ItemID'])){
 	$update_SQL .= "WHERE `ItemID` = " . mysqli_real_escape_string($conn, $_POST['ItemID']);
 
 
-	if($GLOBALS['Debug_Enabled']) {trigger_error("Running SQL Query to update transaction: ". $update_SQL, E_USER_NOTICE);}
+	if($GLOBALS['Debug_Enabled'] ?? false) {trigger_error("Running SQL Query to update transaction: ". $update_SQL, E_USER_NOTICE);}
 	
 	if ($conn->query($update_SQL) === TRUE) {
-		if($GLOBALS['Debug_Enabled']) { trigger_error("Item record inserted successfully", E_USER_NOTICE);}
-
+		$output .= "Item record inserted successfully";
+		
 		$file = 'insertlog'.date("Y").'.txt';
 		// Write the contents to the file, 
 		// using the FILE_APPEND flag to append the content to the end of the file
@@ -254,8 +254,8 @@ if (!isset($_GET['id'])) {
 			<tr>
 				<th>Library</th>
 				<td>';
-				if ($edit_mode === true) { 
-				echo '<input type="text" name="Library" id="Library" onchange=\'$("#DRM").val(this.value);\' value="'. $items[$itemIndex[$_GET['id']]]['Library'].'">';
+				if ($edit_mode === true) {
+				$output .= '<input type="text" name="Library" id="Library" onchange=\'$("#DRM").val(this.value);\' value="'. $items[$itemIndex[$_GET['id']]]['Library'].'">';
 				} else { $output .= $items[$itemIndex[$_GET['id']]]['Library']; }
 				$output .= '</td>
 			</tr>

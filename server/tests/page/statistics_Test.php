@@ -22,9 +22,9 @@ class statistics_Test extends TestCase {
 	}
 
 	/**
-	 * @small
+	 * @large
 	 * @covers statisticsPage::buildHtmlBody
-	 * @testdox __construct & buildHtmlBody
+	 * @testdox buildHtmlBody both metastats and filter all
 	 * @uses Games
 	 * @uses PriceCalculation
 	 * @uses Purchases

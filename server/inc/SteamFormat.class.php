@@ -102,8 +102,8 @@ class SteamFormat
 	
 	public function formatSteamAPI($resultarray,$userstatsarray){
 		$output  = "<table><tr>";
-		$output.=$this->formatDetailStat("",$resultarray['game']['gameName'],"<td>","","</td>");
-		$output.=$this->formatDetailStat("Version",$resultarray['game']['gameVersion'],"<td>"," ","</td>");
+		$output.=$this->formatDetailStat("",($resultarray['game']['gameName'] ?? ""),"<td>","","</td>");
+		$output.=$this->formatDetailStat("Version",($resultarray['game']['gameVersion'] ?? ""),"<td>"," ","</td>");
 		$output .= "</tr><tr>";
 		if(isset($resultarray['game']['availableGameStats']['stats'])){
 			$output .= "<td ";

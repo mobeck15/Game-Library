@@ -24,9 +24,9 @@ class viewgame_Test extends TestCase {
 	}
 
 	/**
-	 * @small
+	 * @large
 	 * @covers viewgamePage::buildHtmlBody
-	 * @testdox __construct & buildHtmlBody
+	 * @testdox buildHtmlBody() detail
 	 * @uses get_db_connection
 	 * @uses lookupTextBox
 	 * @uses CurlRequest
