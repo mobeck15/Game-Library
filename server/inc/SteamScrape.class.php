@@ -178,7 +178,7 @@ class SteamScrape
 			return $this->developer;
 		}
 		//TODO: Update to read multiple developer entries and return an array.
-		
+		//TODO: Flashback (245730) has no developer
 		$developers=array();
 		$this->developer="";
 		$search_results = $this->getdom()->find("#developers_list a");
