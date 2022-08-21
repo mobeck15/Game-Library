@@ -249,8 +249,8 @@ function getKeywords($gameID="",$connection=false){
 function regroupArray($array,$indexKey){
 	foreach ($array as $key => $value) {
 		$index[$value[$indexKey]][]=$value;
-	}	
-	return $index;
+	}
+	return $index ?? array();
 }
 
 function getSortArray($SourceArray,$SortField){

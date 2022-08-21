@@ -571,7 +571,7 @@ class addhistoryPage extends Page
 					//Count achievements earned
 					if($achievement2['achieved']==1){
 						
-						if(strtotime($LastGameRecord['Timestamp']) < $achievement2['unlocktime']){
+						if(strtotime($LastGameRecord['Timestamp']??"") < $achievement2['unlocktime']){
 							$notes .=$acharray[$achievement2['apiname']][0]['displayName']."\r\n";
 						}
 						$achearned++;
