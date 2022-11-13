@@ -6,21 +6,20 @@ $GLOBALS['rootpath'] = $GLOBALS['rootpath'] ?? "htdocs\Game-Library\server";
 /**
  * @group htmlpage
  * @coversNothing
- * @group topx
  */
-class testplaynext2 extends TestCase {
+class addtransaction_Test_A extends TestCase {
 
     private function _execute(array $params = array()) {
         $_GET = $params;
         ob_start();
-		require $GLOBALS['rootpath']."\playnext2.php";
+		require $GLOBALS['rootpath']."\addtransaction.php";
         return ob_get_clean();
     }
 
 	/**
-	 * @large
+	 * @small
 	 */
-    public function test_playnext_Load() {
+    public function test_addtransaction_Load() {
         $args = array();
         $this->assertisString($this->_execute($args));
     }

@@ -7,37 +7,39 @@ $GLOBALS['rootpath'] = $GLOBALS['rootpath'] ?? "htdocs\Game-Library\server";
  * @group htmlpage
  * @coversNothing
  */
-class testchartdata extends TestCase {
+class calculations_Test_A extends TestCase {
 
     private function _execute(array $params = array()) {
         $_GET = $params;
         ob_start();
-		require $GLOBALS['rootpath']."\chartdata.php";
+		require_once $GLOBALS['rootpath']."\calculations.php";
         return ob_get_clean();
     }
 
 	/**
 	 * @large
+	 * @uses PriceCalculation 
 	 */
-    public function test_chartdata_Load() {
+    public function test_calculations_Load() {
         $args = array();
         $this->assertisString($this->_execute($args));
     }
 
 	/**
 	 * @large
+	 * @uses PriceCalculation 
 	 */
-    public function test_chartdata_year() {
-        $args = array('group'=>"year");
+    public function test_calculations_Fave() {
+        $args = array('fav'=>"default");
         $this->assertisString($this->_execute($args));
     }
 
 	/**
 	 * @large
+	 * @uses PriceCalculation 
 	 */
-    public function test_chartdata_detail() {
-        $args = array('group'=>"month",'countfree'=>0,'detail'=>"2010-5");
+    public function test_calculations_Custom() {
+        $args = array('fav'=>"Custom",'col'=>"Title,Type",'Sortby' => "PurchaseDate",'SortDir' => SORT_DESC);
         $this->assertisString($this->_execute($args));
     }
-
 }

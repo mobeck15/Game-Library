@@ -6,40 +6,42 @@ $GLOBALS['rootpath'] = $GLOBALS['rootpath'] ?? "htdocs\Game-Library\server";
 /**
  * @group htmlpage
  * @coversNothing
+ * @group purchases
  */
-class testaddhistory extends TestCase {
+class viewbundle_Test_A extends TestCase {
 
     private function _execute(array $params = array()) {
-        $_SERVER['QUERY_STRING']="";
-		$_GET = $params;
+        $_GET = $params;
         ob_start();
-		require $GLOBALS['rootpath']."\addhistory.php";
+		require $GLOBALS['rootpath'].'\viewbundle.php';
         return ob_get_clean();
     }
 
 	/**
-	 * @small
+	 * @medium
 	 */
-    public function test_addhistory_Load() {
+    public function test_viewbundle_Load() {
         $args = array();
         $this->assertisString($this->_execute($args));
     }
 
 	/**
 	 * @large
-	 * @group steamapi
 	 */
-    public function test_addhistory_Steam() {
-        $args = array("mode"=>"steam");
+    public function test_viewbundle_bundleid() {
+		//Skyrim bundle
+        $args = array('id'=>11);
+        $this->assertisString($this->_execute($args));
+
+		//Realm of the mad god (parent bundle contains data)
+        $args = array('id'=>21);
         $this->assertisString($this->_execute($args));
     }
 
 	/**
-	 * @large
-	 * @group steamapi
+	 * @medium
 	 */
-    public function test_addhistory_Edit() {
-        $args = array("HistID"=>1);
+    public function test_viewbundle_edit() {
+        $args = array('id'=>11,'edit'=>1);
         $this->assertisString($this->_execute($args));
-    }
-}
+    }}

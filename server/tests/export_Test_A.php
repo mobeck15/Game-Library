@@ -7,7 +7,7 @@ $GLOBALS['rootpath'] = $GLOBALS['rootpath'] ?? "htdocs\Game-Library\server";
  * @group htmlpage
  * @coversNothing
  */
-class testexport extends TestCase {
+class export_Test_A extends TestCase {
 
     private function _execute(array $params = array()) {
         $_GET = $params;

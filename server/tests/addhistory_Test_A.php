@@ -7,37 +7,39 @@ $GLOBALS['rootpath'] = $GLOBALS['rootpath'] ?? "htdocs\Game-Library\server";
  * @group htmlpage
  * @coversNothing
  */
-class testviewitem extends TestCase {
+class addhistory_Test_A extends TestCase {
 
     private function _execute(array $params = array()) {
-        $_GET = $params;
+        $_SERVER['QUERY_STRING']="";
+		$_GET = $params;
         ob_start();
-		require $GLOBALS['rootpath'].'\viewitem.php';
+		require $GLOBALS['rootpath']."\addhistory.php";
         return ob_get_clean();
     }
 
 	/**
-	 * @medium
+	 * @small
 	 */
-    public function test_viewitem_Load() {
+    public function test_addhistory_Load() {
         $args = array();
         $this->assertisString($this->_execute($args));
     }
 
 	/**
-	 * @medium
+	 * @large
+	 * @group steamapi
 	 */
-    public function test_viewitem_itemid() {
-        $args = array('id'=>13);
+    public function test_addhistory_Steam() {
+        $args = array("mode"=>"steam");
         $this->assertisString($this->_execute($args));
     }
 
 	/**
 	 * @large
+	 * @group steamapi
 	 */
-    public function test_viewitem_edit() {
-        $args = array('id'=>14,'edit'=>1);
+    public function test_addhistory_Edit() {
+        $args = array("HistID"=>1);
         $this->assertisString($this->_execute($args));
     }
-
 }

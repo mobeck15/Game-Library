@@ -6,13 +6,14 @@ $GLOBALS['rootpath'] = $GLOBALS['rootpath'] ?? "htdocs\Game-Library\server";
 /**
  * @group htmlpage
  * @coversNothing
+ * @group topx
  */
-class testplaynext extends TestCase {
+class playnext2_Test_A extends TestCase {
 
     private function _execute(array $params = array()) {
         $_GET = $params;
         ob_start();
-		require $GLOBALS['rootpath']."\playnext.php";
+		require $GLOBALS['rootpath']."\playnext2.php";
         return ob_get_clean();
     }
 
