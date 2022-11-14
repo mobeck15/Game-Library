@@ -332,7 +332,7 @@ final class dataAccess_Test extends testprivate
 		$insertrow['share']=$history["kwShare"] == "1" ? "on" : "";
 		$insertrow['ProductID']=$history["GameID"];
 		$insertrow['id']=$history["HistoryID"];
-		$timestamp=strtotime($history["Timestamp"]);
+		$timestamp=$history["Timestamp"];
 		
 		$insertrow2=$insertrow;
 		$insertrow2["Title"] .= " Test";
@@ -378,7 +378,7 @@ final class dataAccess_Test extends testprivate
 			$insertrow['share']=$history["kwShare"] == "1" ? "on" : "";
 			$insertrow['ProductID']=$history["GameID"];
 			$insertrow['update']="on";
-			$timestamp=strtotime(date("Y-m-d H:i:s"));
+			$timestamp=date("Y-m-d H:i:s");
 			
 			$insertrow2=$insertrow;
 			$insertrow2["Title"] .= " Test2";

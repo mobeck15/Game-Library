@@ -209,7 +209,7 @@ class dataAccess {
 		if ($query->execute() === TRUE) {
 			//return "Record updated successfully<br>";
 			//TODO: The print_r makes the insertlog look weird.
-			$this->insertlog("Update: " . $timestamp . " " . print_r($inserted,true));
+			$this->insertlog("Update: " . date("Y-m-d H:i:s",strtotime($timestamp)) . " (" . $timestamp . ") " . print_r($inserted,true));
 		}
 	}
 	
