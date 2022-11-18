@@ -230,7 +230,7 @@ array(25) {
 	</tr>
 	<tr>
 		<th>Bundle ID</th>
-		<td><a href="'. $_SERVER['PHP_SELF'] . "?id=" . $purchases[$purchaseIndex[$_GET['id']]]['BundleID'].'">'. $purchases[$purchaseIndex[$_GET['id']]]['BundleID'].'</a>';
+		<td><a href="'. $_SERVER['PHP_SELF'] . "?id=" . $purchases[$purchaseIndex[$_GET['id']]]['BundleID'].'">'. $purchases[$purchaseIndex[$_GET['id']]]['BundleID'].'</a> ';
 		if ($edit_mode === true) {
 		$output .= '<input type="number" name="BundleID" id="BundleID" min="0" max="9999" value="'. $purchases[$purchaseIndex[$_GET['id']]]['BundleID'].'">
 		(?)<input id="BundleTitle" size=30 value="'. $purchases[$purchaseIndex[$purchases[$purchaseIndex[$_GET['id']]]['BundleID']]]['Title'].'">
