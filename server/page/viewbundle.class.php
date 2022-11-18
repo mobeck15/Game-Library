@@ -12,48 +12,24 @@ class viewbundlePage extends Page
 		$this->title="View Bundle";
 	}
 	
+	private function getDataAccessObject(){
+		if(!isset($this->dataAccessObject)){
+			$this->dataAccessObject= new dataAccess();
+		}
+		return $this->dataAccessObject;
+	}
+	
 	public function buildHtmlBody(){
 		$output="";
 		
-$conn=get_db_connection();
+		$conn=get_db_connection();
 
-if(isset($_POST['TransID'])){
-	//if($GLOBALS['Debug_Enabled']) {trigger_error("Post data listed below", E_USER_NOTICE);}
-	//$output .= '<pre>'. print_r($_POST,true) . "</pre>";
-	
-	$update_SQL  = "UPDATE `gl_transactions` SET ";
-	$update_SQL .= "`Title`        = '". mysqli_real_escape_string($conn, $_POST['Title'])             . "', ";
-	$update_SQL .= "`Store`        = '". mysqli_real_escape_string($conn, $_POST['Store'])             . "', ";
-	$update_SQL .= "`BundleID`     = '". mysqli_real_escape_string($conn, $_POST['BundleID'])             . "', ";
-	$update_SQL .= "`Tier`         = '". mysqli_real_escape_string($conn, $_POST['Tier'])             . "', ";
-	$update_SQL .= "`PurchaseDate` = '". mysqli_real_escape_string($conn, date("Y-m-d",strtotime($_POST['purchasetime'])))             . "', ";
-	$update_SQL .= "`PurchaseTime` = '". mysqli_real_escape_string($conn, date("H:i:00",strtotime($_POST['purchasetime'])))             . "', ";
-	//$update_SQL .= "`Sequence`     = '". mysqli_real_escape_string($conn, date("s",strtotime($_POST['purchasetime'])))              . "', ";
-	$update_SQL .= "`Sequence`     = '". mysqli_real_escape_string($conn, $_POST['Sequence'])              . "', ";
-	$update_SQL .= "`Price`        = '". mysqli_real_escape_string($conn, $_POST['Price'])             . "', ";
-	$update_SQL .= "`Fees`         = '". mysqli_real_escape_string($conn, $_POST['Fees'])             . "', ";
-	$update_SQL .= "`Paid`         = '". mysqli_real_escape_string($conn, $_POST['Paid'])             . "', ";
-	$update_SQL .= "`Credit Used`   = '". mysqli_real_escape_string($conn, $_POST['Credit'])             . "', ";
-	$update_SQL .= "`Bundle Link`   = '". mysqli_real_escape_string($conn, $_POST['Link'])             . "' ";
-	$update_SQL .= "WHERE `TransID` = " . mysqli_real_escape_string($conn, $_POST['TransID']);
-
-
-	if($GLOBALS['Debug_Enabled']) {trigger_error("Running SQL Query to update transaction: ". $update_SQL, E_USER_NOTICE);}
-	
-	if ($conn->query($update_SQL) === TRUE) {
-		if($GLOBALS['Debug_Enabled']) { trigger_error("Item record inserted successfully", E_USER_NOTICE);}
-
-		$file = 'insertlog'.date("Y").'.txt';
-		// Write the contents to the file, 
-		// using the FILE_APPEND flag to append the content to the end of the file
-		// and the LOCK_EX flag to prevent anyone else writing to the file at the same time
-		file_put_contents($file, $update_SQL.";\r\n", FILE_APPEND | LOCK_EX);
+		if (isset($_POST['TransID'])){
+            //TODO: cleanse post data
+            $this->getDataAccessObject()->updateBundle($_POST);
+        }
 		
-	} else {
-		trigger_error( "Error inserting record: " . $conn->error ,E_USER_ERROR );
-	}
-	$output .= "<hr>";
-}
+
 
 $settings=getsettings($conn);
 
@@ -496,4 +472,5 @@ unset($conn);
 unset($settings);
 		return $output;
 	}
+	
 }	

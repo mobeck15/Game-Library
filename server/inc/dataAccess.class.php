@@ -226,6 +226,50 @@ class dataAccess {
 		file_put_contents($file, $content."\r\n\r\n", FILE_APPEND | LOCK_EX);
 	}
 	
+	public function updateBundle($postdata)	{
+		$update_SQL  = "UPDATE `gl_transactions` SET ";
+		$update_SQL .= "`Title`        = :title, ";
+		$update_SQL .= "`Store`        = :store, ";
+		$update_SQL .= "`BundleID`     = :bundleid, ";
+		$update_SQL .= "`Tier`         = :tier, ";
+		$update_SQL .= "`PurchaseDate` = :purchasedate, ";
+		$update_SQL .= "`PurchaseTime` = :purchasetime, ";
+		$update_SQL .= "`Sequence`     = :sequence, ";
+		$update_SQL .= "`Price`        = :price, ";
+		$update_SQL .= "`Fees`         = :fees, ";
+		$update_SQL .= "`Paid`         = :paid, ";
+		$update_SQL .= "`Credit Used`  = :credit, ";
+		$update_SQL .= "`Bundle Link`  = :link ";
+		$update_SQL .= "WHERE `TransID` = :transid";
+
+		$query = $this->getConnection()->prepare($update_SQL);
+
+		$query->bindvalue(':title',   $postdata['Title']);
+		$query->bindvalue(':store',   $postdata['Store']);
+		$query->bindvalue(':bundleid',$postdata['BundleID']);
+		$query->bindvalue(':tier',  $postdata['Tier']);
+		$query->bindvalue(':purchasedate', date("Y-m-d",strtotime($postdata['purchasetime'])));
+		$query->bindvalue(':purchasetime', date("H:i:00",strtotime($postdata['purchasetime'])));
+		$query->bindvalue(':sequence',$postdata['Sequence']);
+		$query->bindvalue(':price',$postdata['Price']);
+		$query->bindvalue(':fees',$postdata['Fees']);
+		$query->bindvalue(':paid',$postdata['Paid']);
+		$query->bindvalue(':credit',$postdata['Credit']);
+		$query->bindvalue(':link',$postdata['Link']);
+		$query->bindvalue(':transid',$postdata['TransID']);
+
+		if ($query->execute() === TRUE) {
+			//return "Record updated successfully<br>";
+			//TODO: The print_r makes the insertlog look weird.
+			$this->insertlog("Update Bundle: " . $postdata['BundleID'] . " " . print_r($postdata,true));
+		}
+		else 
+		{
+			echo "ERROR:" ;
+			var_dump($query->errorInfo());
+		}
+	}
+	
 	public function updateHistory($insertrow,$timestamp){
 		$sql ="UPDATE `gl_history` ";
 		$sql.="SET `Timestamp` = :date, "; //Timestamp  2015/09/18 22:08:55

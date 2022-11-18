@@ -6,6 +6,7 @@ require_once $GLOBALS['rootpath']."/page/viewbundle.class.php";
 
 /**
  * @group pageclass
+ * @group viewbundle
  * @testdox viewbundle_Test.php testing viewbundle.class.php
  */
 class viewbundle_Test extends TestCase {
