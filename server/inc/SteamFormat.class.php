@@ -406,7 +406,7 @@ class SteamFormat
 			$output .= $this->formatStat("Publishers",$appdetails['data']['publishers']);
 			$output .= $this->formatDemos("Demos",($appdetails['data']['demos'] ?? null));
 			$output .= $this->formatoverview("Price Overview",($appdetails['data']['price_overview'] ?? null));
-			$output .= $this->formatStat("Packages",$appdetails['data']['packages']);
+			$output .= $this->formatStat("Packages",$appdetails['data']['packages'] ?? null);
 			$output .= $this->formatpackage("Package Groups", $appdetails['data']['package_groups']);
 			$output .= $this->formatplatform("Platforms",($appdetails['data']['platforms'] ?? null));
 			$metacriticlink = $this->makehyperlink(($appdetails['data']['metacritic']['url'] ?? null),
