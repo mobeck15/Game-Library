@@ -6,7 +6,7 @@ require_once $GLOBALS['rootpath'].'\inc\export.inc.php';
 
 /**
  * @group include
- * @testdox Exporting the database
+ * @testdox export_Test.php testing export.inc.php
  */
 class export_Test extends TestCase {
 
@@ -18,7 +18,7 @@ class export_Test extends TestCase {
     }
 
 	/**
-	 * @testdox saves a file
+	 * @testdox placeholder
 	 * @small
 	 * @coversNothing
 	 * @doesNotPerformAssertions

@@ -1,13 +1,9 @@
 <?php
 //TODO: Paid total should include DLC (this will make free games with paid DLC show as not free)
 //TODO: Re-evaluate how parent game is calculated
-if(isset($GLOBALS[__FILE__])){
-	trigger_error("File already included once ".__FILE__.". ");
-}
-$GLOBALS[__FILE__]=1;
-
 $GLOBALS['rootpath'] = $GLOBALS['rootpath'] ?? "..";
 require_once $GLOBALS['rootpath']."/inc/PriceCalculation.class.php";
+include_once $GLOBALS['rootpath']."/inc/getGames.inc.php";
 
 function getCalculations($gameID="",$connection=false,$start=false,$end=false){
 	

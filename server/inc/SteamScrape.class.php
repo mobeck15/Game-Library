@@ -52,9 +52,9 @@ class SteamScrape
 		
 		if($this->getPageTitle()=="Welcome to Steam"){
 			$this->pageExists=false;
-			$this->rawPageText=false;
-			$this->htmldom=false;
-			return false;
+			$this->rawPageText=" ";
+			$this->htmldom=str_get_html(" ");
+			return $this->htmldom;
 		}
 		
 		return $result;
@@ -104,7 +104,9 @@ class SteamScrape
 		}
 		
 		$this->description = "";
-		$search_results = $this->getdom()->find(".game_description_snippet");
+		//TODO: fatal error when viewing GameMaker Studio Pro (id=1343) Call to a member function find() on bool
+		$dom=$this->getdom();
+		$search_results = $dom->find(".game_description_snippet");
 		if(isset($search_results[0])){
 			$this->description = trim($search_results[0]->innertext);
 		}
@@ -176,7 +178,7 @@ class SteamScrape
 			return $this->developer;
 		}
 		//TODO: Update to read multiple developer entries and return an array.
-		
+		//TODO: Flashback (245730) has no developer
 		$developers=array();
 		$this->developer="";
 		$search_results = $this->getdom()->find("#developers_list a");

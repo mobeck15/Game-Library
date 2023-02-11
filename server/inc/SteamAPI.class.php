@@ -29,6 +29,11 @@ class SteamAPI
 		$this->setApiUrls();
     }
 	
+	public function setSteamGameID($steamGameID){
+		$this->steamGameID=$steamGameID;
+		$this->setApiUrls();
+	}
+	
 	private function setAuth() {
 		require $GLOBALS['rootpath']."/inc/authapi.inc.php";
         $this->SteamAPIwebkey = $SteamAPIwebkey;

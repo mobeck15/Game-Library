@@ -102,8 +102,8 @@ class SteamFormat
 	
 	public function formatSteamAPI($resultarray,$userstatsarray){
 		$output  = "<table><tr>";
-		$output.=$this->formatDetailStat("",$resultarray['game']['gameName'],"<td>","","</td>");
-		$output.=$this->formatDetailStat("Version",$resultarray['game']['gameVersion'],"<td>"," ","</td>");
+		$output.=$this->formatDetailStat("",($resultarray['game']['gameName'] ?? ""),"<td>","","</td>");
+		$output.=$this->formatDetailStat("Version",($resultarray['game']['gameVersion'] ?? ""),"<td>"," ","</td>");
 		$output .= "</tr><tr>";
 		if(isset($resultarray['game']['availableGameStats']['stats'])){
 			$output .= "<td ";
@@ -368,56 +368,62 @@ class SteamFormat
 	}
 	
 	public function formatAppDetails($appdetails,$verbose=true){
-		$output  = $this->formatStat("Type",$appdetails['data']['type']);
-		$output .= $this->formatStat("Name",$appdetails['data']['required_age']);
-		$output .= $this->formatStat("Required Age",$appdetails['data']['required_age']);
-		$output .= $this->formatStat("Free Game",boolText($appdetails['data']['is_free']));
-		$output .= $this->formatStat("Controller Support",($appdetails['data']['controller_support'] ?? null));
-		$output .= $this->formatStat("DLC",($appdetails['data']['dlc'] ?? null));
-		
-		if($verbose==true) {
-			$output .= "Description: " . $appdetails['data']['detailed_description'] . "<br>";
-			if($appdetails['data']['detailed_description']<>$appdetails['data']['about_the_game']){
-				$output .= "Description: " . $appdetails['data']['about_the_game'] . "<br>";
-			} 
-		}
-		
-		$output .= $this->formatStat("Supported Languages",$appdetails['data']['supported_languages']);
-		$output .= $this->formatStat("Reviews",($appdetails['data']['reviews'] ?? null));
+		if(isset($appdetails['success']) && $appdetails['success']==false){
+			return "";
+		} else {
+			$output  = $this->formatStat("Type",$appdetails['data']['type']);
+			$output .= $this->formatStat("Name",$appdetails['data']['required_age']);
+			$output .= $this->formatStat("Required Age",$appdetails['data']['required_age']);
+			$output .= $this->formatStat("Free Game",boolText($appdetails['data']['is_free']));
+			$output .= $this->formatStat("Controller Support",($appdetails['data']['controller_support'] ?? null));
+			$output .= $this->formatStat("DLC",($appdetails['data']['dlc'] ?? null));
+			
+			if($verbose==true) {
+				$output .= "Description: " . $appdetails['data']['detailed_description'] . "<br>";
+				if($appdetails['data']['detailed_description']<>$appdetails['data']['about_the_game']){
+					$output .= "Description: " . $appdetails['data']['about_the_game'] . "<br>";
+				} 
+			}
+			
+			$output .= $this->formatStat("Supported Languages",$appdetails['data']['supported_languages']);
+			$output .= $this->formatStat("Reviews",($appdetails['data']['reviews'] ?? null));
 
-		if($verbose==true) {
-			$output .= $this->formatStat("Header Image","<img src='" . $appdetails['data']['header_image'] . "'>");
-		}
-		
-		$sitelink=$this->makehyperlink($appdetails['data']['website'],$appdetails['data']['website']);
-		$output .= $this->formatStat("Web Site",$sitelink);
+			if($verbose==true) {
+				$output .= $this->formatStat("Header Image","<img src='" . $appdetails['data']['header_image'] . "'>");
+			}
+			
+			$sitelink=$this->makehyperlink($appdetails['data']['website'],$appdetails['data']['website']);
+			$output .= $this->formatStat("Web Site",$sitelink);
 
-		//TODO: add CSS for all elements to make DIV containters for each and spacing.
-		$output .= $this->formatStat("PC Requirements",$appdetails['data']['pc_requirements']);
-		$output .= $this->formatStat("Mac Requirements",$appdetails['data']['mac_requirements']);
-		$output .= $this->formatStat("Linux Requirements",$appdetails['data']['linux_requirements']);
-		
-		$output .= $this->formatStat("Legal Notice",$appdetails['data']['legal_notice']);
-		$output .= $this->formatStat("Publishers",$appdetails['data']['publishers']);
-		$output .= $this->formatDemos("Demos",($appdetails['data']['demos'] ?? null));
-		$output .= $this->formatoverview("Price Overview",($appdetails['data']['price_overview'] ?? null));
-		$output .= $this->formatStat("Packages",$appdetails['data']['packages']);
-		$output .= $this->formatpackage("Package Groups", $appdetails['data']['package_groups']);
-		$output .= $this->formatplatform("Platforms",($appdetails['data']['platforms'] ?? null));
-		$metacriticlink = $this->makehyperlink(($appdetails['data']['metacritic']['url'] ?? null),
-			($appdetails['data']['metacritic']['score'] ?? null));
-		$output .= $this->formatStat("metacritic",$metacriticlink);
-		$output .= $this->formatcategory("Categories",($appdetails['data']['categories'] ?? null));
-		$output .= $this->formatcategory("Genres",($appdetails['data']['genres'] ?? null));
-		$output .= $this->formatscreenshot("Screenshots",($appdetails['data']['screenshots'] ?? null));
-		$output .= $this->formatmovies("Movies",($appdetails['data']['movies'] ?? null));
-		$output .= $this->formatRecommendations("recommendations",($appdetails['data']['recommendations'] ?? null));
-		$output .= $this->formatStat("achievements",($appdetails['data']['achievements']['total'] ?? null));
-		$output .= $this->formatStat("release_date",($appdetails['data']['release_date']['date'] ?? null));
-		$output .= $this->formatsupport("Support Info",($appdetails['data']['support_info'] ?? null));
-		$output .= $this->formatStat("background",$this->makehyperlink(($appdetails['data']['background'] ?? null),"Link"));
-		
-		return($output);		
+			//TODO: add CSS for all elements to make DIV containters for each and spacing.
+			$output .= $this->formatStat("PC Requirements",$appdetails['data']['pc_requirements']);
+			$output .= $this->formatStat("Mac Requirements",$appdetails['data']['mac_requirements']);
+			$output .= $this->formatStat("Linux Requirements",$appdetails['data']['linux_requirements']);
+			
+			if(isset($appdetails['data']['legal_notice'])){
+				$output .= $this->formatStat("Legal Notice",$appdetails['data']['legal_notice']);
+			}
+			$output .= $this->formatStat("Publishers",$appdetails['data']['publishers']);
+			$output .= $this->formatDemos("Demos",($appdetails['data']['demos'] ?? null));
+			$output .= $this->formatoverview("Price Overview",($appdetails['data']['price_overview'] ?? null));
+			$output .= $this->formatStat("Packages",$appdetails['data']['packages']);
+			$output .= $this->formatpackage("Package Groups", $appdetails['data']['package_groups']);
+			$output .= $this->formatplatform("Platforms",($appdetails['data']['platforms'] ?? null));
+			$metacriticlink = $this->makehyperlink(($appdetails['data']['metacritic']['url'] ?? null),
+				($appdetails['data']['metacritic']['score'] ?? null));
+			$output .= $this->formatStat("metacritic",$metacriticlink);
+			$output .= $this->formatcategory("Categories",($appdetails['data']['categories'] ?? null));
+			$output .= $this->formatcategory("Genres",($appdetails['data']['genres'] ?? null));
+			$output .= $this->formatscreenshot("Screenshots",($appdetails['data']['screenshots'] ?? null));
+			$output .= $this->formatmovies("Movies",($appdetails['data']['movies'] ?? null));
+			$output .= $this->formatRecommendations("recommendations",($appdetails['data']['recommendations'] ?? null));
+			$output .= $this->formatStat("achievements",($appdetails['data']['achievements']['total'] ?? null));
+			$output .= $this->formatStat("release_date",($appdetails['data']['release_date']['date'] ?? null));
+			$output .= $this->formatsupport("Support Info",($appdetails['data']['support_info'] ?? null));
+			$output .= $this->formatStat("background",$this->makehyperlink(($appdetails['data']['background'] ?? null),"Link"));
+			
+			return($output);		
+		}
 	}
 	
 }

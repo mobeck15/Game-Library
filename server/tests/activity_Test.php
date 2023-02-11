@@ -4,8 +4,9 @@ use PHPUnit\Framework\TestCase;
 $GLOBALS['rootpath'] = $GLOBALS['rootpath'] ?? "htdocs\Game-Library\server";
 
 /**
- * @group page
+ * @group htmlpage
  * @coversNothing
+ * @testdox activity_Test.php activity.php
  */
 class testActivity extends TestCase {
 
@@ -18,6 +19,7 @@ class testActivity extends TestCase {
 
 	/**
 	 * @medium
+	 * @testdox activity.php page loads with no parameters
 	 */
     public function test_Activity_Load() {
         $args = array();

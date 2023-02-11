@@ -6,10 +6,13 @@ require_once $GLOBALS['rootpath']."/page/_page.class.php";
 require_once $GLOBALS['rootpath'].'\tests\inc\testprivate.inc.php';
 
 /**
- * @group page
+ * @group pageclass
+ * @testdox page_Test.php testing _page.class.php
  */
 class page_Test extends testprivate {
 	/**
+	 * @testdox outputHtml
+	 * @small
 	 * @covers Page
 	 * @uses Get_Footer
 	 * @uses Get_Header
@@ -18,11 +21,16 @@ class page_Test extends testprivate {
 	 */
 	public function test_outputHtml() {
 		$page = new Page();
-		$result = $page->outputHtml();
+        ob_start();
+		$result1 = $page->outputHtml();
+		$result = ob_get_clean();
 		$this->assertisString($result);
+		$this->assertEquals("",$result1);
 	}
 
 	/**
+	 * @testdox buildHtmlBody
+	 * @small
 	 * @covers Page
 	 */
 	public function test_buildHtmlBody() {
