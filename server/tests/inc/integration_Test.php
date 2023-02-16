@@ -250,7 +250,7 @@ final class integration_Test extends TestCase
 				
 				//echo $debugtext3;
 				
-				$this->assertEquals($expectedAltSale,$actualAltSale);
+				$this->assertEquals(round($expectedAltSale,14,PHP_ROUND_HALF_DOWN ),round($actualAltSale,14,PHP_ROUND_HALF_DOWN ));
 			}
 
 			

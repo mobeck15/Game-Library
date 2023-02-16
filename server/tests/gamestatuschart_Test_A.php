@@ -7,28 +7,20 @@ $GLOBALS['rootpath'] = $GLOBALS['rootpath'] ?? "htdocs\Game-Library\server";
  * @group htmlpage
  * @coversNothing
  */
-class testviewallhistory extends TestCase {
+class gamestatuschart_Test_A extends TestCase {
 
     private function _execute(array $params = array()) {
         $_GET = $params;
         ob_start();
-		require $GLOBALS['rootpath'].'\viewallhistory.php';
+		require $GLOBALS['rootpath']."\gamestatuschart.php";
         return ob_get_clean();
     }
 
 	/**
-	 * @small
+	 * @large
 	 */
-    public function test_viewallhistory_Load() {
+    public function test_gamestatuschart_Load() {
         $args = array();
-        $this->assertisString($this->_execute($args));
-    }
-
-	/**
-	 * @medium
-	 */
-    public function test_viewallhistory_history() {
-        $args = array('num'=>30,'Sort'=>"Played");
         $this->assertisString($this->_execute($args));
     }
 

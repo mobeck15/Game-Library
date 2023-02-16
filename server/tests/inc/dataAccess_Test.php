@@ -11,6 +11,7 @@ require_once $GLOBALS['rootpath']."\inc\dataAccess.class.php";
  * @group classtest
  * @group getGames
  * @group addhistory
+ * @group viewbundle
  * @testdox dataAccess_Test.php testing dataAccess.class.php
  */
 final class dataAccess_Test extends testprivate
@@ -303,7 +304,50 @@ final class dataAccess_Test extends testprivate
 		$content = file_get_contents($file);
 		$this->assertEquals("Insert1\r\n\r\nInsert2\r\n\r\n",$content);
 	}
-	
+		
+	/**
+	 * @small
+	 * @covers dataAccess::updateBundle
+	 * @uses dataAccess
+	 * @testdox updateBundle()
+	 * /
+	public function test_updateBundle() {
+		$dataobject= new dataAccess();
+		$history = $dataobject->getLatestHistory();
+		//var_dump($history);
+		$insertrow['Title']=$history["Game"];
+		$insertrow['System']=$history["System"];
+		$insertrow['Data']=$history["Data"];
+		$insertrow['hours']=$history["Time"];
+		$insertrow['notes']=$history["Notes"];
+		$insertrow['source']=$history["RowType"];
+		$insertrow['achievements']=$history["Achievements"];
+		$insertrow['status']=$history["Status"];
+		$insertrow['review']=$history["Review"];
+		$insertrow['basegame']=$history["BaseGame"] == "1" ? "on" : "";
+		$insertrow['minutes']=$history["kwMinutes"] == "1" ? "on" : "";
+		$insertrow['idle']=$history["kwIdle"] == "1" ? "on" : "";
+		$insertrow['cardfarming']=$history["kwCardFarming"] == "1" ? "on" : "";
+		$insertrow['cheating']=$history["kwCheating"] == "1" ? "on" : "";
+		$insertrow['beatgame']=$history["kwBeatGame"] == "1" ? "on" : "";
+		$insertrow['share']=$history["kwShare"] == "1" ? "on" : "";
+		$insertrow['ProductID']=$history["GameID"];
+		$insertrow['id']=$history["HistoryID"];
+		$timestamp=$history["Timestamp"];
+		
+		$insertrow2=$insertrow;
+		$insertrow2["Title"] .= " Test";
+		
+		$dataobject->updateHistory($insertrow2,$timestamp);
+		$history2 = $dataobject->getLatestHistory();
+		
+		$this->assertEquals($insertrow2["Title"],$history2["Game"]);
+		
+		$dataobject->updateHistory($insertrow,$timestamp);
+		$history2 = $dataobject->getLatestHistory();
+		$this->assertEquals($history,$history2);
+	} /* */
+
 	/**
 	 * @small
 	 * @covers dataAccess::updateHistory
@@ -332,7 +376,7 @@ final class dataAccess_Test extends testprivate
 		$insertrow['share']=$history["kwShare"] == "1" ? "on" : "";
 		$insertrow['ProductID']=$history["GameID"];
 		$insertrow['id']=$history["HistoryID"];
-		$timestamp=strtotime($history["Timestamp"]);
+		$timestamp=$history["Timestamp"];
 		
 		$insertrow2=$insertrow;
 		$insertrow2["Title"] .= " Test";
@@ -378,7 +422,7 @@ final class dataAccess_Test extends testprivate
 			$insertrow['share']=$history["kwShare"] == "1" ? "on" : "";
 			$insertrow['ProductID']=$history["GameID"];
 			$insertrow['update']="on";
-			$timestamp=strtotime(date("Y-m-d H:i:s"));
+			$timestamp=date("Y-m-d H:i:s");
 			
 			$insertrow2=$insertrow;
 			$insertrow2["Title"] .= " Test2";

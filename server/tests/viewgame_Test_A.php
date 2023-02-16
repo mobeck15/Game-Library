@@ -8,7 +8,7 @@ $GLOBALS['rootpath'] = $GLOBALS['rootpath'] ?? "htdocs\Game-Library\server";
  * @coversNothing
  * @group steamformat
  */
-class testviewgame extends TestCase {
+class viewgame_Test_A extends TestCase {
 
     private function _execute(array $params = array()) {
         $_GET = $params;

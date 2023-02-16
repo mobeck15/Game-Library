@@ -218,6 +218,7 @@ $output .= '<th class="hidden">Debug</th>
 				
 				if(isset($detail['purchased'][$row['Game_ID']])) {
 					$detail['purchased'][$row['Game_ID']]['Played']="Played";
+					$detail['purchased'][$row['Game_ID']]['MainLibrary']=$row['MainLibrary'];
 				}
 			}
 			
@@ -395,7 +396,7 @@ $output .= '<th class="hidden">Debug</th>
 			if(isset($_GET['CountFree'])) {
 				$output .= "&CountFree=0";
 			}
-			$output .= '">'. $row['Date'].'</a></td>';
+			$output .= '#detailview">'. $row['Date'].'</a></td>';
 		$output .= '<td class="numeric">$'. number_format($row['Spending'], 2).'</td>
 		<td class="numeric">'.$row['Games'].'</td>
 		<td class="numeric">$'.number_format($row['Avg'], 2).'</td>
@@ -482,7 +483,6 @@ $output .= '<th class="hidden">Debug</th>
 	} else {
 		$daysTilNextMonth = floor((strtotime('first day of next month') - strtotime("Today")) / (24 * 3600));
 	}
-
 	
 	$output .= "<tfoot>";
 	$output .= "<tr>";
@@ -586,10 +586,10 @@ $output .= '<th class="hidden">Debug</th>
 	
 	if($groupbyyear==true) {
 		$percaption="/Yr";
-		$chartmax="400";
+		$chartmax="610";
 	} else {
 		$percaption="/Mo";
-		$chartmax="90";
+		$chartmax="130";
 	}
 $output .= '<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     <script type="text/javascript">';
@@ -619,7 +619,7 @@ function drawCurveTypes() {
 			  //max: 130,
 			  //min: -51
 			  max: ".$chartmax.",
-			  min: 0
+			  min: -5
 			  
 		  }
         },
@@ -643,7 +643,7 @@ function drawCurveTypes() {
 	$output .= "<br>";
 	//$output .= nl2br($Debug['2015-1']);
 	if (isset($_GET['detail'])) {
-		$output .= "<table>";
+		$output .= "<a name='detailview'><table>";
 		$output .= "<thead>";
 		$output .= "<tr><th colspan=3>Detail for ".$_GET['detail']."</th></tr>";
 		$output .= "<tr>";
@@ -668,6 +668,7 @@ function drawCurveTypes() {
 			$output .= "<thead></tr>";
 			$output .= "<th>Game</th>";
 			$output .= "<th>Played</th>";
+			$output .= "<th>Library</th>";
 			$output .= "</tr></thead>";
 			$output .= "<tbody>";
 			$purchasedgames=array();
@@ -692,6 +693,7 @@ function drawCurveTypes() {
 					} else {
 						$output .= "<td>" . $purchased['Played'] . "</td>";
 					}
+					$output .= "<td>".$purchased['MainLibrary']."</td>";
 					//Link to run game: steam://run/428430
 					$output .= "</tr>";
 				}

@@ -6,20 +6,22 @@ $GLOBALS['rootpath'] = $GLOBALS['rootpath'] ?? "htdocs\Game-Library\server";
 /**
  * @group htmlpage
  * @coversNothing
+ * @group purchases
+ * @group viewbundle
  */
-class testchartdata extends TestCase {
+class viewbundle_Test_A extends TestCase {
 
     private function _execute(array $params = array()) {
         $_GET = $params;
         ob_start();
-		require $GLOBALS['rootpath']."\chartdata.php";
+		require $GLOBALS['rootpath'].'\viewbundle.php';
         return ob_get_clean();
     }
 
 	/**
-	 * @large
+	 * @medium
 	 */
-    public function test_chartdata_Load() {
+    public function test_viewbundle_Load() {
         $args = array();
         $this->assertisString($this->_execute($args));
     }
@@ -27,17 +29,20 @@ class testchartdata extends TestCase {
 	/**
 	 * @large
 	 */
-    public function test_chartdata_year() {
-        $args = array('group'=>"year");
+    public function test_viewbundle_bundleid() {
+		//Skyrim bundle
+        $args = array('id'=>11);
+        $this->assertisString($this->_execute($args));
+
+		//Realm of the mad god (parent bundle contains data)
+        $args = array('id'=>21);
         $this->assertisString($this->_execute($args));
     }
 
 	/**
-	 * @large
+	 * @medium
 	 */
-    public function test_chartdata_detail() {
-        $args = array('group'=>"month",'countfree'=>0,'detail'=>"2010-5");
+    public function test_viewbundle_edit() {
+        $args = array('id'=>11,'edit'=>1);
         $this->assertisString($this->_execute($args));
-    }
-
-}
+    }}
