@@ -194,6 +194,7 @@ $output .= '<th class="hidden">Debug</th>
 				$detail['purchased'][$row['Game_ID']]['Game']=$row['Title'];
 				$detail['purchased'][$row['Game_ID']]['Played']="Unplayed";
 				$detail['purchased'][$row['Game_ID']]['SteamID']=$row['SteamID'];
+				$detail['purchased'][$row['Game_ID']]['MainLibrary']=$row['MainLibrary'];
 			}
 			
 			
