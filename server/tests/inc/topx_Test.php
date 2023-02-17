@@ -28,8 +28,10 @@ final class topx_Test extends testprivate
 	 * @covers topx::displaytop
 	 * @uses topx
 	 * @uses timeduration
+	 * @testWith ["Active"]
+	 *			 ["All"]
 	 */
-	public function test_displaytop() {
+	public function test_displaytop($mode) {
 		$calculations=array(
 			1=>array("Status"=>"Active","Launchperhr"=>1,"Title"=>"Game1","LaunchHrsNext1"=>4,"LaunchHrsNext2"=>9),
 			2=>array("Status"=>"Active","Launchperhr"=>2,"Title"=>"Game2","LaunchHrsNext1"=>5,"LaunchHrsNext2"=>8),
@@ -46,29 +48,8 @@ final class topx_Test extends testprivate
 			"header"=>"Launch Price $/hr",
 		);
 		
-		$this->assertisString($topxObject->displaytop($gameids,$stat));
+		$this->assertisString($topxObject->displaytop($gameids,$stat,$mode));
 	}
-
-	/**
-	 * @small
-	 * @covers topx::defaultSortDir
-	 * @uses topx::__construct
-	 * @testWith ["GrandTotal","SORT_ASC"]
-	 *			 ["Paid","SORT_DESC"]
-	 * /
-	public function test_defaultSortDir($stat, $expectedresult) {
-		$topxObject=new topx();
-		
-		$resutls=array(
-			"SORT_ASC"=>SORT_ASC,
-			"SORT_DESC"=>SORT_DESC
-		);
-		
-		$method = $this->getPrivateMethod( 'topx', 'defaultSortDir' );
-		$result = $method->invokeArgs($topxObject, array( $stat ) );
-		
-		$this->assertEquals($resutls[$expectedresult],$result);
-	} /* */
 	
 	/**
 	 * @small
@@ -117,20 +98,6 @@ final class topx_Test extends testprivate
 
 	/**
 	 * @small
-	 * @covers topx::getHeaderText
-	 * @uses topx::__construct
-	 * /
-	public function test_getHeaderText() {
-		$topxObject=new topx();
-		
-		$method = $this->getPrivateMethod( 'topx', 'getHeaderText' );
-		$result = $method->invokeArgs($topxObject, array( "ParentGame" ) );
-		
-		$this->assertisString($result);
-	} /* */
-
-	/**
-	 * @small
 	 * @covers topx::gettopx
 	 * @uses topx
 	 * @testWith ["GrandTotal"]
@@ -156,23 +123,6 @@ final class topx_Test extends testprivate
 		
 		$this->assertisArray($result);
 	}
-
-	
-	/**
-	 * @small
-	 * @covers topx::defaultFilterString
-	 * @uses topx::__construct
-	 * @testWith ["GrandTotal"]
-	 *			 ["TimeLeftToBeat"]
-	 * /
-	public function test_defaultFilterString($stat) {
-		$topxObject=new topx();
-		
-		$method = $this->getPrivateMethod( 'topx', 'defaultFilterString' );
-		$result = $method->invokeArgs($topxObject, array( $stat ) );
-		
-		$this->assertisString($result);
-	} /* */
 	
 	/**
 	 * @small
@@ -182,6 +132,7 @@ final class topx_Test extends testprivate
 	 * @testWith [2,"AltLess1","$2.00"]
 	 *			 [2,"TimeLeftToBeat","2:00:00"]
 	 *			 [300,"GrandTotal","0:05:00"]
+	 *			 [2,"AchievementsPct","2.00%"]
 	 */
 	public function test_statformat($value, $statname , $expectedresult) {
 		$topxObject=new topx();
@@ -289,22 +240,6 @@ final class topx_Test extends testprivate
 		$this->assertisArray($result);
 		$this->assertEquals($filterarray,$result);
 	}
-	
-	/**
-	 * @small
-	 * @covers topx::getMetaStat
-	 * @uses topx
-	 * @testWith ["Launchperhr"]
-	 *           ["ParentGame"]
-	 * /
-	public function test_getMetaStat_stat($testStat) {
-		$topxObject=new topx();
-
-		$method = $this->getPrivateMethod( 'topx', 'getMetaStat' );
-		$result = $method->invokeArgs($topxObject, array( $testStat ) );
-
-		$this->assertisArray($result);
-	} /* */
 	
 	/**
 	 * @small
