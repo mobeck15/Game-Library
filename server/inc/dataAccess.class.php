@@ -259,14 +259,8 @@ class dataAccess {
 		$query->bindvalue(':transid',$postdata['TransID']);
 
 		if ($query->execute() === TRUE) {
-			//return "Record updated successfully<br>";
 			//TODO: The print_r makes the insertlog look weird.
 			$this->insertlog("Update Bundle: " . $postdata['BundleID'] . " " . print_r($postdata,true));
-		}
-		else 
-		{
-			echo "ERROR:" ;
-			var_dump($query->errorInfo());
 		}
 	}
 	
@@ -315,7 +309,6 @@ class dataAccess {
 		$query->bindvalue(':insertid',$insertrow['id']);
 		
 		if ($query->execute() === TRUE) {
-			//return "Record updated successfully<br>";
 			//TODO: The print_r makes the insertlog look weird.
 			$this->insertlog("Update: " . $timestamp . " " . print_r($insertrow,true));
 		}

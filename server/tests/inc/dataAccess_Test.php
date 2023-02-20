@@ -310,43 +310,34 @@ final class dataAccess_Test extends testprivate
 	 * @covers dataAccess::updateBundle
 	 * @uses dataAccess
 	 * @testdox updateBundle()
-	 * /
+	 */
 	public function test_updateBundle() {
 		$dataobject= new dataAccess();
-		$history = $dataobject->getLatestHistory();
-		//var_dump($history);
-		$insertrow['Title']=$history["Game"];
-		$insertrow['System']=$history["System"];
-		$insertrow['Data']=$history["Data"];
-		$insertrow['hours']=$history["Time"];
-		$insertrow['notes']=$history["Notes"];
-		$insertrow['source']=$history["RowType"];
-		$insertrow['achievements']=$history["Achievements"];
-		$insertrow['status']=$history["Status"];
-		$insertrow['review']=$history["Review"];
-		$insertrow['basegame']=$history["BaseGame"] == "1" ? "on" : "";
-		$insertrow['minutes']=$history["kwMinutes"] == "1" ? "on" : "";
-		$insertrow['idle']=$history["kwIdle"] == "1" ? "on" : "";
-		$insertrow['cardfarming']=$history["kwCardFarming"] == "1" ? "on" : "";
-		$insertrow['cheating']=$history["kwCheating"] == "1" ? "on" : "";
-		$insertrow['beatgame']=$history["kwBeatGame"] == "1" ? "on" : "";
-		$insertrow['share']=$history["kwShare"] == "1" ? "on" : "";
-		$insertrow['ProductID']=$history["GameID"];
-		$insertrow['id']=$history["HistoryID"];
-		$timestamp=$history["Timestamp"];
+		$statement = $dataobject->getPurchases(1);
+		$allrows=$dataobject->getAllRows($statement,"TransID");
 		
-		$insertrow2=$insertrow;
-		$insertrow2["Title"] .= " Test";
+		//var_dump($allrows);
+
+		$insertrow['TransID']=$allrows[1]["TransID"];
+		$insertrow['Title']=$allrows[1]["Title"];
+		$insertrow['Store']=$allrows[1]["Store"];
+		$insertrow['BundleID']=$allrows[1]["BundleID"];
+		$insertrow['Tier']=$allrows[1]["Tier"];
+		$insertrow['purchasetime']=date("Y-m-d H:i:s");
+		$insertrow['Sequence']=$allrows[1]["Sequence"];
+		$insertrow['Price']=$allrows[1]["Price"];
+		$insertrow['Fees']=$allrows[1]["Fees"];
+		$insertrow['Paid']=$allrows[1]["Paid"];
+		$insertrow['Credit']=$allrows[1]["Credit Used"];
+		$insertrow['Link']=$allrows[1]["Bundle Link"];
 		
-		$dataobject->updateHistory($insertrow2,$timestamp);
-		$history2 = $dataobject->getLatestHistory();
-		
-		$this->assertEquals($insertrow2["Title"],$history2["Game"]);
-		
-		$dataobject->updateHistory($insertrow,$timestamp);
-		$history2 = $dataobject->getLatestHistory();
-		$this->assertEquals($history,$history2);
-	} /* */
+		$dataobject->updateBundle($insertrow);
+
+		$statement = $dataobject->getPurchases(1);
+		$allrows2=$dataobject->getAllRows($statement,"TransID");
+		//var_dump($allrows2);
+		$this->assertEquals($allrows2[1]["PurchaseTime"],date("H:i:00",strtotime($insertrow['purchasetime'])));
+	}
 
 	/**
 	 * @small

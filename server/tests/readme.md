@@ -1,3 +1,5 @@
+https://docs.phpunit.de/en/9.5/textui.html#command-line-options
+
 command> 
 - phpunit .\htdocs\Game-Library\server\tests
 - phpunit --coverage-text .\htdocs\Game-Library\server\tests
@@ -20,3 +22,5 @@ Getting PHPunit to work in XAMPP:
    2. Copy it to php/ext
    3. Add the [XDEBUG] section to php.ini
    4. Add xdebug.mode=coverage at the end
+
+---

@@ -24,7 +24,7 @@ class topx
 		$this->sortDir=$sortDir;
 	}
 	
-	public function displaytop($gameidList,$stat){
+	public function displaytop($gameidList,$stat,$mode="all"){
 		$metastat = $stat["alt"];
 		$output ="<div style='float:right; margin: 5px;'>";
 		$output .="<table>";
@@ -32,10 +32,10 @@ class topx
 		
 		$link  = "calculations.php?fav=Custom";
 		$link .= "&sort=".$stat["stat"]."&dir=" .$stat["sortdir"];
-		if(($_GET["mode"] ?? "")=="Active"){
+		if($mode =="Active"){
 			$link .= "&hide=Playable,eq,0,Status,ne,Active,Status,eq,Done" . $stat["filter"];
 		} else {
-			$link .= "hide=Playable,eq,0,Status,eq,Never,Status,eq,Broken,Status,eq,Done" . $stat["filter"];
+			$link .= "&hide=Playable,eq,0,Rating,eq,1,Rating,eq,2,Status,eq,Never,Status,eq,Broken,Status,eq,Done" . $stat["filter"];
 		}
 		$link .= "&col=Title,MainLibrary," . $stat["stat"] . ",Review,AltSalePrice,TimeToBeat,GrandTotal,Altperhr,AltLess1,AltLess2,LastPlayORPurchase";
 		
@@ -184,7 +184,7 @@ class topx
 		$calculations=$this->sortbystat($stat);
 		
 		$filter=$filter ?? $this->filter . $stat["filter"];
-		$filter=$this->parseFilter($filter);		
+		$filter=$this->parseFilter($filter);
 		
 		$list=array();
 		
@@ -518,6 +518,7 @@ class topx
 					$sortranks[$item]=$totalranks[$item]["ranks"];
 					$totalranks[$item]["id"]=$item;
 					if(!isset($totalranks[$item]["metastatname"])){
+						$totalranks[$item]["metastatname"]=$stat["stat"];
 						$metastatcurrentvalue=0;
 					} else {
 						$metastatcurrentvalue=$this->calculations[$totalranks[$item]["id"]][$totalranks[$item]["metastatname"]];
@@ -537,7 +538,9 @@ class topx
 			}
 		}
 		
-		array_multisort($sortranks, SORT_DESC, $totalranks);		
+		array_multisort($sortranks, SORT_DESC, $totalranks);
+
+		//var_dump($totalranks);
 
 		return $totalranks;
 	}
@@ -545,13 +548,23 @@ class topx
 	public function makeDetailTable($totalranks){
 		$output  ="";
 		$output .="<table>";
-		$output .="<thead><tr><th>Ranks</th><th>Title</th><th>Top Stat</th><th>Value</th></tr></thead>";
+		$output .="<thead><tr><th>Ranks</th><th>Title</th><th>Library</th><th>Top Stat</th><th>Value</th>";
+		//$output .="<th>Meta Stat</th><th>Value</th>";
+		$output .="</tr></thead>";
 		$output .="<tbody>";
+		//var_dump($totalranks);
 		foreach($totalranks as $item){
 			$output .="<tr>";
 			$output .="<tr class='".$this->calculations[$item["id"]]['Status']."'>";
 			$output .="<td>".round($item["ranks"],1)."</td>";
 			$output .="<td><a href='viewgame.php?id=".$item["id"]."'>".$this->calculations[$item["id"]]["Title"]."</a></td>";
+			$output .="<td>".$this->calculations[$item["id"]]["MainLibrary"]."</td>";
+			//$output .="<td>";
+			//$output .= $this->statlist2()[$item["metastatname"]]["header"];
+			//$output .="</td>";
+			//$output .="<td>";
+			//$output .=$this->statformat($this->calculations[$item["id"]][$item["metastatname"]],$item["metastatname"]);
+			//$output .="</td>";
 			$output .="<td>";
 			if(isset($item["metastatname"])){
 				$output .= $this->statlist2()[$item["metastatname"]]["header"];
@@ -575,7 +588,7 @@ class topx
 		foreach ($this->statlist2($filter) as $stat) {
 			if(isset($stat["stat"])){
 				$list = $this->gettopx($stat);
-				$output2 .= $this->displaytop($list,$stat);
+				$output2 .= $this->displaytop($list,$stat,$filter);
 			}
 		}
 		return $output2;
