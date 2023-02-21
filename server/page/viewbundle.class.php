@@ -8,6 +8,11 @@ include_once $GLOBALS['rootpath']."/inc/getGames.inc.php";
 class viewbundlePage extends Page
 {
 	private $dataAccessObject;
+	private $settings;
+	private $games;
+	private $items;
+	private $purchases;
+	
 	public function __construct() {
 		$this->title="View Bundle";
 	}
@@ -18,6 +23,27 @@ class viewbundlePage extends Page
 		}
 		return $this->dataAccessObject;
 	}
+
+	private function getSettings(){
+		if(!isset($this->settings)){
+			$this->settings = getsettings();
+		}
+		return $this->settings;
+	}
+	
+	private function getGames(){
+		if(!isset($this->games)){
+			$this->games = getGames();
+		}
+		return $this->games;
+	}
+	
+	private function getItems(){
+		if(!isset($this->items)){
+			$this->items = getAllItems();
+		}
+		return $this->items;
+	}
 	
 	public function buildHtmlBody(){
 		$output="";
@@ -25,24 +51,16 @@ class viewbundlePage extends Page
 		$conn=get_db_connection();
 
 		if (isset($_POST['TransID'])){
-            //TODO: cleanse post data
-            $this->getDataAccessObject()->updateBundle($_POST);
-        }
-		
+			//TODO: cleanse post data
+			$this->getDataAccessObject()->updateBundle($_POST);
+		}
 
-
-$settings=getsettings($conn);
-
-$gameID="";
-$games=getGames($gameID,$conn);
-$items=getAllItems($gameID,$conn);
-//$purchases=getPurchases("",$conn,$items,$games);
-$purchaseobj=new Purchases("",$conn,$items,$games);
+$purchaseobj=new Purchases("",false,$this->getItems(),$this->getGames());
 $purchases=$purchaseobj->getPurchases();
 
 $purchaseIndex=makeIndex($purchases,"TransID");
-$gameIndex=makeIndex($games,"Game_ID");
-$itemIndex=makeIndex($items,"ItemID");
+$gameIndex=makeIndex($this->getGames(),"Game_ID");
+$itemIndex=makeIndex($this->getItems(),"ItemID");
 
 //<div style="background:yellow;color:black">WORK IN PROGRESS</div>
 
@@ -324,7 +342,7 @@ array(25) {
 			foreach ($purchases[$purchaseIndex[$_GET['id']]]['GamesinBundle'] as $value) {
 				$output .= '<tr>
 				<td class="hidden"><a href="viewgame.php?id='. $value['GameID'].'">'. $value['GameID'].'</a></td>
-				<td><a href="viewgame.php?id='. $value['GameID'].'">'. $games[$gameIndex[$value['GameID']]]['Title'].'</a></td>
+				<td><a href="viewgame.php?id='. $value['GameID'].'">'. $this->getGames()[$gameIndex[$value['GameID']]]['Title'].'</a></td>
 				<td>'. $value['Type'].'</td>
 				<td>'. booltext($value['Playable']).'</td>
 				<td>'. "$" . sprintf('%.2f', $value['MSRP']).'</td>
@@ -334,8 +352,6 @@ array(25) {
 				<td>'. round($value['Althrs'],3).'</td>
 				<td>'. "$" . sprintf('%.2f', $value['SalePrice']).'</td>
 				<td>'. "$" . sprintf('%.2f', $value['AltSalePrice']).'</td>';
-				//$output .= '<td class="hidden">'; var_dump($value); $output .= '</td>';
-				//$output .= '<td class="hidden">'; var_dump($games[$gameIndex[$value['GameID']]]); $output .= '</td>';
 				$output .= '</tr>';
 			}
 			
@@ -361,33 +377,33 @@ array(25) {
 			</tr></thead>';
 			foreach ($purchases[$purchaseIndex[$_GET['id']]]['itemsinBundle'] as $value) {
 			$output .= '<tr>
-			<td><a href="viewitem.php?id='. $items[$itemIndex[$value]]['ItemID'].'">'. $items[$itemIndex[$value]]['ItemID'].'</a></td>
+			<td><a href="viewitem.php?id='. $this->getItems()[$itemIndex[$value]]['ItemID'].'">'. $this->getItems()[$itemIndex[$value]]['ItemID'].'</a></td>
 
 			<td>';
-			if (isset($items[$itemIndex[$value]]['ProductID']) && $items[$itemIndex[$value]]['ProductID']<>"") {
-			$output .= "<a href=\"viewgame.php?id=" . $items[$itemIndex[$value]]['ProductID'] . "\">" . $games[$gameIndex[$items[$itemIndex[$value]]['ProductID']]]['Title'] . "</a>"; 
+			if (isset($this->getItems()[$itemIndex[$value]]['ProductID']) && $this->getItems()[$itemIndex[$value]]['ProductID']<>"") {
+			$output .= "<a href=\"viewgame.php?id=" . $this->getItems()[$itemIndex[$value]]['ProductID'] . "\">" . $this->getGames()[$gameIndex[$this->getItems()[$itemIndex[$value]]['ProductID']]]['Title'] . "</a>"; 
 			}
 			$output .= '</td>
-			<td><a href="viewbundle.php?id='. $items[$itemIndex[$value]]['TransID'].'">'. nl2br($purchases[$purchaseIndex[$items[$itemIndex[$value]]['TransID']]]['Title']).'</a></td>';
-			if($items[$itemIndex[$value]]['ParentProductID']<>$items[$itemIndex[$value]]['ProductID']) {
-			$output .= '<td><a href="viewgame.php?id='. $items[$itemIndex[$value]]['ParentProductID'].'">'. $games[$gameIndex[$items[$itemIndex[$value]]['ParentProductID']]]['Title'].'</a></td>';
+			<td><a href="viewbundle.php?id='. $this->getItems()[$itemIndex[$value]]['TransID'].'">'. nl2br($purchases[$purchaseIndex[$this->getItems()[$itemIndex[$value]]['TransID']]]['Title']).'</a></td>';
+			if($this->getItems()[$itemIndex[$value]]['ParentProductID']<>$this->getItems()[$itemIndex[$value]]['ProductID']) {
+			$output .= '<td><a href="viewgame.php?id='. $this->getItems()[$itemIndex[$value]]['ParentProductID'].'">'. $this->getGames()[$gameIndex[$this->getItems()[$itemIndex[$value]]['ParentProductID']]]['Title'].'</a></td>';
 			} else {
 			$output .= '<td></td>';
 			}
 
-			$output .= '<td>'. $items[$itemIndex[$value]]['Tier'].'</td>
-			<td>'. nl2br($items[$itemIndex[$value]]['Notes']).'</td>
-			<td>'. $items[$itemIndex[$value]]['SizeMB'].'</td>
-			<td>'. $items[$itemIndex[$value]]['DRM'].'</td>
-			<td>'. $items[$itemIndex[$value]]['OS'].'</td>
-			<td>'. $items[$itemIndex[$value]]['ActivationKey'].'</td>
-			<td>'. $items[$itemIndex[$value]]['DateAdded'].'</td>
-			<td>'. $items[$itemIndex[$value]]['Time Added'].'</td>
-			<td>'. $items[$itemIndex[$value]]['Sequence'].'</td>
-			<td>'. $items[$itemIndex[$value]]['Library'].'</td>
-			<td>'. $items[$itemIndex[$value]]['PrintAddedTimeStamp'].'</td>';
+			$output .= '<td>'. $this->getItems()[$itemIndex[$value]]['Tier'].'</td>
+			<td>'. nl2br($this->getItems()[$itemIndex[$value]]['Notes']).'</td>
+			<td>'. $this->getItems()[$itemIndex[$value]]['SizeMB'].'</td>
+			<td>'. $this->getItems()[$itemIndex[$value]]['DRM'].'</td>
+			<td>'. $this->getItems()[$itemIndex[$value]]['OS'].'</td>
+			<td>'. $this->getItems()[$itemIndex[$value]]['ActivationKey'].'</td>
+			<td>'. $this->getItems()[$itemIndex[$value]]['DateAdded'].'</td>
+			<td>'. $this->getItems()[$itemIndex[$value]]['Time Added'].'</td>
+			<td>'. $this->getItems()[$itemIndex[$value]]['Sequence'].'</td>
+			<td>'. $this->getItems()[$itemIndex[$value]]['Library'].'</td>
+			<td>'. $this->getItems()[$itemIndex[$value]]['PrintAddedTimeStamp'].'</td>';
 			//$output .= '<td class="Hidden">'; var_dump($value); $output .= '</td>';
-			//$output .= '<td class="Hidden">'; var_dump($items[$itemIndex[$value]]); $output .= '</td>';
+			//$output .= '<td class="Hidden">'; var_dump($this->getItems()[$itemIndex[$value]]); $output .= '</td>';
 			$output .= '</tr>';
 			}
 			
@@ -413,38 +429,38 @@ array(25) {
 			</tr></thead>';
 			foreach ($purchases[$purchaseIndex[$_GET['id']]]['ProductsinBunde'] as $value) {
 			$output .= '<tr>
-			<td><a href="viewgame.php?id='. $games[$gameIndex[$value]]['Game_ID'].'">'. $games[$gameIndex[$value]]['Title'].'</a></td>';
+			<td><a href="viewgame.php?id='. $this->getGames()[$gameIndex[$value]]['Game_ID'].'">'. $this->getGames()[$gameIndex[$value]]['Title'].'</a></td>';
 			
-			if($games[$gameIndex[$value]]['ParentGameID']<>$games[$gameIndex[$value]]['Game_ID']) {
-			$output .= '<td><a href="viewgame.php?id='. $games[$gameIndex[$value]]['ParentGameID'].'">'. $games[$gameIndex[$games[$gameIndex[$value]]['ParentGameID']]]['Title'].'</a></td>';
+			if($this->getGames()[$gameIndex[$value]]['ParentGameID']<>$this->getGames()[$gameIndex[$value]]['Game_ID']) {
+			$output .= '<td><a href="viewgame.php?id='. $this->getGames()[$gameIndex[$value]]['ParentGameID'].'">'. $this->getGames()[$gameIndex[$this->getGames()[$gameIndex[$value]]['ParentGameID']]]['Title'].'</a></td>';
 			} else {
 			$output .= '<td></td>';
 			}
 			
-			$output .= '<td>'. $games[$gameIndex[$value]]['Series'].'</td>
-			<td>'. $games[$gameIndex[$value]]['Want'].'</td>
-			<td>'. booltext($games[$gameIndex[$value]]['Playable']).'</td>
-			<td>'. $games[$gameIndex[$value]]['Type'].'</td>
-			<td>'. $games[$gameIndex[$value]]['LaunchDate']->format("n/d/Y").'</td>
-			<td>'. "$" . sprintf('%.2f', $games[$gameIndex[$value]]['LaunchPrice']).'</td>
-			<td>'. "$" . sprintf('%.2f', $games[$gameIndex[$value]]['MSRP']).'</td>
-			<td>'. "$" . sprintf('%.2f', $games[$gameIndex[$value]]['CurrentMSRP']).'</td>
-			<td>'. "$" . sprintf('%.2f', $games[$gameIndex[$value]]['HistoricLow']).'</td>
-			<td>'. $games[$gameIndex[$value]]['LowDate'].'</td>
-			<td>'. $games[$gameIndex[$value]]['SteamAchievements'].'</td>
-			<td>'. $games[$gameIndex[$value]]['SteamCards'].'</td>
-			<td>'. $games[$gameIndex[$value]]['TimeToBeatLink2'].'</td>
-			<td>'. $games[$gameIndex[$value]]['MetascoreLinkCritic'].'</td>
-			<td>'. $games[$gameIndex[$value]]['MetascoreLinkUser'].'</td>
-			<td>'. $games[$gameIndex[$value]]['SteamRating'].'</td>
-			<td>'. $games[$gameIndex[$value]]['DateUpdated'].'</td>';
-			$output .= '<td class="hidden">'. $games[$gameIndex[$value]]['SteamLinks'].'</td>';
-			$output .= '<td class="hidden">'. $games[$gameIndex[$value]]['GOGLink'].'</td>';
-			$output .= '<td class="hidden">'. $games[$gameIndex[$value]]['isthereanydealLink'].'</td>';
-			$output .= '<td class="hidden">'. $games[$gameIndex[$value]]['Developer'].'</td>';
-			$output .= '<td class="hidden">'. $games[$gameIndex[$value]]['Publisher'].'</td>';
+			$output .= '<td>'. $this->getGames()[$gameIndex[$value]]['Series'].'</td>
+			<td>'. $this->getGames()[$gameIndex[$value]]['Want'].'</td>
+			<td>'. booltext($this->getGames()[$gameIndex[$value]]['Playable']).'</td>
+			<td>'. $this->getGames()[$gameIndex[$value]]['Type'].'</td>
+			<td>'. $this->getGames()[$gameIndex[$value]]['LaunchDate']->format("n/d/Y").'</td>
+			<td>'. "$" . sprintf('%.2f', $this->getGames()[$gameIndex[$value]]['LaunchPrice']).'</td>
+			<td>'. "$" . sprintf('%.2f', $this->getGames()[$gameIndex[$value]]['MSRP']).'</td>
+			<td>'. "$" . sprintf('%.2f', $this->getGames()[$gameIndex[$value]]['CurrentMSRP']).'</td>
+			<td>'. "$" . sprintf('%.2f', $this->getGames()[$gameIndex[$value]]['HistoricLow']).'</td>
+			<td>'. $this->getGames()[$gameIndex[$value]]['LowDate'].'</td>
+			<td>'. $this->getGames()[$gameIndex[$value]]['SteamAchievements'].'</td>
+			<td>'. $this->getGames()[$gameIndex[$value]]['SteamCards'].'</td>
+			<td>'. $this->getGames()[$gameIndex[$value]]['TimeToBeatLink2'].'</td>
+			<td>'. $this->getGames()[$gameIndex[$value]]['MetascoreLinkCritic'].'</td>
+			<td>'. $this->getGames()[$gameIndex[$value]]['MetascoreLinkUser'].'</td>
+			<td>'. $this->getGames()[$gameIndex[$value]]['SteamRating'].'</td>
+			<td>'. $this->getGames()[$gameIndex[$value]]['DateUpdated'].'</td>';
+			$output .= '<td class="hidden">'. $this->getGames()[$gameIndex[$value]]['SteamLinks'].'</td>';
+			$output .= '<td class="hidden">'. $this->getGames()[$gameIndex[$value]]['GOGLink'].'</td>';
+			$output .= '<td class="hidden">'. $this->getGames()[$gameIndex[$value]]['isthereanydealLink'].'</td>';
+			$output .= '<td class="hidden">'. $this->getGames()[$gameIndex[$value]]['Developer'].'</td>';
+			$output .= '<td class="hidden">'. $this->getGames()[$gameIndex[$value]]['Publisher'].'</td>';
 			//$output .= '<td class="hidden">'; var_dump($value); $output .= '</td>';
-			//$output .= '<td class="hidden">'; var_dump($games[$gameIndex[$value]]); $output .= '</td>';
+			//$output .= '<td class="hidden">'; var_dump($this->getGames()[$gameIndex[$value]]); $output .= '</td>';
 			$output .= '</tr>';
 			} 
 			//TODO: Clean up hidden data.
@@ -467,9 +483,6 @@ array(25) {
 }
 
 //<div style="background:yellow;color:black">WORK IN PROGRESS</div>
-$conn -> close();
-unset($conn);
-unset($settings);
 		return $output;
 	}
 	
