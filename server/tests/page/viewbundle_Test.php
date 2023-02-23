@@ -36,4 +36,28 @@ class viewbundle_Test extends TestCase {
 		$this->assertisString($result);
 	}
 
+	/**
+	 * @medium
+	 * @covers viewbundlePage
+	 * @testdox buildHtmlBody-BundleView
+	 */
+	public function test_outputHtmlBundle() {
+		$page = new viewbundlePage();
+		$_GET["id"]=11;
+		$result = $page->buildHtmlBody();
+		$this->assertisString($result);
+	}
+
+	/**
+	 * @medium
+	 * @covers viewbundlePage
+	 * @testdox buildHtmlBody-Edit
+	 */
+	public function test_outputHtmlEidtBundle() {
+		$page = new viewbundlePage();
+		$_GET["id"]=11;
+		$_GET["edit"]=1;
+		$result = $page->buildHtmlBody();
+		$this->assertisString($result);
+	}
 }

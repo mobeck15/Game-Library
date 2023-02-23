@@ -34,4 +34,15 @@ class viewitem_Test extends TestCase {
 		$this->assertisString($result);
 	}
 
+	/**
+	 * @medium
+	 * @covers viewitemPage::buildHtmlBody
+	 * @testdox buildHtmlBody-Item
+	 */
+	public function test_outputHtmlItem() {
+		$page = new viewitemPage();
+		$_GET["id"]=11;
+		$result = $page->buildHtmlBody();
+		$this->assertisString($result);
+	}
 }
