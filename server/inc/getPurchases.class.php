@@ -74,8 +74,8 @@ class Purchases
 	private function purchaseRowFirstPass($row){
 		$row['Tier']=$this->setvalue($row['Tier']==0,"",$row['Tier']);
 		
-		$date=strtotime($row['PurchaseDate']);
-		$row['PurchaseDate']=$this->setvalue(strtotime($row['PurchaseDate']) == 0,"",date("n/j/Y",$date));
+		$date=strtotime($row['PurchaseDate'] ?? "");
+		$row['PurchaseDate']=$this->setvalue(strtotime($row['PurchaseDate'] ?? "") == 0,"",date("n/j/Y",$date));
 		
 		$time = strtotime($row['PurchaseTime'] ?? "");
 		//TODO: 00:00:00 OR 01:00:00 might have something to do with setting the system time zone.
