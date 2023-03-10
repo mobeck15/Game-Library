@@ -31,8 +31,8 @@ function timeduration($time,$inputunit="hours"){
 	$ms=$time-floor($time);
 	$printms=sprintf("%03d",floor($ms*1000));
 	$s=$time % 60;
-    $m=(($time-(float)$s) / 60) % 60;
-    $h=floor($time / (float)3600);
+    $m=(($time-$s) / 60) % 60;
+    $h=floor($time / 3600);
 
 	$output=$h.":".substr("0".$m,-2).":".substr("0".$s,-2);
 	if($time<1 and $time<>0){
@@ -157,14 +157,14 @@ function getAllItems($gameID="",$connection=false){
 		$items=array();
 		while($row = $result->fetch_assoc()) {
 			
-			$date=strtotime($row['DateAdded']);
-			if(strtotime($row['DateAdded']) == 0) {
+			$date=strtotime($row['DateAdded'] ?? "");
+			if(strtotime($row['DateAdded'] ?? "") == 0) {
 				$row['DateAdded'] = "";
 			} else {
 				$row['DateAdded'] = date("n/j/Y",$date);
 			}
 			
-			$time = strtotime($row['Time Added']);
+			$time = strtotime($row['Time Added'] ?? "");
 			if(date("H:i:s",$time) == "00:00:00" OR $time == false) {
 				$row['Time Added']= "";
 			} else {
