@@ -77,12 +77,12 @@ class Games {
 		
 		$row['LaunchDate'] = new DateTime($row['LaunchDate']);
 		//TODO: update other files to remove need for 'LaunchDateValue'
-		if(strtotime($row['LowDate']) == 0) {
+		if(strtotime($row['LowDate'] ?? "") == 0) {
 			$row['LowDate'] = "";
 		} else {
 			$row['LowDate'] = date("n/j/Y",strtotime($row['LowDate']));
 		}
-		if(strtotime($row['DateUpdated']) == 0) {
+		if(strtotime($row['DateUpdated'] ?? "") == 0) {
 			$row['DateUpdated'] = "";
 			$row['DateUpdatedSort'] = "";
 		} else {
