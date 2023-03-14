@@ -3,6 +3,7 @@
 /*
  * Checks if this file has already been loaded in a previous include statement and throws an warning if true.
  */
+declare(strict_types=1);
 if(isset($GLOBALS[__FILE__])){
 	trigger_error("File already included once ".__FILE__.". ",E_USER_WARNING  );
 }
@@ -32,7 +33,7 @@ function timeduration($time,$inputunit="hours"){
 	$printms=sprintf("%03d",floor($ms*1000));
 	$s=$time % 60;
     $m=(($time-$s) / 60) % 60;
-    $h=floor($time / 3600);
+    $h=intdiv((int)round($time,0) , 3600);
 
 	$output=$h.":".substr("0".$m,-2).":".substr("0".$s,-2);
 	if($time<1 and $time<>0){
@@ -157,15 +158,15 @@ function getAllItems($gameID="",$connection=false){
 		$items=array();
 		while($row = $result->fetch_assoc()) {
 			
-			$date=strtotime($row['DateAdded']);
-			if(strtotime($row['DateAdded']) == 0) {
+			$date=strtotime($row['DateAdded'] ?? "");
+			if(strtotime($row['DateAdded'] ?? "") == 0) {
 				$row['DateAdded'] = "";
 			} else {
 				$row['DateAdded'] = date("n/j/Y",$date);
 			}
 			
-			$time = strtotime($row['Time Added']);
-			if(date("H:i:s",$time) == "00:00:00" OR $time == false) {
+			$time = strtotime($row['Time Added'] ?? "");
+			if($time === false OR date("H:i:s",$time) == "00:00:00") {
 				$row['Time Added']= "";
 			} else {
 				$row['Time Added']= date("H:i:s",$time) ;
@@ -479,7 +480,7 @@ function arrayTable($DataArray){
 					}
 					break;
 				default:
-					$output .= nl2br(htmlspecialchars($value));
+					$output .= nl2br(htmlspecialchars("".$value));
 					break;
 			}
 		}
