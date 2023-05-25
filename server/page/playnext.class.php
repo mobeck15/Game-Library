@@ -16,6 +16,9 @@ class playnextPage extends Page
 	public function buildHtmlBody(){
 		$output="";
 
+$BeatAvgList=array();
+$BeatAvg2List=array();
+$OneUnPlayedList=array();
 
 $conn=get_db_connection();
 $settings=getsettings($conn);

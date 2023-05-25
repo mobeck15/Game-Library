@@ -7,19 +7,19 @@ $GLOBALS['rootpath'] = $GLOBALS['rootpath'] ?? "htdocs\Game-Library\server";
  * @group htmlpage
  * @coversNothing
  */
-class testindex extends TestCase {
+class toplevel_Test_A extends TestCase {
 
     private function _execute(array $params = array()) {
         $_GET = $params;
         ob_start();
-		require $GLOBALS['rootpath']."\index.php";
+		require $GLOBALS['rootpath'].'\toplevel.php';
         return ob_get_clean();
     }
 
 	/**
-	 * @small
-	 */ 
-    public function test_index_Load() {
+	 * @large
+	 */
+    public function test_toplevel_Load() {
         $args = array();
         $this->assertisString($this->_execute($args));
     }

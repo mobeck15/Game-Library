@@ -64,7 +64,7 @@ final class CurlRequest_Test extends testprivate
 		$property = $this->getPrivateProperty( 'CurlRequest', 'handle' );
 		$handle=$property->getValue( $req );
 		$this->assertNotNull($handle);
-		if(phpversion()=='7.4.25'){
+		if(phpversion()=='7.4.25' or phpversion()=='7.4.30'){
 			$this->assertEquals("resource",gettype($handle));
 		} else {
 			$this->assertEquals("CurlHandle",get_class($handle));
@@ -74,7 +74,7 @@ final class CurlRequest_Test extends testprivate
 
 		$property = $this->getPrivateProperty( 'CurlRequest', 'handle' );
 		$handle=$property->getValue( $req );
-		if(phpversion()=='7.4.25'){
+		if(phpversion()=='7.4.25' or phpversion()=='7.4.30'){
 			$this->assertEquals("resource (closed)",gettype($handle));
 		} else {
 			$this->assertEquals("CurlHandle",get_class($handle));

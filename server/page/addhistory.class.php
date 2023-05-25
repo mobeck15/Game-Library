@@ -387,17 +387,18 @@ class addhistoryPage extends Page
 		<th rowspan=2>Title</th>
 		<th colspan=2>Playtime Forever</th>
 		<th colspan=2>Playtime two weeks</th>
-		<th rowspan=2>Total Time</th>
-		<th colspan=4>Last Time Entry</th>
+		<th rowspan=2>New Duration</th>
+		<th colspan=5>Last Time Entry</th>
 		</tr>
 		<tr>
 		<th style='top:77px;'>Minutes</th>
 		<th style='top:77px;'>Hours</th>
 		<th style='top:77px;'>Minutes</th>
 		<th style='top:77px;'>Hours</th>
+		<th style='top:77px;'>Total Time</th>
 		<th style='top:77px;'>Minutes</th>
 		<th style='top:77px;'>Hours</th>
-		<th style='top:77px;'>Time</th>
+		<th style='top:77px;'>Duration</th>
 		<th style='top:77px;'>Keywords</th>
 		</tr>
 		</thead>
@@ -417,6 +418,7 @@ class addhistoryPage extends Page
 			$htmloutput .= "<td class='numeric'>" . $data['playallhrs'] . "</td>"; //Playtime Forever - Hours
 			$htmloutput .= "<td class='numeric'>" . $data['play2wkmin'] . "</td>"; //Playtime two weeks - Minutes
 			$htmloutput .= "<td class='numeric'>" . $data['play2wkhrs'] . "</td>"; //Playtime two weeks - Hours
+			$htmloutput .= "<td class='numeric'>" . $data['duration'] . "</td>"; //Current Duration
 			$htmloutput .= "<td class='numeric'>" . $data['totaltime'] . "</td>"; //Total Time
 			$htmloutput .= "<td class='numeric'>" . $data['lastmin'] . "</td>"; //Last Entry - Minutes
 			$htmloutput .= "<td class='numeric'>" . $data['lasthrs'] . "</td>"; //Last Entry - Hours
@@ -444,6 +446,7 @@ class addhistoryPage extends Page
 		$data['lasthrs']="&nbsp;";
 		$data['lasttime']="&nbsp;";
 		$data['lastkw']="&nbsp;";
+		$data['duration']="&nbsp;";
 		$data['play2wkmin']="&nbsp;";
 		$data['play2wkhrs']="&nbsp;";
 		$data['playallmin']=$row['playtime_forever'];
@@ -459,6 +462,7 @@ class addhistoryPage extends Page
 				$data['lasthrs']=round($lastrecord[$this->getGameAttribute($row['appid'])]['Time'],1);
 				$data['lasttime']=timeduration($lastrecord[$this->getGameAttribute($row['appid'])]['Time'],"hours");
 				$data['lastkw']=$lastrecord[$this->getGameAttribute($row['appid'])]['KeyWords'];
+				$data['duration']=timeduration($row['playtime_forever'] - ($lastrecord[$this->getGameAttribute($row['appid'])]['Time']*60),"minutes");
 			}
 		} else {
 			$this->getSteamAPI()->setSteamGameID($row['appid']);
@@ -571,7 +575,7 @@ class addhistoryPage extends Page
 					//Count achievements earned
 					if($achievement2['achieved']==1){
 						
-						if(strtotime($LastGameRecord['Timestamp']) < $achievement2['unlocktime']){
+						if(strtotime($LastGameRecord['Timestamp']??"") < $achievement2['unlocktime']){
 							$notes .=$acharray[$achievement2['apiname']][0]['displayName']."\r\n";
 						}
 						$achearned++;

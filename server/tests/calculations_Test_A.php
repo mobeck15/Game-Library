@@ -7,39 +7,39 @@ $GLOBALS['rootpath'] = $GLOBALS['rootpath'] ?? "htdocs\Game-Library\server";
  * @group htmlpage
  * @coversNothing
  */
-class testaddhistory extends TestCase {
+class calculations_Test_A extends TestCase {
 
     private function _execute(array $params = array()) {
-        $_SERVER['QUERY_STRING']="";
-		$_GET = $params;
+        $_GET = $params;
         ob_start();
-		require $GLOBALS['rootpath']."\addhistory.php";
+		require_once $GLOBALS['rootpath']."\calculations.php";
         return ob_get_clean();
     }
 
 	/**
-	 * @small
+	 * @large
+	 * @uses PriceCalculation 
 	 */
-    public function test_addhistory_Load() {
+    public function test_calculations_Load() {
         $args = array();
         $this->assertisString($this->_execute($args));
     }
 
 	/**
 	 * @large
-	 * @group steamapi
+	 * @uses PriceCalculation 
 	 */
-    public function test_addhistory_Steam() {
-        $args = array("mode"=>"steam");
+    public function test_calculations_Fave() {
+        $args = array('fav'=>"default");
         $this->assertisString($this->_execute($args));
     }
 
 	/**
 	 * @large
-	 * @group steamapi
+	 * @uses PriceCalculation 
 	 */
-    public function test_addhistory_Edit() {
-        $args = array("HistID"=>1);
+    public function test_calculations_Custom() {
+        $args = array('fav'=>"Custom",'col'=>"Title,Type",'Sortby' => "PurchaseDate",'SortDir' => SORT_DESC);
         $this->assertisString($this->_execute($args));
     }
 }

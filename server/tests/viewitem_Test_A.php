@@ -6,42 +6,38 @@ $GLOBALS['rootpath'] = $GLOBALS['rootpath'] ?? "htdocs\Game-Library\server";
 /**
  * @group htmlpage
  * @coversNothing
- * @group purchases
  */
-class testviewbundle extends TestCase {
+class viewitem_Test_A extends TestCase {
 
     private function _execute(array $params = array()) {
         $_GET = $params;
         ob_start();
-		require $GLOBALS['rootpath'].'\viewbundle.php';
+		require $GLOBALS['rootpath'].'\viewitem.php';
         return ob_get_clean();
     }
 
 	/**
 	 * @medium
 	 */
-    public function test_viewbundle_Load() {
+    public function test_viewitem_Load() {
         $args = array();
-        $this->assertisString($this->_execute($args));
-    }
-
-	/**
-	 * @large
-	 */
-    public function test_viewbundle_bundleid() {
-		//Skyrim bundle
-        $args = array('id'=>11);
-        $this->assertisString($this->_execute($args));
-
-		//Realm of the mad god (parent bundle contains data)
-        $args = array('id'=>21);
         $this->assertisString($this->_execute($args));
     }
 
 	/**
 	 * @medium
 	 */
-    public function test_viewbundle_edit() {
-        $args = array('id'=>11,'edit'=>1);
+    public function test_viewitem_itemid() {
+        $args = array('id'=>13);
         $this->assertisString($this->_execute($args));
-    }}
+    }
+
+	/**
+	 * @large
+	 */
+    public function test_viewitem_edit() {
+        $args = array('id'=>14,'edit'=>1);
+        $this->assertisString($this->_execute($args));
+    }
+
+}

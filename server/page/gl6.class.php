@@ -17,6 +17,16 @@ class gl6Page extends Page
 $output .= "<table><tr><td valign=top>";
 $output .= get_navmenu(false);
 $output .= "<hr>";
+
+//TODO: detect if required files are present and start an install process. (generate auth.php, create empty database etc)
+/* Install Process:
+Create auth.inc.php and authapi.inc.php in inc folder
+prompt for and fill in values
+Create database as UTF8_MB4_Unicode_CI
+Add empty tables OR import from existing export
+Fill lookups if empty
+*/
+
 $settings=getsettings();
 $steamformat = new SteamFormat();
 $output .= $steamformat->formatSteamLinks("",$settings['LinkSteam']); 
