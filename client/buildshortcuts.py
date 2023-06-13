@@ -1,4 +1,5 @@
-from modules.launchparts import get_app_data, write_log_data, print_app_data, launchapp, saverecord
+from modules.launchparts import get_app_data
+from modules.launchparts import write_log_data, print_app_data, launchapp, saverecord
 from modules.launchparts import printtime, printelapses, captureendtime, getrating, getstatus
 
 import os
@@ -63,5 +64,3 @@ with open(datafile) as json_file:
 #lnk = str(shorcutfolder + r"\Dragonshard (original1).lnk")
 #shortcut = winshell.shortcut(str(lnk))
 #shortcut.dump()
- 
-
