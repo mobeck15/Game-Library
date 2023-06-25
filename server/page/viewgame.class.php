@@ -535,14 +535,32 @@ if (!(isset($_GET['id']) && is_numeric($_GET['id']))) {
 		$output .= '</td>
 		
 		<td>';
+		//if($game['HistoricLow'] == false)
+		//{
+		//	$game['HistoricLow'] = 0;
+		//}
+		
 		if ($edit_mode === true) { 
 			if ($game['LowDate']==0) {
 				$useLowDate=$game['LaunchDate']->format("n/j/Y");
 			} else {
-				$useLowDate=$game['LowDate'];
+				$useLowDate = $game['LowDate'];
 			}
+			
+			if($useLowDate == false)
+			{
+				$useLowDate = "";
+			}
+			
+			$lowtime = strtotime($useLowDate);
+			
+			if($lowtime == false)
+			{
+				$lowtime = 0;
+			}
+			
 		$output .= '<input type="text" name="HistoricLow" size="5" value="'. $game['HistoricLow'].'">
-		<br><input type="date" name="LowDate" value="'. date("Y-m-d",strtotime($useLowDate)).'">';
+		<br><input type="date" name="LowDate" value="'. date("Y-m-d",$lowtime).'">';
 		} else { $output .= "$".$game['HistoricLow']."<br>".$game['LowDate']; }
 		$output .= '</td>';
 		/* */
