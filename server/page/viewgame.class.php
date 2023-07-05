@@ -1202,7 +1202,7 @@ if (!(isset($_GET['id']) && is_numeric($_GET['id']))) {
 				$output .= '<tr>
 				<td><a href="viewitem.php?id='. $row2['ItemID'].'" target="_blank">'. $row2['ItemID'].'</a></td>
 				<td><a href="viewgame.php?id='. $row2['ParentProductID'].'" target="_blank">'. $row2['ParentProductID'].'</a></td>
-				<td>'. nl2br($row2['Notes']).'</td>
+				<td>'. nl2br($row2['Notes'] ?? "").'</td>
 				<td>'. $row2['SizeMB'].'</td>
 				<td>'. $row2['DRM'].'</td>
 				<td>'. $row2['OS'].'</td>

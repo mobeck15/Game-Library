@@ -66,7 +66,7 @@ def launchapp(appdata,argv,verbose=True):
             print('Working Directory: ', os.getcwd())
             print('executing ', appdata['path']['exe'])
         subprocess.call(appdata['path']['exe'])
-    elif argv[2] in ('admin', 'gog', 'dosbox', 'scummvm'):
+    elif argv[2] in ('admin', 'gog', 'dosbox', 'scummvm', 'rom'):
         os.chdir(os.path.dirname(appdata['path']['exe']))
         if verbose:
             print('Working Directory: ', os.getcwd())
