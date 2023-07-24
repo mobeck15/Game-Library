@@ -119,7 +119,7 @@ $resultarray=$steamAPI->GetSteamAPI("GetOwnedGames");
 		if (isset($thisgamedata) && isset($lastrecord[$thisgamedata['Game_ID']])) { 
 			$output .= '<td>'. ($lastrecord[$thisgamedata['Game_ID']]['Time']*60).'</td>
 			<td>'. round(($lastrecord[$thisgamedata['Game_ID']]['Time']+0),1).'</td>
-			<td>'. timeduration($lastrecord[$thisgamedata['Game_ID']]['Time'],"hours").'</td>
+			<td>'. timeduration((float)$lastrecord[$thisgamedata['Game_ID']]['Time'],"hours").'</td>
 			<td>'. $lastrecord[$thisgamedata['Game_ID']]['KeyWords'].'</td>';
 		} else {
 			$output .= '<td></td>
