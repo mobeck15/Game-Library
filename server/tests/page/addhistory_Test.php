@@ -3,7 +3,6 @@ declare(strict_types=1);
 use PHPUnit\Framework\TestCase;
 $GLOBALS['rootpath'] = $GLOBALS['rootpath'] ?? "htdocs\Game-Library\server";
 require_once $GLOBALS['rootpath']."/page/addhistory.class.php";
-//require_once $GLOBALS['rootpath']."\inc\dataAccess.class.php";
 
 /**
  * @testdox addhistory_Test.php testing addhistory.class.php

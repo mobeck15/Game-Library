@@ -456,7 +456,7 @@ class addhistoryPage extends Page
 			$data['title'] ="<a href='addhistory.php?GameID=" . $this->getGameAttribute($row['appid']) . "' target='_blank'>+</a>
 			<a href='viewgame.php?id=" . $this->getGameAttribute($row['appid']) . "' target='_blank'>" . $this->getGameAttribute($row['appid'],'Title') . "</a>
 			<span style='font-size: 70%;'>(<a href='http://store.steampowered.com/app/" . $row['appid'] ."' target='_blank'>Store</a>)</span>";
-			$data['totaltime']=timeduration($this->getGameAttribute($row['appid'],'GrandTotal'),"seconds");
+			$data['totaltime']=timeduration((float)$this->getGameAttribute($row['appid'],'GrandTotal'),"seconds");
 			if (isset($lastrecord[$this->getGameAttribute($row['appid'])])) {
 				$data['lastmin']=($lastrecord[$this->getGameAttribute($row['appid'])]['Time']*60);
 				$data['lasthrs']=round($lastrecord[$this->getGameAttribute($row['appid'])]['Time'],1);

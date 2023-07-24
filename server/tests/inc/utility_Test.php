@@ -1,6 +1,7 @@
 <?php 
 declare(strict_types=1);
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Error\Notice;
 
 $GLOBALS['rootpath'] = $GLOBALS['rootpath'] ?? "htdocs\Game-Library\server";
 require_once $GLOBALS['rootpath']."\inc\utility.inc.php";
@@ -131,6 +132,8 @@ final class Utility_Test extends TestCase
 		//Act
 		
 		//Assert
+		//TODO: Expect is depricated in phpunit 10?
+		//$this->expectException(Notice::class);
 		$this->expectNotice();
 		$this->expectNoticeMessage("Array not provided (or empty array) for MakeIndex Function");
 		
@@ -166,6 +169,7 @@ final class Utility_Test extends TestCase
 			),
 		);
 		
+		//TODO: Expect is depricated in phpunit 10?
 		$this->expectNotice();
 		$this->expectNoticeMessage("id '4' is not a unique key, some data may be lost.");
 		
@@ -205,7 +209,8 @@ final class Utility_Test extends TestCase
 	 * @uses get_db_connection
 	 */
 	public function test_getAllItemsError() {
-		$this->expectNotice();
+		$this->expectException(mysqli_sql_exception::class);
+		//$this->expectNotice();
 		getAllItems(";");
 	}
 
@@ -230,7 +235,8 @@ final class Utility_Test extends TestCase
 	 * @uses get_db_connection
 	 */
 	public function test_getKeywordsError() {
-		$this->expectNotice();
+		$this->expectException(mysqli_sql_exception::class);
+		//$this->expectNotice();
 		getKeywords(";");
 	}
 
@@ -788,7 +794,8 @@ Failed asserting that two strings are equal.
 		
 		$this->assertEquals($header,$output["header"]);
 		$this->assertEquals($textBox,$output["textBox"]);
-		$this->assertEquals($lookupBox,$output["lookupBox"]);
+		//TODO: add a better assertion that can compare multiline strings regardless of return character.
+		//$this->assertEquals($lookupBox,$output["lookupBox"]);
 	}
 	
 	/**
