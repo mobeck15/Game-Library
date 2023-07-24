@@ -133,7 +133,7 @@ class viewallhistoryPage extends Page
 		$output .= $this->makeDataCell("text",'<a href="viewgame.php?id='. $row['GameID'].'">'. $row['Game'].'</a>');
 		$output .= $this->makeDataCell("text",str_replace(" ", "&nbsp;", $row['System']));
 		$output .= $this->makeDataCell("text",str_replace(" ", "&nbsp;", $row['Data']));
-		$output .= $this->makeDataCell("numeric",timeduration($row['Time'],"hours"));
+		$output .= $this->makeDataCell("numeric",timeduration((float)$row['Time'],"hours"));
 		$output .= $this->makeDataCell("text",nl2br($row['Notes']??""));
 		//$output .= $this->makeDataCell("numeric",$row['Achievements']);
 		//$output .= $this->makeDataCell("text",$row['AchievementType']);
@@ -144,11 +144,11 @@ class viewallhistoryPage extends Page
 		$output .= $this->makeDataCell("text",$row['KeyWords']);
 		//$output .= $this->makeDataCell("text",$row['RowType']);
 		//$output .= $this->makeDataCell("numeric",(($row['prevstart']??null)==null ? "" : date("n/j/Y H:i:s",$row['prevstart'])));
-		$output .= $this->makeDataCell("numeric",timeduration($row['Elapsed'],"seconds"));
+		$output .= $this->makeDataCell("numeric",timeduration((float)$row['Elapsed'],"seconds"));
 		//$output .= $this->makeDataCell("numeric",timeduration($row['prevTotSys'],"seconds"));
-		$output .= $this->makeDataCell("numeric",timeduration($row['totalSys'],"seconds"));
+		$output .= $this->makeDataCell("numeric",timeduration((float)$row['totalSys'],"seconds"));
 		//$output .= $this->makeDataCell("numeric",timeduration($row['prevTotal'],"seconds"));
-		$output .= $this->makeDataCell("numeric",timeduration($row['Total'],"seconds"));
+		$output .= $this->makeDataCell("numeric",timeduration((float)$row['Total'],"seconds"));
 		$output .= $this->makeDataCell("text",str_replace(" ", "&nbsp;", $row['FinalStatus']));
 		$output .= $this->makeDataCell("numeric",$row['finalRating']);
 		//$output .= $this->makeDataCell("text",$row['Count']);

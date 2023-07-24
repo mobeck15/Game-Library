@@ -47,6 +47,7 @@ final class getsettings_Test extends TestCase
     public function test_getsettings_debug() {
 		$GLOBALS['Debug_Enabled']=true;
 		
+		//TODO: Expect is depricated in phpunit 10?
 		$this->expectNotice();
 		$this->expectNoticeMessage('Settings loaded, values shown below.');
 		

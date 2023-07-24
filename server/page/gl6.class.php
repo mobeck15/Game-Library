@@ -82,6 +82,8 @@ $output .= '<hr>
 <hr>
 <b>Dynamic To Do list:</b>';
 
+
+//TODO: Add ability to scann multiple subfolders (currently only goes one deep)
 $directory    = ".";
 //$scanned_directory = array_diff(scandir($directory), array('..', '.'));
 $scanned_directory=$this->dirToArray($directory);

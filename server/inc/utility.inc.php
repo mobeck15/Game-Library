@@ -14,7 +14,7 @@ $GLOBALS[__FILE__]=1;
  * takes an integer and an inputunit as an input and returns a duration formatted string hh:mm:ss
  * inputunit can be "hours" (default), "minutes", or "seconds"
  */
-function timeduration($time,$inputunit="hours"){
+function timeduration(float $time,$inputunit="hours"){
 	$positive=true;
 	
 	if($time<0){
@@ -34,7 +34,7 @@ function timeduration($time,$inputunit="hours"){
 	$s=floor($time) % 60;
 	$m=floor(($time-$s) / 60) % 60;
 	//$h=floor($time / 3600);
-	$h=intdiv($time , 3600);
+	$h=intdiv((int)floor($time) , 3600);
 
 	$output=$h.":".substr("0".$m,-2).":".substr("0".$s,-2);
 	if($time<1 and $time<>0){
