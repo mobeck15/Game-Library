@@ -177,6 +177,8 @@ class wastePage extends Page
 	}
 	array_multisort($Sortby1, SORT_DESC, $OverPaidList);
 	
+	$GamesfromOverpaid = array();
+	
 	foreach($OverPaidList as $key){
 		if($topList[$key['BundleKey']]['UnplayedCount']>0){
 			foreach($topList[$key['BundleKey']]['RawData']['GamesinBundle'] as $BundleGame){
@@ -209,7 +211,7 @@ class wastePage extends Page
 	
 	//TODO: add detail to overpaid games table including play link and item type.
 
-	unset ($Sortby1);
+	$Sortby1 = array();
 	foreach ($GamesfromOverpaid as $key => $row) {
 		$Sortby1[$key]  = ($calculations[$row['GameID']]['HistoricLow']);
 	}

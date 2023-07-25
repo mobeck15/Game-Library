@@ -74,17 +74,7 @@ function getsettings($connection=false){
 			$settings['CountFree']=false;
 		}
 
-		
-		if(($GLOBALS['Debug_Enabled'] ?? false)) {
-			trigger_error('Settings loaded, values shown below.', E_USER_NOTICE);
-			//echo '<pre>'. var_export($settings, true) . "</pre>";
-			//echo nl2br(var_export($settings, true));
-			echo '<pre>'. print_r($settings,true) . "</pre>"; //@codeCoverageIgnore
-			//echo nl2br(print_r($settings,true));
-		}
-		
 		$GLOBALS["SETTINGS"] = $settings;
-		//const SETTINGS = 1; //$settings;
 		
 		return $settings;
 	}

@@ -37,20 +37,4 @@ final class getsettings_Test extends TestCase
 		$this->assertIsArray(getsettings($conn));
 		$conn->close();
     }
-	
-	/**
-	 * @small
-	 * @covers getsettings
-	 * @uses get_db_connection
-	 * @testdox getsettings Debug Enabled
-	 */
-    public function test_getsettings_debug() {
-		$GLOBALS['Debug_Enabled']=true;
-		
-		//TODO: Expect is depricated in phpunit 10?
-		$this->expectNotice();
-		$this->expectNoticeMessage('Settings loaded, values shown below.');
-		
-		getsettings();
-    }
 }

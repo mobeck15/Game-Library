@@ -139,7 +139,6 @@ function get_navmenu($dropbar=true){
 			$navmenu .= "\t\t<ul>\r\n";
 				$navmenu .= "\t\t\t<li><a href='http://www.usinflationcalculator.com/inflation/consumer-price-index-and-annual-percent-changes-from-1913-to-2008/' target='_blank'>CPI Table<img src=\"".$GLOBALS['rootpath']."/img/new_window-512.png\" height=15 /></a></li>\r\n";
 			$navmenu .= "\t\t</ul></li>\r\n";
-			$navmenu .= "\t\t<li><a href=\"".$GLOBALS['rootpath']."/export.php\"><img src=\"".$GLOBALS['rootpath']."/img/favicon.ico\" height=15 />Export Database</a></li>\r\n";
 		$navmenu .= "\t</ul></li>\r\n";
 //HISTORY
 		$navmenu .= "\t<li><a>History</a>\r\n";
