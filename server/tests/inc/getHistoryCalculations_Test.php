@@ -67,7 +67,8 @@ final class getHistoryCalculations_Test extends TestCase
 	 * @uses get_db_connection
 	 */
     public function test_getHistoryCalculations_error() {
-        $this->expectNotice();
+		$this->expectException(mysqli_sql_exception::class);
+        //$this->expectNotice();
 		$this->assertisArray(getHistoryCalculations(";"));
 	}
 	

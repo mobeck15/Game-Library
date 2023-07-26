@@ -11,6 +11,7 @@ require_once $GLOBALS['rootpath']."\inc\dataAccess.class.php";
  * @group classtest
  * @group getGames
  * @group addhistory
+ * @group viewbundle
  * @testdox dataAccess_Test.php testing dataAccess.class.php
  */
 final class dataAccess_Test extends testprivate
@@ -303,7 +304,41 @@ final class dataAccess_Test extends testprivate
 		$content = file_get_contents($file);
 		$this->assertEquals("Insert1\r\n\r\nInsert2\r\n\r\n",$content);
 	}
-	
+		
+	/**
+	 * @small
+	 * @covers dataAccess::updateBundle
+	 * @uses dataAccess
+	 * @testdox updateBundle()
+	 */
+	public function test_updateBundle() {
+		$dataobject= new dataAccess();
+		$statement = $dataobject->getPurchases(1);
+		$allrows=$dataobject->getAllRows($statement,"TransID");
+		
+		//var_dump($allrows);
+
+		$insertrow['TransID']=$allrows[1]["TransID"];
+		$insertrow['Title']=$allrows[1]["Title"];
+		$insertrow['Store']=$allrows[1]["Store"];
+		$insertrow['BundleID']=$allrows[1]["BundleID"];
+		$insertrow['Tier']=$allrows[1]["Tier"];
+		$insertrow['purchasetime']=date("Y-m-d H:i:s");
+		$insertrow['Sequence']=$allrows[1]["Sequence"];
+		$insertrow['Price']=$allrows[1]["Price"];
+		$insertrow['Fees']=$allrows[1]["Fees"];
+		$insertrow['Paid']=$allrows[1]["Paid"];
+		$insertrow['Credit']=$allrows[1]["Credit Used"];
+		$insertrow['Link']=$allrows[1]["Bundle Link"];
+		
+		$dataobject->updateBundle($insertrow);
+
+		$statement = $dataobject->getPurchases(1);
+		$allrows2=$dataobject->getAllRows($statement,"TransID");
+		//var_dump($allrows2);
+		$this->assertEquals($allrows2[1]["PurchaseTime"],date("H:i:00",strtotime($insertrow['purchasetime'])));
+	}
+
 	/**
 	 * @small
 	 * @covers dataAccess::updateHistory
@@ -332,7 +367,7 @@ final class dataAccess_Test extends testprivate
 		$insertrow['share']=$history["kwShare"] == "1" ? "on" : "";
 		$insertrow['ProductID']=$history["GameID"];
 		$insertrow['id']=$history["HistoryID"];
-		$timestamp=strtotime($history["Timestamp"]);
+		$timestamp=$history["Timestamp"];
 		
 		$insertrow2=$insertrow;
 		$insertrow2["Title"] .= " Test";
@@ -378,7 +413,7 @@ final class dataAccess_Test extends testprivate
 			$insertrow['share']=$history["kwShare"] == "1" ? "on" : "";
 			$insertrow['ProductID']=$history["GameID"];
 			$insertrow['update']="on";
-			$timestamp=strtotime(date("Y-m-d H:i:s"));
+			$timestamp=date("Y-m-d H:i:s");
 			
 			$insertrow2=$insertrow;
 			$insertrow2["Title"] .= " Test2";

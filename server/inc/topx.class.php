@@ -24,13 +24,24 @@ class topx
 		$this->sortDir=$sortDir;
 	}
 	
-	public function displaytop($gameidList,$stat){
-		$metastat = $this->getMetaStat($stat,"active");
+	public function displaytop($gameidList,$stat,$mode="all"){
+		$metastat = $stat["alt"];
 		$output ="<div style='float:right; margin: 5px;'>";
 		$output .="<table>";
-		$output .="<thead><tr><th>Rank</th><th>Title</th><th>".$this->getHeaderText($stat)."</th>";
+		$output .="<thead><tr><th>Rank</th><th>Title</th>";
+		
+		$link  = "calculations.php?fav=Custom";
+		$link .= "&sort=".$stat["stat"]."&dir=" .$stat["sortdir"];
+		if($mode =="Active"){
+			$link .= "&hide=Playable,eq,0,Status,ne,Active,Status,eq,Done" . $stat["filter"];
+		} else {
+			$link .= "&hide=Playable,eq,0,Rating,eq,1,Rating,eq,2,Status,eq,Never,Status,eq,Broken,Status,eq,Done" . $stat["filter"];
+		}
+		$link .= "&col=Title,MainLibrary," . $stat["stat"] . ",Review,AltSalePrice,TimeToBeat,GrandTotal,Altperhr,AltLess1,AltLess2,LastPlayORPurchase";
+		
+		$output .="<th><a style='color:black' href='$link' target=_blank>".$stat["header"]."</a></th>";
 		foreach($metastat as $meta){
-			$output .="<th>".$this->getHeaderText($meta)."</th>";
+			$output .= "<th>".$this->statlist2()[$meta]["header"]."</th>";
 		}
 		$output .="</tr></thead>";
 		$output .="<tbody>";
@@ -39,7 +50,7 @@ class topx
 			$output .="<tr class='".$this->calculations[$gameid]['Status']."'>";
 			$output .="<td>".$rank."</td>";
 			$output .="<td><a href='viewgame.php?id=".$gameid."'>".$this->calculations[$gameid]["Title"]."</a></td>";
-			$output .="<td>".$this->statformat($this->calculations[$gameid][$stat],$stat)."</td>";
+			$output .="<td>".$this->statformat($this->calculations[$gameid][$stat["stat"]],$stat["stat"])."</td>";
 			foreach($metastat as $meta){
 				$output .="<td>". $this->statformat($this->calculations[$gameid][$meta],$meta) ."</td>";
 			}
@@ -135,12 +146,11 @@ class topx
 	}
 	
 	private function sortbystat($stat, $sortDir=null){
-		//$sortDir=$sortDir ?? $this->sortDir;
-		$sortDir=$sortDir ?? $this->defaultSortDir($stat);
+		$sortDir=$sortDir ?? $stat["sortdir"];
 
 		$calculations=$this->calculations;
 
-		switch($stat){
+		switch($stat["stat"]){
 			case "PurchaseDate": 
 				foreach ($calculations as $key => $row) {
 					$Sortby1[$key] = $row['AddedDateTime']->getTimestamp();
@@ -148,7 +158,7 @@ class topx
 				break;
 			case "LaunchDate":
 				foreach ($calculations as $key => $row) {
-					$Sortby1[$key] = $row[$stat]->getTimestamp();
+					$Sortby1[$key] = $row[$stat["stat"]]->getTimestamp();
 				}
 				break;
 			case "lastplay":
@@ -157,12 +167,12 @@ class topx
 			case "DateUpdated":
 			case "LastPlayORPurchase":
 				foreach ($calculations as $key => $row) {
-					$Sortby1[$key]  = strtotime($row[$stat]);
+					$Sortby1[$key]  = strtotime($row[$stat["stat"]]);
 				}
 				break;
 			default:
 				foreach ($calculations as $key => $row) {
-					$Sortby1[$key]  = $row[$stat];
+					$Sortby1[$key]  = $row[$stat["stat"]];
 				}
 				break;
 		}
@@ -173,8 +183,8 @@ class topx
 	public function gettopx($stat,$filter=null){
 		$calculations=$this->sortbystat($stat);
 		
-		$filter=$filter ?? $this->defaultFilterString($stat);
-		$filter=$this->parseFilter($filter);		
+		$filter=$filter ?? $this->filter . $stat["filter"];
+		$filter=$this->parseFilter($filter);
 		
 		$list=array();
 		
@@ -192,242 +202,345 @@ class topx
 		return $list;
 	}
 	
-	private function defaultFilterString($stat){
-		switch($stat){
-			case "GrandTotal":
-				return $this->filter;
-				break;
-			case "AchievementsLeft":
-				return $this->filter.",$stat,lte,0";
-				break;
-			case "AchievementsPct":
-				return $this->filter.",$stat,lte,0,$stat,gte,100";
-				break;
-			default:
-				return $this->filter.",$stat,eq,0";
-				break;
-		}
-	}
-	
-	private function defaultSortDir($stat){
-		$defaultsortdir=SORT_DESC;
+	public function statlist2($filter="all"){
+		$list["LastPlayORPurchase"] = array(
+			"stat"=>"LastPlayORPurchase",
+			"alt"=> array("DaysSinceLastPlayORPurchase"),
+			"sortdir"=>SORT_ASC,
+			"filter"=>",LastPlayORPurchase,eq,0",
+			"header"=>"Last Play/Purchase Date",
+		);
+		$list[] = array(
+			"stat"=>"LastPlayORPurchase",
+			"alt"=> array("DaysSinceLastPlayORPurchase"),
+			"sortdir"=>SORT_DESC,
+			"filter"=>",LastPlayORPurchase,eq,0",
+			"header"=>"Recent Play/Purchase Date",
+		);
+		$list["Launchperhr"] = array(
+			"stat"=>"Launchperhr",
+			"alt"=> array("LaunchHrsNext1"),
+			"sortdir"=>SORT_DESC,
+			"filter"=>",Launchperhr,eq,0",
+			"header"=>"Launch Price $/hr",
+		);
+		$list["MSRPperhr"] = array(
+			"stat"=>"MSRPperhr",
+			"alt"=> array("MSRPHrsNext1"),
+			"sortdir"=>SORT_DESC,
+			"filter"=>",MSRPperhr,eq,0",
+			"header"=>"MSRP $/hr",
+		);
+		$list["Historicperhr"] = array(
+			"stat"=>"Historicperhr",
+			"alt"=> array("HistoricHrsNext1"),
+			"sortdir"=>SORT_DESC,
+			"filter"=>",Historicperhr,eq,0",
+			"header"=>"Historic $/hr",
+		);
+		$list["Paidperhr"] = array(
+			"stat"=>"Paidperhr",
+			"alt"=> array("PaidHrsNext1"),
+			"sortdir"=>SORT_DESC,
+			"filter"=>",Paidperhr,eq,0",
+			"header"=>"Paid $/hr",
+		);
+		$list["Saleperhr"] = array(
+			"stat"=>"Saleperhr",
+			"alt"=> array("SaleHrsNext1"),
+			"sortdir"=>SORT_DESC,
+			"filter"=>",Saleperhr,eq,0",
+			"header"=>"Sale Price $/hr",
+		);		
+		$list["Altperhr"] = array(
+			"stat"=>"Altperhr",
+			"alt"=> array("AltHrsNext1"),
+			"sortdir"=>SORT_DESC,
+			"filter"=>",Altperhr,eq,0",
+			"header"=>"Alt Sale $/hr",
+		);
 		
-		$ascending=["LastPlayORPurchase", "LaunchLess2", "MSRPLess2", "CurrentLess2", "HistoricLess2", "PaidLess2", "SaleLess2", "AltLess2", "LaunchHrsNext1", "MSRPHrsNext1", "CurrentHrsNext1", "HistoricHrsNext1", "PaidHrsNext1", "SaleHrsNext1", "AltHrsNext1", "LaunchHrsNext2", "MSRPHrsNext2", "CurrentHrsNext2", "HistoricHrsNext2", "PaidHrsNext2", "SaleHrsNext2", "AltHrsNext2", "TimeLeftToBeat", "GrandTotal","AchievementsLeft"];
+		$list["LaunchLess1"] = array(
+			"stat"=>"LaunchLess1",
+			"alt"=> array("LaunchLess2"),
+			"sortdir"=>SORT_DESC,
+			"filter"=>",LaunchLess1,eq,0",
+			"header"=>"1 Hour reduces Launch by",
+		);
+		$list["MSRPLess1"] = array(
+			"stat"=>"MSRPLess1",
+			"alt"=> array("MSRPLess2"),
+			"sortdir"=>SORT_DESC,
+			"filter"=>",MSRPLess1,eq,0",
+			"header"=>"1 Hour reduces MSRP by",
+		);
+		$list["HistoricLess1"] = array(
+			"stat"=>"HistoricLess1",
+			"alt"=> array("HistoricLess2"),
+			"sortdir"=>SORT_DESC,
+			"filter"=>",HistoricLess1,eq,0",
+			"header"=>"1 Hour reduces Historic by",
+		);
+		$list["PaidLess1"] = array(
+			"stat"=>"PaidLess1",
+			"alt"=> array("PaidLess2"),
+			"sortdir"=>SORT_DESC,
+			"filter"=>",PaidLess1,eq,0",
+			"header"=>"1 Hour reduces Paid by",
+		);
+		$list["SaleLess1"] = array(
+			"stat"=>"SaleLess1",
+			"alt"=> array("SaleLess2"),
+			"sortdir"=>SORT_DESC,
+			"filter"=>",SaleLess1,eq,0",
+			"header"=>"1 Hour reduces Sale by",
+		);
+		$list["AltLess1"] = array(
+			"stat"=>"AltLess1",
+			"alt"=> array("AltLess2"),
+			"sortdir"=>SORT_DESC,
+			"filter"=>",AltLess1,eq,0",
+			"header"=>"1 Hour reduces Alt by",
+		);
 		
-		if (in_array($stat, $ascending)) {
-			$defaultsortdir=SORT_ASC;
-		}
+		$list["LaunchLess2"] = array(
+			"stat"=>"LaunchLess2",
+			"alt"=> array(),
+			"sortdir"=>SORT_ASC,
+			"filter"=>",LaunchLess2,eq,0",
+			"header"=>"Hours to $0.01 less of Launch",
+		);
+		$list["MSRPLess2"] = array(
+			"stat"=>"MSRPLess2",
+			"alt"=> array(),
+			"sortdir"=>SORT_ASC,
+			"filter"=>",MSRPLess2,eq,0",
+			"header"=>"Hours to $0.01 less of MSRP",
+		);
+		$list["HistoricLess2"] = array(
+			"stat"=>"HistoricLess2",
+			"alt"=> array(),
+			"sortdir"=>SORT_ASC,
+			"filter"=>",HistoricLess2,eq,0",
+			"header"=>"Hours to $0.01 less of Historic",
+		);
+		$list["PaidLess2"] = array(
+			"stat"=>"PaidLess2",
+			"alt"=> array(),
+			"sortdir"=>SORT_ASC,
+			"filter"=>",PaidLess2,eq,0",
+			"header"=>"Hours to $0.01 less of Paid",
+		);
+		$list["SaleLess2"] = array(
+			"stat"=>"SaleLess2",
+			"alt"=> array(),
+			"sortdir"=>SORT_ASC,
+			"filter"=>",SaleLess2,eq,0",
+			"header"=>"Hours to $0.01 less of Sale",
+		);
+		$list["AltLess2"] = array(
+			"stat"=>"AltLess2",
+			"alt"=> array(),
+			"sortdir"=>SORT_ASC,
+			"filter"=>",AltLess2,eq,0",
+			"header"=>"Hours to $0.01 less of Alt",
+		);
 		
-		return $defaultsortdir;
-	}
-	
-	public function statlist($filter="all"){
-		$list[] = "LastPlayORPurchase";
-		$list[] = "Launchperhr";
-		$list[] = "MSRPperhr";
-		//$list[] = "Currentperhr";
-		$list[] = "Historicperhr";
-		$list[] = "Paidperhr";
-		$list[] = "Saleperhr";
-		$list[] = "Altperhr";
+		$list["LaunchHrsNext1"] = array(
+			"stat"=>"LaunchHrsNext1",
+			"alt"=> array(),
+			"sortdir"=>SORT_ASC,
+			"filter"=>",LaunchHrsNext1,eq,0",
+			"header"=>"Hrs to next position Launch $/hr",
+		);
+		$list["MSRPHrsNext1"] = array(
+			"stat"=>"MSRPHrsNext1",
+			"alt"=> array(),
+			"sortdir"=>SORT_ASC,
+			"filter"=>",MSRPHrsNext1,eq,0",
+			"header"=>"Hrs to next position MSRP $/hr",
+		);
+		$list["HistoricHrsNext1"] = array(
+			"stat"=>"HistoricHrsNext1",
+			"alt"=> array(),
+			"sortdir"=>SORT_ASC,
+			"filter"=>",HistoricHrsNext1,eq,0",
+			"header"=>"Hrs to next position Historic $/hr",
+		);
+		$list["PaidHrsNext1"] = array(
+			"stat"=>"PaidHrsNext1",
+			"alt"=> array(),
+			"sortdir"=>SORT_ASC,
+			"filter"=>",PaidHrsNext1,eq,0",
+			"header"=>"Hrs to next position Paid $/hr",
+		);
+		$list["SaleHrsNext1"] = array(
+			"stat"=>"SaleHrsNext1",
+			"alt"=> array(),
+			"sortdir"=>SORT_ASC,
+			"filter"=>",SaleHrsNext1,eq,0",
+			"header"=>"Hrs to next position Sale $/hr",
+		);
+		$list["AltHrsNext1"] = array(
+			"stat"=>"AltHrsNext1",
+			"alt"=> array(),
+			"sortdir"=>SORT_ASC,
+			"filter"=>",AltHrsNext1,eq,0",
+			"header"=>"Hrs to next position Alt $/hr",
+		);
 		
-		$list[] = "LaunchLess1";
-		$list[] = "MSRPLess1";
-		//$list[] = "CurrentLess1";
-		$list[] = "HistoricLess1";
-		$list[] = "PaidLess1";
-		$list[] = "SaleLess1";
-		$list[] = "AltLess1";
+		$list["LaunchHrsNext2"] = array(
+			"stat"=>"LaunchHrsNext2",
+			"alt"=> array(),
+			"sortdir"=>SORT_ASC,
+			"filter"=>",LaunchHrsNext2,eq,0",
+			"header"=>"Hrs to next active position Launch $/hr",
+		);
+		$list["MSRPHrsNext2"] = array(
+			"stat"=>"MSRPHrsNext2",
+			"alt"=> array(),
+			"sortdir"=>SORT_ASC,
+			"filter"=>",MSRPHrsNext2,eq,0",
+			"header"=>"Hrs to next active position MSRP $/hr",
+		);
+		$list["HistoricHrsNext2"] = array(
+			"stat"=>"HistoricHrsNext2",
+			"alt"=> array(),
+			"sortdir"=>SORT_ASC,
+			"filter"=>",HistoricHrsNext2,eq,0",
+			"header"=>"Hrs to next active position Historic $/hr",
+		);
+		$list["PaidHrsNext2"] = array(
+			"stat"=>"PaidHrsNext2",
+			"alt"=> array(),
+			"sortdir"=>SORT_ASC,
+			"filter"=>",PaidHrsNext2,eq,0",
+			"header"=>"Hrs to next Active position Paid $/hr",
+		);
+		$list["SaleHrsNext2"] = array(
+			"stat"=>"SaleHrsNext2",
+			"alt"=> array(),
+			"sortdir"=>SORT_ASC,
+			"filter"=>",SaleHrsNext2,eq,0",
+			"header"=>"Hrs to next active position Sale $/hr",
+		);
+		$list["AltHrsNext2"] = array(
+			"stat"=>"AltHrsNext2",
+			"alt"=> array(),
+			"sortdir"=>SORT_ASC,
+			"filter"=>",AltHrsNext2,eq,0",
+			"header"=>"Hrs to next active position Alt $/hr",
+		);
 		
-		if($filter=="all") {
-			$list[] = "LaunchLess2";
-			$list[] = "MSRPLess2";
-			//$list[] = "CurrentLess2";
-			$list[] = "HistoricLess2";
-			$list[] = "PaidLess2";
-			$list[] = "SaleLess2";
-			$list[] = "AltLess2";
-		}
-
-		if($filter=="all") {
-			$list[] = "LaunchHrsNext1";
-			$list[] = "MSRPHrsNext1";
-			//$list[] = "CurrentHrsNext1";
-			$list[] = "HistoricHrsNext1";
-			$list[] = "PaidHrsNext1";
-			$list[] = "SaleHrsNext1";
-			$list[] = "AltHrsNext1";
-		}
+		$list["TimeLeftToBeat"] = array(
+			"stat"=>"TimeLeftToBeat",
+			"alt"=> array(),
+			"sortdir"=>SORT_ASC,
+			"filter"=>",TimeLeftToBeat,eq,0",
+			"header"=>"Time Left to Beat",
+		);
+		$list["GrandTotal"] = array(
+			"stat"=>"GrandTotal",
+			"alt"=> array(),
+			"sortdir"=>SORT_ASC,
+			"filter"=>"",
+			"header"=>"Total Hours (min)",
+		);
+		$list[] = array(
+			"stat"=>"GrandTotal",
+			"alt"=> array(),
+			"sortdir"=>SORT_DESC,
+			"filter"=>"",
+			"header"=>"Total Hours (max)",
+		);
+		$list["AchievementsLeft"] = array(
+			"stat"=>"AchievementsLeft",
+			"alt"=> array(),
+			"sortdir"=>SORT_ASC,
+			"filter"=>",AchievementsLeft,lte,0",
+			"header"=>"Achievements Left",
+		);
+		$list["AchievementsPct"] = array(
+			"stat"=>"AchievementsPct",
+			"alt"=> array(),
+			"sortdir"=>SORT_DESC,
+			"filter"=>",AchievementsPct,lte,0,AchievementsPct,gte,100",
+			"header"=>"Achievement %",
+		);
+		$list["Metascore"] = array(
+			"stat"=>"Metascore",
+			"alt"=> array(),
+			"sortdir"=>SORT_DESC,
+			"filter"=>",Metascore,eq,0",
+			"header"=>"Metascore",
+		);
+		$list["UserMetascore"] = array(
+			"stat"=>"UserMetascore",
+			"alt"=> array(),
+			"sortdir"=>SORT_DESC,
+			"filter"=>",UserMetascore,eq,0",
+			"header"=>"User Metascore",
+		);
+		$list["SteamRating"] = array(
+			"stat"=>"SteamRating",
+			"alt"=> array(),
+			"sortdir"=>SORT_DESC,
+			"filter"=>",SteamRating,eq,0",
+			"header"=>"Steam Rating",
+		);
+		$list["Review"] = array(
+			"stat"=>"Review",
+			"alt"=> array(),
+			"sortdir"=>SORT_DESC,
+			"filter"=>",Review,eq,0",
+			"header"=>"My Review",
+		);
+		$list["Want"] = array(
+			"stat"=>"Want",
+			"alt"=> array(),
+			"sortdir"=>SORT_DESC,
+			"filter"=>",Want,eq,0",
+			"header"=>"My Wishlist Rank",
+		);
+		$list["DaysSinceLastPlayORPurchase"] = array(
+			"header"=>"Days Since Last Play/Purchase",
+		);
 		
-		if($filter=="all") {
-			$list[] = "LaunchHrsNext2";
-			$list[] = "MSRPHrsNext2";
-			//$list[] = "CurrentHrsNext2";
-			$list[] = "HistoricHrsNext2";
-			$list[] = "PaidHrsNext2";
-			$list[] = "SaleHrsNext2";
-			$list[] = "AltHrsNext2";
-		}
-		
-		$list[] = "TimeLeftToBeat";
-		$list[] = "GrandTotal";
-		$list[] = "AchievementsLeft";
-		$list[] = "AchievementsPct";
-		$list[] = "Metascore";
-		$list[] = "UserMetascore";
-		$list[] = "SteamRating";
-		$list[] = "Review";
-
-		//TODO: enable both max and min stats at the same time.
 		return $list;
 	}
 	
-	private function getMetaStat($stat,$filter="all"){
-		if($filter == "all" OR $filter == "any") {
-			$statlist["Launchperhr"][]="LaunchHrsNext1";
-			$statlist["MSRPperhr"][]="MSRPHrsNext1";
-			$statlist["Currentperhr"][]="CurrentHrsNext1";
-			$statlist["Historicperhr"][]="HistoricHrsNext1";
-			$statlist["Paidperhr"][]="PaidHrsNext1";
-			$statlist["Saleperhr"][]="SaleHrsNext1";
-			$statlist["Altperhr"][]="AltHrsNext1";
-		}
-		if($filter == "all" OR $filter == "active") {
-			$statlist["Launchperhr"][]="LaunchHrsNext2";
-			$statlist["MSRPperhr"][]="MSRPHrsNext2";
-			$statlist["Currentperhr"][]="CurrentHrsNext1";
-			$statlist["Historicperhr"][]="HistoricHrsNext1";
-			$statlist["Paidperhr"][]="PaidHrsNext1";
-			$statlist["Saleperhr"][]="SaleHrsNext2";
-			$statlist["Altperhr"][]="AltHrsNext2";
-		}
-
-		$statlist["LaunchLess1"]=["LaunchLess2"];
-		$statlist["MSRPLess1"]=["MSRPLess2"];
-		$statlist["CurrentLess1"]=["CurrentLess2"];
-		$statlist["HistoricLess1"]=["HistoricLess2"];
-		$statlist["PaidLess1"]=["PaidLess2"];
-		$statlist["SaleLess1"]=["SaleLess2"];
-		$statlist["AltLess1"]=["AltLess2"];
-		
-		if(isset($statlist[$stat])){
-			return $statlist[$stat];
-		} else {
-			return [];
-		}
-	}
-
-	private function getHeaderText($stat){
-		$header_Index=array(
-			"ParentGame" => "Parent Game",
-			"LaunchDate" => "Launch Date",
-			"PurchaseDate" => "Purchase Date",
-			"BundlePrice" => "Bundle Price",
-			"LaunchPrice" => "Launch Price",
-			"CurrentMSRP" => "Current MSRP",
-			"HistoricLow" => "Historic Low",
-			"SalePrice" => "Sale Price",
-			"AltSalePrice" => "Alt Sale",
-			"TimeToBeat" => "Time To Beat",
-			"MetaUser" => "User Metascore",
-			"GrandTotal" => "Total Hours",
-			"AchievementsEarned" => "Achievements Earned",
-			"AchievementsLeft" => "Achievements Left",
-			"CountGame" => "Count Game",
-			"lastplay" => "Last Played",
-			"firstplay" => "First Played",
-			"LastBeat" => "Last Beat",
-			"DateUpdated" => "Last Updated",
-			
-			"Launchperhr" => "Launch Price $/hr",
-			"MSRPperhr" => "MSRP $/hr",
-			"Currentperhr" => "Current MSRP $/hr",
-			"Historicperhr" => "Historic Low $/hr",
-			"Paidperhr" => "Paid $/hr",
-			"Saleperhr" => "Sale Price $/hr",
-			"Altperhr" => "Alt Sale $/hr",
-
-			"LaunchLess1" => "1 Hour reduces Launch by",
-			"MSRPLess1" => "1 Hour reduces MSRP by",
-			"CurrentLess1" => "1 Hour reduces Current by",
-			"HistoricLess1" => "1 Hour reduces Historic by",
-			"PaidLess1" => "1 Hour reduces Paid by",
-			"SaleLess1" => "1 Hour reduces Sale by",
-			"AltLess1" => "1 Hour reduces Alt by",
-
-			"LaunchLess2" => "Hours to $0.01 less of Launch",
-			"MSRPLess2" => "Hours to $0.01 less of MSRP",
-			"CurrentLess2" => "Hours to $0.01 less of Current",
-			"HistoricLess2" => "Hours to $0.01 less of Historic",
-			"PaidLess2" => "Hours to $0.01 less of Paid",
-			"SaleLess2" => "Hours to $0.01 less of Sale",
-			"AltLess2" => "Hours to $0.01 less of Alt",
-
-			"LaunchHrsNext1" => "Hrs to next position Launch $/hr",
-			"MSRPHrsNext1" => "Hrs to next position MSRP $/hr",
-			"CurrentHrsNext1" => "Hrs to next position Current $/hr",
-			"HistoricHrsNext1" => "Hrs to next position Historic $/hr",
-			"PaidHrsNext1" => "Hrs to next position Paid $/hr",
-			"SaleHrsNext1" => "Hrs to next position Sale $/hr",
-			"AltHrsNext1" => "Hrs to next position Alt $/hr",
-
-			"LaunchHrsNext2" => "Hrs to next active position Launch $/hr",
-			"MSRPHrsNext2" => "Hrs to next active position MSRP $/hr",
-			"CurrentHrsNext2" => "Hrs to next active position Current $/hr",
-			"HistoricHrsNext2" => "Hrs to next active position Historic $/hr",
-			"PaidHrsNext2" => "Hrs to next Active position Paid $/hr",
-			"SaleHrsNext2" => "Hrs to next active position Sale $/hr",
-			"AltHrsNext2" => "Hrs to next active position Alt $/hr",
-			
-			"LastPlayORPurchase" => "Last Play/Purchase",
-			"TimeLeftToBeat" => "Time Left to Beat",
-			
-			"DrmFree" => "Drm Free",
-			"DrmFreeSize" => "Drm Free File Size",
-			"DrmFreeLibrary" => "Drm Free Library",
-			"Key" => "Activation Key / Link",
-			
-			"MainLibrary" => "Main Library",
-			"OtherLibrary" => "Other Library",
-			
-			"Metascore" => "Metascore",
-			"UserMetascore" => "User Metascore",
-			"SteamRating" => "Steam Rating",
-			"Review" => "My Review",
-			"AchievementsPct" => "Achievement %",
-		);		
-		return $header_Index[$stat];
-	}
-	
 	public function getTotalRanks($filter="main"){
-		foreach ($this->statlist($filter) as $stat) {
-			$list = $this->gettopx($stat);
-			foreach ($list as $key => $item){
-				$totalranks[$item]["ranks"] = ($totalranks[$item]["ranks"] ?? 0) + (count($list)-$key)/count($list);
-				$sortranks[$item]=$totalranks[$item]["ranks"];
-				$totalranks[$item]["id"]=$item;
-				if(!isset($totalranks[$item]["metastatname"])){
-					$metastatcurrentvalue=0;
-				} else {
-					$metastatcurrentvalue=$this->calculations[$totalranks[$item]["id"]][$totalranks[$item]["metastatname"]];
-				}
-				$metastat=$this->getMetaStat($stat,"active");
-				if(count($metastat) > 0){
-					$usemetastat=$metastat[0];
-				} else {
-					$usemetastat=$stat;
-				}
-				
-				$metastatnewvalue=$this->calculations[$totalranks[$item]["id"]][$usemetastat];
-				
-				if($metastatnewvalue > $metastatcurrentvalue) {
-					$totalranks[$item]["metastatname"]=$usemetastat;
+		foreach ($this->statlist2($filter) as $stat) {
+			if(isset($stat["stat"])){
+				$list = $this->gettopx($stat);
+				foreach ($list as $key => $item){
+					$totalranks[$item]["ranks"] = ($totalranks[$item]["ranks"] ?? 0) + (count($list)-$key)/count($list);
+					$sortranks[$item]=$totalranks[$item]["ranks"];
+					$totalranks[$item]["id"]=$item;
+					if(!isset($totalranks[$item]["metastatname"])){
+						$totalranks[$item]["metastatname"]=$stat["stat"];
+						$metastatcurrentvalue=0;
+					} else {
+						$metastatcurrentvalue=$this->calculations[$totalranks[$item]["id"]][$totalranks[$item]["metastatname"]];
+					}
+					$metastat=$stat["alt"];
+					if(count($metastat) > 0){
+						$usemetastat=$metastat[0];
+					} else {
+						$usemetastat=$stat["stat"];
+					}
+					$metastatnewvalue=$this->calculations[$totalranks[$item]["id"]][$usemetastat];
+					
+					if($metastatnewvalue > $metastatcurrentvalue) {
+						$totalranks[$item]["metastatname"]=$usemetastat;
+					}
 				}
 			}
-			//$output2 .= $this->displaytop($list,$stat);
 		}
 		
-		array_multisort($sortranks, SORT_DESC, $totalranks);		
+		array_multisort($sortranks, SORT_DESC, $totalranks);
+
+		//var_dump($totalranks);
 
 		return $totalranks;
 	}
@@ -435,16 +548,26 @@ class topx
 	public function makeDetailTable($totalranks){
 		$output  ="";
 		$output .="<table>";
-		$output .="<thead><tr><th>Ranks</th><th>Title</th><th>Top Stat</th><th>Value</th></tr></thead>";
+		$output .="<thead><tr><th>Ranks</th><th>Title</th><th>Library</th><th>Top Stat</th><th>Value</th>";
+		//$output .="<th>Meta Stat</th><th>Value</th>";
+		$output .="</tr></thead>";
 		$output .="<tbody>";
+		//var_dump($totalranks);
 		foreach($totalranks as $item){
 			$output .="<tr>";
 			$output .="<tr class='".$this->calculations[$item["id"]]['Status']."'>";
 			$output .="<td>".round($item["ranks"],1)."</td>";
 			$output .="<td><a href='viewgame.php?id=".$item["id"]."'>".$this->calculations[$item["id"]]["Title"]."</a></td>";
+			$output .="<td>".$this->calculations[$item["id"]]["MainLibrary"]."</td>";
+			//$output .="<td>";
+			//$output .= $this->statlist2()[$item["metastatname"]]["header"];
+			//$output .="</td>";
+			//$output .="<td>";
+			//$output .=$this->statformat($this->calculations[$item["id"]][$item["metastatname"]],$item["metastatname"]);
+			//$output .="</td>";
 			$output .="<td>";
 			if(isset($item["metastatname"])){
-				$output .=$this->getHeaderText($item["metastatname"]);
+				$output .= $this->statlist2()[$item["metastatname"]]["header"];
 			}
 			$output .="</td>";
 			$output .="<td>";
@@ -462,9 +585,11 @@ class topx
 	
 	public function makeSourceCloud($filter="all"){
 		$output2="";
-		foreach ($this->statlist($filter) as $stat) {
-			$list = $this->gettopx($stat);
-			$output2 .= $this->displaytop($list,$stat);
+		foreach ($this->statlist2($filter) as $stat) {
+			if(isset($stat["stat"])){
+				$list = $this->gettopx($stat);
+				$output2 .= $this->displaytop($list,$stat,$filter);
+			}
 		}
 		return $output2;
 	}
