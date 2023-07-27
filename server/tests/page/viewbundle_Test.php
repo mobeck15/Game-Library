@@ -9,7 +9,8 @@ require_once $GLOBALS['rootpath']."/page/viewbundle.class.php";
  * @group viewbundle
  * @testdox viewbundle_Test.php testing viewbundle.class.php
  */
-class viewbundle_Test extends TestCase {
+class viewbundle_Test extends testprivate 
+{
 	/**
 	 * @medium
 	 * @covers viewbundlePage::buildHtmlBody
@@ -60,4 +61,156 @@ class viewbundle_Test extends TestCase {
 		$result = $page->buildHtmlBody();
 		$this->assertisString($result);
 	}
+	
+	/**
+	 * @small
+	 * @covers viewbundlePage::makePrompt
+	 * @uses viewbundlePage
+	 * @uses lookupTextBox
+	 * @testdox makePrompt
+	 */
+	public function test_makePrompt() {
+		$page = new viewbundlePage();
+		$method = $this->getPrivateMethod( 'viewbundlePage', 'makePrompt' );
+		$result = $method->invokeArgs( $page, array() );
+		$this->assertisString($result);
+	}
+	
+	/**
+	 * @small
+	 * @covers viewbundlePage::makeGamesTable
+	 * @uses viewbundlePage
+	 * @testdox makeGamesTable
+	 */
+	public function test_makeGamesTable() {
+		$page = new viewbundlePage();
+		$_GET["id"]="none";
+
+		$testPurchases = array("none" => "one");
+		$testPurchaseIndex = array("none" => "one");
+
+		$property = $this->getPrivateProperty( 'viewbundlePage', 'purchases' );
+		$property->setValue( $page, $testPurchases );
+
+		$property2 = $this->getPrivateProperty( 'viewbundlePage', 'purchaseIndex' );
+		$property2->setValue( $page, $testPurchaseIndex );
+
+		$method = $this->getPrivateMethod( 'viewbundlePage', 'makeGamesTable' );
+		$result = $method->invokeArgs( $page, array() );
+		$this->assertisString($result);
+	}
+	
+	/**
+	 * @small
+	 * @covers viewbundlePage::makeItemsTable
+	 * @uses viewbundlePage
+	 * @testdox makeItemsTable
+	 */
+	public function test_makeItemsTable() {
+		$page = new viewbundlePage();
+		$_GET["id"]="none";
+
+		$testPurchases = array("none" => "one");
+		$testPurchaseIndex = array("none" => "one");
+
+		$property = $this->getPrivateProperty( 'viewbundlePage', 'purchases' );
+		$property->setValue( $page, $testPurchases );
+
+		$property2 = $this->getPrivateProperty( 'viewbundlePage', 'purchaseIndex' );
+		$property2->setValue( $page, $testPurchaseIndex );
+
+		$method = $this->getPrivateMethod( 'viewbundlePage', 'makeItemsTable' );
+		$result = $method->invokeArgs( $page, array() );
+		$this->assertisString($result);
+	}
+	
+	/**
+	 * @small
+	 * @covers viewbundlePage::makeProductsTable
+	 * @uses viewbundlePage
+	 * @testdox makeProductsTable
+	 */
+	public function test_makeProductsTable() {
+		$page = new viewbundlePage();
+		$_GET["id"]="none";
+
+		$testPurchases = array("none" => "one");
+		$testPurchaseIndex = array("none" => "one");
+
+		$property = $this->getPrivateProperty( 'viewbundlePage', 'purchases' );
+		$property->setValue( $page, $testPurchases );
+
+		$property2 = $this->getPrivateProperty( 'viewbundlePage', 'purchaseIndex' );
+		$property2->setValue( $page, $testPurchaseIndex );
+
+		$method = $this->getPrivateMethod( 'viewbundlePage', 'makeProductsTable' );
+		$result = $method->invokeArgs( $page, array() );
+		$this->assertisString($result);
+	}
+	
+	/**
+	 * @small
+	 * @testdox getDataAccessObject()
+	 * @covers viewbundlePage::getDataAccessObject
+	 * @uses viewbundlePage
+	 */
+	public function test_getDataAccessObject() {
+		$page = new viewbundlePage();
+		
+		$method = $this->getPrivateMethod( 'viewbundlePage', 'getDataAccessObject' );
+		$result = $method->invokeArgs( $page,array() );
+		$this->assertThat($result,
+			$this->isInstanceOf("dataAccess")
+		);
+	}
+	
+	/**
+	 * @medium
+	 * @testdox getSettings()
+	 * @covers viewbundlePage::getSettings
+	 * @uses viewbundlePage
+	 * @uses get_db_connection
+	 * @uses getsettings
+	 */
+	public function test_getSettings() {
+		$page = new viewbundlePage();
+		
+		$method = $this->getPrivateMethod( 'viewbundlePage', 'getSettings' );
+		$result = $method->invokeArgs( $page,array() );
+		$this->assertisArray($result);
+	}
+
+	/**
+	 * @small
+	 * @testdox buildHtmlBody with POST
+	 * @covers viewbundlePage::buildHtmlBody
+	 * @uses viewbundlePage
+	 * /
+	public function test_outputHtml_post() {
+		$page = new viewbundlePage();
+		
+		$_POST['TransID']="9406";
+		$_POST['Title']="9406";
+		$_POST['Store']="9406";
+		$_POST['BundleID']="9406";
+		$_POST['Tier']="9406";
+		$_POST['purchasetime']="9406";
+		$_POST['Sequence']="9406";
+		$_POST['Price']="9406";
+		$_POST['Paid']="9406";
+		$_POST['Fees']="9406";
+		$_POST['Credit']="9406";
+		$_POST['Link']="9406";
+		
+		$dataAccessMock = $this->createMock(dataAccess::class);
+		$dataAccessMock->expects($this->once())
+                       ->method('updateBundle')
+                       ->with($this->anything(),$this->anything());
+		$maxID = $this->getPrivateProperty( 'viewbundlePage', 'dataAccessObject' );
+		$maxID->setValue( $page , $dataAccessMock );
+
+		$result = $page->buildHtmlBody();
+		$this->assertisString($result);
+	}
+	/* */
 }
