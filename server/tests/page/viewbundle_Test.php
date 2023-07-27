@@ -185,11 +185,12 @@ class viewbundle_Test extends testprivate
 	 * @testdox buildHtmlBody with POST
 	 * @covers viewbundlePage::buildHtmlBody
 	 * @uses viewbundlePage
-	 * /
+	 * @uses lookupTextBox
+	 */
 	public function test_outputHtml_post() {
 		$page = new viewbundlePage();
 		
-		$_POST['TransID']="9406";
+		/* $_POST['TransID']="9406";
 		$_POST['Title']="9406";
 		$_POST['Store']="9406";
 		$_POST['BundleID']="9406";
@@ -200,12 +201,28 @@ class viewbundle_Test extends testprivate
 		$_POST['Paid']="9406";
 		$_POST['Fees']="9406";
 		$_POST['Credit']="9406";
-		$_POST['Link']="9406";
+		$_POST['Link']="9406"; */
+		
+		$_POST = Array ( 
+		"TransID" => 513 ,
+		"Title" => "PAX 10 Humble Flash Bundle",
+		"Store" => "Humble Store ",
+		"BundleID" => 513 ,
+		"Tier" => 1 ,
+		"purchasetime" => "2014-08-28T11:35",
+		"Sequence" => 1 ,
+		"Price" => 0.00 ,
+		"Fees" => "",
+		"Paid" => 1.00 ,
+		"Credit" => "",
+		"Link" => "https://www.humblebundle.com/downloads?key=UbqvNAY5sDVefYrM" 
+		);
+		
 		
 		$dataAccessMock = $this->createMock(dataAccess::class);
 		$dataAccessMock->expects($this->once())
                        ->method('updateBundle')
-                       ->with($this->anything(),$this->anything());
+                       ->with($this->anything());
 		$maxID = $this->getPrivateProperty( 'viewbundlePage', 'dataAccessObject' );
 		$maxID->setValue( $page , $dataAccessMock );
 

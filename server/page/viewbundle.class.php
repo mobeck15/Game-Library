@@ -257,7 +257,8 @@ class viewbundlePage extends Page
 			<th>Bundle Link</th>
 			<td>';
 			$output .= $this->purchaseAttribute($id,'Bundle Link');
-			$output  = $this->editableField($this->purchaseAttribute($id,'BundleURL'),$edit_mode,"Link");
+			$output .= " ";
+			$output .= $this->editableField($this->purchaseAttribute($id,'BundleURL'),$edit_mode,"Link");
 			$output .= '</td>
 		</tr>
 		<tr>
