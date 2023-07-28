@@ -29,7 +29,8 @@ function getHistoryCalculations($gameID="",$connection=false,$start=false,$end=f
 	}
 	
 	$sql .= " order by `Timestamp` ASC";
-	
+	$activity = array();
+
 	if($result = $conn->query($sql)){
 		if ($result->num_rows > 0){
 			while($row = $result->fetch_assoc()) {
@@ -212,12 +213,7 @@ function getHistoryCalculations($gameID="",$connection=false,$start=false,$end=f
 					$firstpair[$row['GameID']]=false;
 				}
 			}
-		} else {
-			$activity = false;
 		}
-	} else {
-		$activity = false;
-		trigger_error("SQL Query Failed: " . mysqli_error($conn) . "</br>Query: ". $sql);
 	}
 	
 	if($connection==false){

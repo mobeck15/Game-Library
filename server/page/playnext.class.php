@@ -19,6 +19,8 @@ class playnextPage extends Page
 $BeatAvgList=array();
 $BeatAvg2List=array();
 $OneUnPlayedList=array();
+$UnPlayedList = array();
+$OverPaidList = array();
 
 $conn=get_db_connection();
 $settings=getsettings($conn);
