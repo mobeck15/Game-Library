@@ -1085,7 +1085,7 @@ if (!(isset($_GET['id']) && is_numeric($_GET['id']))) {
 			}
 			$output .= '<td class="text">'. $history['System'] .'</td>
 			<td class="text">'. str_replace(" ", "&nbsp;", $history['Data']).'</td>
-			<td class="numeric">'. timeduration($history['Time'],"hours").'</td>
+			<td class="numeric">'. timeduration((float)$history['Time'],"hours").'</td>
 			<td class="text">'. nl2br(($history['Notes'] ?? "")).'</td>
 			<td class="numeric">'. $history['Achievements'].'</td>
 			<td class="hidden text">'. $history['AchievementType'].'</td>
@@ -1093,11 +1093,11 @@ if (!(isset($_GET['id']) && is_numeric($_GET['id']))) {
 			<td class="numeric">'. $history['Review'].'</td>
 			<td class="text">'. $history['KeyWords'].'</td>
 			<td class="hidden numeric">'; if( isset($history['prevstart'])) {$output .= date("n/j/Y H:i:s",$history['prevstart']);} $output .= '</td>
-			<td class="numeric">'. timeduration($history['Elapsed'],"seconds").'</td>
-			<td class="hidden numeric">'. timeduration($history['prevTotSys'],"seconds").'</td>
-			<td class="numeric">'. timeduration($history['totalSys'],"seconds").'</td>
-			<td class="hidden numeric">'. timeduration($history['prevTotal'],"seconds").'</td>
-			<td class="numeric">'. timeduration($history['Total'],"seconds").'</td>
+			<td class="numeric">'. timeduration((float)$history['Elapsed'],"seconds").'</td>
+			<td class="hidden numeric">'. timeduration((float)$history['prevTotSys'],"seconds").'</td>
+			<td class="numeric">'. timeduration((float)$history['totalSys'],"seconds").'</td>
+			<td class="hidden numeric">'. timeduration((float)$history['prevTotal'],"seconds").'</td>
+			<td class="numeric">'. timeduration((float)$history['Total'],"seconds").'</td>
 			<td class="text">'. boolText($history['FinalCountHours']).'</td>
 			<td class="text">'. $history['RowType'].'</td>
 			</tr>';

@@ -11,68 +11,21 @@ require_once $GLOBALS['rootpath']."/inc/dataAccess.class.php";
 
 class Games {
 	public function getGames($gameID="",$connection=false){
-		if($connection==false){
+		/* if($connection==false){
 			$conn = get_db_connection();
 		} else {
 			$conn = $connection;
-		}
-		/* * /
-		$sql  = "select * from `gl_products`";
-		$sql2 ="";
-		if ($gameID <> "" ) {
-			if(is_array($gameID)){
-				foreach ($gameID as $value){
-					if($sql2==""){
-						$sql2 .= " where Game_ID = " . $value ;
-						$sql2 .= " OR ParentGameID = " . $value ;
-					} else {
-						$sql2 .= " OR Game_ID = " . $value ;
-						$sql2 .= " OR ParentGameID = " . $value ;
-					}
-				}
-				$sql .= $sql2;
-			} else {
-				$sql .= " where Game_ID = " . $gameID ;
-				$sql .= " OR ParentGameID = " . $gameID ;
-			}
-		}
-		$sql .= " order by `Series` ASC, `LaunchDate` ASC" ;
-		if($result = $conn->query($sql)){
-			$cpi=getAllCpi($conn);
-
-			while($row = $result->fetch_assoc()) {
-				$row=$this->CalculateGameRow($row);
-
-				$games[]=$row;
-			}
-		} else {
-			$games = false;
-			trigger_error("SQL Query Failed: " . mysqli_error($conn) . "</br>Query: ". $sql);
-		}		
-		/* */
+		} */
 		
-		/* */
 		$dataobject= new dataAccess();
 		$statement=$dataobject->getGames($gameID);
 		while($row = $statement->fetch(PDO::FETCH_ASSOC)) {
-			//var_dump($row);
 			$games[]=$this->CalculateGameRow($row);		
-			//$games[]=CalculateGameRow($row);		
 		}
-		/* */
 		return $games;
 	}
 	
 	private function CalculateGameRow($row){
-		/* * /
-		echo "\ncount: ";
-		var_dump(count($row));
-		echo "title1: ";
-		var_dump($row['Title']);
-		echo "LowDate: ";
-		var_dump($row['LowDate']);
-		/* */
-		
 		$row['Game_ID']=(int)$row['Game_ID'];
 		
 		$row['LaunchDate'] = new DateTime($row['LaunchDate']);

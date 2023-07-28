@@ -93,9 +93,7 @@ function getAllCpi($connection=false){
 			$cpi[$row['year']][$row['month']]=$row['cpi'];
 			$cpi['Current']=$row['cpi'];
 		}
-	} else {
-		trigger_error("SQL Query Failed: " . mysqli_error($conn) . "</br>Query: ". $sql); 
-	}
+	} 
 	if($connection==false){
 		$conn->close();	
 	}	
@@ -109,13 +107,13 @@ function get_db_connection(){
 
 	/* check connection */
 	if (mysqli_connect_errno()) {
-		trigger_error("Connect failed: %s\n", mysqli_connect_error()); 
+		trigger_error("Connect failed: %s\n", mysqli_connect_error());  // @codeCoverageIgnore
 		exit(); // @codeCoverageIgnore
 	}
 
 	/* change character set to utf8 */
 	if (!$conn->set_charset("utf8")) {
-		trigger_error("Error loading character set utf8: %s\n", $conn->error); 
+		trigger_error("Error loading character set utf8: %s\n", $conn->error);  // @codeCoverageIgnore
 	}
 	
 	return $conn;
@@ -154,8 +152,9 @@ function getAllItems($gameID="",$connection=false){
 	}
 	$sql .= " order by `DateAdded` ASC, `Time Added` ASC, `Sequence` ASC";
 	
+	$items = false;
+	
 	if($result = $conn->query($sql)){
-		//$cpi=getAllCpi($conn); //unused?
 		$items=array();
 		while($row = $result->fetch_assoc()) {
 			
@@ -209,11 +208,6 @@ function getAllItems($gameID="",$connection=false){
 				$row["FirstItem"] = false;
 			}
 		}
-
-		
-	} else {
-		$items = false;
-		trigger_error("SQL Query Failed: " . mysqli_error($conn) . "</br>Query: ". $sql);
 	}
 	
 	if($connection==false){
@@ -233,18 +227,16 @@ function getKeywords($gameID="",$connection=false){
 	if ($gameID <> "" ) {
 		$sql .= "WHERE `ProductID` = " . $gameID;
 	}
+	$keywords = false;
 	if($result = $conn->query($sql)) {
 		$keywords=array();
 		while($row2 = $result->fetch_assoc()) {
 			$keywords[$row2['ProductID']][$row2['KwType']][]=$row2['Keyword'] ;
 		}
-	} else {
-		$keywords=false;
-		trigger_error("SQL Query Failed: " . mysqli_error($conn) . "</br>Query: ". $sql);
 	}
 	if($connection==false){
 		$conn->close();	
-	}	
+	}
 	return $keywords;
 }
 
@@ -536,14 +528,11 @@ function findgaps($sql,$conn,$idname) {
 				$stats['count']++;
 				$stats['max']=$row[$idname];
 				if($row[$idname]<>$index){
-					while($row[$idname]<>$index){
+					//TODO: BUG: infinite loop sometimes, unknown reasons.
+					while($row[$idname]<>$index && $index<100000){
 						$stats['gaps'][]=$index;
 						$stats['gapsText'] .= $index . ", ";
 						$index++;
-						//TODO: BUG: infinite loop if there are two records with the same ID?!?
-						if($index>100000) {
-							break;
-						}
 					}
 					//$stats['gaps'][]=$index;
 					//$stats['gapsText'] .= $index . ", ";

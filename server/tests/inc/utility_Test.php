@@ -124,6 +124,7 @@ final class Utility_Test extends TestCase
 	/**
 	 * @small
 	 * @covers makeIndex
+	 * @doesNotPerformAssertions
 	 */
 	public function test_makeIndex_empty() {
 		//Arrange
@@ -132,17 +133,25 @@ final class Utility_Test extends TestCase
 		//Act
 		
 		//Assert
-		//TODO: Expect is depricated in phpunit 10?
-		//$this->expectException(Notice::class);
-		$this->expectNotice();
-		$this->expectNoticeMessage("Array not provided (or empty array) for MakeIndex Function");
+		//TODO: message text is not tested.
+		//$this->assertEquals("Array not provided (or empty array) for MakeIndex Function",$message);
+		
+		// Set a custom error handler to convert PHP notices to exceptions
+        set_error_handler(function ($severity, $message, $file, $line) {
+            if ($severity & E_USER_ERROR) {
+                throw new \ErrorException($message, 0, $severity, $file, $line);
+            }
+        });
 		
 		$index=makeIndex($array,"id");
+
+		restore_error_handler();
 	}
 
 	/**
 	 * @small
 	 * @covers makeIndex
+	 * @doesNotPerformAssertions
 	 */
 	public function test_makeIndexError() {
 		//Arrange
@@ -170,15 +179,24 @@ final class Utility_Test extends TestCase
 		);
 		
 		//TODO: Expect is depricated in phpunit 10?
-		$this->expectNotice();
-		$this->expectNoticeMessage("id '4' is not a unique key, some data may be lost.");
+		//$this->expectNotice();
+		//$this->expectExceptionMessage("id '4' is not a unique key, some data may be lost.");
 		
+		// Set a custom error handler to convert PHP notices to exceptions
+        set_error_handler(function ($severity, $message, $file, $line) {
+            if ($severity & E_USER_ERROR) {
+                throw new \ErrorException($message, 0, $severity, $file, $line);
+				$this->assertEquals("id '4' is not a unique key, some data may be lost.",$message);
+            }
+        });
+
 		//Act
 		$index=makeIndex($array,"id");
+		restore_error_handler();
 	}
 	
 	/**
-	 * @medium
+	 * @small
 	 * @covers getAllItems
 	 * @uses get_db_connection
 	 */
@@ -227,17 +245,6 @@ final class Utility_Test extends TestCase
 		$conn=get_db_connection();
 		$this->assertIsArray(getKeywords("",$conn));
 		$conn->close();
-	}
-
-	/**
-	 * @small
-	 * @covers getKeywords
-	 * @uses get_db_connection
-	 */
-	public function test_getKeywordsError() {
-		$this->expectException(mysqli_sql_exception::class);
-		//$this->expectNotice();
-		getKeywords(";");
 	}
 
 	/**

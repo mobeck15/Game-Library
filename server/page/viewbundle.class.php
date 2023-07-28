@@ -5,13 +5,14 @@ include_once $GLOBALS['rootpath']."/inc/utility.inc.php";
 include_once $GLOBALS['rootpath']."/inc/getsettings.inc.php";
 include_once $GLOBALS['rootpath']."/inc/getGames.inc.php";
 
+//TODO: BUG: the url for the bundle is being printed on the page from somewhere.
 class viewbundlePage extends Page
 {
 	private $dataAccessObject;
 	private $settings;
 	private $games;
 	private $items;
-	private $puchaseobj;
+	private $purchaseobj;
 	private $purchases;
 	private $purchaseIndex;
 	private $gameIndex;
@@ -256,7 +257,8 @@ class viewbundlePage extends Page
 			<th>Bundle Link</th>
 			<td>';
 			$output .= $this->purchaseAttribute($id,'Bundle Link');
-			$output  = $this->editableField($this->purchaseAttribute($id,'BundleURL'),$edit_mode,"Link");
+			$output .= " ";
+			$output .= $this->editableField($this->purchaseAttribute($id,'BundleURL'),$edit_mode,"Link");
 			$output .= '</td>
 		</tr>
 		<tr>
@@ -304,6 +306,7 @@ class viewbundlePage extends Page
 	
 	private function makeGamesTable(){
 		$output="";
+		//TODO: Don't reference _Get['id'] directly
 		if(isset($this->getPurchases()[$this->getPurchaseIndex()[$_GET['id']]]['GamesinBundle']) && count($this->getPurchases()[$this->getPurchaseIndex()[$_GET['id']]]['GamesinBundle'])>0) { 
 			$output .= '<details>
 			<summary>';
