@@ -48,13 +48,6 @@ class dataAccess {
 		
 		$query->execute();
 		
-		/*
-		$row = $query->fetch(PDO::FETCH_ASSOC);
-		var_dump($row);
-		$row = $query->fetch(PDO::FETCH_ASSOC);
-		var_dump($row);
-		*/
-		
 		return $query;
 	}
 	
@@ -66,8 +59,6 @@ class dataAccess {
 		}
 		
 		$query = $this->getConnection()->prepare("SELECT * from `gl_products` $filter order by `Series` ASC, `LaunchDate` ASC");
-		
-		//var_dump($query);
 		
 		if(is_array($gameID)) {
 			$gameID = implode(",",$gameID);
@@ -83,13 +74,33 @@ class dataAccess {
 		return $query;
 	}
 	
+	public function getItems($itemID=null) {
+		$filter="";
+		if($itemID <> null){
+			$filter .= "where ItemID in (?)";
+		}
+		
+		$query = $this->getConnection()->prepare("SELECT * from `gl_items` $filter order by `DateAdded` ASC");
+		
+		if(is_array($itemID)) {
+			$itemID = implode(",",$itemID);
+		}
+		
+		if($itemID <> null){
+			$query->bindvalue(1,$itemID);
+		}
+		
+		$query->execute();
+		
+		return $query;
+	}
+	
 	public function getMaxHistoryId() {
 		$maxID=1;
 		$query=$this->getConnection()->prepare("SELECT * FROM `gl_history` order by `HistoryID` DESC Limit 1");
 		$query->execute();
 		
 		while($result = $query->fetch(PDO::FETCH_ASSOC)) {
-			//var_dump($result);
 			$maxID=$result['HistoryID']+1;
 		}
 		
@@ -244,19 +255,19 @@ class dataAccess {
 
 		$query = $this->getConnection()->prepare($update_SQL);
 
-		$query->bindvalue(':title',   $postdata['Title']);
-		$query->bindvalue(':store',   $postdata['Store']);
-		$query->bindvalue(':bundleid',$postdata['BundleID']);
-		$query->bindvalue(':tier',  $postdata['Tier']);
-		$query->bindvalue(':purchasedate', date("Y-m-d",strtotime($postdata['purchasetime'])));
-		$query->bindvalue(':purchasetime', date("H:i:00",strtotime($postdata['purchasetime'])));
-		$query->bindvalue(':sequence',$postdata['Sequence']);
-		$query->bindvalue(':price',$postdata['Price']);
-		$query->bindvalue(':fees',$postdata['Fees']);
-		$query->bindvalue(':paid',$postdata['Paid']);
-		$query->bindvalue(':credit',$postdata['Credit']);
-		$query->bindvalue(':link',$postdata['Link']);
-		$query->bindvalue(':transid',$postdata['TransID']);
+		$query->bindvalue(':title',       $postdata['Title']);
+		$query->bindvalue(':store',       $postdata['Store']);
+		$query->bindvalue(':bundleid',    $postdata['BundleID']);
+		$query->bindvalue(':tier',        $postdata['Tier']);
+		$query->bindvalue(':purchasedate',date("Y-m-d",strtotime($postdata['purchasetime'])));
+		$query->bindvalue(':purchasetime',date("H:i:00",strtotime($postdata['purchasetime'])));
+		$query->bindvalue(':sequence',    $postdata['Sequence']);
+		$query->bindvalue(':price',       $postdata['Price']);
+		$query->bindvalue(':fees',        $postdata['Fees']);
+		$query->bindvalue(':paid',        $postdata['Paid']);
+		$query->bindvalue(':credit',      $postdata['Credit']);
+		$query->bindvalue(':link',        $postdata['Link']);
+		$query->bindvalue(':transid',     $postdata['TransID']);
 
 		if ($query->execute() === TRUE) {
 			//TODO: The print_r makes the insertlog look weird.
@@ -264,26 +275,76 @@ class dataAccess {
 		}
 	}
 	
+	public function insertItem($postdata)	{
+		$insert_SQL  = "INSERT INTO `gl_items` (`ItemID`, `ProductID`, `TransID`, `ParentProductID`, `Tier`, `Notes`, `SizeMB`, `DRM`, `OS`, `ActivationKey`, `DateAdded`, `Time Added`, `Sequence`, `Library`) ";
+		$insert_SQL .= "VALUES (:ItemID, :ProductID, :TransID, :ParentProductID, :Tier, :Notes, :SizeMB, :DRM, :OS, :ActivationKey, :DateAdded, :Time_Added, :Sequence, :Library )";
+		
+		$query = $this->getConnection()->prepare($insert_SQL);
+
+		$query->bindvalue(':ItemID',         $postdata['ItemID']);
+		$query->bindvalue(':ProductID',      $postdata['ProductID']);
+		$query->bindvalue(':TransID',        $postdata['TransID']);
+		$query->bindvalue(':ParentProductID',$postdata['ParentProductID']);
+		$query->bindvalue(':Tier',           $postdata['Tier']);
+		$query->bindvalue(':Notes',          $postdata['Notes']);
+		$query->bindvalue(':SizeMB',         $postdata['SizeMB']);
+		$query->bindvalue(':DRM',            $postdata['DRM']);
+		$query->bindvalue(':OS',             $postdata['OS']);
+		$query->bindvalue(':ActivationKey',  $postdata['ActivationKey']);
+		$query->bindvalue(':DateAdded',      date("Y-m-d",strtotime($postdata['DateAdded'])));
+		$query->bindvalue(':Time_Added',     date("H:i:00",strtotime($postdata['Time_Added'])));
+		$query->bindvalue(':Sequence',       $postdata['Sequence']);
+		$query->bindvalue(':Library',        $postdata['Library']);
+
+		if ($query->execute() === TRUE) {
+			//TODO: The print_r makes the insertlog look weird.
+			$this->insertlog("Insert Item: " . $postdata['ItemID'] . " " . print_r($postdata,true));
+		}
+	}
+	
+	public function insertGame2($postdata)	{
+		$insert_SQL  = "INSERT INTO `gl_products` (`Game_ID`, `Title`, `Series`, `LaunchDate`, `SteamID`, `Want`, `Playable`, `Type`, `ParentGameID`, `ParentGame`) ";
+		$insert_SQL .= "VALUES (:Game_ID, :Title, :Series, :LaunchDate, :SteamID, :Want, :Playable, :Type, :ParentGameID, :ParentGame )";
+		
+		$query = $this->getConnection()->prepare($insert_SQL);
+
+		$query->bindvalue(':Game_ID',     $postdata['Game_ID']);
+		$query->bindvalue(':Title',       $postdata['Title']);
+		$query->bindvalue(':Series',      $postdata['Series']);
+		$query->bindvalue(':LaunchDate',  $postdata['LaunchDate']);
+		$query->bindvalue(':SteamID',     $postdata['SteamID']);
+		$query->bindvalue(':Want',        $postdata['Want']);
+		$query->bindvalue(':Playable',    $postdata['Playable']);
+		$query->bindvalue(':Type',        $postdata['Type']);
+		$query->bindvalue(':ParentGameID',$postdata['ParentGameID']);
+		$query->bindvalue(':ParentGame',  $postdata['ParentGame']);
+
+		if ($query->execute() === TRUE) {
+			//TODO: The print_r makes the insertlog look weird.
+			$this->insertlog("Insert Item: " . $postdata['Game_ID'] . " " . print_r($postdata,true));
+		}
+	}
+	
 	public function updateHistory($insertrow,$timestamp){
 		$sql ="UPDATE `gl_history` ";
-		$sql.="SET `Timestamp` = :date, "; //Timestamp  2015/09/18 22:08:55
-		$sql.=" `Game` = :title, "; //Game (Name)
-		$sql.=" `System` = :system, "; //System
-		$sql.=" `Data` = :data, "; //Data
-		$sql.=" `Time` = :hours, "; //Time
-		$sql.=" `Notes` = :notes, "; //Notes
-		$sql.=" `RowType` = :source, "; //Source / RowType
-		$sql.=" `Achievements` = :achievements, "; //Achivements
-		$sql.=" `Status` = :status, "; //Status
-		$sql.=" `Review` = :review, "; //Review
-		$sql.=" `BaseGame` = :basegame, "; //BaseGame
-		$sql.=" `kwMinutes` = :minutes, "; //Keyword Minutes
-		$sql.=" `kwIdle` = :idle, "; //Keyword Idle
+		$sql.="SET `Timestamp`  = :date, "; //Timestamp  2015/09/18 22:08:55
+		$sql.=" `Game`          = :title, "; //Game (Name)
+		$sql.=" `System`        = :system, "; //System
+		$sql.=" `Data`          = :data, "; //Data
+		$sql.=" `Time`          = :hours, "; //Time
+		$sql.=" `Notes`         = :notes, "; //Notes
+		$sql.=" `RowType`       = :source, "; //Source / RowType
+		$sql.=" `Achievements`  = :achievements, "; //Achivements
+		$sql.=" `Status`        = :status, "; //Status
+		$sql.=" `Review`        = :review, "; //Review
+		$sql.=" `BaseGame`      = :basegame, "; //BaseGame
+		$sql.=" `kwMinutes`     = :minutes, "; //Keyword Minutes
+		$sql.=" `kwIdle`        = :idle, "; //Keyword Idle
 		$sql.=" `kwCardFarming` = :cardfarming, "; //Keyword Card Farming
-		$sql.=" `kwCheating` = :cheating, "; //Keyword Cheating
-		$sql.=" `kwBeatGame` = :beatgame, "; //Keyword Beat Game
-		$sql.=" `kwShare` = :share, "; //Keyword Share
-		$sql.=" `GameID` = :gameid"; //GameID
+		$sql.=" `kwCheating`    = :cheating, "; //Keyword Cheating
+		$sql.=" `kwBeatGame`    = :beatgame, "; //Keyword Beat Game
+		$sql.=" `kwShare`       = :share, "; //Keyword Share
+		$sql.=" `GameID`        = :gameid"; //GameID
 		$sql.=" WHERE `gl_history`.`HistoryID` = :insertid";
 		
 		$query = $this->getConnection()->prepare($sql);

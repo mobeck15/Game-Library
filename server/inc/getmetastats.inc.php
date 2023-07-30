@@ -581,7 +581,7 @@ function getStatRow($filter,$statname){
 		if($statname<>null) {
 			$dataset=makeStatDataSet($filter,$statname);
 			$val=getOnlyValues($dataset,$statname);
-			//var_dump($val); echo "<br>\n";
+			
 			$onlydata=$val['basedata'];
 			$onlydatamode=$val['modedata'];
 			
@@ -589,9 +589,9 @@ function getStatRow($filter,$statname){
 			$row['Sum']=array_sum($onlydata);
 
 			//Average (Mean)
-			//var_dump($row); echo "<br>\n";
 			if($row['Total']==0) {
 				trigger_error($statname . " Total not set");
+				return;
 			} else {
 				$row['Average']=$row['Sum']/$row['Total'];
 			}
@@ -606,6 +606,7 @@ function getStatRow($filter,$statname){
 			
 			//Mode
 			$values = array_count_values($onlydatamode); 
+			//var_dump($values);
 			$row['Mode']= array_search(max($values), $values);
 			
 			//Harmonic Mean (Not working)

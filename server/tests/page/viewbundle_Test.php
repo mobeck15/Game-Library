@@ -190,19 +190,6 @@ class viewbundle_Test extends testprivate
 	public function test_outputHtml_post() {
 		$page = new viewbundlePage();
 		
-		/* $_POST['TransID']="9406";
-		$_POST['Title']="9406";
-		$_POST['Store']="9406";
-		$_POST['BundleID']="9406";
-		$_POST['Tier']="9406";
-		$_POST['purchasetime']="9406";
-		$_POST['Sequence']="9406";
-		$_POST['Price']="9406";
-		$_POST['Paid']="9406";
-		$_POST['Fees']="9406";
-		$_POST['Credit']="9406";
-		$_POST['Link']="9406"; */
-		
 		$_POST = Array ( 
 		"TransID" => 513 ,
 		"Title" => "PAX 10 Humble Flash Bundle",
@@ -229,5 +216,4 @@ class viewbundle_Test extends testprivate
 		$result = $page->buildHtmlBody();
 		$this->assertisString($result);
 	}
-	/* */
 }
