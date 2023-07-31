@@ -183,7 +183,59 @@ final class dataAccess_Test extends testprivate
 		$dataobject= new dataAccess();
 		$maxID=$dataobject->getMaxHistoryId();
 		$this->assertIsNumeric($maxID);
-	}	
+	}
+	
+	/**
+	 * @small
+	 * @covers dataAccess::getMaxItemId
+	 * @uses dataAccess
+	 * @testdox getMaxItemId()
+	 */
+	public function test_getMaxItemId() {
+		$dataobject= new dataAccess();
+		$maxID=$dataobject->getMaxItemId();
+		$this->assertIsNumeric($maxID);
+	}
+
+	/**
+	 * @small
+	 * @covers dataAccess::getMaxProductId
+	 * @uses dataAccess
+	 * @testdox getMaxProductId()
+	 */
+	public function test_getMaxProductId() {
+		$dataobject= new dataAccess();
+		$maxID=$dataobject->getMaxProductId();
+		$this->assertIsNumeric($maxID);
+	}
+
+	/**
+	 * @small
+	 * @covers dataAccess::getMaxTableId
+	 * @uses dataAccess
+	 * @testdox getMaxTableId() $table
+	 * @testWith ["gl_history"]
+	 *           ["gl_items"]
+	 *           ["gl_products"]
+	 */
+	public function test_getMaxTableId($table) {
+		$dataobject= new dataAccess();
+		$maxID=$dataobject->getMaxTableId($table);
+		$this->assertIsNumeric($maxID);
+	}
+	
+	/**
+	 * @small
+	 * @covers dataAccess::getMaxTableId
+	 * @uses dataAccess
+	 * @testdox getMaxTableId() Error $table
+	 * @testWith ["nothing"]
+	 */
+	public function test_getMaxTableId_error($table) {
+		$dataobject= new dataAccess();
+		$maxID=$dataobject->getMaxTableId($table);
+		$this->assertEquals(false,$maxID);
+	}
 
 	/**
 	 * @small
@@ -397,6 +449,57 @@ final class dataAccess_Test extends testprivate
 		$this->assertEquals($allrows2[0]["Time Added"],date("H:i:00",strtotime($insertrow['Time_Added'])));
 		
 		$teardownSQL = "DELETE FROM gl_items WHERE `gl_items`.`ItemID` = " . $testItemID;
+		$query = $dataobject->getConnection()->prepare($teardownSQL);
+		$query->execute();
+	}
+
+	/**
+	 * @small
+	 * @covers dataAccess::insertGame
+	 * @uses dataAccess
+	 * @testdox insertGame()
+	 * @group additem
+	 */
+	public function test_insertGame() {
+		$dataobject= new dataAccess();
+		$testGameID = 20004;
+
+		$insertrow['Game_ID']           = $testGameID;
+		$insertrow['Title']             = "Test Game 2";
+		$insertrow['Series']            = "Test Game";
+		$insertrow['LaunchDate']        = date("Y-m-d");
+		$insertrow['LaunchPrice']       = 1.23;
+		$insertrow['MSRP']              = 1.23;
+		$insertrow['CurrentMSRP']       = 1.23;
+		$insertrow['HistoricLow']       = 1.23;
+		$insertrow['LowDate']           = date("Y-m-d");
+		$insertrow['SteamAchievements'] = 0;
+		$insertrow['SteamCards']        = 0;
+		$insertrow['TimeToBeat']        = 1.6;
+		$insertrow['Metascore']         = 34;
+		$insertrow['UserMetascore']     = 56;
+		$insertrow['SteamRating']       = 78;
+		$insertrow['SteamID']           = 1234567890;
+		$insertrow['GOGID']             = "gogID";
+		$insertrow['isthereanydealID']  = "dealID";
+		$insertrow['TimeToBeatID']      = 1234546;
+		$insertrow['MetascoreID']       = "metaID";
+		$insertrow['DateUpdated']       = date("Y-m-d");
+		$insertrow['Want']              = 4;
+		$insertrow['Playable']          = 1;
+		$insertrow['Type']              = "Game";
+		$insertrow['ParentGameID']      = $testGameID;
+		$insertrow['ParentGame']        = "Parent Game";
+		$insertrow['Developer']         = "Developer";
+		$insertrow['Publisher']         = "Publisher";
+		
+		$dataobject->insertGame($insertrow);
+
+		$statement = $dataobject->getGames($testGameID,"Game_ID");
+		$allrows2=$dataobject->getAllRows($statement);
+		$this->assertEquals($allrows2[0]["Title"],$insertrow['Title']);
+		
+		$teardownSQL = "DELETE FROM gl_products WHERE `gl_products`.`Game_ID` = " . $testGameID;
 		$query = $dataobject->getConnection()->prepare($teardownSQL);
 		$query->execute();
 	}

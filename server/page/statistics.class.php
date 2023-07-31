@@ -6,7 +6,6 @@ require_once $GLOBALS['rootpath']."/inc/getmetastats.inc.php";
 
 class statisticsPage extends Page
 {
-	private $dataAccessObject;
 	public function __construct() {
 		$this->title="Statistics";
 	}

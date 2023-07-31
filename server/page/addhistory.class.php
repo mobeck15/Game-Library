@@ -11,7 +11,6 @@ include_once $GLOBALS['rootpath']."/inc/getGames.inc.php";
 
 class addhistoryPage extends Page
 {
-	private $dataAccessObject;
 	private $maxID;
 	private $history;
 	private $games;
@@ -36,13 +35,6 @@ class addhistoryPage extends Page
 			$this->steamAPI=new SteamAPI();
 		}
 		return $this->steamAPI;
-	}
-	
-	private function getDataAccessObject(){
-		if(!isset($this->dataAccessObject)){
-			$this->dataAccessObject= new dataAccess();
-		}
-		return $this->dataAccessObject;
 	}
 	
 	public function buildHtmlBody(){

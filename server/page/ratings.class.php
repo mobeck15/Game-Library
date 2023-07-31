@@ -7,7 +7,6 @@ include_once $GLOBALS['rootpath']."/inc/getCalculations.inc.php";
 
 class ratingsPage extends Page
 {
-	private $dataAccessObject;
 	public function __construct() {
 		$this->title="Ratings";
 	}

@@ -8,7 +8,6 @@ include_once $GLOBALS['rootpath']."/inc/SteamAPI.class.php";
 
 class steamapi_ownedgamesPage extends Page
 {
-	private $dataAccessObject;
 	public function __construct() {
 		$this->title="Steam API All Games";
 	}

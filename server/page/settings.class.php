@@ -6,7 +6,6 @@ include_once $GLOBALS['rootpath']."/inc/getsettings.inc.php";
 
 class settingsPage extends Page
 {
-	private $dataAccessObject;
 	public function __construct() {
 		$this->title="Settings";
 	}

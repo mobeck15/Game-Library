@@ -8,7 +8,6 @@ include_once $GLOBALS['rootpath']."/inc/getTopList.inc.php";
 
 class toplevelPage extends Page
 {
-	private $dataAccessObject;
 	public function __construct() {
 		$this->title="CPI";
 	}

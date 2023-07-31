@@ -5,7 +5,6 @@ include_once $GLOBALS['rootpath']."/inc/utility.inc.php";
 
 class cpiPage extends Page
 {
-	private $dataAccessObject;
 	public function __construct() {
 		$this->title="CPI";
 	}

@@ -8,23 +8,12 @@ include_once $GLOBALS['rootpath']."/inc/getsettings.inc.php";
 
 class additemPage extends Page
 {
-	private $dataAccessObject;
-
 	public function __construct() {
 		$this->title="Add Item";
 	}
 	
-	private function getDataAccessObject(){
-		if(!isset($this->dataAccessObject)){
-			$this->dataAccessObject= new dataAccess();
-		}
-		return $this->dataAccessObject;
-	}
-
 	public function buildHtmlBody(){
 		$output = "";
-		$conn=get_db_connection();
-
 		if(isset($_POST['TransID'])){
 			$this->getDataAccessObject()->insertItem($_POST);
 		}
@@ -56,21 +45,8 @@ class additemPage extends Page
 			</tr>
 			</thead>';
 			
-			$sql="select max(`ItemID`) maxid from `gl_items`";
-			if($result = $conn->query($sql)){
-				while($row = $result->fetch_assoc()) {
-					$nextItemID=$row['maxid']+1;
-				}
-			}
-
-			$sql="select max(`Game_ID`) maxid from `gl_products`";
-			if($result = $conn->query($sql)){
-				while($row = $result->fetch_assoc()) {
-					$nextGame_ID=$row['maxid']+1;
-				}
-			}
-
-			$conn->close();	
+			$nextItemID = $this->getDataAccessObject()->getMaxTableId("items");
+			$nextGame_ID = $this->getDataAccessObject()->getMaxTableId("games");
 
 			$blank="";
 
@@ -80,9 +56,6 @@ class additemPage extends Page
 			 * select * FROM INFORMATION_SCHEMA.COLUMNS WHERE table_name = 'products'
 			 * select `COLUMN_NAME`, `COLUMN_COMMENT` FROM INFORMATION_SCHEMA.COLUMNS WHERE table_name = 'products'
 			 * ALTER TABLE `gl_products` CHANGE `Game_ID` `Game_ID` INT(11) NOT NULL COMMENT 'Game ID';
-			 * 
-			 * DONE: 
-			 * Update autofill scripts to fill in notes on change, not just select from the dropdown.
 			 */
 
 			$output .= '<tr>

@@ -8,7 +8,6 @@ include_once $GLOBALS['rootpath']."/inc/SteamFormat.class.php";
 
 class viewgamePage extends Page
 {
-	private $dataAccessObject;
 	public function __construct() {
 		$this->title="View Game";
 	}

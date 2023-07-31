@@ -95,16 +95,50 @@ class dataAccess {
 		return $query;
 	}
 	
-	public function getMaxHistoryId() {
+	public function getMaxTableId($table) {
+		$table = strtolower($table);
+		switch ($table) {
+			case "history":
+			case "gl_history":
+				$table = "gl_history";
+				$ID = "HistoryID";
+				break;
+			case "items":
+			case "gl_items":
+				$table = "gl_items";
+				$ID = "ItemID";
+				break;
+			case "games":
+			case "products":
+			case "gl_products":
+				$table = "gl_products";
+				$ID = "Game_ID";
+				break;
+			default:
+				return false;
+		}
+		
 		$maxID=1;
-		$query=$this->getConnection()->prepare("SELECT * FROM `gl_history` order by `HistoryID` DESC Limit 1");
+		$query=$this->getConnection()->prepare("SELECT * FROM `$table` order by `$ID` DESC Limit 1");
 		$query->execute();
 		
 		while($result = $query->fetch(PDO::FETCH_ASSOC)) {
-			$maxID=$result['HistoryID']+1;
+			$maxID=$result[$ID]+1;
 		}
 		
 		return $maxID;
+	}
+	
+	public function getMaxHistoryId() {
+		return $this->getMaxTableId("gl_history");
+	}
+	
+	public function getMaxItemId() {
+		return $this->getMaxTableId("gl_items");
+	}
+	
+	public function getMaxProductId() {
+		return $this->getMaxTableId("gl_products");
 	}
 	
 	public function getAllRows($query,$key=null) {
@@ -302,6 +336,47 @@ class dataAccess {
 		}
 	}
 	
+	public function insertGame($postdata)	{
+		$insert_SQL  = "INSERT INTO `gl_products` (`Game_ID`, `Title`, `Series`, `LaunchDate`, `LaunchPrice`, `MSRP`, `CurrentMSRP`, `HistoricLow`, `LowDate`, `SteamAchievements`, `SteamCards`, `TimeToBeat`, `Metascore`, `UserMetascore`, `SteamRating`, `SteamID`, `GOGID`, `isthereanydealID`, `TimeToBeatID`, `MetascoreID`, `DateUpdated`, `Want`, `Playable`, `Type`, `ParentGameID`, `ParentGame`, `Developer`, `Publisher`) ";
+		$insert_SQL .= "VALUES (:Game_ID, :Title, :Series, :LaunchDate, :LaunchPrice, :MSRP, :CurrentMSRP, :HistoricLow, :LowDate, :SteamAchievements, :SteamCards, :TimeToBeat, :Metascore, :UserMetascore, :SteamRating, :SteamID, :GOGID, :isthereanydealID, :TimeToBeatID, :MetascoreID, :DateUpdated, :Want, :Playable, :Type, :ParentGameID, :ParentGame, :Developer, :Publisher)";
+		
+		$query = $this->getConnection()->prepare($insert_SQL);
+
+		$query->bindvalue(':Game_ID',           $postdata['Game_ID']);
+		$query->bindvalue(':Title',             $postdata['Title']);
+		$query->bindvalue(':Series',            $postdata['Series']);
+		$query->bindvalue(':LaunchDate',        $postdata['LaunchDate']);
+		$query->bindvalue(':LaunchPrice',       $postdata['LaunchPrice']);
+		$query->bindvalue(':MSRP',              $postdata['MSRP']);
+		$query->bindvalue(':CurrentMSRP',       $postdata['CurrentMSRP']);
+		$query->bindvalue(':HistoricLow',       $postdata['HistoricLow']);
+		$query->bindvalue(':LowDate',           $postdata['LowDate']);
+		$query->bindvalue(':SteamAchievements', $postdata['SteamAchievements']);
+		$query->bindvalue(':SteamCards',        $postdata['SteamCards']);
+		$query->bindvalue(':TimeToBeat',        $postdata['TimeToBeat']);
+		$query->bindvalue(':Metascore',         $postdata['Metascore']);
+		$query->bindvalue(':UserMetascore',     $postdata['UserMetascore']);
+		$query->bindvalue(':SteamRating',       $postdata['SteamRating']);
+		$query->bindvalue(':SteamID',           $postdata['SteamID']);
+		$query->bindvalue(':GOGID',             $postdata['GOGID']);
+		$query->bindvalue(':isthereanydealID',  $postdata['isthereanydealID']);
+		$query->bindvalue(':TimeToBeatID',      $postdata['TimeToBeatID']);
+		$query->bindvalue(':MetascoreID',       $postdata['MetascoreID']);
+		$query->bindvalue(':DateUpdated',       $postdata['DateUpdated']);
+		$query->bindvalue(':Want',              $postdata['Want']);
+		$query->bindvalue(':Playable',          $postdata['Playable']);
+		$query->bindvalue(':Type',              $postdata['Type']);
+		$query->bindvalue(':ParentGameID',      $postdata['ParentGameID']);
+		$query->bindvalue(':ParentGame',        $postdata['ParentGame']);
+		$query->bindvalue(':Developer',         $postdata['Developer']);
+		$query->bindvalue(':Publisher',         $postdata['Publisher']);
+
+		if ($query->execute() === TRUE) {
+			//TODO: The print_r makes the insertlog look weird.
+			$this->insertlog("Insert Game: " . $postdata['Game_ID'] . " " . print_r($postdata,true));
+		}
+	}
+
 	public function insertGame2($postdata)	{
 		$insert_SQL  = "INSERT INTO `gl_products` (`Game_ID`, `Title`, `Series`, `LaunchDate`, `SteamID`, `Want`, `Playable`, `Type`, `ParentGameID`, `ParentGame`) ";
 		$insert_SQL .= "VALUES (:Game_ID, :Title, :Series, :LaunchDate, :SteamID, :Want, :Playable, :Type, :ParentGameID, :ParentGame )";
@@ -321,7 +396,7 @@ class dataAccess {
 
 		if ($query->execute() === TRUE) {
 			//TODO: The print_r makes the insertlog look weird.
-			$this->insertlog("Insert Item: " . $postdata['Game_ID'] . " " . print_r($postdata,true));
+			$this->insertlog("Insert Game: " . $postdata['Game_ID'] . " " . print_r($postdata,true));
 		}
 	}
 	

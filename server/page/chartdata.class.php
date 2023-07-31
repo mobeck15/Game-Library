@@ -8,7 +8,6 @@ include_once $GLOBALS['rootpath']."/inc/getGames.inc.php";
 
 class chartdataPage extends Page
 {
-	private $dataAccessObject;
 	public function __construct() {
 		$this->title="Chart Data (Calendar)";
 	}

@@ -7,7 +7,6 @@ include_once $GLOBALS['rootpath']."/inc/getTopList.inc.php";
 
 class wastePage extends Page
 {
-	private $dataAccessObject;
 	public function __construct() {
 		$this->title="Waste";
 	}

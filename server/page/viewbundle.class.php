@@ -8,8 +8,6 @@ include_once $GLOBALS['rootpath']."/inc/getGames.inc.php";
 //TODO: BUG: the url for the bundle is being printed on the page from somewhere.
 class viewbundlePage extends Page
 {
-	private $dataAccessObject;
-	private $settings;
 	private $games;
 	private $items;
 	private $purchaseobj;
@@ -20,20 +18,6 @@ class viewbundlePage extends Page
 	
 	public function __construct() {
 		$this->title="View Bundle";
-	}
-	
-	private function getDataAccessObject(){
-		if(!isset($this->dataAccessObject)){
-			$this->dataAccessObject= new dataAccess();
-		}
-		return $this->dataAccessObject;
-	}
-
-	private function getSettings(){
-		if(!isset($this->settings)){
-			$this->settings = getsettings();
-		}
-		return $this->settings;
 	}
 	
 	private function getGames(){

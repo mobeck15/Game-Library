@@ -150,40 +150,9 @@ class viewbundle_Test extends testprivate
 	
 	/**
 	 * @small
-	 * @testdox getDataAccessObject()
-	 * @covers viewbundlePage::getDataAccessObject
-	 * @uses viewbundlePage
-	 */
-	public function test_getDataAccessObject() {
-		$page = new viewbundlePage();
-		
-		$method = $this->getPrivateMethod( 'viewbundlePage', 'getDataAccessObject' );
-		$result = $method->invokeArgs( $page,array() );
-		$this->assertThat($result,
-			$this->isInstanceOf("dataAccess")
-		);
-	}
-	
-	/**
-	 * @medium
-	 * @testdox getSettings()
-	 * @covers viewbundlePage::getSettings
-	 * @uses viewbundlePage
-	 * @uses get_db_connection
-	 * @uses getsettings
-	 */
-	public function test_getSettings() {
-		$page = new viewbundlePage();
-		
-		$method = $this->getPrivateMethod( 'viewbundlePage', 'getSettings' );
-		$result = $method->invokeArgs( $page,array() );
-		$this->assertisArray($result);
-	}
-
-	/**
-	 * @small
 	 * @testdox buildHtmlBody with POST
 	 * @covers viewbundlePage::buildHtmlBody
+	 * @uses Page
 	 * @uses viewbundlePage
 	 * @uses lookupTextBox
 	 */

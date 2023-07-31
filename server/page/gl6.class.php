@@ -7,7 +7,6 @@ include_once $GLOBALS['rootpath']."/inc/SteamFormat.class.php";
 
 class gl6Page extends Page
 {
-	private $dataAccessObject;
 	public function __construct() {
 		$this->title="Index";
 	}

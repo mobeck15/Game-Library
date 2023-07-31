@@ -6,7 +6,23 @@ class Page
 {
 	protected $title="Page Title";
 	protected $body=" Body ";
+	protected $dataAccessObject;
+	protected $settings;
 	
+	protected function getDataAccessObject(){
+		if(!isset($this->dataAccessObject)){
+			$this->dataAccessObject= new dataAccess();
+		}
+		return $this->dataAccessObject;
+	}
+
+	protected function getSettings(){
+		if(!isset($this->settings)){
+			$this->settings = getsettings();
+		}
+		return $this->settings;
+	}
+
 	public function outputBody(){
 		return $this->body;
 	}

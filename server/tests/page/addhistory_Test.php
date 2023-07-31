@@ -16,10 +16,10 @@ class addhistory_Test extends testprivate {
 	 * @covers addhistoryPage::buildHtmlBody
 	 * @covers addhistoryPage::__construct
 	 * @uses addhistoryPage
+	 * @uses Page
 	 * @uses Get_Header
 	 * @uses boolText
 	 * @uses dataAccess
-	 * @uses get_db_connection
 	 * @uses get_navmenu
 	 */
 	public function test_outputHtml() {
@@ -34,10 +34,10 @@ class addhistory_Test extends testprivate {
 	 * @testdox buildHtmlBody with POST
 	 * @covers addhistoryPage::buildHtmlBody
 	 * @uses addhistoryPage
+	 * @uses Page
 	 * @uses Get_Header
 	 * @uses boolText
 	 * @uses dataAccess
-	 * @uses get_db_connection
 	 * @uses get_navmenu
 	 */
 	public function test_outputHtml_post() {
@@ -67,8 +67,9 @@ class addhistory_Test extends testprivate {
 	 * @testdox buildHtmlBody SteamMode
 	 * @covers addhistoryPage::buildHtmlBody
 	 * @uses addhistoryPage
-	 * @uses boolText
+	 * @uses Page
 	 * @uses dataAccess
+	 * @uses boolText
 	 * @uses makeIndex
 	 * @uses timeduration
    */
@@ -613,7 +614,7 @@ class addhistory_Test extends testprivate {
 	 * @testdox manualMode() with HistID set
 	 * @covers addhistoryPage::manualMode
 	 * @uses addhistoryPage
-	 * @uses get_db_connection
+	 * @uses Page
 	 * @uses dataAccess
 	 * @uses CurlRequest
 	 * @uses SteamAPI

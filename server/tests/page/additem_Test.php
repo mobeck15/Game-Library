@@ -16,12 +16,12 @@ class additem_Test extends testprivate
 	 * @small
 	 * @covers additemPage::buildHtmlBody
 	 * @covers additemPage::__construct
+	 * @uses additemPage
+	 * @uses Page
+	 * @uses dataAccess
 	 * @uses Get_Header
 	 * @uses boolText
-	 * @uses dataAccess
-	 * @uses get_db_connection
 	 * @uses get_navmenu
-	 * @uses getsettings
 	 */
 	public function test_outputHtml() {
 		$page = new additemPage();
@@ -32,26 +32,10 @@ class additem_Test extends testprivate
 
 	/**
 	 * @small
-	 * @testdox getDataAccessObject()
-	 * @covers additemPage::getDataAccessObject
-	 * @uses additemPage
-	 */
-	public function test_getDataAccessObject() {
-		$page = new additemPage();
-		
-		$method = $this->getPrivateMethod( 'additemPage', 'getDataAccessObject' );
-		$result = $method->invokeArgs( $page,array() );
-		$this->assertThat($result,
-			$this->isInstanceOf("dataAccess")
-		);
-	}
-	
-	/**
-	 * @small
 	 * @testdox buildHtmlBody with POST
 	 * @covers additemPage::buildHtmlBody
 	 * @uses additemPage
-	 * @uses get_db_connection
+	 * @uses Page
 	 */
 	public function test_outputHtml_post() {
 		$page = new additemPage();

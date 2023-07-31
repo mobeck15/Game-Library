@@ -10,7 +10,6 @@ include_once $GLOBALS['rootpath']."/inc/getGames.inc.php";
 
 class gamestatuschartPage extends Page
 {
-	private $dataAccessObject;
 	public function __construct() {
 		$this->title="Status Charts";
 	}
