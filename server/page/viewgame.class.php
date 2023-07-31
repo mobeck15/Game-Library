@@ -1008,7 +1008,7 @@ if (!(isset($_GET['id']) && is_numeric($_GET['id']))) {
 	*/
 
 	$output .= '<tr><th>Play History</th><td>';
-	if (is_array($game['History'])) { 
+	if (is_array($game['History']) && is_array($game['Activity'])) {
 		$output .= '<details>
 		<summary>
 		<table><thead><tr><th class="hidden">ID</th><th>Games</th><th>First Play</th><th>Last Play</th><th class="hidden">Last time</th><th class="hidden">Total Hrs</th>
