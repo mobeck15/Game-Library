@@ -14,51 +14,9 @@ class addtransactionPage extends Page
 	public function buildHtmlBody(){
 		$output = "";
 		
-$conn=get_db_connection();
-
-$settings=getsettings($conn);
-
-if(isset($_POST['TransID'])){
-	//if($GLOBALS['Debug_Enabled']) {trigger_error("Post data listed below", E_USER_NOTICE);}
-	//$output .= '<pre>'. print_r($_POST,true) . "</pre>";
-	
-	foreach ($_POST as $key => &$value) {
-		if($value=="") {
-			$value="null";
-		} else {
-			
-			$value="'".$conn->real_escape_string($value)."'";
-		}
+	if(isset($_POST['TransID'])){
+		$this->getDataAccessObject()->insertTransaction($_POST);
 	}
-	unset($value);
-			
-	$insert_SQL  = "INSERT INTO `gl_transactions` (`TransID`, `Title`, `Store`, `BundleID`, `Tier`, `PurchaseDate`, `PurchaseTime`, `Sequence`, `Price`, `Fees`, `Paid`, `Credit Used`, `Bundle Link`)";
-	$insert_SQL .= "VALUES (";
-	$insert_SQL .= $_POST['TransID'].", ";
-	$insert_SQL .= $_POST['Title'].", ";
-	$insert_SQL .= $_POST['Store'].", ";
-	$insert_SQL .= $_POST['BundleID'].", ";
-	$insert_SQL .= $_POST['Tier'].", ";
-	$insert_SQL .= $_POST['PurchaseDate'].", ";
-	$insert_SQL .= $_POST['PurchaseTime'].", ";
-	$insert_SQL .= $_POST['Sequence'].", ";
-	$insert_SQL .= $_POST['Price'].", ";
-	$insert_SQL .= $_POST['Fees'].", ";
-	$insert_SQL .= $_POST['Paid'].", ";
-	$insert_SQL .= $_POST['CreditUsed'].", ";
-	$insert_SQL .= $_POST['BundleLink'].");";
-
-		if(($GLOBALS['Debug_Enabled'] ?? false)) {trigger_error("Running SQL Query to add new Item: ". $insert_SQL, E_USER_NOTICE);}
-		
-		if ($conn->query($insert_SQL) === TRUE) {
-			$output .= "Record " . $_POST['TransID'] . " inserted for " . $_POST['Title'];
-			if(($GLOBALS['Debug_Enabled'] ?? false)) { trigger_error("Item record inserted successfully", E_USER_NOTICE);}
-			$output .= "<hr>";
-		} else {
-			trigger_error( "Error inserting record: " . $conn->error ,E_USER_ERROR );
-			$output .= "<hr>";
-		}
-}
 
   $output .= '<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
   <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
@@ -78,15 +36,7 @@ if(isset($_POST['TransID'])){
 			</tr>
 			</thead>';
 
-$sql="select max(`TransID`) maxid from `gl_transactions`";
-if($result = $conn->query($sql)){
-	while($row = $result->fetch_assoc()) {
-		$nextTrans_ID=$row['maxid']+1;
-	}
-}
-
-
-$conn->close();	
+	$nextTrans_ID=$this->getDataAccessObject()->getMaxTableID("transactions");
 
 $blank="";
 

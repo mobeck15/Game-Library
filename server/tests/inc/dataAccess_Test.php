@@ -217,6 +217,7 @@ final class dataAccess_Test extends testprivate
 	 * @testWith ["gl_history"]
 	 *           ["gl_items"]
 	 *           ["gl_products"]
+	 *           ["gl_transactions"]
 	 */
 	public function test_getMaxTableId($table) {
 		$dataobject= new dataAccess();
@@ -533,6 +534,42 @@ final class dataAccess_Test extends testprivate
 		$this->assertEquals($allrows2[0]["Title"],$insertrow['Title']);
 		
 		$teardownSQL = "DELETE FROM gl_products WHERE `gl_products`.`Game_ID` = " . $testGameID;
+		$query = $dataobject->getConnection()->prepare($teardownSQL);
+		$query->execute();
+	}
+
+	/**
+	 * @small
+	 * @covers dataAccess::insertTransaction
+	 * @uses dataAccess
+	 * @testdox insertTransaction()
+	 * @group additem
+	 */
+	public function test_insertTransaction() {
+		$dataobject= new dataAccess();
+		$testTransID = 20004;
+		
+		$insertrow['TransID']      = $testTransID;
+		$insertrow['Title']        = "Test Bundle";
+		$insertrow['Store']        = "Test Store";
+		$insertrow['BundleID']     = $testTransID;
+		$insertrow['Tier']         = 1;
+		$insertrow['PurchaseDate'] = date("Y-m-d");
+		$insertrow['PurchaseTime'] = date("H:i:s");
+		$insertrow['Sequence']     = "Game";
+		$insertrow['Price']        = 1.23;
+		$insertrow['Fees']         = 2.34;
+		$insertrow['Paid']         = 3.45;
+		$insertrow['CreditUsed']   = 4.56;
+		$insertrow['BundleLink']   = "https://link.link";
+		
+		$dataobject->insertTransaction($insertrow);
+
+		$statement = $dataobject->getPurchases($testTransID,"TransID");
+		$allrows2=$dataobject->getAllRows($statement);
+		$this->assertEquals($allrows2[0]["Title"],$insertrow['Title']);
+		
+		$teardownSQL = "DELETE FROM gl_transactions WHERE `gl_transactions`.`TransID` = " . $testTransID;
 		$query = $dataobject->getConnection()->prepare($teardownSQL);
 		$query->execute();
 	}

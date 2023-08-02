@@ -98,6 +98,12 @@ class dataAccess {
 	public function getMaxTableId($table) {
 		$table = strtolower($table);
 		switch ($table) {
+			case "purchases":
+			case "transactions":
+			case "gl_transactions":
+				$table = "gl_transactions";
+				$ID = "TransID";
+				break;
 			case "history":
 			case "gl_history":
 				$table = "gl_history";
@@ -400,6 +406,32 @@ class dataAccess {
 		}
 	}
 	
+	public function insertTransaction($postdata)	{
+		$insert_SQL  = "INSERT INTO `gl_transactions` (`TransID`, `Title`, `Store`, `BundleID`, `Tier`, `PurchaseDate`, `PurchaseTime`, `Sequence`, `Price`, `Fees`, `Paid`, `Credit Used`, `Bundle Link`) ";
+		$insert_SQL .= "VALUES (:TransID, :Title, :Store, :BundleID, :Tier, :PurchaseDate, :PurchaseTime, :Sequence, :Price, :Fees, :Paid, :CreditUsed, :BundleLink )";
+		
+		$query = $this->getConnection()->prepare($insert_SQL);
+
+		$query->bindvalue(':TransID',      $postdata['TransID']);
+		$query->bindvalue(':Title',        $postdata['Title']);
+		$query->bindvalue(':Store',        $postdata['Store']);
+		$query->bindvalue(':BundleID',     $postdata['BundleID']);
+		$query->bindvalue(':Tier',         $postdata['Tier']);
+		$query->bindvalue(':PurchaseDate', $postdata['PurchaseDate']);
+		$query->bindvalue(':PurchaseTime', $postdata['PurchaseTime']);
+		$query->bindvalue(':Sequence',     $postdata['Sequence']);
+		$query->bindvalue(':Price',        $postdata['Price']);
+		$query->bindvalue(':Fees',         $postdata['Fees']);
+		$query->bindvalue(':Paid',         $postdata['Paid']);
+		$query->bindvalue(':CreditUsed',   $postdata['CreditUsed']);
+		$query->bindvalue(':BundleLink',   $postdata['BundleLink']);
+
+		if ($query->execute() === TRUE) {
+			//TODO: The print_r makes the insertlog look weird.
+			$this->insertlog("Insert Pruchase: " . $postdata['TransID'] . " " . print_r($postdata,true));
+		}
+	}
+		
 	public function updateHistory($insertrow,$timestamp){
 		$sql ="UPDATE `gl_history` ";
 		$sql.="SET `Timestamp`  = :date, "; //Timestamp  2015/09/18 22:08:55
