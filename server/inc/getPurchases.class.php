@@ -143,8 +143,12 @@ class Purchases
 	}
 	
 	private function calculateSalePrice($item, $row) {
-		$row['GamesinBundle'][$item['ProductID']]['SalePrice']=($this->divzero($row['GamesinBundle'][$item['ProductID']]['MSRP'],$row['TotalMSRP'])*$row['Paid']);
-		$row['GamesinBundle'][$item['ProductID']]['SalePriceFormula']=$this->setvalue(($row['TotalMSRP'] <> 0),"(" . $row['GamesinBundle'][$item['ProductID']]['MSRP'] . " / " . $row['TotalMSRP'] . ") * " . $row['Paid']);
+		$row['GamesinBundle'][$item['ProductID']]['SalePrice'] = ($this->divzero(
+			$row['GamesinBundle'][$item['ProductID']]['MSRP'],
+			$row['TotalMSRP'])*$row['Paid']);
+		$row['GamesinBundle'][$item['ProductID']]['SalePriceFormula'] = $this->setvalue(
+			($row['TotalMSRP'] <> 0),
+			"(" . $row['GamesinBundle'][$item['ProductID']]['MSRP'] . " / " . $row['TotalMSRP'] . ") * " . $row['Paid']);
 
 		return $row;
 	}

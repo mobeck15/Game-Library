@@ -419,6 +419,70 @@ final class dataAccess_Test extends testprivate
 	
 	/**
 	 * @small
+	 * @covers dataAccess::updateItem
+	 * @uses dataAccess
+	 * @testdox updateItem()
+	 */
+	public function test_updateItem() {
+		$dataobject= new dataAccess();
+		$statement = $dataobject->getItems(1);
+		$allrows=$dataobject->getAllRows($statement,"ItemID");
+
+		$insertrow['ItemID']          = $allrows[1]["ItemID"];
+		$insertrow['ProductID']       = $allrows[1]["ProductID"];
+		$insertrow['TransID']         = $allrows[1]["TransID"];
+		$insertrow['ParentProductID'] = $allrows[1]["ParentProductID"];
+		$insertrow['Notes']           = $allrows[1]["Notes"];
+		$insertrow['Tier']            = $allrows[1]["Tier"];
+		$insertrow['ActivationKey']   = $allrows[1]["ActivationKey"];
+		$insertrow['SizeMB']          = $allrows[1]["SizeMB"];
+		$insertrow['Library']         = $allrows[1]["Library"];
+		$insertrow['DRM']             = $allrows[1]["DRM"];
+		$insertrow['OS']              = $allrows[1]["OS"];
+		$insertrow['purchasetime']    = date("Y-m-d H:i:s");
+		$insertrow['Sequence']        = $allrows[1]["Sequence"];
+		
+		$dataobject->updateItem($insertrow);
+
+		$statement = $dataobject->getItems(1);
+		$allrows2=$dataobject->getAllRows($statement,"ItemID");
+		$this->assertEquals($allrows2[1]["Time Added"],date("H:i:00",strtotime($insertrow['purchasetime'])));
+	}
+	
+	/**
+	 * @small
+	 * @covers dataAccess::updateItem
+	 * @uses dataAccess
+	 * @testdox updateItem with Nulls
+	 */
+	public function test_updateItem_null() {
+		$dataobject= new dataAccess();
+		$statement = $dataobject->getItems(1);
+		$allrows=$dataobject->getAllRows($statement,"ItemID");
+
+		$insertrow['ItemID']          = $allrows[1]["ItemID"];
+		$insertrow['ProductID']       = null;
+		$insertrow['TransID']         = $allrows[1]["TransID"];
+		$insertrow['ParentProductID'] = $allrows[1]["ParentProductID"];
+		$insertrow['Notes']           = $allrows[1]["Notes"];
+		$insertrow['Tier']            = $allrows[1]["Tier"];
+		$insertrow['ActivationKey']   = $allrows[1]["ActivationKey"];
+		$insertrow['SizeMB']          = null;
+		$insertrow['Library']         = $allrows[1]["Library"];
+		$insertrow['DRM']             = $allrows[1]["DRM"];
+		$insertrow['OS']              = $allrows[1]["OS"];
+		$insertrow['purchasetime']    = date("Y-m-d H:i:s");
+		$insertrow['Sequence']        = $allrows[1]["Sequence"];
+		
+		$dataobject->updateItem($insertrow);
+
+		$statement = $dataobject->getItems(1);
+		$allrows2=$dataobject->getAllRows($statement,"ItemID");
+		$this->assertEquals($allrows2[1]["Time Added"],date("H:i:00",strtotime($insertrow['purchasetime'])));
+	}
+	
+	/**
+	 * @small
 	 * @covers dataAccess::insertItem
 	 * @uses dataAccess
 	 * @testdox insertItem()
@@ -426,32 +490,34 @@ final class dataAccess_Test extends testprivate
 	 */
 	public function test_insertItem() {
 		$dataobject= new dataAccess();
-		$testItemID = 20004;
-		
-		$insertrow['ItemID']=$testItemID;
-		$insertrow['ProductID']=($testItemID+1);
-		$insertrow['TransID']=($testItemID+2);
-		$insertrow['ParentProductID']=($testItemID+1);
-		$insertrow['Tier']=1;
-		$insertrow['Notes']="Notes";
-		$insertrow['SizeMB']=123;
-		$insertrow['DRM']="DRM";
-		$insertrow['OS']="OS";
-		$insertrow['ActivationKey']="ACTIVATION-KEY";
-		$insertrow['DateAdded']=date("Y-m-d");
-		$insertrow['Time_Added']=date("H:i:s");
-		$insertrow['Sequence']=1;
-		$insertrow['Library']="Library";
-		
-		$dataobject->insertItem($insertrow);
+		try {
+			$testItemID = 20004;
+			
+			$insertrow['ItemID']=$testItemID;
+			$insertrow['ProductID']=($testItemID+1);
+			$insertrow['TransID']=($testItemID+2);
+			$insertrow['ParentProductID']=($testItemID+1);
+			$insertrow['Tier']=1;
+			$insertrow['Notes']="Notes";
+			$insertrow['SizeMB']=123;
+			$insertrow['DRM']="DRM";
+			$insertrow['OS']="OS";
+			$insertrow['ActivationKey']="ACTIVATION-KEY";
+			$insertrow['DateAdded']=date("Y-m-d");
+			$insertrow['Time_Added']=date("H:i:s");
+			$insertrow['Sequence']=1;
+			$insertrow['Library']="Library";
+			
+			$dataobject->insertItem($insertrow);
 
-		$statement = $dataobject->getItems($testItemID,"ItemID");
-		$allrows2=$dataobject->getAllRows($statement);
-		$this->assertEquals($allrows2[0]["Time Added"],date("H:i:00",strtotime($insertrow['Time_Added'])));
-		
-		$teardownSQL = "DELETE FROM gl_items WHERE `gl_items`.`ItemID` = " . $testItemID;
-		$query = $dataobject->getConnection()->prepare($teardownSQL);
-		$query->execute();
+			$statement = $dataobject->getItems($testItemID,"ItemID");
+			$allrows2=$dataobject->getAllRows($statement);
+			$this->assertEquals($allrows2[0]["Time Added"],date("H:i:00",strtotime($insertrow['Time_Added'])));
+		} finally {		
+			$teardownSQL = "DELETE FROM gl_items WHERE `gl_items`.`ItemID` = " . $testItemID;
+			$query = $dataobject->getConnection()->prepare($teardownSQL);
+			$query->execute();
+		}
 	}
 
 	/**
@@ -463,46 +529,48 @@ final class dataAccess_Test extends testprivate
 	 */
 	public function test_insertGame() {
 		$dataobject= new dataAccess();
-		$testGameID = 20004;
+		try {
+			$testGameID = 20004;
 
-		$insertrow['Game_ID']           = $testGameID;
-		$insertrow['Title']             = "Test Game 2";
-		$insertrow['Series']            = "Test Game";
-		$insertrow['LaunchDate']        = date("Y-m-d");
-		$insertrow['LaunchPrice']       = 1.23;
-		$insertrow['MSRP']              = 1.23;
-		$insertrow['CurrentMSRP']       = 1.23;
-		$insertrow['HistoricLow']       = 1.23;
-		$insertrow['LowDate']           = date("Y-m-d");
-		$insertrow['SteamAchievements'] = 0;
-		$insertrow['SteamCards']        = 0;
-		$insertrow['TimeToBeat']        = 1.6;
-		$insertrow['Metascore']         = 34;
-		$insertrow['UserMetascore']     = 56;
-		$insertrow['SteamRating']       = 78;
-		$insertrow['SteamID']           = 1234567890;
-		$insertrow['GOGID']             = "gogID";
-		$insertrow['isthereanydealID']  = "dealID";
-		$insertrow['TimeToBeatID']      = 1234546;
-		$insertrow['MetascoreID']       = "metaID";
-		$insertrow['DateUpdated']       = date("Y-m-d");
-		$insertrow['Want']              = 4;
-		$insertrow['Playable']          = 1;
-		$insertrow['Type']              = "Game";
-		$insertrow['ParentGameID']      = $testGameID;
-		$insertrow['ParentGame']        = "Parent Game";
-		$insertrow['Developer']         = "Developer";
-		$insertrow['Publisher']         = "Publisher";
-		
-		$dataobject->insertGame($insertrow);
+			$insertrow['Game_ID']           = $testGameID;
+			$insertrow['Title']             = "Test Game 2";
+			$insertrow['Series']            = "Test Game";
+			$insertrow['LaunchDate']        = date("Y-m-d");
+			$insertrow['LaunchPrice']       = 1.23;
+			$insertrow['MSRP']              = 1.23;
+			$insertrow['CurrentMSRP']       = 1.23;
+			$insertrow['HistoricLow']       = 1.23;
+			$insertrow['LowDate']           = date("Y-m-d");
+			$insertrow['SteamAchievements'] = 0;
+			$insertrow['SteamCards']        = 0;
+			$insertrow['TimeToBeat']        = 1.6;
+			$insertrow['Metascore']         = 34;
+			$insertrow['UserMetascore']     = 56;
+			$insertrow['SteamRating']       = 78;
+			$insertrow['SteamID']           = 1234567890;
+			$insertrow['GOGID']             = "gogID";
+			$insertrow['isthereanydealID']  = "dealID";
+			$insertrow['TimeToBeatID']      = 1234546;
+			$insertrow['MetascoreID']       = "metaID";
+			$insertrow['DateUpdated']       = date("Y-m-d");
+			$insertrow['Want']              = 4;
+			$insertrow['Playable']          = 1;
+			$insertrow['Type']              = "Game";
+			$insertrow['ParentGameID']      = $testGameID;
+			$insertrow['ParentGame']        = "Parent Game";
+			$insertrow['Developer']         = "Developer";
+			$insertrow['Publisher']         = "Publisher";
+			
+			$dataobject->insertGame($insertrow);
 
-		$statement = $dataobject->getGames($testGameID,"Game_ID");
-		$allrows2=$dataobject->getAllRows($statement);
-		$this->assertEquals($allrows2[0]["Title"],$insertrow['Title']);
-		
-		$teardownSQL = "DELETE FROM gl_products WHERE `gl_products`.`Game_ID` = " . $testGameID;
-		$query = $dataobject->getConnection()->prepare($teardownSQL);
-		$query->execute();
+			$statement = $dataobject->getGames($testGameID,"Game_ID");
+			$allrows2=$dataobject->getAllRows($statement);
+			$this->assertEquals($allrows2[0]["Title"],$insertrow['Title']);
+		} finally {
+			$teardownSQL = "DELETE FROM gl_products WHERE `gl_products`.`Game_ID` = " . $testGameID;
+			$query = $dataobject->getConnection()->prepare($teardownSQL);
+			$query->execute();
+		}
 	}
 	
 	/**
@@ -514,28 +582,30 @@ final class dataAccess_Test extends testprivate
 	 */
 	public function test_insertGame2() {
 		$dataobject= new dataAccess();
-		$testGameID = 20004;
+		try {
+			$testGameID = 20004;
 
-		$insertrow['Game_ID']     = $testGameID;
-		$insertrow['Title']       = "Test Game 2";
-		$insertrow['Series']      = "Test Game";
-		$insertrow['LaunchDate']  = date("Y-m-d");
-		$insertrow['SteamID']     = 1;
-		$insertrow['Want']        = 4;
-		$insertrow['Playable']    = 1;
-		$insertrow['Type']        = "Game";
-		$insertrow['ParentGameID']= $testGameID;
-		$insertrow['ParentGame']  = "Parent Game";
-		
-		$dataobject->insertGame2($insertrow);
+			$insertrow['Game_ID']     = $testGameID;
+			$insertrow['Title']       = "Test Game 2";
+			$insertrow['Series']      = "Test Game";
+			$insertrow['LaunchDate']  = date("Y-m-d");
+			$insertrow['SteamID']     = 1;
+			$insertrow['Want']        = 4;
+			$insertrow['Playable']    = 1;
+			$insertrow['Type']        = "Game";
+			$insertrow['ParentGameID']= $testGameID;
+			$insertrow['ParentGame']  = "Parent Game";
+			
+			$dataobject->insertGame2($insertrow);
 
-		$statement = $dataobject->getGames($testGameID,"Game_ID");
-		$allrows2=$dataobject->getAllRows($statement);
-		$this->assertEquals($allrows2[0]["Title"],$insertrow['Title']);
-		
-		$teardownSQL = "DELETE FROM gl_products WHERE `gl_products`.`Game_ID` = " . $testGameID;
-		$query = $dataobject->getConnection()->prepare($teardownSQL);
-		$query->execute();
+			$statement = $dataobject->getGames($testGameID,"Game_ID");
+			$allrows2=$dataobject->getAllRows($statement);
+			$this->assertEquals($allrows2[0]["Title"],$insertrow['Title']);
+		} finally {
+			$teardownSQL = "DELETE FROM gl_products WHERE `gl_products`.`Game_ID` = " . $testGameID;
+			$query = $dataobject->getConnection()->prepare($teardownSQL);
+			$query->execute();
+		}
 	}
 
 	/**
@@ -547,31 +617,33 @@ final class dataAccess_Test extends testprivate
 	 */
 	public function test_insertTransaction() {
 		$dataobject= new dataAccess();
-		$testTransID = 20004;
-		
-		$insertrow['TransID']      = $testTransID;
-		$insertrow['Title']        = "Test Bundle";
-		$insertrow['Store']        = "Test Store";
-		$insertrow['BundleID']     = $testTransID;
-		$insertrow['Tier']         = 1;
-		$insertrow['PurchaseDate'] = date("Y-m-d");
-		$insertrow['PurchaseTime'] = date("H:i:s");
-		$insertrow['Sequence']     = "Game";
-		$insertrow['Price']        = 1.23;
-		$insertrow['Fees']         = 2.34;
-		$insertrow['Paid']         = 3.45;
-		$insertrow['CreditUsed']   = 4.56;
-		$insertrow['BundleLink']   = "https://link.link";
-		
-		$dataobject->insertTransaction($insertrow);
+		try {
+			$testTransID = 20004;
+			
+			$insertrow['TransID']      = $testTransID;
+			$insertrow['Title']        = "Test Bundle";
+			$insertrow['Store']        = "Test Store";
+			$insertrow['BundleID']     = $testTransID;
+			$insertrow['Tier']         = 1;
+			$insertrow['PurchaseDate'] = date("Y-m-d");
+			$insertrow['PurchaseTime'] = date("H:i:s");
+			$insertrow['Sequence']     = "Game";
+			$insertrow['Price']        = 1.23;
+			$insertrow['Fees']         = 2.34;
+			$insertrow['Paid']         = 3.45;
+			$insertrow['CreditUsed']   = 4.56;
+			$insertrow['BundleLink']   = "https://link.link";
+			
+			$dataobject->insertTransaction($insertrow);
 
-		$statement = $dataobject->getPurchases($testTransID,"TransID");
-		$allrows2=$dataobject->getAllRows($statement);
-		$this->assertEquals($allrows2[0]["Title"],$insertrow['Title']);
-		
-		$teardownSQL = "DELETE FROM gl_transactions WHERE `gl_transactions`.`TransID` = " . $testTransID;
-		$query = $dataobject->getConnection()->prepare($teardownSQL);
-		$query->execute();
+			$statement = $dataobject->getPurchases($testTransID,"TransID");
+			$allrows2=$dataobject->getAllRows($statement);
+			$this->assertEquals($allrows2[0]["Title"],$insertrow['Title']);
+		} finally {
+			$teardownSQL = "DELETE FROM gl_transactions WHERE `gl_transactions`.`TransID` = " . $testTransID;
+			$query = $dataobject->getConnection()->prepare($teardownSQL);
+			$query->execute();
+		}
 	}
 
 	/**

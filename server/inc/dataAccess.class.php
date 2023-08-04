@@ -189,7 +189,6 @@ class dataAccess {
 			//Check if the indicator is on for update that row.
 			if(isset($insertrow['update']) && $insertrow['update']=="on"){
 				$loopcount++;
-				//print_r($insertrow);
 				if($sql2<>"") {
 					$sql2.=",";
 				}
@@ -216,9 +215,7 @@ class dataAccess {
 				$sql2.=":gameid$loopcount)"; //GameID			
 			}
 		}
-		//var_dump($sql2);
-
-		//var_dump($sql.$sql2);
+		
 		$query = $this->getConnection()->prepare($sql.$sql2);
 		
 		$loopcount=0;
@@ -275,6 +272,58 @@ class dataAccess {
 		// using the FILE_APPEND flag to append the content to the end of the file
 		// and the LOCK_EX flag to prevent anyone else writing to the file at the same time
 		file_put_contents($file, $content."\r\n\r\n", FILE_APPEND | LOCK_EX);
+	}
+	
+	public function updateItem($postdata) {
+		$update_SQL  = "UPDATE `gl_items` SET ";
+		if($postdata['ProductID']=="") {
+			$update_SQL .= "`ProductID`   = NULL, ";
+		} else {
+			$update_SQL .= "`ProductID`   = :ProductID, ";
+		}
+		$update_SQL .= "`TransID`         = :TransID, ";
+		$update_SQL .= "`ParentProductID` = :ParentProductID, ";
+		$update_SQL .= "`Notes`           = :Notes, ";
+		$update_SQL .= "`Tier`            = :Tier, ";
+		$update_SQL .= "`ActivationKey`   = :ActivationKey, ";
+		if($postdata['SizeMB']=="") {
+			$update_SQL .= "`SizeMB`      = NULL, ";
+		} else {
+			$update_SQL .= "`SizeMB`      = :SizeMB, ";
+		}
+		$update_SQL .= "`Library`         = :Library, ";
+		$update_SQL .= "`DRM`             = :DRM, ";
+		$update_SQL .= "`OS`              = :OS, ";
+		$update_SQL .= "`DateAdded`       = :DateAdded, ";
+		$update_SQL .= "`Time Added`      = :TimeAdded, ";
+		$update_SQL .= "`Sequence`        = :Sequence ";
+		$update_SQL .= "WHERE `ItemID`    = :ItemID";
+
+		$query = $this->getConnection()->prepare($update_SQL);
+
+		if($postdata['ProductID']<>"") {
+			$query->bindvalue(':ProductID',   $postdata['ProductID']);
+		}
+		$query->bindvalue(':TransID',         $postdata['TransID']);
+		$query->bindvalue(':ParentProductID', $postdata['ParentProductID']);
+		$query->bindvalue(':Notes',           $postdata['Notes']);
+		$query->bindvalue(':Tier',            $postdata['Tier']);
+		$query->bindvalue(':ActivationKey',   $postdata['ActivationKey']);
+		if($postdata['SizeMB']<>"") {
+			$query->bindvalue(':SizeMB',      $postdata['SizeMB']);
+		}
+		$query->bindvalue(':Library',         $postdata['Library']);
+		$query->bindvalue(':DRM',             $postdata['DRM']);
+		$query->bindvalue(':OS',              $postdata['OS']);
+		$query->bindvalue(':DateAdded',       date("Y-m-d",strtotime($postdata['purchasetime'])));
+		$query->bindvalue(':TimeAdded',       date("H:i:00",strtotime($postdata['purchasetime'])));
+		$query->bindvalue(':Sequence',        $postdata['Sequence']);
+		$query->bindvalue(':ItemID',          $postdata['ItemID']);
+		
+		if ($query->execute() === TRUE) {
+			//TODO: The print_r makes the insertlog look weird.
+			$this->insertlog("Update Item: " . $postdata['ItemID'] . " " . print_r($postdata,true));
+		}
 	}
 	
 	public function updateBundle($postdata)	{

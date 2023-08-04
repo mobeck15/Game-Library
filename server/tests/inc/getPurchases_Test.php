@@ -368,12 +368,14 @@ final class getPurchases_Test extends testprivate
 	public function test_calculateSalePrice_base() {
 		$purchasObject=new Purchases();
 		
+		//TODO: add mock data for all parameters (items)
+		
 		$row=array(
 		"TotalMSRP"=>1,
 		"TotalWant"=>1,
 		"TotalHrs"=>1,
 		"GamesinBundle"=>array(
-			1162=>array(
+			1163=>array(
 				"Want"=>1,
 				"MSRP"=>1
 			)
@@ -403,7 +405,7 @@ final class getPurchases_Test extends testprivate
 		"TotalWant"=>1,
 		"TotalHrs"=>1,
 		"GamesinBundle"=>array(
-			1162=>array(
+			1163=>array(
 				"Want"=>1,
 				"MSRP"=>1
 			)
@@ -454,7 +456,7 @@ final class getPurchases_Test extends testprivate
 		"TotalWant"=>1,
 		"TotalHrs"=>1,
 		"GamesinBundle"=>array(
-			1162=>array(
+			1163=>array(
 				"Want"=>1,
 				"MSRP"=>1
 			)

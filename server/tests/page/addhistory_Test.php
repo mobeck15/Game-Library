@@ -610,7 +610,7 @@ class addhistory_Test extends testprivate {
 	}
 
 	/**
-	 * @small
+	 * @medium
 	 * @testdox manualMode() with HistID set
 	 * @covers addhistoryPage::manualMode
 	 * @uses addhistoryPage

@@ -117,6 +117,12 @@ foreach ($calculations as $gameRow){
 	} else {
 		$LastPlay=0;
 	}
+	
+	if(!isset($gameRow['PurchaseDateTime']))
+	{
+		var_dump($gameRow);
+	}
+	
 	if($gameRow['Playable']==true AND(
 	 ($gameRow['PurchaseDateTime']->getTimestamp()>=$startDate 
 	 AND $gameRow['PurchaseDateTime']->getTimestamp()<=$endDate) 

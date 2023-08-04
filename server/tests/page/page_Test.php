@@ -57,7 +57,7 @@ class page_Test extends testprivate {
 	}
 	
 	/**
-	 * @medium
+	 * @small
 	 * @testdox getSettings()
 	 * @covers Page::getSettings
 	 * @uses Page

@@ -12,7 +12,7 @@ require_once $GLOBALS['rootpath']."/page/viewbundle.class.php";
 class viewbundle_Test extends testprivate 
 {
 	/**
-	 * @medium
+	 * @small
 	 * @covers viewbundlePage::buildHtmlBody
 	 * @covers viewbundlePage::__construct
 	 * @testdox __construct & buildHtmlBody
