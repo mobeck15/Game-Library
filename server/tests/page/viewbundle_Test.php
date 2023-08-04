@@ -16,6 +16,7 @@ class viewbundle_Test extends testprivate
 	 * @covers viewbundlePage::buildHtmlBody
 	 * @covers viewbundlePage::__construct
 	 * @testdox __construct & buildHtmlBody
+	 * @uses viewbundlePage
 	 * @uses Games
 	 * @uses Purchases
 	 * @uses combinedate

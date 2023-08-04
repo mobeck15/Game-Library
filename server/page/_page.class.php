@@ -1,6 +1,7 @@
 <?php
 declare(strict_types=1);
 require_once $GLOBALS['rootpath']."/inc/template.inc.php";
+require_once $GLOBALS['rootpath']."/inc/getSettings.inc.php";
 
 class Page
 {

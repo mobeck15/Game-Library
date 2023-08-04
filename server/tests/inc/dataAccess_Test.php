@@ -474,11 +474,17 @@ final class dataAccess_Test extends testprivate
 		$insertrow['purchasetime']    = date("Y-m-d H:i:s");
 		$insertrow['Sequence']        = $allrows[1]["Sequence"];
 		
-		$dataobject->updateItem($insertrow);
+		try{
+			$dataobject->updateItem($insertrow);
 
-		$statement = $dataobject->getItems(1);
-		$allrows2=$dataobject->getAllRows($statement,"ItemID");
-		$this->assertEquals($allrows2[1]["Time Added"],date("H:i:00",strtotime($insertrow['purchasetime'])));
+			$statement = $dataobject->getItems(1);
+			$allrows2=$dataobject->getAllRows($statement,"ItemID");
+			$this->assertEquals($allrows2[1]["Time Added"],date("H:i:00",strtotime($insertrow['purchasetime'])));
+		} finally {
+			$insertrow['ProductID']       = $allrows[1]["ProductID"];
+			$insertrow['SizeMB']          = $allrows[1]["SizeMB"];
+			$dataobject->updateItem($insertrow);
+		}
 	}
 	
 	/**

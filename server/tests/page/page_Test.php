@@ -61,6 +61,8 @@ class page_Test extends testprivate {
 	 * @testdox getSettings()
 	 * @covers Page::getSettings
 	 * @uses Page
+	 * @uses get_db_connection
+	 * @uses getsettings
 	 */
 	public function test_getSettings() {
 		$page = new Page();
