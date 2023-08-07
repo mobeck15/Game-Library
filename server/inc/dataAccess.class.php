@@ -274,6 +274,99 @@ class dataAccess {
 		file_put_contents($file, $content."\r\n\r\n", FILE_APPEND | LOCK_EX);
 	}
 	
+	public function updateAllSettings($postdata) {
+		//Set values to off for unchecked checkboxes. (Unchecked boxes are not submitted with forms.)
+		if(!isset($postdata['CountFarm']))          {$postdata['CountFarm']="Off";}
+		if(!isset($postdata['CountShare']))         {$postdata['CountShare']="Off";}
+		if(!isset($postdata['CountIdle']))          {$postdata['CountIdle']="Off";}
+		if(!isset($postdata['CountCheat']))         {$postdata['CountCheat']="Off";}
+		if(!isset($postdata['AdjustforInflation'])) {$postdata['AdjustforInflation']="Off";}
+		if(!isset($postdata['CountFree']))          {$postdata['CountFree']="Off";}
+		if(!isset($postdata['CountNever']))         {$postdata['CountNever']="Off";}
+		if(!isset($postdata['CountWantX']))         {$postdata['CountWantX']="Off";}
+		
+		if(!isset($postdata['Active-Active']))   {$postdata['Active-Active']="Off";}
+		if(!isset($postdata['Broken-Active']))   {$postdata['Broken-Active']="Off";}
+		if(!isset($postdata['Done-Active']))     {$postdata['Done-Active']="Off";}
+		if(!isset($postdata['Inactive-Active'])) {$postdata['Inactive-Active']="Off";}
+		if(!isset($postdata['Never-Active']))    {$postdata['Never-Active']="Off";}
+		if(!isset($postdata['On_Hold-Active']))  {$postdata['On_Hold-Active']="Off";}
+		if(!isset($postdata['Unplayed-Active'])) {$postdata['Unplayed-Active']="Off";}
+
+		if(!isset($postdata['Active-Count']))   {$postdata['Active-Count']="Off";}
+		if(!isset($postdata['Broken-Count']))   {$postdata['Broken-Count']="Off";}
+		if(!isset($postdata['Done-Count']))     {$postdata['Done-Count']="Off";}
+		if(!isset($postdata['Inactive-Count'])) {$postdata['Inactive-Count']="Off";}
+		if(!isset($postdata['Never-Count']))    {$postdata['Never-Count']="Off";}
+		if(!isset($postdata['On_Hold-Count']))  {$postdata['On_Hold-Count']="Off";}
+		if(!isset($postdata['Unplayed-Count'])) {$postdata['Unplayed-Count']="Off";}
+		
+		foreach ($postdata as $setting_label => $setting_value) {
+			$realLabel = $setting_label;
+			$valueType = "";
+			$table = "";
+			switch ($setting_label) {
+				//Numeric
+				case "Tax":
+				case "TrackHours":
+				case "LessStat":
+				case "XhourGet" :
+				case "MinPlay" :
+				case "MinTotal" :
+				case "WantX" :
+					$update_SQL = "UPDATE `gl_settings` SET `SettingNum` = :value WHERE `gl_settings`.`Setting` = :label;";
+					break;
+				//True-False
+				case "CountFarm":
+				case "CountShare":
+				case "CountIdle":
+				case "CountCheat":
+				case "AdjustforInflation":
+				case "CountFree":
+				case "CountNever":
+				case "CountWantX":
+					if($setting_value=="on") {$setting_value=1;} else {$setting_value=0;}
+					$update_SQL = "UPDATE `gl_settings` SET `SettingNum` = :value WHERE `gl_settings`.`Setting` = :label;";
+					break;
+				//Date 
+				case "StartStats":
+					$update_SQL = "UPDATE `gl_settings` SET `SettingDate` = :value WHERE `gl_settings`.`Setting` = :label;";
+					break;
+				//Status
+				case "Active-Active":
+				case "Broken-Active":
+				case "Done-Active":
+				case "Inactive-Active":
+				case "Never-Active":
+				case "On_Hold-Active":
+				case "Unplayed-Active":
+				
+				case "Active-Count":
+				case "Broken-Count":
+				case "Done-Count":
+				case "Inactive-Count":
+				case "Never-Count":
+				case "On_Hold-Count":
+				case "Unplayed-Count":
+					if($setting_value=="on") {$setting_value=1;} else {$setting_value=0;}
+
+					list($realLabel, $valueType) = explode("-", $setting_label);
+
+					$update_SQL = "UPDATE `gl_status` SET `".$valueType."` = :value WHERE `gl_status`.`Status` = :label;";
+					break;
+			}
+			
+				$query = $this->getConnection()->prepare($update_SQL);
+				$query->bindvalue(':value',         $setting_value);
+				$query->bindvalue(':label',         $realLabel);
+				
+				if ($query->execute() === TRUE) {
+					//TODO: The print_r makes the insertlog look weird.
+					$this->insertlog("Update Setting: " . $realLabel . " - " . $setting_value);
+			}
+		}
+	}
+	
 	public function updateItem($postdata) {
 		$update_SQL  = "UPDATE `gl_items` SET ";
 		if($postdata['ProductID']=="") {

@@ -489,6 +489,47 @@ final class dataAccess_Test extends testprivate
 	
 	/**
 	 * @small
+	 * @covers dataAccess::updateAllSettings
+	 * @uses dataAccess
+	 * @uses get_db_connection
+	 * @uses getsettings
+	 * @testdox updateAllSettings()
+	 */
+	public function test_updateAllSettings() {
+		$dataobject= new dataAccess();
+		//$statement = $dataobject->getItems(1);
+		//$allrows=$dataobject->getAllRows($statement,"ItemID");
+		$settings = getsettings();
+
+		$insertrow = array( 
+			"Tax"            => "8.59" ,
+			"TrackHours"     => "20",
+			"LessStat"       => "0.01",
+			"XhourGet"       => "1",
+			"StartStats"     => "2005-08-22",
+			"CountFarm"      => "on" ,
+			"CountCheat"     => "on" ,
+			"MinPlay"        => "60" ,
+			"MinTotal"       => "60",
+			"CountFree"      => "on", 
+			"WantX"          => "0",
+			"CountWantX"     => "on",
+			"Active-Active"  => "on",
+			"Active-Count"   => "on",
+			"Done-Count"     => "on",
+			"Inactive-Count" => "on",
+			"On_Hold-Count"  => "on",
+			"Unplayed-Count" => "on" );
+		
+		$dataobject->updateAllSettings($insertrow);
+		$settings2 = getsettings();
+		//$statement = $dataobject->getItems(1);
+		//$allrows2=$dataobject->getAllRows($statement,"ItemID");
+		$this->assertEquals($settings,$settings2);
+	}
+	
+	/**
+	 * @small
 	 * @covers dataAccess::insertItem
 	 * @uses dataAccess
 	 * @testdox insertItem()
