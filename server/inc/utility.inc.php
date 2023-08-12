@@ -100,6 +100,9 @@ function getAllCpi($connection=false){
 	return $cpi;
 }
 
+/**
+ * @deprecated 
+ */
 function get_db_connection(){
 	require $GLOBALS['rootpath']."/inc/auth.inc.php";
 	
@@ -117,7 +120,6 @@ function get_db_connection(){
 	}
 	
 	return $conn;
-
 }
 
 function makeIndex($array,$indexKey){

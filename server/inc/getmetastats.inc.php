@@ -259,11 +259,11 @@ function countrow($row) {
 function makeStatDataSet($filter,$statname) {
 	$calculations=getCalculations();
 	$dataset=array();
+	$usekey=objectTranslator($statname);
 	
 	//TODO: Change this funciton to use price objects. - IN PROGRESS
 	foreach ($calculations as $key => $row) {
 		if(countrow($row)) {
-			$usekey=objectTranslator($statname);
 			$usevalue=methodTranslator($statname, $usekey, $row);
 			
 			if (isset($row[$usekey]) && $row[$usekey] <> null) {
@@ -274,6 +274,11 @@ function makeStatDataSet($filter,$statname) {
 			}
 		}
 	}
+	if($dataset == array())
+	{
+		trigger_error($statname . " has empty dataset");
+	}
+	
 	array_multisort (array_column($dataset, $statname), SORT_DESC, $dataset);
 	
 	return $dataset;
@@ -736,10 +741,10 @@ function getStatRow($filter,$statname){
 			case "lastPlayDateTime":
 			case "firstPlayDateTime":
 				$row['Print']['Total']=number_format($row['Total'],0);
-				$row['Print']['Average']=date('Y&#8209;m&#8209;d', $row['Average']);
+				$row['Print']['Average']=date('Y&#8209;m&#8209;d', round($row['Average'],0));
 				//$row['Print']['HarMean']=date('Y-m-d', $row['HarMean']);
 				$row['Print']['HarMean']=null;
-				$row['Print']['Median']=date('Y&#8209;m&#8209;d', $row['Median']);
+				$row['Print']['Median']=date('Y&#8209;m&#8209;d', round($row['Median'],0));
 				$row['Print']['Mode']=date('Y&#8209;m&#8209;d', $row['Mode']);
 				$row['Print']['Max1']=date('Y&#8209;m&#8209;d', $row['Max1']);
 				$row['Print']['Max2']=date('Y&#8209;m&#8209;d', $row['Max2']);

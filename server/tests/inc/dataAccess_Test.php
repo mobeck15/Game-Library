@@ -435,7 +435,7 @@ final class dataAccess_Test extends testprivate
 		$insertrow['Notes']           = $allrows[1]["Notes"];
 		$insertrow['Tier']            = $allrows[1]["Tier"];
 		$insertrow['ActivationKey']   = $allrows[1]["ActivationKey"];
-		$insertrow['SizeMB']          = $allrows[1]["SizeMB"];
+		$insertrow['SizeMB']          = 7.34*1024;
 		$insertrow['Library']         = $allrows[1]["Library"];
 		$insertrow['DRM']             = $allrows[1]["DRM"];
 		$insertrow['OS']              = $allrows[1]["OS"];
@@ -467,7 +467,7 @@ final class dataAccess_Test extends testprivate
 		$insertrow['Notes']           = $allrows[1]["Notes"];
 		$insertrow['Tier']            = $allrows[1]["Tier"];
 		$insertrow['ActivationKey']   = $allrows[1]["ActivationKey"];
-		$insertrow['SizeMB']          = null;
+		$insertrow['SizeMB']          = "";
 		$insertrow['Library']         = $allrows[1]["Library"];
 		$insertrow['DRM']             = $allrows[1]["DRM"];
 		$insertrow['OS']              = $allrows[1]["OS"];
