@@ -19,6 +19,7 @@ final class dataAccess_Test extends testprivate
 	/**
 	 * @small
 	 * @covers dataAccess::getConnection
+	 * @covers dataAccess::__construct
 	 * @uses dataAccess
 	 * @testdox getConnection()
 	 */
@@ -111,6 +112,20 @@ final class dataAccess_Test extends testprivate
 	public function test_getItems() {
 		$dataobject= new dataAccess();
 		$statement=$dataobject->getItems();
+		$this->assertisObject($statement);
+		$this->assertInstanceOf(PDOStatement::class, $statement);
+	}
+
+	/**
+	 * @small
+	 * @covers dataAccess::getKeywords
+	 * @uses dataAccess
+	 * @testdox getKeywords()
+	 * @group additem
+	 */
+	public function test_getKeywords() {
+		$dataobject= new dataAccess();
+		$statement=$dataobject->getKeywords(2);
 		$this->assertisObject($statement);
 		$this->assertInstanceOf(PDOStatement::class, $statement);
 	}
@@ -485,6 +500,83 @@ final class dataAccess_Test extends testprivate
 			$insertrow['SizeMB']          = $allrows[1]["SizeMB"];
 			$dataobject->updateItem($insertrow);
 		}
+	}
+	
+	/**
+	 * @small
+	 * @covers dataAccess::updateGame
+	 * @uses dataAccess
+	 * @testdox updateGame()
+	 */
+	public function test_updateGame() {
+		$dataobject= new dataAccess();
+		$statement = $dataobject->getGames(1);
+		$allrows=$dataobject->getAllRows($statement,"Game_ID");
+
+		$insertrow = $allrows[1];
+		$insertrow['ID'] = $allrows[1]['Game_ID'];
+		
+		$dataobject->updateGame($insertrow);
+
+		$statement = $dataobject->getGames(1);
+		$allrows2=$dataobject->getAllRows($statement,"Game_ID");
+		
+		$this->assertEquals($allrows2[1]["LaunchDate"],$insertrow['LaunchDate']);
+	}
+	
+	/**
+	 * @small
+	 * @covers dataAccess::splitKeywords
+	 * @uses dataAccess
+	 * @testdox splitKeywords()
+	 */
+	public function test_splitKeywords() {
+		$dataobject= new dataAccess();
+		$list = "one,two,three";
+		
+		$expected[] = array("kwType" => "num","Keyword" => "one");
+		$expected[] = array("kwType" => "num","Keyword" => "two");
+		$expected[] = array("kwType" => "num","Keyword" => "three");
+		
+		$method = $this->getPrivateMethod( 'dataAccess', 'splitKeywords' );
+		$result = $method->invokeArgs( $dataobject,array("num",$list) );
+		
+		$this->assertEquals($result,$expected);
+	}
+	
+	/**
+	 * @small
+	 * @covers dataAccess::updateKeywords
+	 * @uses dataAccess
+	 * @testdox updateKeywords()
+	 */
+	public function test_updateKeywords() {
+		$dataobject= new dataAccess();
+
+		$insertrow['Genre'] = "one,two";
+		$insertrow['GameType'] = "three,four";
+		$insertrow['StoryMode'] = "five,six";
+		$insertrow['GameFeature'] = "seven,eight";
+		$insertrow['GameMode'] = "nine,ten";
+		$insertrow['ID'] = 1;
+		
+		$expected[] = array("ProductID"=> 1, "kwType" => "Genre","Keyword" => "one");
+		$expected[] = array("ProductID"=> 1, "kwType" => "Genre","Keyword" => "two");
+		$expected[] = array("ProductID"=> 1, "kwType" => "GameType","Keyword" => "three");
+		$expected[] = array("ProductID"=> 1, "kwType" => "GameType","Keyword" => "four");
+		$expected[] = array("ProductID"=> 1, "kwType" => "StoryMode","Keyword" => "five");
+		$expected[] = array("ProductID"=> 1, "kwType" => "StoryMode","Keyword" => "six");
+		$expected[] = array("ProductID"=> 1, "kwType" => "GameFeature","Keyword" => "seven");
+		$expected[] = array("ProductID"=> 1, "kwType" => "GameFeature","Keyword" => "eight");
+		$expected[] = array("ProductID"=> 1, "kwType" => "GameMode","Keyword" => "nine");
+		$expected[] = array("ProductID"=> 1, "kwType" => "GameMode","Keyword" => "ten");
+		
+		$dataobject->updateKeywords($insertrow);
+
+		$statement = $dataobject->getKeywords(1);
+		$allrows2=$dataobject->getAllRows($statement);
+		
+		$this->assertEquals($allrows2[6]['Keyword'],"seven");
 	}
 	
 	/**

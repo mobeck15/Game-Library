@@ -45,6 +45,7 @@ class page_Test extends testprivate {
 	 * @testdox getDataAccessObject()
 	 * @covers Page::getDataAccessObject
 	 * @uses Page
+	 * @uses dataAccess
 	 */
 	public function test_getDataAccessObject() {
 		$page = new Page();

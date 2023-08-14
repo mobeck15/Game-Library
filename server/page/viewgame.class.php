@@ -15,184 +15,35 @@ class viewgamePage extends Page
 	public function buildHtmlBody(){
 		$output="";
 		
-//$ShowSteamThings=false; // Steam scraping is broken for now.
-$ShowSteamThings=true;
+		$ShowSteamThings=true;
 
-$lookupgame=lookupTextBox("Product", "ProductID", "id");
-$output .= $lookupgame["header"];
+		$lookupgame=lookupTextBox("Product", "ProductID", "id");
+		$output .= $lookupgame["header"];
 
-$edit_mode=false;
-if (isset($_GET['edit']) && $_GET['edit'] = 1) {
-	$edit_mode=true;	
-}
+		$edit_mode=false;
+		if (isset($_GET['edit']) && $_GET['edit'] = 1) {
+			$edit_mode=true;	
+		}
 
-$conn=get_db_connection();
+		$conn=get_db_connection();
 
-if (isset($_POST['ID'])) {
-	$_GET = array ('id' => $_POST['ID']);
-	
-	if($_POST['Genre']<>"" and $_POST['Genre']<>"null"){
-		$kwlist1=explode(",",$_POST['Genre']);
-		foreach($kwlist1 as $kw){
-			$kwlist2[]=array("kwType" => "Genre","Keyword" => $kw);
+		if (isset($_POST['ID'])) {
+			$_GET = array ('id' => $_POST['ID']);
+			$this->getDataAccessObject()->updateGame($_POST);
+			$this->getDataAccessObject()->updateKeywords($_POST);
 		}
-	}
-	if($_POST['GameType']<>"" and $_POST['GameType']<>"null"){
-		$kwlist1=explode(",",$_POST['GameType']);
-		foreach($kwlist1 as $kw){
-			$kwlist2[]=array("kwType" => "Game Type","Keyword" => $kw);
-		}
-	}
-	if($_POST['StoryMode']<>"" and $_POST['StoryMode']<>"null"){
-		$kwlist1=explode(",",$_POST['StoryMode']);
-		foreach($kwlist1 as $kw){
-			$kwlist2[]=array("kwType" => "Story Mode","Keyword" => $kw);
-		}
-	}
-	if($_POST['GameFeature']<>"" and $_POST['GameFeature']<>"null"){
-		$kwlist1=explode(",",$_POST['GameFeature']);
-		foreach($kwlist1 as $kw){
-			$kwlist2[]=array("kwType" => "Game Feature","Keyword" => $kw);
-		}
-	}
-	if($_POST['GameMode']<>"" and $_POST['GameMode']<>"null"){
-		$kwlist1=explode(",",$_POST['GameMode']);
-		foreach($kwlist1 as $kw){
-			$kwlist2[]=array("kwType" => "Game Mode","Keyword" => $kw);
-		}
-	}
 
-	foreach($_POST as $key => &$postitem){
-		/*
-		switch ($i) {
-		case 'Title':
-		case 'Type':
-			$output .= "i equals 2";
-			break;
-		}
-		*/
-		
-		if(mysqli_real_escape_string($conn, $postitem)==""){
-			$postitem="null";
-		} else {
-			$postitem="'".mysqli_real_escape_string($conn, $postitem)."'";
-		}
-	}
-	
-	//TODO: Test this insert query some more. It was doing wierd stuff with null values.
-	
-	$update_SQL  = "UPDATE `gl_products` SET ";
-	
-	$update_SQL .= "`Title`             = ". $_POST['Title']             . ", ";
-	$update_SQL .= "`Type`              = ". $_POST['Type']              . ", ";
-	$update_SQL .= "`Playable`          = ". $_POST['Playable']          . ", ";
-	$update_SQL .= "`Want`              = ". $_POST['Want']              . ", ";
-	$update_SQL .= "`Series`            = ". $_POST['Series']            . ", ";
-	$update_SQL .= "`LaunchDate`        = ". $_POST['LaunchDate']        . ", ";
-	$update_SQL .= "`LaunchPrice`       = ". $_POST['LaunchPrice']       . ", ";
-	$update_SQL .= "`MSRP`              = ". $_POST['MSRP']              . ", ";
-	$update_SQL .= "`CurrentMSRP`       = ". $_POST['CurrentMSRP']       . ", ";
-	$update_SQL .= "`HistoricLow`       = ". $_POST['HistoricLow']       . ", ";
-	$update_SQL .= "`LowDate`           = ". $_POST['LowDate']           . ", ";
-	$update_SQL .= "`SteamAchievements` = ". $_POST['SteamAchievements'] . ", ";
-	$update_SQL .= "`SteamCards`        = ". $_POST['SteamCards']        . ", ";
-	$update_SQL .= "`TimeToBeat`        = ". $_POST['TimetoBeat']        . ", ";
-	$update_SQL .= "`Metascore`         = ". $_POST['Metascore']         . ", ";
-	$update_SQL .= "`UserMetascore`     = ". $_POST['UserMetascore']     . ", ";
-	$update_SQL .= "`SteamRating`       = ". $_POST['SteamRating']       . ", ";
-	$update_SQL .= "`SteamID`           = ". $_POST['SteamID']           . ", ";
-	$update_SQL .= "`GOGID`             = ". $_POST['GOGID']             . ", ";
-	$update_SQL .= "`isthereanydealID`  = ". $_POST['isthereanydealID']  . ", ";
-	$update_SQL .= "`TimeToBeatID`      = ". $_POST['TimeTobeatID']      . ", ";
-	$update_SQL .= "`MetascoreID`       = ". $_POST['MetascoreID']       . ", ";
-	$update_SQL .= "`DateUpdated`       = ". $_POST['DateUpdated']       . ", ";
-	$update_SQL .= "`ParentGameID`      = ". $_POST['ParentGameID']		 . ", ";
-	$update_SQL .= "`ParentGame`        = ". $_POST['ParentGame']		 . ", ";
-	$update_SQL .= "`Developer`         = ". $_POST['Developer']		 . ", ";
-	$update_SQL .= "`Publisher`         = ". $_POST['Publisher']		 . "  ";
-	$update_SQL .= "WHERE `gl_products`.`Game_ID` = " . $_POST['ID'];
-	
-	if ($conn->query($update_SQL) === TRUE) {
-		$output .= "Game record updated successfully";
-		$output .= "<br>";
-
-		$file = 'insertlog'.date("Y").'.txt';
-		// Write the contents to the file, 
-		// using the FILE_APPEND flag to append the content to the end of the file
-		// and the LOCK_EX flag to prevent anyone else writing to the file at the same time
-		file_put_contents($file, $update_SQL.";\r\n", FILE_APPEND | LOCK_EX);
-		
-	} else {
-		$output .= "Error updating game record: " . $conn->error;
-		$output .= "<br>";
-		$output .= $update_SQL;
-	}
-	
-	///?
-
-	$index=0;
-	$sql="SELECT * FROM `gl_keywords` WHERE `ProductID` = " . $_POST['ID'];
-	if($result = $conn->query($sql)) {
-		while ($row2 = $result->fetch_assoc()) {
-			if (isset($kwlist2[$index])){
-				$kwsql1  ="UPDATE `gl_keywords` SET `KwType` = '". mysqli_real_escape_string($conn, trim($kwlist2[$index]['kwType']));
-				$kwsql1 .="', `Keyword` = '". mysqli_real_escape_string($conn, trim($kwlist2[$index]['Keyword']));
-				$kwsql1 .="' WHERE `gl_keywords`.`KWid` = ". $row2['KWid'].";";
-				
-				$index++;
-			} else {
-				$kwsql1 = "DELETE FROM `gl_keywords` ";
-				$kwsql1 .=" WHERE `gl_keywords`.`KWid` = ". $row2['KWid'].";";
-			}
+		if (!(isset($_GET['id']) && is_numeric($_GET['id']))) {
+			$output .= 'Please specify a game by ID.
+			<form method="Get">
+				'. $lookupgame["textBox"].'
+				<input type="submit">
+			</form>';
+			$output .= $lookupgame["lookupBox"];
 			
-			if ($conn->query($kwsql1) === TRUE) {
-			} else {
-				$output .= "Error updating keyword record using sql " . $kwsql1 . ": " . $conn->error;
-				$output .= "<br>";
-			}
-
-		}
-		
-		$kwsql1="INSERT INTO `gl_keywords` (`ProductID`, `KwType`, `Keyword`) VALUES ";
-		$kwsql2="";
-		while(isset($kwlist2[$index])){
-			if($kwsql2<>""){
-				$kwsql2 .=", ";
-			}
-
-			$kwsql2 .="(".$_POST['ID'].", '". trim($kwlist2[$index]['kwType'])."', '". mysqli_real_escape_string($conn, trim($kwlist2[$index]['Keyword']))."')";
-
-			$index++;
-		}
-		if($kwsql2<>""){
-			if ($conn->query($kwsql1.$kwsql2) === TRUE) {
-
-				$file = 'insertlog'.date("Y").'.txt';
-				// Write the contents to the file, 
-				// using the FILE_APPEND flag to append the content to the end of the file
-				// and the LOCK_EX flag to prevent anyone else writing to the file at the same time
-				file_put_contents($file, $kwsql1.$kwsql2.";\r\n", FILE_APPEND | LOCK_EX);
-			} else {
-				$output .= "Error updating keyword record using sql " . $kwsql1.$kwsql2 . ":<br> " . $conn->error;
-				$output .= "<br>";
-			}
-		}
-	}	
-}
-
-if (!(isset($_GET['id']) && is_numeric($_GET['id']))) {
-		$output .= 'Please specify a game by ID.
-		<form method="Get">
-			'. $lookupgame["textBox"].'
-			<input type="submit">
-		</form>';
-		$output .= $lookupgame["lookupBox"];
-	
-} else {
-	//DONE: cleanse get[ID] to make sure it is only a numeric value - Rejects id if not numeric
-	$game=getGameDetail($_GET['id'],$conn);
-	$calculations=reIndexArray(getCalculations("",$conn),"Game_ID");
-	$settings=getsettings($conn);
+		} else {
+			$game=getGameDetail($_GET['id'],$conn);
+			$calculations=reIndexArray(getCalculations("",$conn),"Game_ID");
 
 	//$output .= '<form action="'. $_SERVER['PHP_SELF'].'" method="post">';
 
@@ -373,7 +224,7 @@ if (!(isset($_GET['id']) && is_numeric($_GET['id']))) {
 			$output .= '</details> ';
 		}
 		
-		$output .= $steamformat->formatSteamLinks($game['SteamID'],$settings['LinkSteam']);
+		$output .= $steamformat->formatSteamLinks($game['SteamID'],$this->getSettings()['LinkSteam']);
 		$output .= "</td>";
 		}
 	$output .= "</tr>

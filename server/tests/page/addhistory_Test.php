@@ -435,24 +435,6 @@ class addhistory_Test extends testprivate {
 
 	/**
 	 * @small
-	 * @testdox getDataAccessObject()
-	 * @covers addhistoryPage::getDataAccessObject
-	 * @uses addhistoryPage
-	 * @uses CurlRequest
-	 * @uses SteamAPI
-	 */
-	public function test_getDataAccessObject() {
-		$page = new addhistoryPage();
-		
-		$method = $this->getPrivateMethod( 'addhistoryPage', 'getDataAccessObject' );
-		$result = $method->invokeArgs( $page,array() );
-		$this->assertThat($result,
-			$this->isInstanceOf("dataAccess")
-		);
-	}
-
-	/**
-	 * @small
 	 * @testdox getGameAttribute()
 	 * @covers addhistoryPage::getGameAttribute
 	 * @uses addhistoryPage

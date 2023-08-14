@@ -4,11 +4,10 @@ $GLOBALS['rootpath']= $GLOBALS['rootpath'] ?? "..";
 class dataAccess {
 	//TODO: Split into dataAccess.class and dataProcess.class
 	private $dbConnection;
-	// @codeCoverageIgnoreStart
+
 	function __construct($conn=null) {
 		
 	}
-	// @codeCoverageIgnoreEnd
 	
 	public function getConnection(){
 		if(isset($this->dbConnection)) {
@@ -416,6 +415,135 @@ class dataAccess {
 		if ($query->execute() === TRUE) {
 			//TODO: The print_r makes the insertlog look weird.
 			$this->insertlog("Update Item: " . $postdata['ItemID'] . " " . print_r($postdata,true));
+		}
+	}
+	
+	public function updateGame($postdata) {
+		$update_SQL  = "UPDATE `gl_products` SET ";
+		$update_SQL .= "`Title`             = :Title, ";
+		$update_SQL .= "`Type`              = :Type, ";
+		$update_SQL .= "`Playable`          = :Playable, ";
+		$update_SQL .= "`Want`              = :Want, ";
+		$update_SQL .= "`Series`            = :Series, ";
+		$update_SQL .= "`LaunchDate`        = :LaunchDate, ";
+		$update_SQL .= "`LaunchPrice`       = :LaunchPrice, ";
+		$update_SQL .= "`MSRP`              = :MSRP, ";
+		$update_SQL .= "`CurrentMSRP`       = :CurrentMSRP, ";
+		$update_SQL .= "`HistoricLow`       = :HistoricLow, ";
+		$update_SQL .= "`LowDate`           = :LowDate, ";
+		$update_SQL .= "`SteamAchievements` = :SteamAchievements, ";
+		$update_SQL .= "`SteamCards`        = :SteamCards, ";
+		$update_SQL .= "`TimeToBeat`        = :TimeToBeat, ";
+		$update_SQL .= "`Metascore`         = :Metascore, ";
+		$update_SQL .= "`UserMetascore`     = :UserMetascore, ";
+		$update_SQL .= "`SteamRating`       = :SteamRating, ";
+		$update_SQL .= "`SteamID`           = :SteamID, ";
+		$update_SQL .= "`GOGID`             = :GOGID, ";
+		$update_SQL .= "`isthereanydealID`  = :isthereanydealID, ";
+		$update_SQL .= "`TimeToBeatID`      = :TimeToBeatID, ";
+		$update_SQL .= "`MetascoreID`       = :MetascoreID, ";
+		$update_SQL .= "`DateUpdated`       = :DateUpdated, ";
+		$update_SQL .= "`ParentGameID`      = :ParentGameID, ";
+		$update_SQL .= "`ParentGame`        = :ParentGame, ";
+		$update_SQL .= "`Developer`         = :Developer, ";
+		$update_SQL .= "`Publisher`         = :Publisher ";
+		$update_SQL .= "WHERE `gl_products`.`Game_ID` = :Game_ID";
+
+		$query = $this->getConnection()->prepare($update_SQL);
+
+		$query->bindvalue(':Title',             $postdata['Title']);
+		$query->bindvalue(':Type',              $postdata['Type']);
+		$query->bindvalue(':Playable',          $postdata['Playable']);
+		$query->bindvalue(':Want',              $postdata['Want']);
+		$query->bindvalue(':Series',            $postdata['Series']);
+		$query->bindvalue(':LaunchDate',        date("Y-m-d H:i:00",strtotime($postdata['LaunchDate'])));
+		$query->bindvalue(':LaunchPrice',       $postdata['LaunchPrice']);
+		$query->bindvalue(':MSRP',              $postdata['MSRP']);
+		$query->bindvalue(':CurrentMSRP',       $postdata['CurrentMSRP']);
+		$query->bindvalue(':HistoricLow',       $postdata['HistoricLow']);
+		$query->bindvalue(':LowDate',           date("Y-m-d H:i:00",strtotime($postdata['LowDate'])));
+		$query->bindvalue(':SteamAchievements', $postdata['SteamAchievements']);
+		$query->bindvalue(':SteamCards',        $postdata['SteamCards']);
+		$query->bindvalue(':TimeToBeat',        $postdata['TimeToBeat']);
+		$query->bindvalue(':Metascore',         $postdata['Metascore']);
+		$query->bindvalue(':UserMetascore',     $postdata['UserMetascore']);
+		$query->bindvalue(':SteamRating',       $postdata['SteamRating']);
+		$query->bindvalue(':SteamID',           $postdata['SteamID']);
+		$query->bindvalue(':GOGID',             $postdata['GOGID']);
+		$query->bindvalue(':isthereanydealID',  $postdata['isthereanydealID']);
+		$query->bindvalue(':TimeToBeatID',      $postdata['TimeToBeatID']);
+		$query->bindvalue(':MetascoreID',       $postdata['MetascoreID']);
+		$query->bindvalue(':DateUpdated',       $postdata['DateUpdated']);
+		$query->bindvalue(':ParentGameID',      $postdata['ParentGameID']);
+		$query->bindvalue(':ParentGame',        $postdata['ParentGame']);
+		$query->bindvalue(':Developer',         $postdata['Developer']);
+		$query->bindvalue(':Publisher',         $postdata['Publisher']);
+		$query->bindvalue(':Game_ID',           $postdata['ID']);
+		
+		if ($query->execute() === TRUE) {
+			//TODO: The print_r makes the insertlog look weird.
+			$this->insertlog("Update Game: " . $postdata['ID'] . " " . print_r($postdata,true));
+		}
+	}
+	
+	private function splitKeywords($group,$kwList) {
+		$kwlist2=array();
+		if($kwList<>"" and $kwList<>"null"){
+			$kwlist1=explode(",",$kwList);
+			foreach($kwlist1 as $kw){
+				$kwlist2[]=array("kwType" => $group,"Keyword" => $kw);
+			}
+		}
+		return $kwlist2;
+	}
+	
+	public function getKeywords($gameID) {
+		$sql="SELECT * FROM `gl_keywords` WHERE `ProductID` = :gameID";
+		$query = $this->getConnection()->prepare($sql);
+		$query->bindvalue(':gameID', $gameID);
+		$query->execute();
+		return $query;
+	}
+	
+	public function updateKeywords($postdata) {
+		$Genrelist = $this->splitKeywords('Genre',$postdata['Genre']);
+		$Typelist = $this->splitKeywords('GameType',$postdata['GameType']);
+		$sModelist = $this->splitKeywords('StoryMode',$postdata['StoryMode']);
+		$Feturelist = $this->splitKeywords('GameFeature',$postdata['GameFeature']);
+		$gModelist = $this->splitKeywords('GameMode',$postdata['GameMode']);
+		
+		$kwlist2 = array_merge($Genrelist,$Typelist,$sModelist,$Feturelist,$gModelist);
+
+		$delete_SQL = "DELETE FROM gl_keywords WHERE `gl_keywords`.`ProductID` = :gameid";
+		$query = $this->getConnection()->prepare($delete_SQL);
+		$query->bindvalue(':gameid', $postdata['ID']);
+		$query->execute();
+		
+		$insert_SQL="";
+		$index=100;
+		foreach ($kwlist2 as $kw) {
+			if($insert_SQL<>""){
+				$insert_SQL .=", ";
+			}
+			
+			$insert_SQL .= "(:gameid, :kwtype$index, :keyword$index) ";
+			$index++;
+		}
+		$insert_SQL = "INSERT INTO `gl_keywords` (`ProductID`, `KwType`, `Keyword`) VALUES " . $insert_SQL;
+
+		$query2 = $this->getConnection()->prepare($insert_SQL);
+		
+		$query2->bindvalue(':gameid', $postdata['ID']);
+		$index=100;
+		foreach ($kwlist2 as $kw) {
+			$query2->bindvalue(":kwtype$index", $kw['kwType']);
+			$query2->bindvalue(":keyword$index", $kw['Keyword']);
+			$index++;
+		}
+		
+		if ($query2->execute() === TRUE) {
+			//TODO: The print_r makes the insertlog look weird.
+			$this->insertlog("Update Keywords: " . $postdata['ID'] . " " . print_r($postdata,true));
 		}
 	}
 	
