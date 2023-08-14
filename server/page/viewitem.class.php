@@ -8,7 +8,7 @@ include_once $GLOBALS['rootpath']."/inc/getGames.inc.php";
 class viewitemPage extends Page
 {
 	public function __construct() {
-		$this->title="CPI";
+		$this->title="View Item";
 	}
 	
 	public function buildHtmlBody(){

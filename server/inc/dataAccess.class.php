@@ -464,14 +464,14 @@ class dataAccess {
 		$query->bindvalue(':LowDate',           date("Y-m-d H:i:00",strtotime($postdata['LowDate'])));
 		$query->bindvalue(':SteamAchievements', $postdata['SteamAchievements']);
 		$query->bindvalue(':SteamCards',        $postdata['SteamCards']);
-		$query->bindvalue(':TimeToBeat',        $postdata['TimeToBeat']);
+		$query->bindvalue(':TimeToBeat',        $postdata['TimetoBeat']);
 		$query->bindvalue(':Metascore',         $postdata['Metascore']);
 		$query->bindvalue(':UserMetascore',     $postdata['UserMetascore']);
 		$query->bindvalue(':SteamRating',       $postdata['SteamRating']);
 		$query->bindvalue(':SteamID',           $postdata['SteamID']);
 		$query->bindvalue(':GOGID',             $postdata['GOGID']);
 		$query->bindvalue(':isthereanydealID',  $postdata['isthereanydealID']);
-		$query->bindvalue(':TimeToBeatID',      $postdata['TimeToBeatID']);
+		$query->bindvalue(':TimeToBeatID',      $postdata['TimeTobeatID']);
 		$query->bindvalue(':MetascoreID',       $postdata['MetascoreID']);
 		$query->bindvalue(':DateUpdated',       $postdata['DateUpdated']);
 		$query->bindvalue(':ParentGameID',      $postdata['ParentGameID']);
@@ -491,7 +491,7 @@ class dataAccess {
 		if($kwList<>"" and $kwList<>"null"){
 			$kwlist1=explode(",",$kwList);
 			foreach($kwlist1 as $kw){
-				$kwlist2[]=array("kwType" => $group,"Keyword" => $kw);
+				$kwlist2[]=array("kwType" => $group,"Keyword" => trim($kw));
 			}
 		}
 		return $kwlist2;
