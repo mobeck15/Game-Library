@@ -515,6 +515,8 @@ final class dataAccess_Test extends testprivate
 
 		$insertrow = $allrows[1];
 		$insertrow['ID'] = $allrows[1]['Game_ID'];
+		$insertrow['TimetoBeat'] = $allrows[1]['TimeToBeat'];
+		$insertrow['TimeTobeatID'] = $allrows[1]['TimeToBeatID'];
 		
 		$dataobject->updateGame($insertrow);
 
