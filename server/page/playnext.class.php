@@ -54,7 +54,7 @@ class playnextPage extends Page
 				$countrow=true;
 			}
 			
-			if($countrow==true){
+			if($countrow==true && isset($toprow['RawData'])){
 				foreach($toprow['RawData']['GamesinBundle'] as $BundleGame){
 					if($calculations[$BundleGame['GameID']]['GrandTotal']==0 
 					  && $calculations[$BundleGame['GameID']]['Playable']==true

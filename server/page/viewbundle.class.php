@@ -352,7 +352,7 @@ class viewbundlePage extends Page
 				}
 
 				$output .= '<td>'. $this->getItems()[$this->getItemIndex()[$value]]['Tier'].'</td>
-				<td>'. nl2br($this->getItems()[$this->getItemIndex()[$value]]['Notes']).'</td>
+				<td>'. nl2br($this->getItems()[$this->getItemIndex()[$value]]['Notes'] ?? "").'</td>
 				<td>'. $this->getItems()[$this->getItemIndex()[$value]]['SizeMB'].'</td>
 				<td>'. $this->getItems()[$this->getItemIndex()[$value]]['DRM'].'</td>
 				<td>'. $this->getItems()[$this->getItemIndex()[$value]]['OS'].'</td>
