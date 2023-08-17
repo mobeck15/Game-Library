@@ -1027,6 +1027,62 @@ final class dataAccess_Test extends testprivate
 	
 	/**
 	 * @small
+	 * @covers dataAccess::countCPI
+	 * @uses dataAccess
+	 * @testdox countCPI()
+	 */
+	public function test_countCPI(){
+		$dataobject= new dataAccess();
+		$result=$dataobject->countCPI(2050,1);
+		$this->assertInstanceOf(PDOStatement::class, $result);
+	}
+	
+	/**
+	 * @small
+	 * @covers dataAccess::getAllCPI
+	 * @uses dataAccess
+	 * @testdox getAllCPI()
+	 */
+	public function test_getAllCPI(){
+		$dataobject= new dataAccess();
+		$result=$dataobject->getAllCPI();
+		$this->assertIsArray($result);
+	}
+	
+	/**
+	 * @small
+	 * @covers dataAccess::addCPI
+	 * @uses dataAccess
+	 * @testdox addCPI() - $type
+	 * @testWith [3050,12,345,"Insert"]
+	 *           [3050,12,346,"Update"]
+	 */
+	public function test_addCPI($year,$month,$value,$type){
+		$dataobject= new dataAccess();
+		
+		try {
+			$CleanupQuery=$dataobject->getConnection()->prepare('DELETE FROM `gl_cpi` WHERE `Year`=:year and `Month`=:month;');
+			$CleanupQuery->bindvalue(":year",$year);
+			$CleanupQuery->bindvalue(":month",$month);
+			
+			if($type == "Insert") {
+				$CleanupQuery->execute();
+			}
+			
+			$result=$dataobject->addCPI($year,$month,$value);
+			
+			$cpi = $dataobject->getAllCPI();
+			
+			$this->assertEquals($cpi[$year][$month],$value);
+		} finally {
+			if($type == "Update") {
+				$CleanupQuery->execute();
+			}
+		}
+	}
+	
+	/**
+	 * @small
 	 * @covers dataAccess::getStatusList
 	 * @uses dataAccess
 	 * @testdox getStatusList()

@@ -64,15 +64,11 @@ final class Utility_Test extends TestCase
 	/**
 	 * @small
 	 * @covers getAllCpi
-	 * @uses get_db_connection
+	 * @uses dataAccess
 	 */
 	public function test_getAllCpi() {
 		//TODO: Add more functional tests for getAllCpi
-		
-		$conn=get_db_connection();
-		$this->assertIsArray(getAllCpi($conn));
 		$this->assertIsArray(getAllCpi());
-		$conn->close();
 	}
 
 	/**

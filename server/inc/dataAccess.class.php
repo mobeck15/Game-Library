@@ -94,6 +94,55 @@ class dataAccess {
 		return $query;
 	}
 	
+	public function countCPI($year,$month) {
+		$query = $this->getConnection()->prepare("SELECT count(*) as count FROM `gl_cpi` where `Year`=:year and `Month`=:month;");
+		$query->bindvalue(":year",$year);
+		$query->bindvalue(":month",$month);
+		$query->execute();
+		
+		return $query;
+	}
+	
+	public function addCPI($year,$month,$cpi) {
+		$test = $this->getAllRows($this->countCPI($year,$month));
+		if($test[0]['count']>0){
+			$insert_SQL = "UPDATE gl_cpi SET CPI = :cpi WHERE `Year`=:year and `Month`=:month;";
+		} else {
+			$insert_SQL  = "INSERT INTO `gl_cpi` (`Year`, `Month`, `CPI`) VALUES (:year, :month, :cpi);";
+		}
+		
+		$query = $this->getConnection()->prepare($insert_SQL);
+		$query->bindvalue(":year",$year);
+		$query->bindvalue(":month",$month);
+		$query->bindvalue(":cpi",$cpi);
+		
+		if ($query->execute() === TRUE) {
+			$this->insertlog("Add cpi: " . $year."-".$month." ".$cpi);
+		}
+	}
+	
+	public function getAllCPI() {
+		$cpi=array();
+
+		$sql = "select
+		`gl_cpi`.`year`,
+		`gl_cpi`.`month`,
+		`gl_cpi`.`cpi`
+		from `gl_cpi`
+		where `gl_cpi`.`cpi`<>0
+		order by `gl_cpi`.`Year` ASC, `gl_cpi`.`Month` ASC";
+		
+		$query = $this->getConnection()->prepare($sql);
+		$query->execute();
+		
+		while($row = $query->fetch(PDO::FETCH_ASSOC)) {
+			$cpi[$row['year']][$row['month']]=$row['cpi'];
+			$cpi['Current']=$row['cpi'];			
+		}		
+		
+		return $cpi;
+	}
+	
 	public function getMaxTableId($table) {
 		$table = strtolower($table);
 		switch ($table) {
