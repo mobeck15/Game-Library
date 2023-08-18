@@ -87,7 +87,7 @@ class addhistoryPage extends Page
 				foreach ($userstatsarray['playerstats']['achievements'] as $achievement2){
 					//Count achievements earned
 					if($achievement2['achieved']==1){
-						if(strtotime($LastGameRecord['Timestamp']) < $achievement2['unlocktime'] AND $achievement2['unlocktime'] <= strtotime($this->usedate." ".$this->usetime)){
+						if(strtotime($LastGameRecord['Timestamp'] ?? "") < $achievement2['unlocktime'] AND $achievement2['unlocktime'] <= strtotime($this->usedate." ".$this->usetime)){
 							$notes .=$acharray[$achievement2['apiname']][0]['displayName']."\r\n";
 						}
 					}

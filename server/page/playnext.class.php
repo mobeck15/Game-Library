@@ -2,9 +2,7 @@
 declare(strict_types=1);
 require_once $GLOBALS['rootpath']."/page/_page.class.php";
 include_once $GLOBALS['rootpath']."/inc/utility.inc.php";
-include_once $GLOBALS['rootpath']."/inc/getCalculations.inc.php";
-include_once $GLOBALS['rootpath']."/inc/getGames.inc.php";
-include_once $GLOBALS['rootpath']."/inc/gettoplist.inc.php";
+include_once $GLOBALS['rootpath']."/inc/dataSet.class.php";
 
 class playnextPage extends Page
 {
@@ -14,43 +12,140 @@ class playnextPage extends Page
 	
 	public function buildHtmlBody(){
 		$output="";
+		$calculations = $this->data()->getCalculations();
+		$topList = $this->data()->getTopBundles(); 
 
-		$BeatAvgList=array();
-		$BeatAvg2List=array();
-		$OneUnPlayedList=array();
-		$UnPlayedList = array();
+		$AllGamesList = $this->makeAllGamesList($topList,$calculations);
+		
+		$output .= "<table><tr><td valign=top>";
+
+		$output .= $this->unplayedlist($this->makeUnPlayedList($topList),"Unplayed Bundles",$topList);
+		$output .= $this->unplayedlist($this->makeOverPaidList($topList),"Overpaid Bundles",$topList);
+		$output .= $this->unplayedlist($this->makeBeatAvgList($topList),"Bundles Under Average played",$topList);
+		$output .= $this->unplayedlist($this->makeBeatAvg2List($topList),"Bundles Under Average played (2)",$topList);
+		$output .= $this->unplayedlist($this->makeOneUnPlayedList($topList),"Bundles with 1 game left",$topList);
+
+		$output .= "</td><td valign=top>";
+	
+		$output .= $this->buildAllGamesTable($AllGamesList,$calculations);
+	
+		$output .= "</td>";
+
+		$sortby = $this->makeSortKeys($AllGamesList,$calculations);
+
+		$output .= "<td valign=top>".$this->playnexttable($sortby[1],$AllGamesList,"Sort by critic","critic","Metascore",$calculations)."</td>";
+		$output .= "<td valign=top>".$this->playnexttable($sortby[2],$AllGamesList,"Sort by user","user","UserMetascore",$calculations)."</td>";
+		$output .= "<td valign=top>".$this->playnexttable($sortby[3],$AllGamesList,"Sort by Total Critic","Total","TotalMetascore",$calculations)."</td>";
+		$output .= "<td valign=top>".$this->playnexttable($sortby[4],$AllGamesList,"Sort Points","Points","points",$calculations)."</td>";
+
+		$output .= "</td></tr></table>";
+
+		return $output;
+	}
+	
+	private function buildAllGamesTable($AllGamesList,$calculations) {
+		$output = "<table>
+		<thead>
+			<tr>
+				<th>Play Next List</th>
+				<th>Metacritic</th>
+				<th>Metauser</th>
+				<th>Total</th>
+				<th>Bundle</th>
+				<th>Game Price</th>
+				<th>Played Vs. Paid</th>
+				<th>Unplayed</th>
+				<th>Points</th>
+			</tr>
+		</thead>
+		<tbody>";
+
+		foreach($AllGamesList as $key => $game){
+			$output .= "<tr>
+				<td><a href='viewgame.php?id=". $game['GameID']."' target='_blank'>". $calculations[$game['GameID']]['Title']."</a></td>
+				<td>". $calculations[$game['GameID']]['Metascore']."</td>
+				<td>". $calculations[$game['GameID']]['UserMetascore']."</td>
+				<td>". $game['TotalMetascore']."</td>
+				<td>". nl2br($game['Bundles'])."</td>
+				<td>". $calculations[$game['GameID']]['HistoricLow']."</td>
+				<td>". sprintf("%.2f",$game['PlayVPay'])."</td>
+				<td>". $game['Unplayed']."</td>
+				<td>". sprintf("%.2f",$game['points'])."</td>
+			</tr>";
+		}
+		$output .= "</tbody>
+	</table>";
+	
+	return $output;
+	}
+	
+	private function makeOverPaidList($topList) {
 		$OverPaidList = array();
-
-		$calculations=getCalculations("");
-		$topList=getTopList('Bundle',null,$calculations);
-
-		$calculations=reIndexArray($calculations,"Game_ID");
-
 		foreach($topList as $key => $toprow){
-			$countrow=false;
-			
 			if($toprow['TotalHistoricPlayed']<$toprow['ModPaid'] && $toprow['UnplayedCount']>0){
 				$OverPaidList[]['BundleKey']=$key;
-				$countrow=true;
 			}
-			
+		}
+		
+		return $OverPaidList;
+	}
+	
+	private function makeUnPlayedList($topList) {
+		$UnPlayedList = array();
+		foreach($topList as $key => $toprow){
 			if($toprow['UnplayedCount']>0 && $toprow['GameCount']<=$toprow['UnplayedCount']){
 				$UnPlayedList[]['BundleKey']=$key;
-				$countrow=true;
 			}
-
+		}
+		
+		return $UnPlayedList;
+	}
+	
+	private function makeBeatAvgList($topList) {
+		$BeatAvgList = array();
+		foreach($topList as $key => $toprow){
 			if($toprow['BeatAvg']==1){
 				$BeatAvgList[]['BundleKey']=$key;
-				$countrow=true;
 			}
-
+		}
+		
+		return $BeatAvgList;
+	}
+	
+	private function makeBeatAvg2List($topList) {
+		$BeatAvg2List = array();
+		foreach($topList as $key => $toprow){
 			if($toprow['BeatAvg2']==1){
 				$BeatAvg2List[]['BundleKey']=$key;
 				$countrow=true;
 			}
-			
+		}
+		
+		return $BeatAvg2List;
+	}
+	
+	private function makeOneUnPlayedList($topList) {
+		$OneUnPlayedList = array();
+		foreach($topList as $key => $toprow){
 			if($toprow['UnplayedCount']==1){
 				$OneUnPlayedList[]['BundleKey']=$key;
+				$countrow=true;
+			}
+		}
+		
+		return $OneUnPlayedList;
+	}
+	
+	private function createAllGamesList($topList,$calculations) {
+		$AllGamesList=array();
+		foreach($topList as $key => $toprow){
+			$countrow=false;
+			
+			if($toprow['TotalHistoricPlayed']<$toprow['ModPaid'] && $toprow['UnplayedCount']>0
+				OR $toprow['UnplayedCount']>0 && $toprow['GameCount']<=$toprow['UnplayedCount']
+				OR $toprow['BeatAvg']==1
+				OR $toprow['BeatAvg2']==1
+				OR $toprow['UnplayedCount']==1){
 				$countrow=true;
 			}
 			
@@ -79,33 +174,11 @@ class playnextPage extends Page
 				}
 			}
 		}
-		$output .= "<table><tr><td valign=top>";
-
-		$output .= $this->unplayedlist($UnPlayedList,"Unplayed Bundles",$topList);
-		$output .= $this->unplayedlist($OverPaidList,"Overpaid Bundles",$topList);
-		$output .= $this->unplayedlist($BeatAvgList,"Bundles Under Average played",$topList);
-		$output .= $this->unplayedlist($BeatAvg2List,"Bundles Under Average played (2)",$topList);
-		$output .= $this->unplayedlist($OneUnPlayedList,"Bundles with 1 game left",$topList);
-
-		$output .= "</td>
-
-<td valign=top>
-	<table>
-		<thead>
-			<tr>
-				<th>Play Next List</th>
-				<th>Metacritic</th>
-				<th>Metauser</th>
-				<th>Total</th>
-				<th>Bundle</th>
-				<th>Game Price</th>
-				<th>Played Vs. Paid</th>
-				<th>Unplayed</th>
-				<th>Points</th>
-			</tr>
-		</thead>
-		<tbody>";
-
+		
+		return $AllGamesList;
+	}
+	
+	private function updateAllGamesList($AllGamesList,$calculations) {
 		foreach($AllGamesList as $key => &$game){
 			if($calculations[$game['GameID']]['Metascore']==0){
 				if($calculations[$game['GameID']]['UserMetascore']==0) {
@@ -124,67 +197,68 @@ class playnextPage extends Page
 			} else {
 				$game['points']=$calculations[$game['GameID']]['HistoricLow']/$game['PlayVPay'];
 			}
-
-			$output .= "<tr>
-				<td><a href='viewgame.php?id=". $game['GameID']."' target='_blank'>". $calculations[$game['GameID']]['Title']."</a></td>
-				<td>". $calculations[$game['GameID']]['Metascore']."</td>
-				<td>". $calculations[$game['GameID']]['UserMetascore']."</td>
-				<td>". $game['TotalMetascore']."</td>
-				<td>". nl2br($game['Bundles'])."</td>
-				<td>". $calculations[$game['GameID']]['HistoricLow']."</td>
-				<td>". sprintf("%.2f",$game['PlayVPay'])."</td>
-				<td>". $game['Unplayed']."</td>
-				<td>". sprintf("%.2f",$game['points'])."</td>
-			</tr>";
-			$Sortby1[$key] = $calculations[$game['GameID']]['Metascore']; 
-			$Sortby2[$key] = $calculations[$game['GameID']]['UserMetascore'];
-			$Sortby3[$key] = $game['TotalMetascore'];
-			$Sortby4[$key] = $game['points'];
 		}
-		$output .= "</tbody>
-	</table>
-</td>
-
-<td valign=top>";
-
-		$output .= "<td valign=top>".$this->playnexttable($Sortby1,$AllGamesList,"Sort by critic","critic","Metascore",$calculations)."</td>";
-		$output .= "<td valign=top>".$this->playnexttable($Sortby2,$AllGamesList,"Sort by user","user","UserMetascore",$calculations)."</td>";
-		$output .= "<td valign=top>".$this->playnexttable($Sortby3,$AllGamesList,"Sort by Total Critic","Total","TotalMetascore",$calculations)."</td>";
-		$output .= "<td valign=top>".$this->playnexttable($Sortby4,$AllGamesList,"Sort Points","Points","points",$calculations)."</td>";
-
-		$output .= "</td></tr></table>";
-
-		return $output;
+		
+		return $AllGamesList;
+	}
+	
+	
+	private function makeAllGamesList($topList,$calculations) {
+		$AllGamesList = $this->createAllGamesList($topList,$calculations);
+		$AllGamesList = $this->updateAllGamesList($AllGamesList,$calculations);
+		
+		return $AllGamesList;
+	}
+	
+	private function makeSortKeys($AllGamesList,$calculations) {
+		$sortby = array(
+			1 => array(),
+			2 => array(),
+			3 => array(),
+			4 => array()
+		);
+		
+		foreach($AllGamesList as $key => $game){
+			$sortby[1][$key] = $calculations[$game['GameID']]['Metascore']; 
+			$sortby[2][$key] = $calculations[$game['GameID']]['UserMetascore'];
+			$sortby[3][$key] = $game['TotalMetascore'];
+			$sortby[4][$key] = $game['points'];
+		}
+		
+		return $sortby;
 	}
 	
 	private function unplayedlist($bundlelist,$title,$topList){
 		$output="";
+		$output2="";
+		
 		if (isset($bundlelist)){ 
-			$output .= "\r\n<table>\r\n";
-			$output .= "\t<thead>\r\n";
-			$output .= "\t\t<tr><th>$title</th><th>Unplayed Games</th></tr>\r\n";
-			$output .= "\t</thead>\r\n";
-			$output .= "\t<tbody>\r\n";
 			foreach($bundlelist as $key){
-				$output .= "\t\t<tr>\r\n";
-				$output .= "\t\t\t<td>".$topList[$key['BundleKey']]['Title']."</td>\r\n";
-				$output .= "\t\t\t<td>". $topList[$key['BundleKey']]['UnplayedCount']. "</td>\r\n";
-				$output .= "\t\t</tr>\r\n";
+				$output2 .= "\t\t<tr>\r\n";
+				$output2 .= "\t\t\t<td>".$topList[$key['BundleKey']]['Title']."</td>\r\n";
+				$output2 .= "\t\t\t<td>". $topList[$key['BundleKey']]['UnplayedCount']. "</td>\r\n";
+				$output2 .= "\t\t</tr>\r\n";
 			}
-			$output .= "\t</tbody>\r\n";
-			$output .= "</table>\r\n";
+			if($output2 <> "") {
+				$output .= "\r\n<table>\r\n";
+				$output .= "\t<thead>\r\n";
+				$output .= "\t\t<tr><th>$title</th><th>Unplayed Games</th></tr>\r\n";
+				$output .= "\t</thead>\r\n";
+				$output .= "\t<tbody>\r\n";
+				$output .= $output2;
+				$output .= "\t</tbody>\r\n";
+				$output .= "</table>\r\n";
+			}
 		}
 		return $output;
 	} 
 
 	private function playnexttable($sortby, $gamelist, $title, $caption, $chekfield, $calculations) {
 		$output="";
+		$output2="";
+		
 		array_multisort($sortby, SORT_DESC, $gamelist);
-		$output .= "<table>";
-		$output .= "<thead>";
-		$output .= "<tr><th>$title</th><th>$caption</th></tr>";
-		$output .= "</thead>";
-		$output .= "<tbody>";
+		
 		foreach($gamelist as $key => $game){
 			if(isset($game[$chekfield])) {
 				$checkvalue=$game[$chekfield];
@@ -192,15 +266,24 @@ class playnextPage extends Page
 				$checkvalue=$calculations[$game['GameID']][$chekfield];
 			}
 			if($checkvalue<>0){
-				$output .= "<tr>";
-				$output .= "<td><a href='viewgame.php?id=".$game['GameID']."' target='_blank'>".$calculations[$game['GameID']]['Title']."</a></td>";
-				$output .= "<td>".sprintf("%.2f",$checkvalue)."</td>";
-				$output .= "</tr>";
+				$output2 .= "<tr>";
+				$output2 .= "<td><a href='viewgame.php?id=".$game['GameID']."' target='_blank'>".$calculations[$game['GameID']]['Title']."</a></td>";
+				$output2 .= "<td>".sprintf("%.2f",$checkvalue)."</td>";
+				$output2 .= "</tr>";
 			}
 			unset($checkvalue);
 		}
-		$output .= "</tbody>";
-		$output .= "</table>";
+		
+		if($output2 <> "") {
+			$output .= "<table>";
+			$output .= "<thead>";
+			$output .= "<tr><th>$title</th><th>$caption</th></tr>";
+			$output .= "</thead>";
+			$output .= "<tbody>";
+			$output .= $output2;
+			$output .= "</tbody>";
+			$output .= "</table>";
+		}
 		
 		return $output;
 	}

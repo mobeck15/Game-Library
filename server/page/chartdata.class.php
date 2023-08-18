@@ -12,99 +12,111 @@ class chartdataPage extends Page
 		$this->title="Chart Data (Calendar)";
 	}
 	
+	private function buildForm($group="month") {
+		$settings = $this->data()->getSettings(); //getsettings($conn);
+		//$settings['CountFree']=0;
+
+		//TODO: Add function to override CountFree setting if CountFree=0 (Currently only works if CountFree=1)
+		$output = '<form>
+			View by: <input type="radio" id="Month" name="group" value="month" ';
+			if ($group != "year") { 
+				$output .= " CHECKED"; 
+			}
+			$output .= '>
+			<label for="Month">Month</label>
+			|
+			<input type="radio" id="Year" name="group" value="year"';
+			if ($group == "year") { 
+				$output .= " CHECKED"; 
+			}
+			$output .= '>
+			<label for="Year">Year</label>';
+			if($settings['CountFree']==1) {
+				$output .= '|
+				Hide Free Games: <label class="switch"><input type="checkbox" name="CountFree" value="0"';
+				//TODO: This if condiditon never triggers...
+				if($settings['CountFree']==0) {$output .= " CHECKED ";}
+				$output .= '><span class="slider round"></span></label>';
+			}
+			$output .= '<input type="submit">
+		</form>';
+		return $output;
+	}
+	
+	private function buildTableHeader($group="month") {
+		$output = '<thead><tr>
+		<th class="hidden" rowspan=2>Month</th>
+		<th class="hidden" rowspan=2>Mon#</th>
+		<th class="hidden" rowspan=2>Year</th>
+		<th rowspan=2>Date</th>
+		<th rowspan=2>Spending</th>
+		<th rowspan=2>Games</th>
+		<th rowspan=2>Avg Game $</th>
+		<th class="hidden" rowspan=2>Total$</th>';
+
+		if($group == "year") {
+			$output .= "<th rowspan=2>$/Yr</th>
+			<th rowspan=2>Games/Yr</th>";
+		} else {
+			$output .= "<th rowspan=2>$/Mo</th>
+			<th rowspan=2>Games/Mo</th>";
+		}
+		$output .= '<th rowspan=2>New Play</th>
+		<th rowspan=2>Avg all $</th>
+		<th rowspan=2>Spent</th>
+		<th rowspan=2>Earned</th>
+		<th rowspan=2>Hours</th>
+		<th rowspan=2>$/hr</th>
+		<th colspan=3>Unplayed</th>
+		<th class="hidden" colspan=3>Incomplete Data</th>
+		<th colspan=3>New Data</th>
+			
+		</tr><tr>
+		<th style="top:77px;">Variance</th>
+		<th style="top:77px;">Balance</th>';
+		if($group == "year") {
+			$output .= "<th style='top:77px;'>This Year</th>";
+		} else {
+			$output .= "<th style='top:77px;'>This Month</th>";
+		}
+			
+		$output .= "<th style='top:77px;'>Variance</th>
+		<th style='top:77px;'>Balance</th>";
+
+		if($group == "year") {
+			$output .= "<th style='top:77px;'>This Year</th>";
+		} else {
+			$output .= "<th style='top:77px;'>This Month</th>";
+		}
+
+		$output .= '<th class="hidden">Debug</th>
+		</tr></thead>';
+		
+		return $output;
+	}
+	
 	public function buildHtmlBody(){
 		$output="";
 		
-$conn=get_db_connection();
-$settings=getsettings($conn);
-//$settings['CountFree']=0;
+		$conn=get_db_connection();
+		$settings = $this->data()->getSettings(); //getsettings($conn);
+		$output .= $this->buildForm($_GET['group'] ?? "month");
 
-//TODO: Add function to override CountFree setting if CountFree=0 (Currently only works if CountFree=1)
-$output .= '<form>
-	View by: <input type="radio" id="Month" name="group" value="month" ';
-	if (!isset($_GET['group']) or $_GET['group']!="year") { $output .= " CHECKED"; }
-	$output .= '>
-	<label for="Month">Month</label>
-	|
-	<input type="radio" id="Year" name="group" value="year"';
-	if (isset($_GET['group']) && $_GET['group']=="year") { $output .= " CHECKED"; }
-	$output .= '>
-	<label for="Year">Year</label>';
-	if($settings['CountFree']==1) {
-	$output .= '|
-	Hide Free Games: <label class="switch"><input type="checkbox" name="CountFree" value="0"';
-	if($settings['CountFree']==0) { $output .= " CHECKED "; }
-	$output .= '><span class="slider round"></span></label>';
-	}
-
-	if (isset($_GET['detail'])) { 
-	$output .= '<input type="hidden" id="Detail" name="detail" value="';
-	$output .= $_GET['detail']; 
-	$output .= '">';
-	}
-	$output .= '<input type="submit">
-</form>
-
-<table>
-<thead><tr>
-<th class="hidden" rowspan=2>Month</th>
-<th class="hidden" rowspan=2>Mon#</th>
-<th class="hidden" rowspan=2>Year</th>
-<th rowspan=2>Date</th>
-<th rowspan=2>Spending</th>
-<th rowspan=2>Games</th>
-<th rowspan=2>Avg Game $</th>
-<th class="hidden" rowspan=2>Total$</th>';
-
-if(isset($_GET['group']) && $_GET['group']=="year") {
-$output .= "<th rowspan=2>$/Yr</th>
-<th rowspan=2>Games/Yr</th>";
-} else {
-$output .= "<th rowspan=2>$/Mo</th>
-<th rowspan=2>Games/Mo</th>";
-}
-$output .= '<th rowspan=2>New Play</th>
-<th rowspan=2>Avg all $</th>
-<th rowspan=2>Spent</th>
-<th rowspan=2>Earned</th>
-<th rowspan=2>Hours</th>
-<th rowspan=2>$/hr</th>
-<th colspan=3>Unplayed</th>
-<th class="hidden" colspan=3>Incomplete Data</th>
-<th colspan=3>New Data</th>
-	
-</tr><tr>
-<th style="top:77px;">Variance</th>
-<th style="top:77px;">Balance</th>';
-if(isset($_GET['group']) && $_GET['group']=="year") {
-$output .= "<th style='top:77px;'>This Year</th>";
-} else {
-$output .= "<th style='top:77px;'>This Month</th>";
-}
-	
-$output .= "<th style='top:77px;'>Variance</th>
-<th style='top:77px;'>Balance</th>";
-
-if(isset($_GET['group']) && $_GET['group']=="year") {
-$output .= "<th style='top:77px;'>This Year</th>";
-} else {
-$output .= "<th style='top:77px;'>This Month</th>";
-}
-
-$output .= '<th class="hidden">Debug</th>
-</tr></thead>
-<tbody>';
-	if(isset($_GET['group']) && $_GET['group']=="year") {
-		$sql="SELECT DISTINCT Year(`DateAdded`) as Year FROM `gl_items` ";
-		$groupbyyear=true;
-		$dateformat="Y";
-		$dateformat2="Y";
-	} else {
-		$sql="SELECT DISTINCT Year(`DateAdded`) as Year, MONTH(`DateAdded`) as Month FROM `gl_items` ";
-		$groupbyyear=false;
-		$dateformat="Y-n";
-		$dateformat2="m/Y";
-	}
+		$output .= '<table>';
+		$output .= $this->buildTableHeader($_GET['group'] ?? "month");
+		$output .= '<tbody>';
+		
+		if(isset($_GET['group']) && $_GET['group']=="year") {
+			$sql="SELECT DISTINCT Year(`DateAdded`) as Year FROM `gl_items` ";
+			$groupbyyear=true;
+			$dateformat="Y";
+			$dateformat2="Y";
+		} else {
+			$sql="SELECT DISTINCT Year(`DateAdded`) as Year, MONTH(`DateAdded`) as Month FROM `gl_items` ";
+			$groupbyyear=false;
+			$dateformat="Y-n";
+			$dateformat2="m/Y";
+		}
 	$sql .="\r\nwhere `DateAdded` is not null 
 	ORDER by `DateAdded` ASC";
 	if($result = $conn->query($sql)){
@@ -169,9 +181,8 @@ $output .= '<th class="hidden">Debug</th>
 		trigger_error("SQL Query Failed: " . mysqli_error($conn) . "</br>Query: ". $sql);
 	}
 
-	//Settings gotten earlier.
-	//$settings=getsettings($conn);
-	$calculations=getCalculations("",$conn);
+	$calculations = $this->data()->getCalculations();
+	
 	foreach($calculations as $key => $row) {
 		$key=date($dateformat, $row['AddedDateTime']->getTimestamp());
 		if($row['CountGame']==true && $row['Playable']==true

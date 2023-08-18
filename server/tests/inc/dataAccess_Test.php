@@ -1113,7 +1113,7 @@ final class dataAccess_Test extends testprivate
 	 */
 	public function test_getHistoryRecrod(){
 		$dataobject= new dataAccess();
-		$result=$dataobject->getHistoryRecrod(111);
+		$result=$dataobject->getHistoryRecrod(101);
 		$this->assertIsArray($result);
 	}
 	

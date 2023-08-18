@@ -8,7 +8,7 @@ require_once $GLOBALS['rootpath']."/page/chartdata.class.php";
  * @testdox chartdata_Test.php testing chartdata.class.php
  * @group pageclass
  */
-class chartdata_Test extends TestCase {
+class chartdata_Test extends testprivate {
 	/**
 	 * @large
 	 * @testdox __construct & buildHtmlBody
@@ -74,4 +74,46 @@ class chartdata_Test extends TestCase {
 		$this->assertisString($result);
 	}
 	/* */
+	
+	/**
+	 * @small
+	 * @testdox buildForm()
+	 * @covers chartdataPage::buildForm
+	 * @uses chartdataPage
+	 * @uses Page
+	 * @uses dataSet
+	 * @testWith ["month"]
+	 *           ["year"]
+	 */
+	public function test_buildForm($group) {
+		$page = new chartdataPage();
+
+		$dataStub = $this->createStub(dataSet::class);
+		$dataStub->method('getSettings')
+				 ->willReturn(array("CountFree"=>1));
+
+		$property = $this->getPrivateProperty( 'chartdataPage', 'data' );
+		$property->setValue( $page, $dataStub );
+		
+		$method = $this->getPrivateMethod( 'chartdataPage', 'buildForm' );
+		$result = $method->invokeArgs( $page,array($group) );
+		$this->assertisString($result);
+	}
+
+	/**
+	 * @small
+	 * @testdox buildTableHeader()
+	 * @covers chartdataPage::buildTableHeader
+	 * @uses chartdataPage
+	 * @testWith ["month"]
+	 *           ["year"]
+	 */
+	public function test_buildTableHeader($group) {
+		$page = new chartdataPage();
+		
+		$method = $this->getPrivateMethod( 'chartdataPage', 'buildTableHeader' );
+		$result = $method->invokeArgs( $page,array($group) );
+		$this->assertisString($result);
+	}
+
 }

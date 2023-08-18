@@ -72,4 +72,18 @@ class page_Test extends testprivate {
 		$result = $method->invokeArgs( $page,array() );
 		$this->assertisArray($result);
 	}
+	
+	/**
+	 * @small
+	 * @testdox data()
+	 * @covers Page::data
+	 * @uses Page
+	 */
+	public function test_data() {
+		$page = new Page();
+		
+		$method = $this->getPrivateMethod( 'Page', 'data' );
+		$result = $method->invokeArgs( $page,array() );
+		$this->assertInstanceOf(dataSet::class, $result);
+	}
 }

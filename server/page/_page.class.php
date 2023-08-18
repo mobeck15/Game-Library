@@ -3,6 +3,7 @@ declare(strict_types=1);
 require_once $GLOBALS['rootpath']."/inc/template.inc.php";
 require_once $GLOBALS['rootpath']."/inc/getSettings.inc.php";
 require_once $GLOBALS['rootpath']."/inc/dataAccess.class.php";
+require_once $GLOBALS['rootpath']."/inc/dataSet.class.php";
 
 class Page
 {
@@ -10,7 +11,15 @@ class Page
 	protected $body=" Body ";
 	protected $dataAccessObject;
 	protected $settings;
+	protected $data;
 	
+	public function data(){
+		if(!isset($this->data)){
+			$this->data = new dataSet();
+		}
+		return $this->data;
+	}
+
 	protected function getDataAccessObject(){
 		if(!isset($this->dataAccessObject)){
 			$this->dataAccessObject= new dataAccess();
