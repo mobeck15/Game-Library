@@ -64,6 +64,20 @@ class dataSet_Test extends testprivate {
 	}
 
 	/**
+	 * @large
+	 * @testdox getHistory()
+	 * @covers dataSet::getHistory
+	 * @uses dataSet
+	 */
+	public function test_getHistory() {
+		$page = new dataSet();
+		
+		$method = $this->getPrivateMethod( 'dataSet', 'getHistory' );
+		$result = $method->invokeArgs( $page,array() );
+		$this->assertisArray($result);
+	}
+
+	/**
 	 * @small
 	 * @testdox getSettings()
 	 * @covers dataSet::getSettings

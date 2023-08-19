@@ -7,12 +7,20 @@ class dataSet {
 	private $calculations;
 	private $topBundles;
 	private $settings;
+	private $history;
 	
 	public function getCalculations(){
 		if(!isset($this->calculations)){
 			$this->calculations = reIndexArray(getCalculations(),"Game_ID");
 		}
 		return $this->calculations;
+	}
+
+	public function getHistory(){
+		if(!isset($this->history)){
+			$this->history = getHistoryCalculations();
+		}
+		return $this->history;
 	}
 
 	public function getTopBundles(){
