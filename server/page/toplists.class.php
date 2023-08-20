@@ -13,12 +13,8 @@ class toplistsPage extends Page
 	public function buildHtmlBody(){
 		$output="";
 		
-
-$conn=get_db_connection();
-
-$settings=getsettings($conn);
-$calculations=getCalculations("",$conn);
-$conn->close();	
+		$settings = $this->data()->getSettings();
+		$calculations = $this->data()->getCalculations();
 
 if(isset($_GET['topx']) && $_GET['topx']>5){
 	$Topxgames=$_GET['topx'];
