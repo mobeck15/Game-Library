@@ -10,10 +10,19 @@ class playnext2Page extends Page
 		$this->title="Play Next";
 	}
 	
+	private $topxobj;
+	
+	private function getTopxObject(){
+		if(!isset($this->topxobj)){
+			$this->topxobj = new topx($this->data()->getCalculations());
+		}
+		return $this->topxobj;
+	}
+	
 	public function buildHtmlBody(){
 		$output="";
 		
-		$topxobj = new topx(reIndexArray(getCalculations(),"Game_ID"));
+		$topxobj = $this->getTopxObject();
 
 		if(isset($_GET["mode"]) && $_GET["mode"] == "Active"){
 			$topxobj->setfilter("Playable,eq,0,Status,ne,Active");

@@ -14,15 +14,11 @@ class ratingsPage extends Page
 	public function buildHtmlBody(){
 		$output="";
 		
-$conn=get_db_connection();
-$settings=getsettings($conn);
+		//$settings = $this->data()->getSettings();
+		$calculations = $this->data()->getCalculations();
 
-$calculations=getCalculations("",$conn);
-
-$scale=10;
-$data=RatingsChartData($scale,$calculations);
-
-$conn->close();	
+		$scale=10;
+		$data=RatingsChartData($scale,$calculations);
 
 $GoogleChartDataString="['Rating', 'Metascore',	'UserMetascore',	'SteamRating',	'Review',	'Want']";
 //TODO: [Major overhaul] re-do database to handle unlimited reviews per item in a seperate table.
@@ -40,7 +36,7 @@ $output .= '<table>
 </thead>
 <tbody>';
 
-for ($x = 1; $x <= $scale; $x++) { 
+for ($x = 1; $x <= $scale; $x++) {
 	$output .= "<tr>
 	<td>$x</td> ";
 	//$chartarray[$x]['scale']=$x;
@@ -107,7 +103,7 @@ for ($x = 1; $x <= $scale; $x++) {
 	}
 	$output .= "</td>";
 	$output .= "</tr>";
-$GoogleChartDataString.="]";
+	$GoogleChartDataString.="]";
 }
 $output .= "</tbody>
 </table>";
