@@ -132,6 +132,34 @@ final class dataAccess_Test extends testprivate
 
 	/**
 	 * @small
+	 * @covers dataAccess::getItemYears
+	 * @uses dataAccess
+	 * @testdox getItemYears()
+	 * @group additem
+	 */
+	public function test_getItemYears() {
+		$dataobject= new dataAccess();
+		$statement=$dataobject->getItemYears();
+		$this->assertisObject($statement);
+		$this->assertInstanceOf(PDOStatement::class, $statement);
+	}
+
+	/**
+	 * @small
+	 * @covers dataAccess::getItemMonths
+	 * @uses dataAccess
+	 * @testdox getItemMonths()
+	 * @group additem
+	 */
+	public function test_getItemMonths() {
+		$dataobject= new dataAccess();
+		$statement=$dataobject->getItemMonths();
+		$this->assertisObject($statement);
+		$this->assertInstanceOf(PDOStatement::class, $statement);
+	}
+
+	/**
+	 * @small
 	 * @covers dataAccess::getItems
 	 * @uses dataAccess
 	 * @testdox getItems() with no parameters
@@ -148,11 +176,14 @@ final class dataAccess_Test extends testprivate
 	 * @small
 	 * @covers dataAccess::getPurchases
 	 * @uses dataAccess
-	 * @testdox getPurchases() one specific bundle
+	 * @testdox getPurchases() with filters
+	 * @testWith [111,false]
+	 *           [null,true]
+	 *           [111,true]
 	 */
-	public function test_getPurchases_One() {
+	public function test_getPurchases_filters($id,$purch) {
 		$dataobject= new dataAccess();
-		$statement=$dataobject->getPurchases(111);
+		$statement=$dataobject->getPurchases($id,$purch);
 		$this->assertisObject($statement);
 		$this->assertInstanceOf(PDOStatement::class, $statement);
 	}
@@ -777,7 +808,7 @@ final class dataAccess_Test extends testprivate
 			
 			$dataobject->insertTransaction($insertrow);
 
-			$statement = $dataobject->getPurchases($testTransID,"TransID");
+			$statement = $dataobject->getPurchases($testTransID);
 			$allrows2=$dataobject->getAllRows($statement);
 			$this->assertEquals($allrows2[0]["Title"],$insertrow['Title']);
 		} finally {

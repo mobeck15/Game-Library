@@ -31,11 +31,20 @@ class dataAccess {
 		$this->dbConnection=null;
 	}
 	
-	public function getPurchases($transactionid=null){
+	public function getPurchases($transactionid=null, $purchased = false){
 		$filter="";
 		if($transactionid <> null){
 			$filter .= "where TransID = ?";
 			$filter .= " OR BundleID = ?";			
+		}
+		
+		if($purchased) {
+			if($filter == "") {
+				$filter .= " where ";
+			} else {
+				$filter .= " AND ";
+			}
+			$filter .= " `PurchaseDate` is not null ";
 		}
 		
 		$query = $this->getConnection()->prepare("SELECT * FROM `gl_transactions` $filter order by `PurchaseDate` ASC, `PurchaseTime` ASC, `Sequence` ASC");
@@ -88,6 +97,22 @@ class dataAccess {
 		if($itemID <> null){
 			$query->bindvalue(1,$itemID);
 		}
+		
+		$query->execute();
+		
+		return $query;
+	}
+	
+	public function getItemYears() {
+		$query = $this->getConnection()->prepare("SELECT DISTINCT Year(`DateAdded`) as Year FROM `gl_items` where `DateAdded` is not null ORDER by `DateAdded` ASC");
+		
+		$query->execute();
+		
+		return $query;
+	}
+	
+	public function getItemMonths() {
+		$query = $this->getConnection()->prepare("SELECT DISTINCT Year(`DateAdded`) as Year, MONTH(`DateAdded`) as Month FROM `gl_items` where `DateAdded` is not null ORDER by `DateAdded` ASC");
 		
 		$query->execute();
 		

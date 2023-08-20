@@ -14,66 +14,78 @@ class chartdata_Test extends testprivate {
 	 * @testdox __construct & buildHtmlBody
 	 * @covers chartdataPage::buildHtmlBody
 	 * @covers chartdataPage::__construct
-	 * @uses Games
-	 * @uses PriceCalculation
-	 * @uses Purchases
-	 * @uses combinedate
-	 * @uses dataAccess
-	 * @uses daysSinceDate
-	 * @uses getActivityCalculations
-	 * @uses getAllItems
-	 * @uses getCalculations
-	 * @uses getCleanStringDate
-	 * @uses getGames
-	 * @uses getHistoryCalculations
-	 * @uses getHrsNextPosition
-	 * @uses getHrsToTarget
-	 * @uses getKeywords
-	 * @uses getNextPosition
-	 * @uses getPriceSort
-	 * @uses getPriceperhour
-	 * @uses getTimeLeft
-	 * @uses get_db_connection
-	 * @uses getsettings
-	 * @uses makeIndex
-	 * @uses regroupArray
-	 * @uses timeduration
+	 * @uses chartdataPage
+	 * @uses Page
+	 * @testWith ["month"]
+	 *           ["year"]
 	 */
-	public function test_outputHtml() {
+	public function test_outputHtml($group) {
 		$page = new chartdataPage();
-		$result = $page->buildHtmlBody();
-		$this->assertisString($result);
-	}
+		
+		$_GET['group']=$group;
+		
+		$dates = array(
+			1 => array(
+				'Year' => "1970",
+				'Month' => "1"
+			)
+		);
+		
+		$transactions = array(
+			1 => array(
+				'PurchaseDate' => "1970",
+				'BundleID' => 1,
+				'TransID' => 1,
+				'Paid' => 0
+			),
+			2 => array(
+				'PurchaseDate' => "1970",
+				'BundleID' => 2,
+				'TransID' => 2,
+				'Paid' => 1
+			)
+		);
+		
+		$calculations = array(
+			1 => array(
+				'CountGame' => true,
+				'Playable' => true,
+				'Paid' => 1,
+				'AddedDateTime' => date_create("1970"),
+				'firstplay' => "",
+				'DateUpdated' => ""
+			)
+		);
+		$history = array(
+			1 => array(
+				'Elapsed' => 1,
+				'FinalCountHours' => true,
+				'Timestamp' => "1970"
+			)
+		);
+		$settings = array(
+			'CountFree'=>1
+		);
 
-	/**
-	 * @large
-	 * @testdox buildHtmlBody() grouped by Year, Detail & exclude Free
-	 * @covers chartdataPage::buildHtmlBody
-	 * @uses chartdataPage
-	 */
-	public function test_outputHtml_year() {
-		$_GET['group']='year';
-		$_GET['CountFree']='0';
-		$_GET['detail']='2013';
-		$page = new chartdataPage();
+		$dataStub = $this->createStub(dataAccess::class);
+		$dataStub->method('getAllRows')
+				 ->willReturn($dates,$transactions);
+		$maxID = $this->getPrivateProperty( 'chartdataPage', 'dataAccessObject' );
+		$maxID->setValue( $page , $dataStub );
+
+		$dataStub2 = $this->createStub(dataSet::class);
+		$dataStub2->method('getCalculations')
+				 ->willReturn($calculations);
+		$dataStub2->method('getHistory')
+				 ->willReturn($history);
+		$dataStub2->method('getSettings')
+				 ->willReturn($settings);
+		$maxID2 = $this->getPrivateProperty( 'chartdataPage', 'data' );
+		$maxID2->setValue( $page , $dataStub2 );
+		
 		$result = $page->buildHtmlBody();
 		$this->assertisString($result);
 	}
-	
-	/**
-	 * @large
-	 * @testdox buildHtmlBody() 
-	 * @covers chartdataPage::buildHtmlBody
-	 * @uses chartdataPage
-	 * /
-	public function test_outputHtml_detail() {
-		$_GET['countfree']='0';
-		$_GET['detail']='2010-5';
-		$page = new chartdataPage();
-		$result = $page->buildHtmlBody();
-		$this->assertisString($result);
-	}
-	/* */
 	
 	/**
 	 * @small
@@ -82,8 +94,8 @@ class chartdata_Test extends testprivate {
 	 * @uses chartdataPage
 	 * @uses Page
 	 * @uses dataSet
-	 * @testWith ["month"]
-	 *           ["year"]
+	 * @testWith [true]
+	 *           [false]
 	 */
 	public function test_buildForm($group) {
 		$page = new chartdataPage();
@@ -105,8 +117,8 @@ class chartdata_Test extends testprivate {
 	 * @testdox buildTableHeader()
 	 * @covers chartdataPage::buildTableHeader
 	 * @uses chartdataPage
-	 * @testWith ["month"]
-	 *           ["year"]
+	 * @testWith [true]
+	 *           [false]
 	 */
 	public function test_buildTableHeader($group) {
 		$page = new chartdataPage();
@@ -122,8 +134,8 @@ class chartdata_Test extends testprivate {
 	 * @covers chartdataPage::buildTableFooter
 	 * @uses chartdataPage
 	 * @uses timeduration
-	 * @testWith ["month"]
-	 *           ["year"]
+	 * @testWith [true]
+	 *           [false]
 	 */
 	public function test_buildTableFooter($group) {
 		$page = new chartdataPage();
@@ -521,10 +533,6 @@ class chartdata_Test extends testprivate {
 			)
 		);
 		$dateformat = array(1=>"Y",2=>"Y");
-		$detail = array(
-			
-		);
-		$showDetail = 1970;
 		
 		$chart = array(
 			1 => array(
@@ -535,7 +543,44 @@ class chartdata_Test extends testprivate {
 		);
 		
 		$method = $this->getPrivateMethod( 'chartdataPage', 'addChartHistory' );
-		$result = $method->invokeArgs( $page,array($history,$chart,$dateformat,$detail,$showDetail) );
+		$result = $method->invokeArgs( $page,array($history,$chart,$dateformat) );
+		$this->assertisArray($result);
+	}
+	
+	/**
+	 * @small
+	 * @testdox addDetailHistory()
+	 * @covers chartdataPage::addDetailHistory
+	 * @uses chartdataPage
+	 */
+	public function test_addDetailHistory() {
+		$page = new chartdataPage();
+		
+		$history = array(
+			1 => array(
+				'FinalCountHours' => true,
+				'Timestamp' => "1/1/1970",
+				'GameID' => 1,
+				'Elapsed' => 1,
+				'Game' => 1
+			),
+			2 => array(
+				'FinalCountHours' => true,
+				'Timestamp' => "1/1/1970",
+				'GameID' => 1,
+				'Elapsed' => 1,
+				'Game' => 1,
+				'Time' => 1
+			)
+		);
+		$dateformat = array(1=>"Y",2=>"Y");
+		$detail = array(
+			
+		);
+		$showDetail = 1970;
+		
+		$method = $this->getPrivateMethod( 'chartdataPage', 'addDetailHistory' );
+		$result = $method->invokeArgs( $page,array($history,$dateformat,$detail,$showDetail) );
 		$this->assertisArray($result);
 	}
 	
@@ -554,6 +599,148 @@ class chartdata_Test extends testprivate {
 		
 		$method = $this->getPrivateMethod( 'chartdataPage', 'setChartDefaults' );
 		$result = $method->invokeArgs( $page,array($chart) );
+		$this->assertisArray($result);
+	}
+	
+	/**
+	 * @small
+	 * @testdox addChartCalculations()
+	 * @covers chartdataPage::addChartCalculations
+	 * @uses chartdataPage
+	 */
+	public function test_addChartCalculations() {
+		$page = new chartdataPage();
+		
+		$calculations = array(
+			1970 => array(
+				'AddedDateTime' => date_create("1970"),
+				'DateUpdated' => "1970",
+				'CountGame' => true,
+				'Playable' => true,
+				'Paid' => 1,
+				'Game_ID' => 1,
+				'Title' => 1,
+				'SteamID' => 1,
+				'MainLibrary' => 1,
+				'firstplay' => "1970"
+			)
+		);
+		$dateformat = array(1=>"Y",2=>"Y");
+		
+		$chart = array(
+			1 => array(
+				'NewData' => 2,
+				'NewPlay' => 1,
+				'Games' => 1
+			)
+		);
+		
+		$method = $this->getPrivateMethod( 'chartdataPage', 'addChartCalculations' );
+		$result = $method->invokeArgs( $page,array($calculations,$chart,$dateformat) );
+		$this->assertisArray($result);
+	}
+
+	/**
+	 * @small
+	 * @testdox addDetailCalculations()
+	 * @covers chartdataPage::addDetailCalculations
+	 * @uses chartdataPage
+	 */
+	public function test_addDetailCalculations() {
+		$page = new chartdataPage();
+		
+		$calculations = array(
+			1970 => array(
+				'AddedDateTime' => date_create("1970"),
+				'DateUpdated' => "1970",
+				'CountGame' => true,
+				'Playable' => true,
+				'Paid' => 1,
+				'Game_ID' => 1,
+				'Title' => 1,
+				'SteamID' => 1,
+				'MainLibrary' => 1,
+				'firstplay' => "1970"
+			)
+		);
+		$dateformat = array(1=>"Y",2=>"Y");
+		$showDetail = 1970;
+		
+		$method = $this->getPrivateMethod( 'chartdataPage', 'addDetailCalculations' );
+		$result = $method->invokeArgs( $page,array($calculations,$dateformat,$showDetail) );
+		$this->assertisArray($result);
+	}
+
+	/**
+	 * @small
+	 * @testdox addChartTransactions()
+	 * @covers chartdataPage::addChartTransactions
+	 * @uses chartdataPage
+	 * @uses Page
+	 */
+	public function test_addChartTransactions() {
+		$page = new chartdataPage();
+		
+		$dateformat = array(1=>"Y",2=>"Y");
+		$chart = array(
+		);
+		
+		$transactions = array(
+			1 => array(
+				'PurchaseDate' => "1970",
+				'BundleID' => 1,
+				'TransID' => 1,
+				'Paid' => 0
+			),
+			2 => array(
+				'PurchaseDate' => "1970",
+				'BundleID' => 2,
+				'TransID' => 2,
+				'Paid' => 1
+			)
+		);
+		
+		$dataStub = $this->createStub(dataAccess::class);
+		$dataStub->method('getAllRows')
+				 ->willReturn($transactions);
+		$maxID = $this->getPrivateProperty( 'chartdataPage', 'dataAccessObject' );
+		$maxID->setValue( $page , $dataStub );
+		
+		$method = $this->getPrivateMethod( 'chartdataPage', 'addChartTransactions' );
+		$result = $method->invokeArgs( $page,array($chart,$dateformat) );
+		$this->assertisArray($result);
+	}
+	
+	/**
+	 * @small
+	 * @testdox addChartItems()
+	 * @covers chartdataPage::addChartItems
+	 * @uses chartdataPage
+	 * @uses Page
+	 * @testWith [true]
+	 *           [false]
+	 */
+	public function test_addChartItems($groupbyyear) {
+		$page = new chartdataPage();
+		
+		$dateformat = array(1=>"Y",2=>"Y");
+		$chart = array();
+		
+		$dates = array(
+			1 => array(
+				'Year' => "1970",
+				'Month' => "1"
+			)
+		);
+		
+		$dataStub = $this->createStub(dataAccess::class);
+		$dataStub->method('getAllRows')
+				 ->willReturn($dates);
+		$maxID = $this->getPrivateProperty( 'chartdataPage', 'dataAccessObject' );
+		$maxID->setValue( $page , $dataStub );
+		
+		$method = $this->getPrivateMethod( 'chartdataPage', 'addChartItems' );
+		$result = $method->invokeArgs( $page,array($dateformat,$groupbyyear) );
 		$this->assertisArray($result);
 	}
 }

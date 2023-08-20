@@ -12,25 +12,26 @@ class chartdataPage extends Page
 		$this->title="Chart Data (Calendar)";
 	}
 	
-	private function buildForm($group="month") {
+	private function buildForm($groupbyyear) {
 		$settings = $this->data()->getSettings(); //getsettings($conn);
 		//$settings['CountFree']=0;
 
+		//TODO: BUG: changing detail view removes countfree filter and vice versa.
 		//TODO: Add function to override CountFree setting if CountFree=0 (Currently only works if CountFree=1)
 		$output = '<form>
 			View by: <input type="radio" id="Month" name="group" value="month" ';
-			if ($group != "year") { 
+			if ($groupbyyear == false) { 
 				$output .= " CHECKED"; 
 			}
 			$output .= '>
 			<label for="Month">Month</label>
 			|
 			<input type="radio" id="Year" name="group" value="year"';
-			if ($group == "year") { 
+			if ($groupbyyear) { 
 				$output .= " CHECKED"; 
 			}
 			$output .= '>
-			<label for="Year">Year</label>';
+			<label for="Year">Year</label> ';
 			if($settings['CountFree']==1) {
 				$output .= '|
 				Hide Free Games: <label class="switch"><input type="checkbox" name="CountFree" value="0"';
@@ -43,7 +44,7 @@ class chartdataPage extends Page
 		return $output;
 	}
 	
-	private function buildTableHeader($group="month") {
+	private function buildTableHeader($groupbyyear) {
 		$output = '<thead><tr>
 		<th class="hidden" rowspan=2>Month</th>
 		<th class="hidden" rowspan=2>Mon#</th>
@@ -54,7 +55,7 @@ class chartdataPage extends Page
 		<th rowspan=2>Avg Game $</th>
 		<th class="hidden" rowspan=2>Total$</th>';
 
-		if($group == "year") {
+		if($groupbyyear) {
 			$output .= "<th rowspan=2>$/Yr</th>
 			<th rowspan=2>Games/Yr</th>";
 		} else {
@@ -74,7 +75,7 @@ class chartdataPage extends Page
 		</tr><tr>
 		<th style="top:77px;">Variance</th>
 		<th style="top:77px;">Balance</th>';
-		if($group == "year") {
+		if($groupbyyear) {
 			$output .= "<th style='top:77px;'>This Year</th>";
 		} else {
 			$output .= "<th style='top:77px;'>This Month</th>";
@@ -83,7 +84,7 @@ class chartdataPage extends Page
 		$output .= "<th style='top:77px;'>Variance</th>
 		<th style='top:77px;'>Balance</th>";
 
-		if($group == "year") {
+		if($groupbyyear) {
 			$output .= "<th style='top:77px;'>This Year</th>";
 		} else {
 			$output .= "<th style='top:77px;'>This Month</th>";
@@ -96,101 +97,118 @@ class chartdataPage extends Page
 	}
 	
 	public function buildHtmlBody(){
-		$output="";
+		if(isset($_GET['group']) && $_GET['group']=="year") {
+			$groupbyyear=true;
+			$dateformat[1]="Y";
+			$dateformat[2]="Y";
+		} else {
+			$groupbyyear=false;
+			$dateformat[1]="Y-n";
+			$dateformat[2]="m/Y";
+		}
 		
-		$detail = array(
-			'played' => array(),
-			'purchased' => array()
-		);
+		$showDetails = $_GET['detail'] ?? null;
+
+		$output="";
 		
 		$settings = $this->data()->getSettings();
 		$calculations = $this->data()->getCalculations();
 		$history = $this->data()->getHistory();
 	
-		$output .= $this->buildForm($_GET['group'] ?? "month");
+		$output .= $this->buildForm($groupbyyear);
 
 		$output .= '<table>';
-		$output .= $this->buildTableHeader($_GET['group'] ?? "month");
+		$output .= $this->buildTableHeader($groupbyyear);
 		
-		$conn=get_db_connection();
-		if(isset($_GET['group']) && $_GET['group']=="year") {
-			$sql="SELECT DISTINCT Year(`DateAdded`) as Year FROM `gl_items` ";
-			$groupbyyear=true;
-			$dateformat[1]="Y";
-			$dateformat[2]="Y";
-		} else {
-			$sql="SELECT DISTINCT Year(`DateAdded`) as Year, MONTH(`DateAdded`) as Month FROM `gl_items` ";
-			$groupbyyear=false;
-			$dateformat[1]="Y-n";
-			$dateformat[2]="m/Y";
-		}
-		$sql .="\r\nwhere `DateAdded` is not null 
-		ORDER by `DateAdded` ASC";
-		if($result = $conn->query($sql)){
-			if ($result->num_rows > 0){
-				while($row = $result->fetch_assoc()) {
-					$key=$row['Year'];
-					
-					if($groupbyyear==false){ 
-						$key.="-".$row['Month']; 
-						$date=mktime(0, 0, 0, intval($row['Month']), 10, intval($row['Year']));
-						$chart[$key]['MonthNum']=$row['Month'];
-					} else {
-						$date=mktime(0, 0, 0, 1, 10,intval($row['Year']));
-						$chart[$key]['MonthNum']=1;
-					}
-					$chart[$key]['Date']=date($dateformat[2], $date);
-					$chart[$key]['Month']=date('F', $date);
-					$chart[$key]['Year']=$row['Year'];
-					$chart[$key]['Spent']=0;
-					$chart[$key]['Earned']=0;
-					$chart[$key]['Spending']=0;
-				}
-			} 
-		} else {
-			trigger_error("SQL Query Failed: " . mysqli_error($conn) . "</br>Query: ". $sql);
-		}
+		$chart = $this->addChartItems($dateformat,$groupbyyear);
+		$chart = $this->addChartTransactions($chart,$dateformat);
+		$detail = $this->addDetailCalculations($calculations,$dateformat,$showDetails);
+		$chart = $this->addChartCalculations($calculations,$chart,$dateformat);
+		$detail = $this->addDetailHistory($history,$dateformat,$detail,$showDetails);
+		$chart = $this->addChartHistory($history,$chart,$dateformat);
+		$chart = $this->addChartVariance($chart);
+		$chart = $this->addChartBalance($chart);
+		$chart = $this->updateChart($chart);
 	
-		$sql="SELECT * FROM `gl_transactions` where `PurchaseDate` is not null ORDER by `PurchaseDate` ASC, `PurchaseTime` ASC, `Sequence` ASC";
-		if($result = $conn->query($sql)){
-			if ($result->num_rows > 0){
-				while($row = $result->fetch_assoc()) {
-					$key=date($dateformat[1], strtotime($row['PurchaseDate']));
+		$output .= $this->buildChartTableBody($chart,$groupbyyear,$showDetails);
+		$Total = $this->countTotals($chart);
+		$output .= $this->buildTableFooter($Total,$groupbyyear);
+		$output .= "</table>";
 
-					$date=strtotime($row['PurchaseDate']);
-					if(!isset($chart[$key]['Date'])){$chart[$key]['Date']=date($dateformat2, $date);}
-					if(!isset($chart[$key]['Month'])){$chart[$key]['Month']=date('F', $date);}
-					if(!isset($chart[$key]['MonthNum'])){$chart[$key]['MonthNum']=date('n', $date);}
-					if(!isset($chart[$key]['Year'])){$chart[$key]['Year']=date('Y', $date);}
-					
-					if(!isset($chart[$key]['Spent'])){$chart[$key]['Spent']=0;}
-					if(!isset($chart[$key]['Earned'])){$chart[$key]['Earned']=0;}
-					if(!isset($chart[$key]['Spending'])){$chart[$key]['Spending']=0;}
-					if($row['BundleID']==$row['TransID']) {
-						if($row['Paid']>0){
-							$chart[$key]['Spent']+=$row['Paid'];
-						} else {
-							$chart[$key]['Earned']+=$row['Paid'];
-						}
-						$chart[$key]['Spending']=$chart[$key]['Spent']+$chart[$key]['Earned'];
-					}
-				}
-			}
+		$GoogleChartDataString = $this->buildChartData($chart);
+		$output .= $this->renderGoogleChart($GoogleChartDataString,$groupbyyear);
+		$output .= $this->buildDetailTable($detail,$showDetails);
+		
+		return $output;
+	}
+	
+	private function addChartItems($dateformat,$groupbyyear) {
+		if($groupbyyear) {
+			$query = $this->getDataAccessObject()->getItemYears();
 		} else {
-			trigger_error("SQL Query Failed: " . mysqli_error($conn) . "</br>Query: ". $sql);
+			$query = $this->getDataAccessObject()->getItemMonths();
 		}
+		$dates = $this->getDataAccessObject()->getAllRows($query);
+		
+		foreach($dates as $row) {
+			$key=$row['Year'];
+					
+			if($groupbyyear){ 
+				$date=mktime(0, 0, 0, 1, 10,intval($row['Year']));
+				$chart[$key]['MonthNum']=1;
+			} else {
+				$key.="-".$row['Month']; 
+				$date=mktime(0, 0, 0, intval($row['Month']), 10, intval($row['Year']));
+				$chart[$key]['MonthNum']=$row['Month'];
+			}
+			$chart[$key]['Date']=date($dateformat[2], $date);
+			$chart[$key]['Month']=date('F', $date);
+			$chart[$key]['Year']=$row['Year'];
+			$chart[$key]['Spent']=0;
+			$chart[$key]['Earned']=0;
+			$chart[$key]['Spending']=0;
+		}
+		
+		return $chart;
+	}
+	
+	private function addChartTransactions($chart,$dateformat) {
+		$query = $this->getDataAccessObject()->getPurchases(null,true);
+		$purchases = $this->getDataAccessObject()->getAllRows($query);
+		
+		foreach($purchases as $row) {
+			$key=date($dateformat[1], strtotime($row['PurchaseDate']));
 
-		$conn->close();
-
+			$date=strtotime($row['PurchaseDate']);
+			if(!isset($chart[$key]['Date'])){$chart[$key]['Date']=date($dateformat[2], $date);}
+			if(!isset($chart[$key]['Month'])){$chart[$key]['Month']=date('F', $date);}
+			if(!isset($chart[$key]['MonthNum'])){$chart[$key]['MonthNum']=date('n', $date);}
+			if(!isset($chart[$key]['Year'])){$chart[$key]['Year']=date('Y', $date);}
+			
+			if(!isset($chart[$key]['Spent'])){$chart[$key]['Spent']=0;}
+			if(!isset($chart[$key]['Earned'])){$chart[$key]['Earned']=0;}
+			if(!isset($chart[$key]['Spending'])){$chart[$key]['Spending']=0;}
+			if($row['BundleID']==$row['TransID']) {
+				if($row['Paid']>0){
+					$chart[$key]['Spent']+=$row['Paid'];
+				} else {
+					$chart[$key]['Earned']+=$row['Paid'];
+				}
+				$chart[$key]['Spending']=$chart[$key]['Spent']+$chart[$key]['Earned'];
+			}
+		}
+		
+		return $chart;
+	}
+	
+	private function addDetailCalculations($calculations,$dateformat,$showDetail) {
+		$detail['purchased'] = array();
 		foreach($calculations as $key => $row) {
 			$key=date($dateformat[1], $row['AddedDateTime']->getTimestamp());
 			if($row['CountGame']==true && $row['Playable']==true
-			  && (0+$row['Paid']>0 OR $settings['CountFree']==true)){
+			  && (0+$row['Paid']>0 OR $this->data()->getSettings()['CountFree']==true)){
 				
-				if(!isset($chart[$key]['Games'])) {$chart[$key]['Games']=0;}
-				$chart[$key]['Games']++;
-				
-				if (isset($_GET['detail']) AND $key==$_GET['detail']) {
+				if (isset($showDetail) AND $key==$showDetail) {
 					$detail['purchased'][$row['Game_ID']]['ID']=$row['Game_ID'];
 					$detail['purchased'][$row['Game_ID']]['Game']=$row['Title'];
 					$detail['purchased'][$row['Game_ID']]['Played']="Unplayed";
@@ -198,6 +216,26 @@ class chartdataPage extends Page
 					$detail['purchased'][$row['Game_ID']]['MainLibrary']=$row['MainLibrary'];
 				}
 				
+				if($row['firstplay']<>""){
+					if(isset($detail['purchased'][$row['Game_ID']])) {
+						$detail['purchased'][$row['Game_ID']]['Played']="Played";
+						$detail['purchased'][$row['Game_ID']]['MainLibrary']=$row['MainLibrary'];
+					}
+				}
+			}
+		}
+		
+		return $detail;
+	}
+	
+	private function addChartCalculations($calculations,$chart,$dateformat) {
+		foreach($calculations as $key => $row) {
+			$key=date($dateformat[1], $row['AddedDateTime']->getTimestamp());
+			if($row['CountGame']==true && $row['Playable']==true
+			  && (0+$row['Paid']>0 OR $this->data()->getSettings()['CountFree']==true)){
+				
+				if(!isset($chart[$key]['Games'])) {$chart[$key]['Games']=0;}
+				$chart[$key]['Games']++;
 				
 				if($row['firstplay']<>""){
 					$key2=date($dateformat[1], strtotime($row['firstplay']));
@@ -217,11 +255,6 @@ class chartdataPage extends Page
 					//Debug newplay
 					//if(!isset($Debug[$key2])){$Debug[$key2]="";}
 					//$Debug[$key2].=$row['Title']."\r\n";
-					
-					if(isset($detail['purchased'][$row['Game_ID']])) {
-						$detail['purchased'][$row['Game_ID']]['Played']="Played";
-						$detail['purchased'][$row['Game_ID']]['MainLibrary']=$row['MainLibrary'];
-					}
 				}
 				
 				if($row['DateUpdated']<>""){
@@ -237,21 +270,7 @@ class chartdataPage extends Page
 			}
 		}
 		
-		$chart = $this->addChartHistory($history,$chart,$dateformat,$detail,$_GET['detail'] ?? null);
-		$chart = $this->addChartVariance($chart);
-		$chart = $this->addChartBalance($chart);
-		$chart = $this->updateChart($chart);
-	
-		$output .= $this->buildChartTableBody($chart,$groupbyyear,$_GET['detail'] ?? null);
-		$Total = $this->countTotals($chart);
-		$output .= $this->buildTableFooter($Total,$_GET['group'] ?? "month");
-		$output .= "</table>";
-
-		$GoogleChartDataString = $this->buildChartData($chart);
-		$output .= $this->renderGoogleChart($GoogleChartDataString,$groupbyyear);
-		$output .= $this->buildDetailTable($detail,$_GET['detail'] ?? null);
-		
-		return $output;
+		return $chart;
 	}
 	
 	private function setChartDefaults($chart) {
@@ -271,7 +290,31 @@ class chartdataPage extends Page
 		return $chart;
 	}
 	
-	private function addChartHistory($history,$chart,$dateformat,$detail,$showDetail) {
+	private function addDetailHistory($history,$dateformat,$detail,$showDetail) {
+		$detail['played'] = array();
+		foreach($history as $key => $row) {
+			if($row['FinalCountHours']==true){
+				$date=strtotime($row['Timestamp']);
+				$key=date($dateformat[1], $date);
+				
+				if($row['Elapsed']=="") {$row['Elapsed']=0;}
+
+				if (isset($showDetail) AND $key==$showDetail) {
+					
+					$detail['played'][$row['GameID']]['Game']=$row['Game'];
+					if (isset($detail['played'][$row['GameID']]['Time'])) {
+						$detail['played'][$row['GameID']]['Time']+=$row['Elapsed'];
+					} else {
+						$detail['played'][$row['GameID']]['Time']=$row['Elapsed'];
+					}
+				}
+			}
+		}
+		
+		return $detail;
+	}	
+	
+	private function addChartHistory($history,$chart,$dateformat) {
 		foreach($history as $key => $row) {
 			if($row['FinalCountHours']==true){
 				$date=strtotime($row['Timestamp']);
@@ -287,16 +330,6 @@ class chartdataPage extends Page
 					$chart[$key]['Year']=date('Y', strtotime($row['Timestamp']));
 					$chart[$key]['Date']=date($dateformat[2], strtotime($row['Timestamp']));
 					$chart[$key]['Month']=date('F', strtotime($row['Timestamp']));
-				}
-
-				if (isset($showDetail) AND $key==$showDetail) {
-					
-					$detail['played'][$row['GameID']]['Game']=$row['Game'];
-					if (isset($detail['played'][$row['GameID']]['Time'])) {
-						$detail['played'][$row['GameID']]['Time']+=$row['Elapsed'];
-					} else {
-						$detail['played'][$row['GameID']]['Time']=$row['Elapsed'];
-					}
 				}
 			}
 		}
@@ -381,10 +414,11 @@ class chartdataPage extends Page
 		return $chart;
 	}
 	
-	private function buildChartTableBody($chart,$groupbyyear,$detail="",$countfree=null) {
+	private function buildChartTableBody($chart,$groupbyyear,$detail,$countfree=null) {
 		$output = '<tbody>';
 		foreach($chart as $key => $row) {
-			if ($detail==$key or $detail==$row['Date']) {
+			
+			if ($detail===$key or $detail==$row['Date']) {
 				$output .= "<tr class='Selected'>";
 			} else {
 				$output .= "<tr>";
@@ -473,6 +507,10 @@ class chartdataPage extends Page
 		$Total['Spent']=0;
 		$Total['Earned']=0;
 		$Total['Hours']=0;
+		$Total['lastBalance']=0;
+		$Total['lastLeft']=0;
+		$Total['lastData']=0;
+		$Total['lastDataLeft']=0;
 		
 		$chart = $this->setChartDefaults($chart);
 		
@@ -746,10 +784,10 @@ class chartdataPage extends Page
 		return $output;
 	}
 	
-	private function buildTableFooter($Total,$group="month") {
+	private function buildTableFooter($Total,$groupbyyear=false) {
 		/***** Footer *****/
 	
-		if($group == "year") {
+		if($groupbyyear) {
 			$daysTilNextMonth = floor((strtotime('first day of next year') - strtotime("Today")) / (24 * 3600));
 		} else {
 			$daysTilNextMonth = floor((strtotime('first day of next month') - strtotime("Today")) / (24 * 3600));
