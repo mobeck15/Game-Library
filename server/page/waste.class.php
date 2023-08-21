@@ -79,31 +79,7 @@ class wasteStats {
 class wastePage extends Page
 {
 	private $waste;
-	private $calculations;
-	private $topList;
-	private $items;
 	
-	private function getCalculations(){
-		if(!isset($this->calculations)){
-			$this->calculations = getCalculations();
-		}
-		return $this->calculations;
-	}
-
-	private function getTopList(){
-		if(!isset($this->topList)){
-			$this->topList = getTopList('Bundle',null,$this->getCalculations());
-		}
-		return $this->topList;
-	}
-	
-	private function getAllItems(){
-		if(!isset($this->items)){
-			$this->items = getAllItems();
-		}
-		return $this->items;
-	}
-		
 	public function __construct() {
 		$this->title="Waste";
 	}
@@ -325,10 +301,9 @@ class wastePage extends Page
 	public function buildHtmlBody(){
 		$output="";
 		
-		$topList=$this->getTopList();
-		$items=$this->getAllItems();
-		
-		$calculations=reIndexArray($this->getCalculations(),"Game_ID");
+		$topList=$this->data()->getTopBundles();
+		$items=$this->data()->getAllItems();
+		$calculations=$this->data()->getCalculations();
 		
 		$this->waste = new wasteStats();
 		$this->waste->countBundles($topList);

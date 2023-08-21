@@ -16,11 +16,11 @@ class waste_Test extends testprivate {
 	 * @covers wastePage::__construct
 	 * @testdox __construct & buildHtmlBody
 	 * @uses wastePage
+	 * @uses wasteStats
+	 * @uses Page
 	 * @uses combinedate
 	 * @uses getCleanStringDate
-	 * @uses reIndexArray
 	 * @uses timeduration
-	 * @uses wasteStats
 	 */
 	public function test_outputHtml() {
 		$page = new wastePage();
@@ -51,15 +51,18 @@ class waste_Test extends testprivate {
 			)
 		);
 		$items = array();
-		
-		$property = $this->getPrivateProperty( 'wastePage', 'calculations' );
-		$property->setValue( $page, $calculations );
-		
-		$property2 = $this->getPrivateProperty( 'wastePage', 'topList' );
-		$property2->setValue( $page, $topList );
 
-		$property3 = $this->getPrivateProperty( 'wastePage', 'items' );
-		$property3->setValue( $page, $items );
+		$dataStub = $this->createStub(dataSet::class);
+		$dataStub->method('getCalculations')
+				 ->willReturn($calculations);
+		$dataStub->method('getTopBundles')
+				 ->willReturn($topList);
+		$dataStub->method('getAllItems')
+				 ->willReturn($items);
+
+		
+		$property = $this->getPrivateProperty( 'wastePage', 'data' );
+		$property->setValue( $page, $dataStub );
 		
 		$result = $page->buildHtmlBody();
 		$this->assertisString($result);
@@ -286,99 +289,5 @@ class waste_Test extends testprivate {
 		$result = $method->invokeArgs( $page,array($GamesfromOverpaid,$calculations) );
 		
 		$this->assertisString($result);
-	}
-	
-	/**
-	 * @large
-	 * @testdox getCalculations()
-	 * @covers wastePage::getCalculations
-	 * @uses wastePage
-	 * @uses Games
-	 * @uses PriceCalculation
-	 * @uses Purchases
-	 * @uses combinedate
-	 * @uses dataAccess
-	 * @uses daysSinceDate
-	 * @uses getActivityCalculations
-	 * @uses getAllItems
-	 * @uses getCalculations
-	 * @uses getCleanStringDate
-	 * @uses getGames
-	 * @uses getHistoryCalculations
-	 * @uses getHrsNextPosition
-	 * @uses getHrsToTarget
-	 * @uses getKeywords
-	 * @uses getNextPosition
-	 * @uses getPriceSort
-	 * @uses getPriceperhour
-	 * @uses getTimeLeft
-	 * @uses get_db_connection
-	 * @uses getsettings
-	 * @uses makeIndex
-	 * @uses regroupArray
-	 * @uses timeduration
-	 */
-	public function test_getCalculations() {
-		$page = new wastePage();
-		
-		$method = $this->getPrivateMethod( 'wastePage', 'getCalculations' );
-		$result = $method->invokeArgs( $page,array() );
-		$this->assertisArray($result);
-	}
-	
-	/**
-	 * @large
-	 * @testdox getTopList()
-	 * @covers wastePage::getTopList
-	 * @uses wastePage
-	 * @uses Games
-	 * @uses PriceCalculation
-	 * @uses Purchases
-	 * @uses combinedate
-	 * @uses dataAccess
-	 * @uses daysSinceDate
-	 * @uses getActivityCalculations
-	 * @uses getAllItems
-	 * @uses getCalculations
-	 * @uses getCleanStringDate
-	 * @uses getGames
-	 * @uses getHistoryCalculations
-	 * @uses getHrsNextPosition
-	 * @uses getHrsToTarget
-	 * @uses getKeywords
-	 * @uses getNextPosition
-	 * @uses getPriceSort
-	 * @uses getPriceperhour
-	 * @uses getTimeLeft
-	 * @uses getTopList
-	 * @uses get_db_connection
-	 * @uses getsettings
-	 * @uses makeIndex
-	 * @uses reIndexArray
-	 * @uses regroupArray
-	 * @uses timeduration
-	 */
-	public function test_getTopList() {
-		$page = new wastePage();
-		
-		$method = $this->getPrivateMethod( 'wastePage', 'getTopList' );
-		$result = $method->invokeArgs( $page,array() );
-		$this->assertisArray($result);
-	}
-	
-	/**
-	 * @large
-	 * @testdox getAllItems()
-	 * @covers wastePage::getAllItems
-	 * @uses wastePage
-	 * @uses getAllItems
-	 * @uses get_db_connection
-	 */
-	public function test_getAllItems() {
-		$page = new wastePage();
-		
-		$method = $this->getPrivateMethod( 'wastePage', 'getAllItems' );
-		$result = $method->invokeArgs( $page,array() );
-		$this->assertisArray($result);
 	}
 }

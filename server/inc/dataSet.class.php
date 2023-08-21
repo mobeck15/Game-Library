@@ -8,6 +8,7 @@ class dataSet {
 	private $topBundles;
 	private $settings;
 	private $history;
+	private $items;
 	
 	public function getCalculations(){
 		if(!isset($this->calculations)){
@@ -36,4 +37,12 @@ class dataSet {
 		}
 		return $this->settings;
 	}
+	
+	public function getAllItems(){
+		if(!isset($this->items)){
+			$this->items = getAllItems();
+		}
+		return $this->items;
+	}
+
 }

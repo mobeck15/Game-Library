@@ -12,11 +12,9 @@ class chartdataPage extends Page
 		$this->title="Chart Data (Calendar)";
 	}
 	
-	private function buildForm($groupbyyear) {
+	private function buildForm($groupbyyear,$showDetails) {
 		$settings = $this->data()->getSettings(); //getsettings($conn);
-		//$settings['CountFree']=0;
 
-		//TODO: BUG: changing detail view removes countfree filter and vice versa.
 		//TODO: Add function to override CountFree setting if CountFree=0 (Currently only works if CountFree=1)
 		$output = '<form>
 			View by: <input type="radio" id="Month" name="group" value="month" ';
@@ -38,6 +36,11 @@ class chartdataPage extends Page
 				//TODO: This if condiditon never triggers...
 				if($settings['CountFree']==0) {$output .= " CHECKED ";}
 				$output .= '><span class="slider round"></span></label>';
+			}
+			if (isset($showDetails)) { 
+				$output .= '<input type="hidden" id="Detail" name="detail" value="';
+				$output .= $showDetails; 
+				$output .= '">';
 			}
 			$output .= '<input type="submit">
 		</form>';
@@ -108,14 +111,14 @@ class chartdataPage extends Page
 		}
 		
 		$showDetails = $_GET['detail'] ?? null;
+		$countfree = $_GET['CountFree'] ?? null;
 
 		$output="";
 		
-		$settings = $this->data()->getSettings();
 		$calculations = $this->data()->getCalculations();
 		$history = $this->data()->getHistory();
 	
-		$output .= $this->buildForm($groupbyyear);
+		$output .= $this->buildForm($groupbyyear,$showDetails);
 
 		$output .= '<table>';
 		$output .= $this->buildTableHeader($groupbyyear);
@@ -130,7 +133,7 @@ class chartdataPage extends Page
 		$chart = $this->addChartBalance($chart);
 		$chart = $this->updateChart($chart);
 	
-		$output .= $this->buildChartTableBody($chart,$groupbyyear,$showDetails);
+		$output .= $this->buildChartTableBody($chart,$groupbyyear,$showDetails,$countfree);
 		$Total = $this->countTotals($chart);
 		$output .= $this->buildTableFooter($Total,$groupbyyear);
 		$output .= "</table>";
@@ -428,6 +431,7 @@ class chartdataPage extends Page
 			<td class="hidden">'. $row['Year'].'</td>';
 			if(!isset($row['Date']) || $row['Date']=="") {$row['Date']="Blank";}
 			$countparm="";
+
 			if(isset($countfree)) {$countparm="&CountFree=0";}
 			$output .= '<td class="numeric"><a href="'. $_SERVER['PHP_SELF'].'?detail=';
 				if($groupbyyear==true){

@@ -94,10 +94,10 @@ class chartdata_Test extends testprivate {
 	 * @uses chartdataPage
 	 * @uses Page
 	 * @uses dataSet
-	 * @testWith [true]
-	 *           [false]
+	 * @testWith [true,2013]
+	 *           [false,null]
 	 */
-	public function test_buildForm($group) {
+	public function test_buildForm($group,$showDetails) {
 		$page = new chartdataPage();
 
 		$dataStub = $this->createStub(dataSet::class);
@@ -108,7 +108,7 @@ class chartdata_Test extends testprivate {
 		$property->setValue( $page, $dataStub );
 		
 		$method = $this->getPrivateMethod( 'chartdataPage', 'buildForm' );
-		$result = $method->invokeArgs( $page,array($group) );
+		$result = $method->invokeArgs( $page,array($group,$showDetails) );
 		$this->assertisString($result);
 	}
 

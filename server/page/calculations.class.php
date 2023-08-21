@@ -411,6 +411,7 @@ class calculationsPage extends Page
 				case "AltHrsNext2":
 				
 				case "TimeLeftToBeat":
+					if(is_string($game[$row])) { echo $row; }
 					$output .= '<td class="numeric">'.timeduration($game[$row],"hours").'</td>';
 					break;
 				case "LaunchLess2":
@@ -739,8 +740,6 @@ $output .= '<table>
 </div>
 <a name="tablestart"></a>';
 
-$time_start = microtime(true);
-
 $filter=$this->defaultFilter();
 
 if(isset($_GET['fav'])) {
@@ -755,8 +754,6 @@ if(isset($_GET['fav'])) {
 			$filter=$this->allColumnsFilter();
 	}
 }
-
-//var_dump($filter);
 
 $output .= '<div class="flex-item" style="order: 4">
 <details>
@@ -864,7 +861,7 @@ $output .= '<th class="hidden">Debug</th>
 </tr>
 </thead>
 <tbody>';
-$calculations=getCalculations();
+$calculations=$this->data()->getCalculations();
 
 $counters['timetobeat']=0;
 $counters['metascore']=0;

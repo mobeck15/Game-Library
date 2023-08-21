@@ -10,33 +10,15 @@ require_once $GLOBALS['rootpath']."/page/calculations.class.php";
  */
 class calculations_Test extends testprivate {
 	/**
-	 * @large
+	 * @small
 	 * @covers calculationsPage::buildHtmlBody
 	 * @covers calculationsPage::__construct
-	 * @uses Games
+	 * @uses Games 
 	 * @uses PriceCalculation
-	 * @uses Purchases
-	 * @uses combinedate
-	 * @uses dataAccess
-	 * @uses daysSinceDate
-	 * @uses getActivityCalculations
-	 * @uses getAllItems
-	 * @uses getCalculations
-	 * @uses getCleanStringDate
-	 * @uses getGames
-	 * @uses getHistoryCalculations
-	 * @uses getHrsNextPosition
-	 * @uses getHrsToTarget
-	 * @uses getKeywords
-	 * @uses getNextPosition
-	 * @uses getPriceSort
-	 * @uses getPriceperhour
-	 * @uses getTimeLeft
-	 * @uses get_db_connection
-	 * @uses getsettings
-	 * @uses makeIndex
-	 * @uses regroupArray
-	 * @uses timeduration	 
+	 * @uses calculationsPage
+	 * @uses Page
+	 * @uses boolText
+	 * @uses timeduration
 	 * @testWith ["Default"]
 	 *           ["Custom"]
 	 */
@@ -47,6 +29,64 @@ class calculations_Test extends testprivate {
 		$_GET['col'] = "Title"; 
 		$_GET['sort'] = "Title";
 		$_GET['hide'] = "Want,lt,4";
+
+		$calculations[1] = array(
+			"Title" => "title",
+			"lastplaySort" => 1,
+			"Status" => "Active",
+			"Want" => 4,
+			"Game_ID" => 1,
+			"ParentGameID" => 1,
+			"TimeToBeat" => 1,
+			"PrintBundles" => "",
+			"Metascore" => 1,
+			"UserMetascore" => 1,
+			"allKeywords" => "",
+			"MetascoreID" => 1,
+			"LaunchDate" => date_create(),
+			"MSRP" => 1,
+			"SteamAchievements" => 1,
+			"HistoricLow" => 1,
+			"Paid" => 1,
+			"SteamCards" => 1,
+			"TimeToBeatLink2" => "",
+			"SalePrice" => 1,
+			"totalHrs" => 1,
+			"TimeLeftToBeat" => 1,
+			"MetascoreLinkCritic" => 1,
+			"MetascoreLinkUser" => 1,
+			"GrandTotal" => 1,
+			"LaunchPriceObj" => new PriceCalculation(1,2),
+			"DateUpdated" => "",
+			"lastplay" => "",
+			"MSRPLess2" => 1,
+			"CurrentLess2" => 1,
+			"HistoricLess2" => 1,
+			"PaidLess2" => 1,
+			"SaleLess2" => 1,
+			"AltLess2" => 1,
+			"LaunchHrsNext1" => 1,
+			"MSRPHrsNext1" => 1,
+			"CurrentHrsNext1" => 1,
+			"HistoricHrsNext1" => 1,
+			"PaidHrsNext1" => 1,
+			"SaleHrsNext1" => 1,
+			"AltHrsNext1" => 1,
+			"LaunchHrsNext2" => 1,
+			"MSRPHrsNext2" => 1,
+			"CurrentHrsNext2" => 1,
+			"HistoricHrsNext2" => 1,
+			"PaidHrsNext2" => 1,
+			"SaleHrsNext2" => 1,
+			"AltHrsNext2" => 1
+		);
+
+		$dataStub = $this->createStub(dataSet::class);
+		$dataStub->method('getCalculations')
+				 ->willReturn($calculations);
+
+		$property = $this->getPrivateProperty( 'chartdataPage', 'data' );
+		$property->setValue( $page, $dataStub );
 		
 		$result = $page->buildHtmlBody();
 		

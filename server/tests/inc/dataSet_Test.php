@@ -92,4 +92,20 @@ class dataSet_Test extends testprivate {
 		$result = $method->invokeArgs( $page,array() );
 		$this->assertisArray($result);
 	}
+
+	/**
+	 * @large
+	 * @testdox getAllItems()
+	 * @covers dataSet::getAllItems
+	 * @uses dataSet
+	 * @uses getAllItems
+	 * @uses get_db_connection
+	 */
+	public function test_getAllItems() {
+		$page = new dataSet();
+		
+		$method = $this->getPrivateMethod( 'dataSet', 'getAllItems' );
+		$result = $method->invokeArgs( $page,array() );
+		$this->assertisArray($result);
+	}
 }
