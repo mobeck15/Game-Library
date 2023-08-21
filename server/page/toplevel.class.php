@@ -16,11 +16,10 @@ class toplevelPage extends Page
 		$output="";
 		
 
-$conn=get_db_connection();
+$settings = $this->data()->getSettings();
+$calculations = $this->data()->getCalculations();
 
-$settings=getsettings($conn);
-	
-$calculations=getCalculations("",$conn);
+$conn=get_db_connection();
 
 if(isset($_GET['Group'])){
 	$topList=getTopList($_GET['Group'],$conn,$calculations);
@@ -30,7 +29,7 @@ if(isset($_GET['Group'])){
 }
 $conn->close();	
 
-$calculations=reIndexArray($calculations,"Game_ID");
+//$calculations=reIndexArray($calculations,"Game_ID");
 //TODO: Trading cards are showing up in top level bundles. Why?
 $output .= "<ul>
 	<li><a href='". $_SERVER['SCRIPT_NAME']."?Group=Bundle'>Bundles</a></li>

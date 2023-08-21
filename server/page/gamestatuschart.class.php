@@ -48,19 +48,20 @@ if(isset($_GET['end'])){
 	$endDate=time();
 }
 
+//$settings=$this->data()->getSettings();
+$calculations = $this->data()->getCalculations();
+
 $conn=get_db_connection();
 
-$settings=getsettings($conn);
 $History=getHistoryCalculations("",$conn,$startDate,$endDate);
 $activity=getActivityCalculations("",$History,$conn);
 
 $PreHistory=getHistoryCalculations("",$conn,mktime(0, 0, 0, 1, 1, 2000),$startDate-60*60*24);
 $Preactivity=getActivityCalculations("",$PreHistory,$conn);
 
-$calculations=getCalculations("",$conn);
 $conn->close();	
 
-$calculations=reIndexArray($calculations,"Game_ID");
+//$calculations=reIndexArray($calculations,"Game_ID");
 $output .= '<table><tr><td valign=top>
 Date Range: '. date("Y/m/d",$startDate) .' - '. date("Y/m/d",$endDate).'
 <ul>

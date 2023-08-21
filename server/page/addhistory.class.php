@@ -348,16 +348,18 @@ class addhistoryPage extends Page
 	
 	private function getGames(){
 		if(!isset($this->games)){
-			$this->games = $this->games=getCalculations();
+			$this->games = getCalculations();
 		}
 		return $this->games;
+		//return $this->data()->getCalculations();
 	}
 
 	private function getHistory(){
 		if(!isset($this->history)){
-			$this->history = $this->history=getHistoryCalculations();
+			$this->history = getHistoryCalculations();
 		}
 		return $this->history;
+		//return $this->data()->getHistory();
 	}
 	
 	public function steamMode(){

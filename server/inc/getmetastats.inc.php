@@ -209,7 +209,8 @@ function makeStatRow($filter,$rowname,$datakey,$color,$Heading="", $height=1) {
 }
 
 function countgames($filter) {
-	$calculations=getCalculations();
+	$data = new dataSet();
+	$calculations=$data->getCalculations();
 	$gamecount=0;
 	foreach ($calculations as $key => $row) {
 		$countrow=countrow($row);
@@ -257,7 +258,8 @@ function countrow($row) {
 }
 
 function makeStatDataSet($filter,$statname) {
-	$calculations=getCalculations();
+	$data = new dataSet();
+	$calculations=$data->getCalculations();
 	$dataset=array();
 	$usekey=objectTranslator($statname);
 	

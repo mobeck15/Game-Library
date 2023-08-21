@@ -33,7 +33,6 @@ td.text  {width:100;}
 </style>";
 
 if(isset($_GET['filter'])) {
-	//$calculations = $this->data()->getCalculations();
 	$output .= makeStatTable($_GET['meta'],$_GET['filter']);
 	
 	$stats=getmetastats($_GET['filter']);

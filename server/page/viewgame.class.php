@@ -43,7 +43,8 @@ class viewgamePage extends Page
 			
 		} else {
 			$game=getGameDetail($_GET['id'],$conn);
-			$calculations=reIndexArray(getCalculations("",$conn),"Game_ID");
+			//$calculations=reIndexArray(getCalculations("",$conn),"Game_ID");
+			$calculations = $this->data()->getCalculations();
 
 	//$output .= '<form action="'. $_SERVER['PHP_SELF'].'" method="post">';
 

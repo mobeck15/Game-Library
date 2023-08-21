@@ -14,13 +14,15 @@ class steamapi_ownedgamesPage extends Page
 	
 	public function buildHtmlBody(){
 		$output="";
-		
-$conn=get_db_connection();
 
-$hitory=getHistoryCalculations("",$conn);
-$games=getCalculations("",$conn);
-$steamindex=makeIndex($games,"SteamID");
-$conn->close();
+		$hitory=$this->data()->getHistory();
+		$games=$this->data()->getCalculations();
+		$steamindex=makeIndex($games,"SteamID");
+		
+//$conn=get_db_connection();
+//$hitory=getHistoryCalculations("",$conn);
+//$games=getCalculations("",$conn);
+//$conn->close();
 
 foreach($hitory as $historyrow){
 	if($historyrow['System']=="Steam"){
@@ -30,10 +32,8 @@ foreach($hitory as $historyrow){
 		}
 	}
 }
-//print_r($historyrow);
 
-//$resultarray=GetOwnedGames();
-$steamAPI= new SteamAPI();
+$steamAPI = new SteamAPI();
 $resultarray=$steamAPI->GetSteamAPI("GetOwnedGames");
 	$output .= "<table>
 	<thead>
