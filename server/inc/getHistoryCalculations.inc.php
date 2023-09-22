@@ -12,7 +12,7 @@ function getHistoryCalculations($gameID="",$connection=false,$start=false,$end=f
 		$conn = $connection;
 	}
 	
-	require_once $GLOBALS['rootpath']."/inc/getsettings.inc.php";
+	require_once $GLOBALS['rootpath']."/inc/getSettings.inc.php";
 	$settings=getSettings($conn);
 	
 	$sql = "select `HistoryID`,`Timestamp`,`Title` as 'Game', `System`, `Data`, `Time`, `Notes`, `Achievements`, `AchievementType`, `Levels`, `LevelType`, `Status`, `Review`, `BaseGame`, `RowType`, `kwMinutes`, `kwIdle`, `kwCardFarming`, `kwCheating`, `kwBeatGame`, `kwShare`, `GameID`, `ParentGameID`, `LaunchDate`, `RowType` ";

@@ -2,7 +2,7 @@
 declare(strict_types=1);
 require_once $GLOBALS['rootpath']."/page/_page.class.php";
 include_once $GLOBALS['rootpath']."/inc/utility.inc.php";
-include_once $GLOBALS['rootpath']."/inc/getsettings.inc.php";
+include_once $GLOBALS['rootpath']."/inc/getSettings.inc.php";
 
 //TODO: Split into three files, Single form, SteamAPI, and Form Post (where both forms will go and show stats about recently played)
 
