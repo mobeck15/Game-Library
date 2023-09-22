@@ -6,7 +6,6 @@ require_once $GLOBALS['rootpath']."/inc/getmetastats.inc.php";
 
 class statisticsPage extends Page
 {
-	private $dataAccessObject;
 	public function __construct() {
 		$this->title="Statistics";
 	}
@@ -34,7 +33,6 @@ td.text  {width:100;}
 </style>";
 
 if(isset($_GET['filter'])) {
-	$calculations=reIndexArray(getCalculations(),"Game_ID");
 	$output .= makeStatTable($_GET['meta'],$_GET['filter']);
 	
 	$stats=getmetastats($_GET['filter']);

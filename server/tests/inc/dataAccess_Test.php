@@ -19,6 +19,7 @@ final class dataAccess_Test extends testprivate
 	/**
 	 * @small
 	 * @covers dataAccess::getConnection
+	 * @covers dataAccess::__construct
 	 * @uses dataAccess
 	 * @testdox getConnection()
 	 */
@@ -103,13 +104,86 @@ final class dataAccess_Test extends testprivate
 
 	/**
 	 * @small
+	 * @covers dataAccess::getItems
+	 * @uses dataAccess
+	 * @testdox getItems() with no parameters
+	 * @group additem
+	 */
+	public function test_getItems() {
+		$dataobject= new dataAccess();
+		$statement=$dataobject->getItems();
+		$this->assertisObject($statement);
+		$this->assertInstanceOf(PDOStatement::class, $statement);
+	}
+
+	/**
+	 * @small
+	 * @covers dataAccess::getKeywords
+	 * @uses dataAccess
+	 * @testdox getKeywords()
+	 * @group additem
+	 */
+	public function test_getKeywords() {
+		$dataobject= new dataAccess();
+		$statement=$dataobject->getKeywords(2);
+		$this->assertisObject($statement);
+		$this->assertInstanceOf(PDOStatement::class, $statement);
+	}
+
+	/**
+	 * @small
+	 * @covers dataAccess::getItemYears
+	 * @uses dataAccess
+	 * @testdox getItemYears()
+	 * @group additem
+	 */
+	public function test_getItemYears() {
+		$dataobject= new dataAccess();
+		$statement=$dataobject->getItemYears();
+		$this->assertisObject($statement);
+		$this->assertInstanceOf(PDOStatement::class, $statement);
+	}
+
+	/**
+	 * @small
+	 * @covers dataAccess::getItemMonths
+	 * @uses dataAccess
+	 * @testdox getItemMonths()
+	 * @group additem
+	 */
+	public function test_getItemMonths() {
+		$dataobject= new dataAccess();
+		$statement=$dataobject->getItemMonths();
+		$this->assertisObject($statement);
+		$this->assertInstanceOf(PDOStatement::class, $statement);
+	}
+
+	/**
+	 * @small
+	 * @covers dataAccess::getItems
+	 * @uses dataAccess
+	 * @testdox getItems() with no parameters
+	 * @group additem
+	 */
+	public function test_getItems_many() {
+		$dataobject= new dataAccess();
+		$statement=$dataobject->getItems([1,2]);
+		$this->assertisObject($statement);
+		$this->assertInstanceOf(PDOStatement::class, $statement);
+	}
+
+	/**
+	 * @small
 	 * @covers dataAccess::getPurchases
 	 * @uses dataAccess
-	 * @testdox getPurchases() one specific bundle
+	 * @testdox getPurchases() with filters
+	 * @testWith [111,false]
+	 *           [null,true]
+	 *           [111,true]
 	 */
-	public function test_getPurchases_One() {
+	public function test_getPurchases_filters($id,$purch) {
 		$dataobject= new dataAccess();
-		$statement=$dataobject->getPurchases(111);
+		$statement=$dataobject->getPurchases($id,$purch);
 		$this->assertisObject($statement);
 		$this->assertInstanceOf(PDOStatement::class, $statement);
 	}
@@ -155,7 +229,60 @@ final class dataAccess_Test extends testprivate
 		$dataobject= new dataAccess();
 		$maxID=$dataobject->getMaxHistoryId();
 		$this->assertIsNumeric($maxID);
-	}	
+	}
+	
+	/**
+	 * @small
+	 * @covers dataAccess::getMaxItemId
+	 * @uses dataAccess
+	 * @testdox getMaxItemId()
+	 */
+	public function test_getMaxItemId() {
+		$dataobject= new dataAccess();
+		$maxID=$dataobject->getMaxItemId();
+		$this->assertIsNumeric($maxID);
+	}
+
+	/**
+	 * @small
+	 * @covers dataAccess::getMaxProductId
+	 * @uses dataAccess
+	 * @testdox getMaxProductId()
+	 */
+	public function test_getMaxProductId() {
+		$dataobject= new dataAccess();
+		$maxID=$dataobject->getMaxProductId();
+		$this->assertIsNumeric($maxID);
+	}
+
+	/**
+	 * @small
+	 * @covers dataAccess::getMaxTableId
+	 * @uses dataAccess
+	 * @testdox getMaxTableId() $table
+	 * @testWith ["gl_history"]
+	 *           ["gl_items"]
+	 *           ["gl_products"]
+	 *           ["gl_transactions"]
+	 */
+	public function test_getMaxTableId($table) {
+		$dataobject= new dataAccess();
+		$maxID=$dataobject->getMaxTableId($table);
+		$this->assertIsNumeric($maxID);
+	}
+	
+	/**
+	 * @small
+	 * @covers dataAccess::getMaxTableId
+	 * @uses dataAccess
+	 * @testdox getMaxTableId() Error $table
+	 * @testWith ["nothing"]
+	 */
+	public function test_getMaxTableId_error($table) {
+		$dataobject= new dataAccess();
+		$maxID=$dataobject->getMaxTableId($table);
+		$this->assertEquals(false,$maxID);
+	}
 
 	/**
 	 * @small
@@ -316,8 +443,6 @@ final class dataAccess_Test extends testprivate
 		$statement = $dataobject->getPurchases(1);
 		$allrows=$dataobject->getAllRows($statement,"TransID");
 		
-		//var_dump($allrows);
-
 		$insertrow['TransID']=$allrows[1]["TransID"];
 		$insertrow['Title']=$allrows[1]["Title"];
 		$insertrow['Store']=$allrows[1]["Store"];
@@ -335,8 +460,362 @@ final class dataAccess_Test extends testprivate
 
 		$statement = $dataobject->getPurchases(1);
 		$allrows2=$dataobject->getAllRows($statement,"TransID");
-		//var_dump($allrows2);
 		$this->assertEquals($allrows2[1]["PurchaseTime"],date("H:i:00",strtotime($insertrow['purchasetime'])));
+	}
+	
+	/**
+	 * @small
+	 * @covers dataAccess::updateItem
+	 * @uses dataAccess
+	 * @testdox updateItem()
+	 */
+	public function test_updateItem() {
+		$dataobject= new dataAccess();
+		$statement = $dataobject->getItems(1);
+		$allrows=$dataobject->getAllRows($statement,"ItemID");
+
+		$insertrow['ItemID']          = $allrows[1]["ItemID"];
+		$insertrow['ProductID']       = $allrows[1]["ProductID"];
+		$insertrow['TransID']         = $allrows[1]["TransID"];
+		$insertrow['ParentProductID'] = $allrows[1]["ParentProductID"];
+		$insertrow['Notes']           = $allrows[1]["Notes"];
+		$insertrow['Tier']            = $allrows[1]["Tier"];
+		$insertrow['ActivationKey']   = $allrows[1]["ActivationKey"];
+		$insertrow['SizeMB']          = 7.34*1024;
+		$insertrow['Library']         = $allrows[1]["Library"];
+		$insertrow['DRM']             = $allrows[1]["DRM"];
+		$insertrow['OS']              = $allrows[1]["OS"];
+		$insertrow['purchasetime']    = date("Y-m-d H:i:s");
+		$insertrow['Sequence']        = $allrows[1]["Sequence"];
+		
+		$dataobject->updateItem($insertrow);
+
+		$statement = $dataobject->getItems(1);
+		$allrows2=$dataobject->getAllRows($statement,"ItemID");
+		$this->assertEquals($allrows2[1]["Time Added"],date("H:i:00",strtotime($insertrow['purchasetime'])));
+	}
+	
+	/**
+	 * @small
+	 * @covers dataAccess::updateItem
+	 * @uses dataAccess
+	 * @testdox updateItem with Nulls
+	 */
+	public function test_updateItem_null() {
+		$dataobject= new dataAccess();
+		$statement = $dataobject->getItems(1);
+		$allrows=$dataobject->getAllRows($statement,"ItemID");
+
+		$insertrow['ItemID']          = $allrows[1]["ItemID"];
+		$insertrow['ProductID']       = null;
+		$insertrow['TransID']         = $allrows[1]["TransID"];
+		$insertrow['ParentProductID'] = $allrows[1]["ParentProductID"];
+		$insertrow['Notes']           = $allrows[1]["Notes"];
+		$insertrow['Tier']            = $allrows[1]["Tier"];
+		$insertrow['ActivationKey']   = $allrows[1]["ActivationKey"];
+		$insertrow['SizeMB']          = "";
+		$insertrow['Library']         = $allrows[1]["Library"];
+		$insertrow['DRM']             = $allrows[1]["DRM"];
+		$insertrow['OS']              = $allrows[1]["OS"];
+		$insertrow['purchasetime']    = date("Y-m-d H:i:s");
+		$insertrow['Sequence']        = $allrows[1]["Sequence"];
+		
+		try{
+			$dataobject->updateItem($insertrow);
+
+			$statement = $dataobject->getItems(1);
+			$allrows2=$dataobject->getAllRows($statement,"ItemID");
+			$this->assertEquals($allrows2[1]["Time Added"],date("H:i:00",strtotime($insertrow['purchasetime'])));
+		} finally {
+			$insertrow['ProductID']       = $allrows[1]["ProductID"];
+			$insertrow['SizeMB']          = $allrows[1]["SizeMB"];
+			$dataobject->updateItem($insertrow);
+		}
+	}
+	
+	/**
+	 * @small
+	 * @covers dataAccess::updateGame
+	 * @uses dataAccess
+	 * @testdox updateGame()
+	 */
+	public function test_updateGame() {
+		$dataobject= new dataAccess();
+		$statement = $dataobject->getGames(1);
+		$allrows=$dataobject->getAllRows($statement,"Game_ID");
+
+		$insertrow = $allrows[1];
+		$insertrow['ID'] = $allrows[1]['Game_ID'];
+		$insertrow['TimetoBeat'] = $allrows[1]['TimeToBeat'];
+		$insertrow['TimeTobeatID'] = $allrows[1]['TimeToBeatID'];
+		
+		$dataobject->updateGame($insertrow);
+
+		$statement = $dataobject->getGames(1);
+		$allrows2=$dataobject->getAllRows($statement,"Game_ID");
+		
+		$this->assertEquals($allrows2[1]["LaunchDate"],$insertrow['LaunchDate']);
+	}
+	
+	/**
+	 * @small
+	 * @covers dataAccess::splitKeywords
+	 * @uses dataAccess
+	 * @testdox splitKeywords()
+	 */
+	public function test_splitKeywords() {
+		$dataobject= new dataAccess();
+		$list = "one,two,three";
+		
+		$expected[] = array("kwType" => "num","Keyword" => "one");
+		$expected[] = array("kwType" => "num","Keyword" => "two");
+		$expected[] = array("kwType" => "num","Keyword" => "three");
+		
+		$method = $this->getPrivateMethod( 'dataAccess', 'splitKeywords' );
+		$result = $method->invokeArgs( $dataobject,array("num",$list) );
+		
+		$this->assertEquals($result,$expected);
+	}
+	
+	/**
+	 * @small
+	 * @covers dataAccess::updateKeywords
+	 * @uses dataAccess
+	 * @testdox updateKeywords()
+	 */
+	public function test_updateKeywords() {
+		$dataobject= new dataAccess();
+
+		$insertrow['Genre'] = "one,two";
+		$insertrow['GameType'] = "three,four";
+		$insertrow['StoryMode'] = "five,six";
+		$insertrow['GameFeature'] = "seven,eight";
+		$insertrow['GameMode'] = "nine,ten";
+		$insertrow['ID'] = 1;
+		
+		$expected[] = array("ProductID"=> 1, "kwType" => "Genre","Keyword" => "one");
+		$expected[] = array("ProductID"=> 1, "kwType" => "Genre","Keyword" => "two");
+		$expected[] = array("ProductID"=> 1, "kwType" => "GameType","Keyword" => "three");
+		$expected[] = array("ProductID"=> 1, "kwType" => "GameType","Keyword" => "four");
+		$expected[] = array("ProductID"=> 1, "kwType" => "StoryMode","Keyword" => "five");
+		$expected[] = array("ProductID"=> 1, "kwType" => "StoryMode","Keyword" => "six");
+		$expected[] = array("ProductID"=> 1, "kwType" => "GameFeature","Keyword" => "seven");
+		$expected[] = array("ProductID"=> 1, "kwType" => "GameFeature","Keyword" => "eight");
+		$expected[] = array("ProductID"=> 1, "kwType" => "GameMode","Keyword" => "nine");
+		$expected[] = array("ProductID"=> 1, "kwType" => "GameMode","Keyword" => "ten");
+		
+		$dataobject->updateKeywords($insertrow);
+
+		$statement = $dataobject->getKeywords(1);
+		$allrows2=$dataobject->getAllRows($statement);
+		
+		$this->assertEquals($allrows2[6]['Keyword'],"seven");
+	}
+	
+	/**
+	 * @small
+	 * @covers dataAccess::updateAllSettings
+	 * @uses dataAccess
+	 * @uses get_db_connection
+	 * @uses getsettings
+	 * @testdox updateAllSettings()
+	 */
+	public function test_updateAllSettings() {
+		$dataobject= new dataAccess();
+		//$statement = $dataobject->getItems(1);
+		//$allrows=$dataobject->getAllRows($statement,"ItemID");
+		$settings = getsettings();
+
+		$insertrow = array( 
+			"Tax"            => "8.59" ,
+			"TrackHours"     => "20",
+			"LessStat"       => "0.01",
+			"XhourGet"       => "1",
+			"StartStats"     => "2005-08-22",
+			"CountFarm"      => "on" ,
+			"CountCheat"     => "on" ,
+			"MinPlay"        => "60" ,
+			"MinTotal"       => "60",
+			"CountFree"      => "on", 
+			"WantX"          => "0",
+			"CountWantX"     => "on",
+			"Active-Active"  => "on",
+			"Active-Count"   => "on",
+			"Done-Count"     => "on",
+			"Inactive-Count" => "on",
+			"On_Hold-Count"  => "on",
+			"Unplayed-Count" => "on" );
+		
+		$dataobject->updateAllSettings($insertrow);
+		$settings2 = getsettings();
+		//$statement = $dataobject->getItems(1);
+		//$allrows2=$dataobject->getAllRows($statement,"ItemID");
+		$this->assertEquals($settings,$settings2);
+	}
+	
+	/**
+	 * @small
+	 * @covers dataAccess::insertItem
+	 * @uses dataAccess
+	 * @testdox insertItem()
+	 * @group additem
+	 */
+	public function test_insertItem() {
+		$dataobject= new dataAccess();
+		try {
+			$testItemID = 20004;
+			
+			$insertrow['ItemID']=$testItemID;
+			$insertrow['ProductID']=($testItemID+1);
+			$insertrow['TransID']=($testItemID+2);
+			$insertrow['ParentProductID']=($testItemID+1);
+			$insertrow['Tier']=1;
+			$insertrow['Notes']="Notes";
+			$insertrow['SizeMB']=123;
+			$insertrow['DRM']="DRM";
+			$insertrow['OS']="OS";
+			$insertrow['ActivationKey']="ACTIVATION-KEY";
+			$insertrow['DateAdded']=date("Y-m-d");
+			$insertrow['Time_Added']=date("H:i:s");
+			$insertrow['Sequence']=1;
+			$insertrow['Library']="Library";
+			
+			$dataobject->insertItem($insertrow);
+
+			$statement = $dataobject->getItems($testItemID,"ItemID");
+			$allrows2=$dataobject->getAllRows($statement);
+			$this->assertEquals($allrows2[0]["Time Added"],date("H:i:00",strtotime($insertrow['Time_Added'])));
+		} finally {		
+			$teardownSQL = "DELETE FROM gl_items WHERE `gl_items`.`ItemID` = " . $testItemID;
+			$query = $dataobject->getConnection()->prepare($teardownSQL);
+			$query->execute();
+		}
+	}
+
+	/**
+	 * @small
+	 * @covers dataAccess::insertGame
+	 * @uses dataAccess
+	 * @testdox insertGame()
+	 * @group additem
+	 */
+	public function test_insertGame() {
+		$dataobject= new dataAccess();
+		try {
+			$testGameID = 20004;
+
+			$insertrow['Game_ID']           = $testGameID;
+			$insertrow['Title']             = "Test Game 2";
+			$insertrow['Series']            = "Test Game";
+			$insertrow['LaunchDate']        = date("Y-m-d");
+			$insertrow['LaunchPrice']       = 1.23;
+			$insertrow['MSRP']              = 1.23;
+			$insertrow['CurrentMSRP']       = 1.23;
+			$insertrow['HistoricLow']       = 1.23;
+			$insertrow['LowDate']           = date("Y-m-d");
+			$insertrow['SteamAchievements'] = 0;
+			$insertrow['SteamCards']        = 0;
+			$insertrow['TimeToBeat']        = 1.6;
+			$insertrow['Metascore']         = 34;
+			$insertrow['UserMetascore']     = 56;
+			$insertrow['SteamRating']       = 78;
+			$insertrow['SteamID']           = 1234567890;
+			$insertrow['GOGID']             = "gogID";
+			$insertrow['isthereanydealID']  = "dealID";
+			$insertrow['TimeToBeatID']      = 1234546;
+			$insertrow['MetascoreID']       = "metaID";
+			$insertrow['DateUpdated']       = date("Y-m-d");
+			$insertrow['Want']              = 4;
+			$insertrow['Playable']          = 1;
+			$insertrow['Type']              = "Game";
+			$insertrow['ParentGameID']      = $testGameID;
+			$insertrow['ParentGame']        = "Parent Game";
+			$insertrow['Developer']         = "Developer";
+			$insertrow['Publisher']         = "Publisher";
+			
+			$dataobject->insertGame($insertrow);
+
+			$statement = $dataobject->getGames($testGameID,"Game_ID");
+			$allrows2=$dataobject->getAllRows($statement);
+			$this->assertEquals($allrows2[0]["Title"],$insertrow['Title']);
+		} finally {
+			$teardownSQL = "DELETE FROM gl_products WHERE `gl_products`.`Game_ID` = " . $testGameID;
+			$query = $dataobject->getConnection()->prepare($teardownSQL);
+			$query->execute();
+		}
+	}
+	
+	/**
+	 * @small
+	 * @covers dataAccess::insertGame2
+	 * @uses dataAccess
+	 * @testdox insertGame2()
+	 * @group additem
+	 */
+	public function test_insertGame2() {
+		$dataobject= new dataAccess();
+		try {
+			$testGameID = 20004;
+
+			$insertrow['Game_ID']     = $testGameID;
+			$insertrow['Title']       = "Test Game 2";
+			$insertrow['Series']      = "Test Game";
+			$insertrow['LaunchDate']  = date("Y-m-d");
+			$insertrow['SteamID']     = 1;
+			$insertrow['Want']        = 4;
+			$insertrow['Playable']    = 1;
+			$insertrow['Type']        = "Game";
+			$insertrow['ParentGameID']= $testGameID;
+			$insertrow['ParentGame']  = "Parent Game";
+			
+			$dataobject->insertGame2($insertrow);
+
+			$statement = $dataobject->getGames($testGameID,"Game_ID");
+			$allrows2=$dataobject->getAllRows($statement);
+			$this->assertEquals($allrows2[0]["Title"],$insertrow['Title']);
+		} finally {
+			$teardownSQL = "DELETE FROM gl_products WHERE `gl_products`.`Game_ID` = " . $testGameID;
+			$query = $dataobject->getConnection()->prepare($teardownSQL);
+			$query->execute();
+		}
+	}
+
+	/**
+	 * @small
+	 * @covers dataAccess::insertTransaction
+	 * @uses dataAccess
+	 * @testdox insertTransaction()
+	 * @group additem
+	 */
+	public function test_insertTransaction() {
+		$dataobject= new dataAccess();
+		try {
+			$testTransID = 20004;
+			
+			$insertrow['TransID']      = $testTransID;
+			$insertrow['Title']        = "Test Bundle";
+			$insertrow['Store']        = "Test Store";
+			$insertrow['BundleID']     = $testTransID;
+			$insertrow['Tier']         = 1;
+			$insertrow['PurchaseDate'] = date("Y-m-d");
+			$insertrow['PurchaseTime'] = date("H:i:s");
+			$insertrow['Sequence']     = "Game";
+			$insertrow['Price']        = 1.23;
+			$insertrow['Fees']         = 2.34;
+			$insertrow['Paid']         = 3.45;
+			$insertrow['CreditUsed']   = 4.56;
+			$insertrow['BundleLink']   = "https://link.link";
+			
+			$dataobject->insertTransaction($insertrow);
+
+			$statement = $dataobject->getPurchases($testTransID);
+			$allrows2=$dataobject->getAllRows($statement);
+			$this->assertEquals($allrows2[0]["Title"],$insertrow['Title']);
+		} finally {
+			$teardownSQL = "DELETE FROM gl_transactions WHERE `gl_transactions`.`TransID` = " . $testTransID;
+			$query = $dataobject->getConnection()->prepare($teardownSQL);
+			$query->execute();
+		}
 	}
 
 	/**
@@ -579,6 +1058,62 @@ final class dataAccess_Test extends testprivate
 	
 	/**
 	 * @small
+	 * @covers dataAccess::countCPI
+	 * @uses dataAccess
+	 * @testdox countCPI()
+	 */
+	public function test_countCPI(){
+		$dataobject= new dataAccess();
+		$result=$dataobject->countCPI(2050,1);
+		$this->assertInstanceOf(PDOStatement::class, $result);
+	}
+	
+	/**
+	 * @small
+	 * @covers dataAccess::getAllCPI
+	 * @uses dataAccess
+	 * @testdox getAllCPI()
+	 */
+	public function test_getAllCPI(){
+		$dataobject= new dataAccess();
+		$result=$dataobject->getAllCPI();
+		$this->assertIsArray($result);
+	}
+	
+	/**
+	 * @small
+	 * @covers dataAccess::addCPI
+	 * @uses dataAccess
+	 * @testdox addCPI() - $type
+	 * @testWith [3050,12,345,"Insert"]
+	 *           [3050,12,346,"Update"]
+	 */
+	public function test_addCPI($year,$month,$value,$type){
+		$dataobject= new dataAccess();
+		
+		try {
+			$CleanupQuery=$dataobject->getConnection()->prepare('DELETE FROM `gl_cpi` WHERE `Year`=:year and `Month`=:month;');
+			$CleanupQuery->bindvalue(":year",$year);
+			$CleanupQuery->bindvalue(":month",$month);
+			
+			if($type == "Insert") {
+				$CleanupQuery->execute();
+			}
+			
+			$result=$dataobject->addCPI($year,$month,$value);
+			
+			$cpi = $dataobject->getAllCPI();
+			
+			$this->assertEquals($cpi[$year][$month],$value);
+		} finally {
+			if($type == "Update") {
+				$CleanupQuery->execute();
+			}
+		}
+	}
+	
+	/**
+	 * @small
 	 * @covers dataAccess::getStatusList
 	 * @uses dataAccess
 	 * @testdox getStatusList()
@@ -609,7 +1144,7 @@ final class dataAccess_Test extends testprivate
 	 */
 	public function test_getHistoryRecrod(){
 		$dataobject= new dataAccess();
-		$result=$dataobject->getHistoryRecrod(111);
+		$result=$dataobject->getHistoryRecrod(101);
 		$this->assertIsArray($result);
 	}
 	

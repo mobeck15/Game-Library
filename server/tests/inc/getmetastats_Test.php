@@ -7,6 +7,7 @@ require_once $GLOBALS['rootpath']."\inc\getmetastats.inc.php";
 
 /**
  * @group include
+ * @group getmetastats
  */
 final class getmetastats_Test extends TestCase
 {
@@ -242,59 +243,9 @@ final class getmetastats_Test extends TestCase
 	 *           ["TimeLeftToBeat"]
 	 */
     public function test_getStatRow_main($stat) {
-		
         $this->assertisArray(getStatRow("All",$stat));
 	}
 	
-	/**
-	 * @large
-	 * @covers getStatRow
-	 * @uses PriceCalculation
-	 * @uses combinedate
-	 * @uses countrow
-	 * @uses daysSinceDate
-	 * @uses getActivityCalculations
-	 * @uses getAllCpi
-	 * @uses getAllItems
-	 * @uses getCalculations
-	 * @uses getCleanStringDate
-	 * @uses getGames
-	 * @uses getHistoryCalculations
-	 * @uses getHrsNextPosition
-	 * @uses getHrsToTarget
-	 * @uses getKeywords
-	 * @uses getNextPosition
-	 * @uses getOnlyValues
-	 * @uses getPriceSort
-	 * @uses getPriceperhour
-	 * @uses getTimeLeft
-	 * @uses getsettings
-	 * @uses makeIndex
-	 * @uses makeStatDataSet
-	 * @uses methodTranslator
-	 * @uses objectTranslator
-	 * @uses regroupArray
-	 * @uses timeduration
-	 * /
-	 
-	 //ValueError: max(): Argument #1 ($value) must contain at least one element
-	 
-    public function test_getStatRow_error() {
-		//TODO: Expect is depricated in phpunit 10?
-		//$this->expectNotice();
-		//$this->expectNoticeMessage('othervalue Total not set');
-		
-		// Set a custom error handler to convert PHP notices to exceptions
-        set_error_handler(function ($severity, $message, $file, $line) {
-            if ($severity & E_USER_ERROR) {
-                throw new \ErrorException($message, 0, $severity, $file, $line);
-            }
-        });
-		
-        $this->assertisArray(getStatRow("All",'othervalue'));
-		restore_error_handler();
-	} /* */
-
 	/**
 	 * @small
 	 * @covers getStatRow
@@ -365,6 +316,78 @@ final class getmetastats_Test extends TestCase
     public function test_getStatRow_null() {
 		$output = getStatRow("All",null);
         $this->assertisArray($output);
+	}
+	
+	
+	
+	
+	
+	
+	/**
+	 * @small
+	 * @covers getStatRow
+	 * @uses PriceCalculation
+	 * @uses combinedate
+	 * @uses countrow
+	 * @uses daysSinceDate
+	 * @uses getActivityCalculations
+	 * @uses getAllCpi
+	 * @uses getAllItems
+	 * @uses getCalculations
+	 * @uses getCleanStringDate
+	 * @uses getGames
+	 * @uses getHistoryCalculations
+	 * @uses getHrsNextPosition
+	 * @uses getHrsToTarget
+	 * @uses getKeywords
+	 * @uses getNextPosition
+	 * @uses getOnlyValues
+	 * @uses getPriceSort
+	 * @uses getPriceperhour
+	 * @uses getTimeLeft
+	 * @uses getsettings
+	 * @uses makeIndex
+	 * @uses makeStatDataSet
+	 * @uses methodTranslator
+	 * @uses objectTranslator
+	 * @uses regroupArray
+	 * @uses timeduration
+	 * @doesNotPerformAssertions
+	 */
+    public function test_getStatRow_total0() {
+		
+		$GLOBALS["SETTINGS"]['CountFree']=true;
+		$GLOBALS["SETTINGS"]['status']['Active']['Count']=true;
+		
+		$testcalcs=array(
+			array(
+				'Game_ID'=>1,
+				'Title'=>'TestGame1',
+				'Playable'=>true,
+				'Paid'=>1,
+				'Status'=>"Active",
+				'Review'=>1
+			),
+			array(
+				'Game_ID'=>2,
+				'Title'=>'TestGame2',
+				'Playable'=>true,
+				'Paid'=>1,
+				'Status'=>"Active",
+				'Review'=>1
+			),
+		);
+		$GLOBALS["CALCULATIONS"]=$testcalcs;
+
+		set_error_handler(function ($severity, $message, $file, $line) {
+        	if ($severity & E_USER_ERROR) {
+        		throw new \ErrorException($message, 0, $severity, $file, $line);
+			}
+        });
+
+		$output = getStatRow("All",'Review2');
+        //$this->assertisArray($output);
+		restore_error_handler();
 	}
 	
 	/**

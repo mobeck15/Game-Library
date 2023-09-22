@@ -6,7 +6,6 @@ include_once $GLOBALS['rootpath']."/inc/getsettings.inc.php";
 
 class settingsPage extends Page
 {
-	private $dataAccessObject;
 	public function __construct() {
 		$this->title="Settings";
 	}
@@ -21,105 +20,7 @@ class settingsPage extends Page
 	$conn=get_db_connection();
 	
 	if(isset($_POST['Tax'])){
-		//Set values to off for unchecked checkboxes. (Unchecked boxes are not submitted with forms.)
-		if(!isset($_POST['CountFarm'])) {$_POST['CountFarm']="Off";}
-		if(!isset($_POST['CountShare'])) {$_POST['CountShare']="Off";}
-		if(!isset($_POST['CountIdle'])) {$_POST['CountIdle']="Off";}
-		if(!isset($_POST['CountCheat'])) {$_POST['CountCheat']="Off";}
-		if(!isset($_POST['AdjustforInflation'])) {$_POST['AdjustforInflation']="Off";}
-		if(!isset($_POST['CountFree'])) {$_POST['CountFree']="Off";}
-		if(!isset($_POST['CountNever'])) {$_POST['CountNever']="Off";}
-		if(!isset($_POST['CountWantX'])) {$_POST['CountWantX']="Off";}
-		
-		if(!isset($_POST['Active-Active'])) {$_POST['Active-Active']="Off";}
-		if(!isset($_POST['Broken-Active'])) {$_POST['Broken-Active']="Off";}
-		if(!isset($_POST['Done-Active'])) {$_POST['Done-Active']="Off";}
-		if(!isset($_POST['Inactive-Active'])) {$_POST['Inactive-Active']="Off";}
-		if(!isset($_POST['Never-Active'])) {$_POST['Never-Active']="Off";}
-		if(!isset($_POST['On_Hold-Active'])) {$_POST['On_Hold-Active']="Off";}
-		if(!isset($_POST['Unplayed-Active'])) {$_POST['Unplayed-Active']="Off";}
-
-		if(!isset($_POST['Active-Count'])) {$_POST['Active-Count']="Off";}
-		if(!isset($_POST['Broken-Count'])) {$_POST['Broken-Count']="Off";}
-		if(!isset($_POST['Done-Count'])) {$_POST['Done-Count']="Off";}
-		if(!isset($_POST['Inactive-Count'])) {$_POST['Inactive-Count']="Off";}
-		if(!isset($_POST['Never-Count'])) {$_POST['Never-Count']="Off";}
-		if(!isset($_POST['On_Hold-Count'])) {$_POST['On_Hold-Count']="Off";}
-		if(!isset($_POST['Unplayed-Count'])) {$_POST['Unplayed-Count']="Off";}
-		
-		if(($GLOBALS['Debug_Enabled'] ?? false)) {trigger_error('$_POST variable values: <pre>'. var_export($_POST, true) . "</pre>", E_USER_NOTICE);}
-		
-		foreach ($_POST as $setting_label => $setting_value) {
-			switch ($setting_label) {
-				//Numeric
-				case "Tax":
-				case "TrackHours":
-				case "LessStat":
-				case "XhourGet" :
-				case "MinPlay" :
-				case "MinTotal" :
-				case "WantX" :
-					$updateType="Numeric";
-					//UPDATE `gl_settings` SET `SettingNum` = '8.580' WHERE `gl_settings`.`Setting` = 'Tax';
-					$update_SQL = "UPDATE `gl_settings` SET `SettingNum` = '".$setting_value."' WHERE `gl_settings`.`Setting` = '".$setting_label."';";
-					break;
-				//True-False
-				case "CountFarm":
-				case "CountShare":
-				case "CountIdle":
-				case "CountCheat":
-				case "AdjustforInflation":
-				case "CountFree":
-				case "CountNever":
-				case "CountWantX":
-					$updateType="Boolean";
-					if($setting_value=="on") {$setting_value=1;} else {$setting_value=0;}
-					$update_SQL = "UPDATE `gl_settings` SET `SettingNum` = '".$setting_value."' WHERE `gl_settings`.`Setting` = '".$setting_label."';";
-					break;
-				//Date 
-				case "StartStats":
-					$updateType="Date";
-					//             UPDATE `gl_settings` SET `SettingDate` = '2005-08-22'         WHERE `gl_settings`.`Setting` = 'StartStats';
-					$update_SQL = "UPDATE `gl_settings` SET `SettingDate` = '".$setting_value."' WHERE `gl_settings`.`Setting` = '".$setting_label."';";
-					break;
-				//Status
-				case "Active-Active":
-				case "Broken-Active":
-				case "Done-Active":
-				case "Inactive-Active":
-				case "Never-Active":
-				case "On_Hold-Active":
-				case "Unplayed-Active":
-				
-				case "Active-Count":
-				case "Broken-Count":
-				case "Done-Count":
-				case "Inactive-Count":
-				case "Never-Count":
-				case "On_Hold-Count":
-				case "Unplayed-Count":
-					$updateType="Status";
-					if($setting_value=="on") {$setting_value=1;} else {$setting_value=0;}
-
-					list($realLabel, $valueType) = explode("-", $setting_label);
-
-					$update_SQL = "UPDATE `gl_status` SET `".$valueType."` = '".$setting_value."' WHERE `gl_status`.`Status` = '".$realLabel."';";
-					break;
-			}
-
-			if(($GLOBALS['Debug_Enabled'] ?? false)) {trigger_error("Running SQL Query to update $updateType settings: ". $update_SQL, E_USER_NOTICE);}
-			
-			if ($conn->query($update_SQL) === TRUE) {
-				if(!isset($savesucess)){$savesucess=true;}
-				if(($GLOBALS['Debug_Enabled'] ?? false)) { trigger_error("Setting record updated successfully for $setting_label", E_USER_NOTICE);}
-			} else {
-				$savesucess=false;
-				trigger_error( "Error updating record: " . $conn->error ,E_USER_ERROR );
-			}
-			
-		}
-		If ($savesucess) {$output .= "Settins Saved";}
-		$output .= "<hr>";
+		$this->getDataAccessObject()->updateAllSettings($_POST);
 	}
 	
 	$settings=getsettings($conn);

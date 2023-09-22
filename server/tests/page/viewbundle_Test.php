@@ -12,10 +12,11 @@ require_once $GLOBALS['rootpath']."/page/viewbundle.class.php";
 class viewbundle_Test extends testprivate 
 {
 	/**
-	 * @medium
+	 * @small
 	 * @covers viewbundlePage::buildHtmlBody
 	 * @covers viewbundlePage::__construct
 	 * @testdox __construct & buildHtmlBody
+	 * @uses viewbundlePage
 	 * @uses Games
 	 * @uses Purchases
 	 * @uses combinedate
@@ -150,58 +151,14 @@ class viewbundle_Test extends testprivate
 	
 	/**
 	 * @small
-	 * @testdox getDataAccessObject()
-	 * @covers viewbundlePage::getDataAccessObject
-	 * @uses viewbundlePage
-	 */
-	public function test_getDataAccessObject() {
-		$page = new viewbundlePage();
-		
-		$method = $this->getPrivateMethod( 'viewbundlePage', 'getDataAccessObject' );
-		$result = $method->invokeArgs( $page,array() );
-		$this->assertThat($result,
-			$this->isInstanceOf("dataAccess")
-		);
-	}
-	
-	/**
-	 * @medium
-	 * @testdox getSettings()
-	 * @covers viewbundlePage::getSettings
-	 * @uses viewbundlePage
-	 * @uses get_db_connection
-	 * @uses getsettings
-	 */
-	public function test_getSettings() {
-		$page = new viewbundlePage();
-		
-		$method = $this->getPrivateMethod( 'viewbundlePage', 'getSettings' );
-		$result = $method->invokeArgs( $page,array() );
-		$this->assertisArray($result);
-	}
-
-	/**
-	 * @small
 	 * @testdox buildHtmlBody with POST
 	 * @covers viewbundlePage::buildHtmlBody
+	 * @uses Page
 	 * @uses viewbundlePage
 	 * @uses lookupTextBox
 	 */
 	public function test_outputHtml_post() {
 		$page = new viewbundlePage();
-		
-		/* $_POST['TransID']="9406";
-		$_POST['Title']="9406";
-		$_POST['Store']="9406";
-		$_POST['BundleID']="9406";
-		$_POST['Tier']="9406";
-		$_POST['purchasetime']="9406";
-		$_POST['Sequence']="9406";
-		$_POST['Price']="9406";
-		$_POST['Paid']="9406";
-		$_POST['Fees']="9406";
-		$_POST['Credit']="9406";
-		$_POST['Link']="9406"; */
 		
 		$_POST = Array ( 
 		"TransID" => 513 ,
@@ -229,5 +186,4 @@ class viewbundle_Test extends testprivate
 		$result = $page->buildHtmlBody();
 		$this->assertisString($result);
 	}
-	/* */
 }

@@ -31,9 +31,14 @@ final class integration_Test extends TestCase
 		 * 2269 = Darksiders 2 Deathinitive edition
 		 */
 		//Formula: (MSRP/TotalMSRP)*BundlePrice
+		
+		$data = new dataSet();
+		$settings = $data->getSettings();
+		$calculations = $data->getCalculations();
+		
 		$conn=get_db_connection();
-		$settings=getsettings($conn);
-		$calculations=reIndexArray(getCalculations("",$conn),"Game_ID");
+		//$settings=getsettings($conn);
+		//$calculations=reIndexArray(getCalculations("",$conn),"Game_ID");
 		//$purchases=reIndexArray(getPurchases("",$conn), "TransID");
 		$purchaseobj=new Purchases("",$conn);
 		$purchases=reIndexArray($purchaseobj->getPurchases(), "TransID");

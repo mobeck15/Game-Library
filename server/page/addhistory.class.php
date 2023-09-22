@@ -11,7 +11,6 @@ include_once $GLOBALS['rootpath']."/inc/getGames.inc.php";
 
 class addhistoryPage extends Page
 {
-	private $dataAccessObject;
 	private $maxID;
 	private $history;
 	private $games;
@@ -36,13 +35,6 @@ class addhistoryPage extends Page
 			$this->steamAPI=new SteamAPI();
 		}
 		return $this->steamAPI;
-	}
-	
-	private function getDataAccessObject(){
-		if(!isset($this->dataAccessObject)){
-			$this->dataAccessObject= new dataAccess();
-		}
-		return $this->dataAccessObject;
 	}
 	
 	public function buildHtmlBody(){
@@ -95,7 +87,7 @@ class addhistoryPage extends Page
 				foreach ($userstatsarray['playerstats']['achievements'] as $achievement2){
 					//Count achievements earned
 					if($achievement2['achieved']==1){
-						if(strtotime($LastGameRecord['Timestamp']) < $achievement2['unlocktime'] AND $achievement2['unlocktime'] <= strtotime($this->usedate." ".$this->usetime)){
+						if(strtotime($LastGameRecord['Timestamp'] ?? "") < $achievement2['unlocktime'] AND $achievement2['unlocktime'] <= strtotime($this->usedate." ".$this->usetime)){
 							$notes .=$acharray[$achievement2['apiname']][0]['displayName']."\r\n";
 						}
 					}
@@ -356,16 +348,18 @@ class addhistoryPage extends Page
 	
 	private function getGames(){
 		if(!isset($this->games)){
-			$this->games = $this->games=getCalculations();
+			$this->games = getCalculations();
 		}
 		return $this->games;
+		//return $this->data()->getCalculations();
 	}
 
 	private function getHistory(){
 		if(!isset($this->history)){
-			$this->history = $this->history=getHistoryCalculations();
+			$this->history = getHistoryCalculations();
 		}
 		return $this->history;
+		//return $this->data()->getHistory();
 	}
 	
 	public function steamMode(){

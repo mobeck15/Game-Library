@@ -209,7 +209,8 @@ function makeStatRow($filter,$rowname,$datakey,$color,$Heading="", $height=1) {
 }
 
 function countgames($filter) {
-	$calculations=getCalculations();
+	$data = new dataSet();
+	$calculations=$data->getCalculations();
 	$gamecount=0;
 	foreach ($calculations as $key => $row) {
 		$countrow=countrow($row);
@@ -257,13 +258,14 @@ function countrow($row) {
 }
 
 function makeStatDataSet($filter,$statname) {
-	$calculations=getCalculations();
+	$data = new dataSet();
+	$calculations=$data->getCalculations();
 	$dataset=array();
+	$usekey=objectTranslator($statname);
 	
 	//TODO: Change this funciton to use price objects. - IN PROGRESS
 	foreach ($calculations as $key => $row) {
 		if(countrow($row)) {
-			$usekey=objectTranslator($statname);
 			$usevalue=methodTranslator($statname, $usekey, $row);
 			
 			if (isset($row[$usekey]) && $row[$usekey] <> null) {
@@ -274,6 +276,11 @@ function makeStatDataSet($filter,$statname) {
 			}
 		}
 	}
+	if($dataset == array())
+	{
+		trigger_error($statname . " has empty dataset");
+	}
+	
 	array_multisort (array_column($dataset, $statname), SORT_DESC, $dataset);
 	
 	return $dataset;
@@ -581,7 +588,7 @@ function getStatRow($filter,$statname){
 		if($statname<>null) {
 			$dataset=makeStatDataSet($filter,$statname);
 			$val=getOnlyValues($dataset,$statname);
-			//var_dump($val); echo "<br>\n";
+			
 			$onlydata=$val['basedata'];
 			$onlydatamode=$val['modedata'];
 			
@@ -589,9 +596,9 @@ function getStatRow($filter,$statname){
 			$row['Sum']=array_sum($onlydata);
 
 			//Average (Mean)
-			//var_dump($row); echo "<br>\n";
 			if($row['Total']==0) {
 				trigger_error($statname . " Total not set");
+				return;
 			} else {
 				$row['Average']=$row['Sum']/$row['Total'];
 			}
@@ -606,6 +613,7 @@ function getStatRow($filter,$statname){
 			
 			//Mode
 			$values = array_count_values($onlydatamode); 
+			//var_dump($values);
 			$row['Mode']= array_search(max($values), $values);
 			
 			//Harmonic Mean (Not working)
@@ -735,10 +743,10 @@ function getStatRow($filter,$statname){
 			case "lastPlayDateTime":
 			case "firstPlayDateTime":
 				$row['Print']['Total']=number_format($row['Total'],0);
-				$row['Print']['Average']=date('Y&#8209;m&#8209;d', $row['Average']);
+				$row['Print']['Average']=date('Y&#8209;m&#8209;d', round($row['Average'],0));
 				//$row['Print']['HarMean']=date('Y-m-d', $row['HarMean']);
 				$row['Print']['HarMean']=null;
-				$row['Print']['Median']=date('Y&#8209;m&#8209;d', $row['Median']);
+				$row['Print']['Median']=date('Y&#8209;m&#8209;d', round($row['Median'],0));
 				$row['Print']['Mode']=date('Y&#8209;m&#8209;d', $row['Mode']);
 				$row['Print']['Max1']=date('Y&#8209;m&#8209;d', $row['Max1']);
 				$row['Print']['Max2']=date('Y&#8209;m&#8209;d', $row['Max2']);

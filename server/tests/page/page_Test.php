@@ -39,4 +39,51 @@ class page_Test extends testprivate {
 		//$property = $this->getPrivateProperty( 'Page', 'body' );
 		$this->assertEquals("Page Body",$page->outputBody());
 	}
+	
+	/**
+	 * @small
+	 * @testdox getDataAccessObject()
+	 * @covers Page::getDataAccessObject
+	 * @uses Page
+	 * @uses dataAccess
+	 */
+	public function test_getDataAccessObject() {
+		$page = new Page();
+		
+		$method = $this->getPrivateMethod( 'Page', 'getDataAccessObject' );
+		$result = $method->invokeArgs( $page,array() );
+		$this->assertThat($result,
+			$this->isInstanceOf("dataAccess")
+		);
+	}
+	
+	/**
+	 * @small
+	 * @testdox getSettings()
+	 * @covers Page::getSettings
+	 * @uses Page
+	 * @uses get_db_connection
+	 * @uses getsettings
+	 */
+	public function test_getSettings() {
+		$page = new Page();
+		
+		$method = $this->getPrivateMethod( 'Page', 'getSettings' );
+		$result = $method->invokeArgs( $page,array() );
+		$this->assertisArray($result);
+	}
+	
+	/**
+	 * @small
+	 * @testdox data()
+	 * @covers Page::data
+	 * @uses Page
+	 */
+	public function test_data() {
+		$page = new Page();
+		
+		$method = $this->getPrivateMethod( 'Page', 'data' );
+		$result = $method->invokeArgs( $page,array() );
+		$this->assertInstanceOf(dataSet::class, $result);
+	}
 }

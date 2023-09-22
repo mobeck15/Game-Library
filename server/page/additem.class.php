@@ -4,7 +4,6 @@ require_once $GLOBALS['rootpath']."/page/_page.class.php";
 include_once $GLOBALS['rootpath']."/inc/utility.inc.php";
 include_once $GLOBALS['rootpath']."/inc/getsettings.inc.php";
 
-
 //TODO: Split into three files, Single form, SteamAPI, and Form Post (where both forms will go and show stats about recently played)
 
 class additemPage extends Page
@@ -15,74 +14,12 @@ class additemPage extends Page
 	
 	public function buildHtmlBody(){
 		$output = "";
-		$conn=get_db_connection();
-		$settings=getsettings($conn);
-
 		if(isset($_POST['TransID'])){
-			foreach ($_POST as $key => &$value) {
-				if($value=="") {
-					$value="null";
-				} else {
-					
-					$value="'".$conn->real_escape_string($value)."'";
-				}
-			}
-			unset($value);
-					
-			$insert_SQL  = "INSERT INTO `gl_items` (`ItemID`, `ProductID`, `TransID`, `ParentProductID`, `Tier`, `Notes`, `SizeMB`, `DRM`, `OS`, `ActivationKey`, `DateAdded`, `Time Added`, `Sequence`, `Library`)";
-			$insert_SQL .= "VALUES (";
-			$insert_SQL .= $_POST['ItemID'].", ";
-			$insert_SQL .= $_POST['ProductID'].", ";
-			$insert_SQL .= $_POST['TransID'].", ";
-			$insert_SQL .= $_POST['ParentProductID'].", ";
-			$insert_SQL .= $_POST['Tier'].", ";
-			$insert_SQL .= $_POST['Notes'].", ";
-			$insert_SQL .= $_POST['SizeMB'].", ";
-			$insert_SQL .= $_POST['DRM'].", ";
-			$insert_SQL .= $_POST['OS'].", ";
-			$insert_SQL .= $_POST['ActivationKey'].", ";
-			$insert_SQL .= $_POST['DateAdded'].", ";
-			$insert_SQL .= $_POST['Time_Added'].", ";
-			$insert_SQL .= $_POST['Sequence'].", ";
-			$insert_SQL .= $_POST['Library'].");";
-
-				if(($GLOBALS['Debug_Enabled'] ?? false)) {trigger_error("Running SQL Query to add new Item: ". $insert_SQL, E_USER_NOTICE);}
-				
-				if ($conn->query($insert_SQL) === TRUE) {
-					$output .= "Record " . $_POST['ItemID'] . " inserted for " . $_POST['Notes'];
-					if(($GLOBALS['Debug_Enabled'] ?? false)) { trigger_error("Item record inserted successfully", E_USER_NOTICE);}
-					$output .= "<hr>";
-				} else {
-					trigger_error( "Error inserting record: " . $conn->error ,E_USER_ERROR );
-					$output .= "<hr>";
-				}
+			$this->getDataAccessObject()->insertItem($_POST);
 		}
 
 		if(isset($_POST['Product_ckbx'])){
-			$insert_SQL  = "INSERT INTO `gl_products` (`Game_ID`, `Title`, `Series`, `LaunchDate`, `SteamID`, `Want`, `Playable`, `Type`, `ParentGameID`, `ParentGame`)";
-			//`DesuraID`,
-			$insert_SQL .= "VALUES (";
-			$insert_SQL .= $_POST['Game_ID'].", ";
-			$insert_SQL .= $_POST['Title'].", ";
-			$insert_SQL .= $_POST['Series'].", ";
-			$insert_SQL .= $_POST['LaunchDate'].", ";
-			$insert_SQL .= $_POST['SteamID'].", ";
-			$insert_SQL .= $_POST['Want'].", ";
-			$insert_SQL .= $_POST['Playable'].", ";
-			$insert_SQL .= $_POST['Type'].", ";
-			$insert_SQL .= $_POST['ParentGameID'].", ";
-			$insert_SQL .= $_POST['ParentGame']."); ";
-
-				if(($GLOBALS['Debug_Enabled'] ?? false)) {trigger_error("Running SQL Query to add new Item: ". $insert_SQL, E_USER_NOTICE);}
-				
-				if ($conn->query($insert_SQL) === TRUE) {
-					$output .= "Record " . $_POST['Game_ID'] . " inserted for " . $_POST['Title'];
-					if(($GLOBALS['Debug_Enabled'] ?? false)) { trigger_error("Item record inserted successfully", E_USER_NOTICE);}
-					$output .= "<hr>";
-				} else {
-					trigger_error( "Error inserting record: " . $conn->error ,E_USER_ERROR );
-					$output .= "<hr>";
-				}
+			$this->getDataAccessObject()->insertGame2($_POST);
 		}
 
 		//TODO: Enforce required fields
@@ -108,21 +45,8 @@ class additemPage extends Page
 			</tr>
 			</thead>';
 			
-			$sql="select max(`ItemID`) maxid from `gl_items`";
-			if($result = $conn->query($sql)){
-				while($row = $result->fetch_assoc()) {
-					$nextItemID=$row['maxid']+1;
-				}
-			}
-
-			$sql="select max(`Game_ID`) maxid from `gl_products`";
-			if($result = $conn->query($sql)){
-				while($row = $result->fetch_assoc()) {
-					$nextGame_ID=$row['maxid']+1;
-				}
-			}
-
-			$conn->close();	
+			$nextItemID = $this->getDataAccessObject()->getMaxTableId("items");
+			$nextGame_ID = $this->getDataAccessObject()->getMaxTableId("games");
 
 			$blank="";
 
@@ -132,9 +56,6 @@ class additemPage extends Page
 			 * select * FROM INFORMATION_SCHEMA.COLUMNS WHERE table_name = 'products'
 			 * select `COLUMN_NAME`, `COLUMN_COMMENT` FROM INFORMATION_SCHEMA.COLUMNS WHERE table_name = 'products'
 			 * ALTER TABLE `gl_products` CHANGE `Game_ID` `Game_ID` INT(11) NOT NULL COMMENT 'Game ID';
-			 * 
-			 * DONE: 
-			 * Update autofill scripts to fill in notes on change, not just select from the dropdown.
 			 */
 
 			$output .= '<tr>

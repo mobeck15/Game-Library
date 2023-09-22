@@ -5,7 +5,6 @@ include_once $GLOBALS['rootpath']."/inc/utility.inc.php";
 
 class datacheckPage extends Page
 {
-	private $dataAccessObject;
 	public function __construct() {
 		$this->title="Database Checks";
 	}
