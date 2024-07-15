@@ -453,8 +453,8 @@ class addhistoryPage extends Page
 			$data['totaltime']=timeduration((float)$this->getGameAttribute($row['appid'],'GrandTotal'),"seconds");
 			if (isset($lastrecord[$this->getGameAttribute($row['appid'])])) {
 				$data['lastmin']=($lastrecord[$this->getGameAttribute($row['appid'])]['Time']*60);
-				$data['lasthrs']=round($lastrecord[$this->getGameAttribute($row['appid'])]['Time'],1);
-				$data['lasttime']=timeduration($lastrecord[$this->getGameAttribute($row['appid'])]['Time'],"hours");
+				$data['lasthrs']=round((float)$lastrecord[$this->getGameAttribute($row['appid'])]['Time'],1);
+				$data['lasttime']=timeduration((float)$lastrecord[$this->getGameAttribute($row['appid'])]['Time'],"hours");
 				$data['lastkw']=$lastrecord[$this->getGameAttribute($row['appid'])]['KeyWords'];
 				$data['duration']=timeduration($row['playtime_forever'] - ($lastrecord[$this->getGameAttribute($row['appid'])]['Time']*60),"minutes");
 			}
