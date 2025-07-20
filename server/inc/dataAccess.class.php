@@ -588,6 +588,12 @@ class dataAccess {
 		
 		$kwlist2 = array_merge($Genrelist,$Typelist,$sModelist,$Feturelist,$gModelist);
 
+		//Cancel operation if there is nothing to insert.
+		if(count($kwlist2)==0)
+		{
+			return;
+		}
+		
 		$delete_SQL = "DELETE FROM gl_keywords WHERE `gl_keywords`.`ProductID` = :gameid";
 		$query = $this->getConnection()->prepare($delete_SQL);
 		$query->bindvalue(':gameid', $postdata['ID']);
