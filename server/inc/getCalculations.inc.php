@@ -81,8 +81,8 @@ function getCalculations($gameID="",$connection=false,$start=false,$end=false){
 			if($game['SteamAchievements']<>0){
 				$game['AchievementsPct']=($game['Achievements']/$game['SteamAchievements'])*100;
 			} 
-			$game['Active']=$settings['status'][$game['Status']]['Active'];
-			$game['CountGame']=$settings['status'][$game['Status']]['Count'];
+			$game['Active']=$settings['status'][$game['Status']]['Active'] ?? False;
+			$game['CountGame']=$settings['status'][$game['Status']]['Count'] ?? False;
 			$game['allKeywords']="";
 			
 			if (isset($keywords[$game['Game_ID']])){
@@ -404,10 +404,8 @@ function getCalculations($gameID="",$connection=false,$start=false,$end=false){
 
 function getPriceSort($SourceArray,$SortObject,$onlyActive=false){
 	foreach ($SourceArray as $key => $row){
-		if($onlyActive==true) {
-			if($row['Active']==true){
-				$SortArray[$key] = $row[$SortObject]->getPricePerHourOfTimePlayed();
-			}
+		if($onlyActive==true && $row['Active']==true) {
+			$SortArray[$key] = $row[$SortObject]->getPricePerHourOfTimePlayed();
 		} else {
 			$SortArray[$key] = $row[$SortObject]->getPricePerHourOfTimePlayed();
 		}

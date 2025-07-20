@@ -82,7 +82,6 @@ function getsettings($connection=false){
 		
 		return $settings;
 	}
-
 }
 
 if (basename($_SERVER["SCRIPT_NAME"], '.php') == "getsettings.inc") {

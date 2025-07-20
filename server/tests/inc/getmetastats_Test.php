@@ -87,6 +87,7 @@ final class getmetastats_Test extends TestCase
 	 * @uses methodTranslator
 	 * @uses objectTranslator
 	 * @uses reIndexArray
+	 * @uses dataSet
 	 */
     public function test_makeDetailTable() {
 		//Arrange
@@ -352,6 +353,8 @@ final class getmetastats_Test extends TestCase
 	 * @uses objectTranslator
 	 * @uses regroupArray
 	 * @uses timeduration
+	 * @uses dataSet
+	 * @uses reIndexArray
 	 * @doesNotPerformAssertions
 	 */
     public function test_getStatRow_total0() {

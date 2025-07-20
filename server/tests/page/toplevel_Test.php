@@ -46,6 +46,11 @@ class toplevel_Test extends TestCase {
 	 */
 	public function test_outputHtml() {
 		$page = new toplevelPage();
+		
+		$GLOBALS["SETTINGS"]=array(
+		"CountDupes"=>0,
+		);
+		
 		$result = $page->buildHtmlBody();
 		$this->assertisString($result);
 	}
@@ -58,6 +63,11 @@ class toplevel_Test extends TestCase {
 	public function test_outputHtml_detail() {
 		$_GET['Group']="Bundle";
 		$_GET['Detail']="88";
+		
+		$GLOBALS["SETTINGS"]=array(
+		"CountDupes"=>0,
+		);
+		
 		$page = new toplevelPage();
 		$result = $page->buildHtmlBody();
 		$this->assertisString($result);

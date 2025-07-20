@@ -1,7 +1,7 @@
 <?php
 $GLOBALS['rootpath']= $GLOBALS['rootpath'] ?? "..";
 include_once $GLOBALS['rootpath']."/inc/getCalculations.inc.php";
-include_once $GLOBALS['rootpath']."/inc/gettoplist.inc.php";
+include_once $GLOBALS['rootpath']."/inc/getTopList.inc.php";
 
 class dataSet {
 	private $calculations;

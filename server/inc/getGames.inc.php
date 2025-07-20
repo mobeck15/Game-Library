@@ -160,11 +160,11 @@ class Games {
 
 class Game {
 	public int $Game_ID;
+	public DateTime $LaunchDate;
 	
 	public function __construct($GameRowArray) {
 		$this->Game_ID    = (int)$GameRowArray['Game_ID'];
 		$this->LaunchDate = new DateTime($GameRowArray['LaunchDate']);
-		
 	}
 }
 

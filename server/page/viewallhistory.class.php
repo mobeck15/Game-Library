@@ -2,7 +2,7 @@
 declare(strict_types=1);
 require_once $GLOBALS['rootpath']."/page/_page.class.php";
 include_once $GLOBALS['rootpath']."/inc/utility.inc.php";
-include_once $GLOBALS['rootpath']."/inc/getsettings.inc.php";
+include_once $GLOBALS['rootpath']."/inc/getSettings.inc.php";
 include_once $GLOBALS['rootpath']."/inc/getHistoryCalculations.inc.php";
 
 class viewallhistoryPage extends Page
