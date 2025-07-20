@@ -7,7 +7,7 @@ require_once $GLOBALS['rootpath']."/page/historicchartdata.class.php";
 /**
  * @group pageclass
  */
-class historicchartdata_Test extends TestCase {
+class historicchartdatax_Test extends TestCase {
 	/**
 	 * @medium
 	 * @covers historicchartdataPage::buildHtmlBody

@@ -167,19 +167,4 @@ class viewallhistory_Test extends testprivate {
 		$result = $method->invokeArgs( $page,array() );
 		$this->assertisArray($result);
 	}
-
-	/**
-	 * @medium
-	 * @testdox getSettings()
-	 * @covers viewallhistoryPage::getSettings
-	 * @uses viewallhistoryPage
-	 */
-	public function test_getSettings() {
-		$page = new viewallhistoryPage();
-
-		$method = $this->getPrivateMethod( 'viewallhistoryPage', 'getSettings' );
-		$result = $method->invokeArgs( $page,array() );
-		$this->assertisArray($result);
-	}
-
 }

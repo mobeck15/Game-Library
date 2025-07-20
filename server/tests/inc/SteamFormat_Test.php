@@ -419,11 +419,26 @@ final class SteamFormat_Test extends testprivate
 			)
 		);
 		
-		//var_dump($appdetails);
-		
 		$output=$this->SteamFormat_obj->formatAppDetails($appdetails);
         $this->assertisString($output);
  		$this->assertNotEquals("",$output);		
+   }
+   
+   /**
+	 * @small
+	 * @covers SteamFormat::formatAppDetails
+	 * @uses SteamFormat
+	 * @uses boolText
+	 */
+	public function test_formatAppDetails_false(): void
+    {
+		$appdetails=array(
+			"success" => false
+		);
+		
+		$output=$this->SteamFormat_obj->formatAppDetails($appdetails);
+        $this->assertisString($output);
+ 		$this->assertEquals("",$output);		
    }
 	
 	/**

@@ -7,6 +7,10 @@ if(isset($GLOBALS[__FILE__])){
 }
 $GLOBALS[__FILE__]=1;
 
+
+//TODO: Update to make a settings class and use dataAccess.
+
+
 /*
  * Gets the settings from the database and returns a structured array.
  */
@@ -48,8 +52,8 @@ function getsettings($connection=false){
 				
 			}
 		} else {
-			$settings = false; //@codeCoverageIgnore
-			trigger_error("SQL Query Failed: " . mysqli_error($conn) . "</br>Query: ". $sql); //@codeCoverageIgnore
+			$settings = false; 
+			trigger_error("SQL Query Failed: " . mysqli_error($conn) . "</br>Query: ". $sql); 
 		}
 
 		//Query the database for the status settings.
@@ -60,8 +64,8 @@ function getsettings($connection=false){
 				$settings['status'][$row['Status']]['Count']=$row['Count'];
 			}
 		} else {
-			$settings = false; //@codeCoverageIgnore
-			trigger_error("SQL Query Failed: " . mysqli_error($conn) . "</br>Query: ". $sql); //@codeCoverageIgnore
+			$settings = false; 
+			trigger_error("SQL Query Failed: " . mysqli_error($conn) . "</br>Query: ". $sql); 
 		}
 		
 		//If connection was not provided, close the connection created for this function.

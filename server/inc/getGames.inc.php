@@ -3,7 +3,7 @@
 $GLOBALS['rootpath']= $GLOBALS['rootpath'] ?? "..";
 require_once $GLOBALS['rootpath']."/inc/getCalculations.inc.php";
 require_once $GLOBALS['rootpath']."/inc/utility.inc.php";
-require_once $GLOBALS['rootpath']."/inc/getsettings.inc.php";
+require_once $GLOBALS['rootpath']."/inc/getSettings.inc.php";
 require_once $GLOBALS['rootpath']."/inc/getHistoryCalculations.inc.php";
 require_once $GLOBALS['rootpath']."/inc/getActivityCalculations.inc.php";
 require_once $GLOBALS['rootpath']."/inc/getPurchases.class.php";
@@ -28,6 +28,12 @@ class Games {
 	private function CalculateGameRow($row){
 		$row['Game_ID']=(int)$row['Game_ID'];
 		
+		if($row['LaunchDate'] == null OR $row['LaunchDate']=="0000-00-00") 
+		{
+			$row['LaunchDate']="0000-00-00";
+			trigger_error("<a href=''>".$row['Game_ID'] ." - ". $row['Title'] . "</a> has no launch date set.");
+		}
+
 		$row['LaunchDate'] = new DateTime($row['LaunchDate']);
 		//TODO: update other files to remove need for 'LaunchDateValue'
 		if(strtotime($row['LowDate'] ?? "") == 0) {

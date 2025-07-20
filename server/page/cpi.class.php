@@ -5,7 +5,6 @@ include_once $GLOBALS['rootpath']."/inc/utility.inc.php";
 
 class cpiPage extends Page
 {
-	private $dataAccessObject;
 	public function __construct() {
 		$this->title="CPI";
 	}
@@ -13,51 +12,11 @@ class cpiPage extends Page
 	public function buildHtmlBody(){
 		$output="";
 		
-$conn=get_db_connection();
-
 if(isset($_POST['CPI'])){
-	foreach ($_POST as $key => &$value) {
-		if($value=="") {
-			$value="null";
-		} else {
-			$value="'".$conn->real_escape_string($value)."'";
-		}
-	}
-	unset($value);
-	
-	$testquery="SELECT count(*) as count FROM `gl_cpi` where `Year`=".$_POST['Year']." and `Month`=".$_POST['Month'].";";
-		
-	if ($result = $conn->query($testquery)) {
-		$row = $result->fetch_assoc(); 
-		if($row['count']==1){
-			if($GLOBALS['Debug_Enabled']) { trigger_error("Data already exists, Update Required", E_USER_NOTICE);}
-			$insert_SQL = "UPDATE cpi SET CPI = ".$_POST['CPI']." WHERE `Year`=".$_POST['Year']." and `Month`=".$_POST['Month'].";";
-		} else {
-			if($GLOBALS['Debug_Enabled']) { trigger_error("Data does not exist, Insert Required", E_USER_NOTICE);}
-			$insert_SQL  = "INSERT INTO `gl_cpi` (`Year`, `Month`, `CPI`)";
-			$insert_SQL .= "VALUES (";
-			$insert_SQL .= $_POST['Year'].", ";
-			$insert_SQL .= $_POST['Month'].", ";
-			$insert_SQL .= $_POST['CPI'].");";
-		}
-	} else {
-		trigger_error( "Attempting query: " . $testquery . "<br>" . $conn->error ,E_USER_ERROR );
-	}
-	
-	if($GLOBALS['Debug_Enabled']) {trigger_error("Running SQL Query: ". $insert_SQL, E_USER_NOTICE);}
-		
-		if ($conn->query($insert_SQL) === TRUE) {
-			if($GLOBALS['Debug_Enabled']) { trigger_error("Item record inserted successfully", E_USER_NOTICE);}
-		} else {
-			trigger_error( "Error inserting record: " . $conn->error ,E_USER_ERROR );
-		}
-	$output .= "<hr>";
+	$this->getDataAccessObject()->addCPI($_POST['Year'],$_POST['Month'],$_POST['CPI']);
 }
 
-
-$cpi=getAllCpi($conn);
-	
-//var_dump($cpi);
+$cpi = $this->getDataAccessObject()->getAllCPI();
 
 $output .= "<table border=0>";
 $output .= "<thead>";

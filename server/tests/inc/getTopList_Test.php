@@ -96,7 +96,8 @@ final class getTopList_Test extends TestCase
     public function test_getTopList_Alt() {
 		$conn=get_db_connection();
 		//$conn=$this->Connection;
-		$calculations=getCalculations("",$conn);
+		$data = new dataSet();
+		$calculations=$data->getCalculations();
         $this->assertisArray(getTopList("",$conn,$calculations));
         $this->assertisArray(getTopList("Keyword",$conn,$calculations));
         $this->assertisArray(getTopList("Series",$conn,$calculations));

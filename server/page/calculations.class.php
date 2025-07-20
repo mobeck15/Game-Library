@@ -12,14 +12,490 @@ class calculationsPage extends Page
 		$this->title="Calculations";
 	}
 	
+	private function defaultFilter() {
+		$filter=array(
+			'Columns' => array(
+				"Title",
+				"All Bundles",
+				"PurchaseDate",
+				"LaunchPrice",
+				"MSRP",
+				"HistoricLow",
+				"Paid",
+				"SalePrice",
+				//"AltSale",
+				"TimeToBeat",
+				"Metascore",
+				"MetaUser",
+				"GrandTotal",
+				"Status",
+				"lastplay",
+				"DateUpdated",
+				"Paidperhr",
+				"Saleperhr",
+				"PaidLess1",
+				"SaleLess1",
+				"PaidLess2",
+				"SaleLess2"
+			),
+			'Sortby' => "Title",
+			'SortDir' => SORT_ASC,
+			'HideRows' => array(
+				array(
+					'field' => "Playable",
+					'operator' => "eq",
+					'value' => false
+				),
+				array(
+					'field' => "Status",
+					'operator' => "eq",
+					'value' => "Never"
+				),
+				array(
+					'field' => "Status",
+					'operator' => "eq",
+					'value' => "Broken"
+				)
+			)
+		);
+		
+		return $filter;
+	}
+	
+	private function allColumnsFilter()	{
+		$filter=array(
+				'Columns' => array(
+					"Title",
+					"Type",
+					"Playable",
+					"ParentGame",
+					"All Bundles",
+					"Platforms",
+					"Series",
+					"Keywords",
+					"LaunchDate",
+					"PurchaseDate",
+					"BundlePrice",
+					"LaunchPrice",
+					"MSRP",
+					"CurrentMSRP",
+					"HistoricLow",
+					"Paid",
+					"SalePrice",
+					"AltSalePrice",
+					"Want",
+					"Achievements",
+					"Cards",
+					"TimeToBeat",
+					"TimeLeftToBeat",
+					"Metascore",
+					"MetaUser",
+					"Hours",
+					"GrandTotal",
+					"AchievementsEarned",
+					"AchievementsLeft",
+					"Status",
+					"CountGame",
+					"Active",
+					"lastplay",
+					"LastPlayORPurchase",
+					"firstplay",
+					"LastBeat",
+					"DateUpdated",
+					"Launchperhr",
+					"MSRPperhr",
+					"Currentperhr",
+					"Historicperhr",
+					"Paidperhr",
+					"Saleperhr",
+					"Altperhr",
+					"LaunchLess1",
+					"MSRPLess1",
+					"CurrentLess1",
+					"HistoricLess1",
+					"PaidLess1",
+					"SaleLess1",
+					"AltLess1",
+					"LaunchLess2",
+					"MSRPLess2",
+					"CurrentLess2",
+					"HistoricLess2",
+					"PaidLess2",
+					"SaleLess2",
+					"AltLess2",
+					"LaunchHrsNext1",
+					"MSRPHrsNext1",
+					"CurrentHrsNext1",
+					"HistoricHrsNext1",
+					"PaidHrsNext1",
+					"SaleHrsNext1",
+					"AltHrsNext1",
+					"LaunchHrsNext2",
+					"MSRPHrsNext2",
+					"CurrentHrsNext2",
+					"HistoricHrsNext2",
+					"PaidHrsNext2",
+					"SaleHrsNext2",
+					"AltHrsNext2"
+				),
+				'Sortby' => "lastplaySort",
+				'SortDir' => SORT_DESC,
+				'HideRows' => array()
+			);
+			
+		return $filter;
+	}
+
+	private function customFilter($getData) {
+		if(isset($getData['col'])){
+			$filter['Columns'] = explode (",",$getData['col']);
+			//var_dump($filter['Columns'] );
+		}
+		if(isset($getData['sort'])){
+			if($getData['sort'] == "PurchaseDate") {
+				//TODO: Fix all the links to use PurchaseDateTime instead of Purchasedate
+				$filter['Sortby'] = "AddedDateTime";
+			} else if($getData['sort'] == "LaunchDateValue") {
+				//TODO: Fix all the links to use LaunchDate insted of LaunchDateValue
+				$filter['Sortby'] = "LaunchDate";
+			} else {
+				$filter['Sortby'] = $getData['sort'];
+			}
+			$filter['SortDir'] = SORT_DESC;
+		}
+		if(isset($getData['dir']) && ($getData['dir']==3 || $getData['dir']==1)){
+			$filter['SortDir']=SORT_DESC;
+			//SORT_DESC = 3 (also accept 1)
+		}elseif (isset($getData['dir']) && ($getData['dir']==4 || $getData['dir']==0)){
+			$filter['SortDir']=SORT_ASC;
+			//SORT_ASC = 4 (also accept 0)
+		}
+		if(isset($getData['hide'])){
+			$filter['HideRows']=array();
+			$hideData = explode (",",$getData['hide']);
+			$index2=1;
+			foreach($hideData as $data){
+				if($index2==1){
+					$tempdata=array();
+					$tempdata['field']=$data;
+					$index2++;
+				}elseif($index2==2){
+					
+					$tempdata['operator']=$data;
+					$index2++;
+				}elseif($index2==3){
+					
+					$tempdata['value']=$data;
+					$index2=1;
+					$filter['HideRows'][]=$tempdata;
+				}
+				
+			}
+		}
+		return $filter;
+	}
+	
+	private function showgame($filter,$game) {
+		if(!isset($filter['HideRows'])) { return true; }
+		$showgame = true;
+		
+		foreach ($filter['HideRows'] as $hide) {
+			switch($hide['operator']){
+				case "gt": //Greater Than
+					if($game[$hide['field']]>$hide['value']){
+						$showgame=false; 
+					}
+					break;
+				case "gte": //Greater Than or Equal
+					if($game[$hide['field']]>=$hide['value']){
+						$showgame=false; 
+					}
+					break;
+				case "eq": // Equal
+					if($game[$hide['field']]==$hide['value']){
+						$showgame=false; 
+					}
+					break;
+				case "lte": //Less Than or Equal
+					if($game[$hide['field']]<=$hide['value']){
+						$showgame=false; 
+					}
+					break;
+				case "lt": //Less Than
+					if($game[$hide['field']]<$hide['value']){
+						$showgame=false; 
+					}
+					break;
+				case "ne": //Not Equal
+					if($game[$hide['field']]<>$hide['value']){
+						$showgame=false; 
+					}
+					break;
+			}
+		}
+		
+		return $showgame;
+	}
+	
+	private function sortCalculations($calculations,$sortby,$sortdir) {
+		switch($sortby){
+			case "PurchaseDate": 
+				foreach ($calculations as $key => $row) {
+					$Sortby1[$key] = $row['AddedDateTime']->getTimestamp();
+				}
+				break;
+			case "LaunchDate":
+				foreach ($calculations as $key => $row) {
+					$Sortby1[$key] = $row[$sortby]->getTimestamp();
+				}
+				break;
+			case "lastplay":
+			case "firstplay":
+			case "LastBeat":
+			case "DateUpdated":
+			case "LastPlayORPurchase":
+				foreach ($calculations as $key => $row) {
+					$Sortby1[$key]  = strtotime($row[$sortby]);
+				}
+				break;
+			default:
+				foreach ($calculations as $key => $row) {
+					//TODO: use date object instead on 'LaunchDateValue'
+					$Sortby1[$key] = $row[$sortby];
+				}
+				break;
+		}
+		array_multisort($Sortby1, $sortdir, $calculations);
+
+		return $calculations;
+	}
+	
+	private function makeGameRow($game,$Columns) {
+		$output = '<tr class="'. $game['Status'].'">';
+		foreach ($Columns as $row) {
+			$game[$row] = $game[$row] ?? "";
+			switch($row){
+				case "Game_ID":
+					$output .= '<td>'. $game['Game_ID'].'</td>';
+					break;
+				case "Title":
+					$output .= '<td class="text"><a href="viewgame.php?id='. $game['Game_ID'].'" target="_blank">'.$game[$row].'</a></td>';
+					break;
+				case "TitleEdit":
+					$output .= '<td class="text"><a href="viewgame.php?id='. $game['Game_ID'].'&edit=1" target="_blank">'. $game['Title'].'</a></td>';
+					break;
+				case "Type":
+				case "Series":
+				default:
+					$output .= '<td class="text">'. $game[$row].'</td>';
+					break;
+				case "Playable":
+				case "CountGame":
+				case "Active":
+				case "Inactive":
+				case "DrmFree":
+				case "OtherLibrary":
+					$output .= '<td class="text">'. boolText($game[$row]).'</td>';
+					break;
+				case "ParentGame":
+					$output .= '<td class="text"><a href="viewgame.php?id='. $game['ParentGameID'].'" target="_blank">'. $game[$row].'</a></td>';
+					break;
+				case "All Bundles":
+					//$output .= "<td class=\"text\">" . $game['PrintBundles'] . "</td>"; // Bundles  //print_r($game['TopBundleIDs'],true) .
+					$output .= '<td class="text">'. str_replace("|&nbsp;", "</br>", str_replace(" ", "&nbsp;", $game['PrintBundles'])).'</td>'; // Bundles
+					//print_r($game['TopBundleIDs'],true) .
+					break;
+				case "Platforms":
+					$output .= '<td class="text">'. nl2br($game[$row]).'</td>'; // Platforms
+					break;
+				case "Keywords":
+					$output .= '<td class="text">'. nl2br($game['allKeywords']).'</td>'; // Keywords
+					break;
+				case "LaunchDate":
+					$output .= '<td class="numeric">'. $game[$row]->format("n/d/Y").'</td>';
+					break;
+				case "Want":
+				case "AchievementsLeft":
+				case "DateUpdated":
+				case "DrmFreeSize":
+				case "Review":
+					$output .= '<td class="numeric">'. $game[$row].'</td>';
+					break;
+				case "BundlePrice":
+				case "LaunchPrice":
+				case "MSRP":
+				case "CurrentMSRP":
+				case "HistoricLow":
+				case "Paid":
+				case "SalePrice":
+				case "AltSalePrice":
+
+				case "Launchperhr":
+				case "MSRPperhr":
+				case "Currentperhr":
+				case "Historicperhr":
+				case "Paidperhr":
+				case "Saleperhr":
+				case "Altperhr":
+				
+				case "LaunchLess1":
+				case "MSRPLess1":
+				case "CurrentLess1":
+				case "HistoricLess1":
+				case "PaidLess1":
+				case "SaleLess1":
+				case "AltLess1":
+					$output .= '<td class="numeric">$'.sprintf("%.2f",$game[$row]).'</td>';
+					break;
+				case "PurchaseDate":
+					$output .= '<td class="numeric">';
+					if(isset($game['AddedDateTime'])) {
+						$output .= str_replace(" ", "&nbsp;", $game['AddedDateTime']->format("n/j/Y g:i:s A"));
+					}
+					$output .= '</td>';
+					break;
+				case "Achievements":
+					$output .= '<td class="numeric">'. $game['SteamAchievements'].'</td>';
+					break;
+				case "Cards":
+					$output .= '<td class="numeric">'. $game['SteamCards'].'</td>';
+					break;
+				case "TimeToBeat":
+					$output .= '<td class="numeric">'.$game['TimeToBeatLink2'].'</td>';
+					break;
+				case "Metascore":
+					$output .= '<td class="numeric">'. $game['MetascoreLinkCritic'].'</td>';
+					break;
+				case "MetaUser":
+					$output .= '<td class="numeric">'. $game['MetascoreLinkUser'].'</td>';
+					break;
+				case "Hours":
+					$output .= '<td class="numeric">'.timeduration($game['totalHrs'],"seconds").'</td>'; // Hours
+					break;
+				case "GrandTotal":
+					$output .= '<td class="numeric">'. timeduration($game[$row],"seconds").'</td>'; // Total Hours
+					break;
+				case "AchievementsEarned":
+					$output .= '<td class="numeric">'. $game['Achievements'].'</td>'; // Achievements Earned
+					break;
+				case "Status":
+					$output .= '<td class="text">'. str_replace(" ", "&nbsp;", $game[$row]).'</td>';
+					break;
+				case "lastplay":
+				case "firstplay":
+				case "LastBeat":
+				case "LastPlayORPurchase":
+					$output .= '<td class="numeric">'. str_replace(" ", "&nbsp;", $game[$row]).'</td>';
+					break;
+				case "MSRPLess2":
+				case "CurrentLess2":
+				case "HistoricLess2":
+				case "PaidLess2":
+				case "SaleLess2":
+				case "AltLess2":
+
+				case "LaunchHrsNext1":
+				case "MSRPHrsNext1":
+				case "CurrentHrsNext1":
+				case "HistoricHrsNext1":
+				case "PaidHrsNext1":
+				case "SaleHrsNext1":
+				case "AltHrsNext1":
+
+				case "LaunchHrsNext2":
+				case "MSRPHrsNext2":
+				case "CurrentHrsNext2":
+				case "HistoricHrsNext2":
+				case "PaidHrsNext2":
+				case "SaleHrsNext2":
+				case "AltHrsNext2":
+				
+				case "TimeLeftToBeat":
+					if(is_string($game[$row])) { echo $row; }
+					$output .= '<td class="numeric">'.timeduration($game[$row],"hours").'</td>';
+					break;
+				case "LaunchLess2":
+					$output .= '<td class="numeric">'. $game['LaunchPriceObj']->getHoursTo01LessPerHour(true).'</td>';
+					break;
+			}
+		}
+		$output .= '</tr>';
+		
+		return $output;
+	}
+	
+	private function totalCounts($counters) {
+		//needs to be sorted to get Median, Direction is irrelevant.
+		rsort($counters['data']);
+		//array_multisort($counters['data'], $fullstatdata,SORT_ASC);
+		
+		//TODO: errors out if there are no results in the filtered list
+		if(is_numeric($counters['data'][0])) {
+			$counters['Total']=array_sum($counters['data']);
+			
+			$counters['Avg']=0;
+			if($counters['countall']!=0){
+				$counters['Avg']=$counters['Total']/$counters['countall'];
+			}
+			
+			$sum=0;
+			for ($i = 0; $i < $counters['countall']; $i++) {
+				$sum += 1 / ($counters['data'][$i]+.00001);
+			}
+
+			$counters['Mean']=0;
+			if($sum!=0){
+				$counters['Mean'] = $counters['countall'] / $sum;
+			}
+			
+			$usearray=$counters['data'];
+			foreach($usearray as $key => &$value){
+				$type = gettype($value);
+				$value =$value * 100;
+				if($type=="double" OR $type=="float"){
+					$value = (int)($value );
+				} elseif ($type=="boolean") { 
+					unset($usearray[$key]);
+				} 
+			}
+			//$counters['Mode']=mmmr($usearray,'mode');
+			$counters['Mode']=$counters['Mode']/100;
+			
+			$usearray=array_unique($usearray);
+			rsort($usearray);
+			
+			$counters['max1']=$usearray[0]/100;
+			if(isset($usearray[1])) {
+				$counters['max2']=$usearray[1]/100;
+			}
+			$counters['min1']=min($usearray)/100;
+			if(isset($usearray[count($usearray)-2])) {
+				$counters['min2']=$usearray[count($usearray)-2]/100;	
+			}
+
+		} else {
+			$counters['Total']="";
+			$counters['Avg']  ="";
+			$counters['Mean'] ="";
+			$counters['max1'] ="";
+			$counters['max2'] ="";
+			$counters['min1'] ="";
+			$counters['min2'] ="";
+		}
+		
+		//TODO: errors out if there are no results in the filtered list
+		$counters['Median']=$counters['data'][round($counters['countall'] / 2)-1];
+		if($counters['Median'] instanceof DateTime) {
+			//$counters['Median']=$counters['Median']->getTimestamp();
+			$counters['Median']=$counters['Median']->format("n/j/Y g:i:s");
+		}
+		return $counters;
+	}
+	
 	public function buildHtmlBody(){
 		$output = "";
 		
 //TODO: Make a form menu for custom view
-
-$conn=get_db_connection();
-
-$settings=getsettings($conn);
 
 $output .= '
 <style> 
@@ -264,191 +740,20 @@ $output .= '<table>
 </div>
 <a name="tablestart"></a>';
 
-$time_start = microtime(true);
-
-$filter=array(
-	'Columns' => array(
-		"Title",
-		"All Bundles",
-		"PurchaseDate",
-		"LaunchPrice",
-		"MSRP",
-		"HistoricLow",
-		"Paid",
-		"SalePrice",
-		//"AltSale",
-		"TimeToBeat",
-		"Metascore",
-		"MetaUser",
-		"GrandTotal",
-		"Status",
-		"lastplay",
-		"DateUpdated",
-		"Paidperhr",
-		"Saleperhr",
-		"PaidLess1",
-		"SaleLess1",
-		"PaidLess2",
-		"SaleLess2"
-	),
-	'Sortby' => "Title",
-	'SortDir' => SORT_ASC,
-	'HideRows' => array(
-		array(
-			'field' => "Playable",
-			'operator' => "eq",
-			'value' => false
-		),
-		array(
-			'field' => "Status",
-			'operator' => "eq",
-			'value' => "Never"
-		),
-		array(
-			'field' => "Status",
-			'operator' => "eq",
-			'value' => "Broken"
-		)
-	)
-);
+$filter=$this->defaultFilter();
 
 if(isset($_GET['fav'])) {
 	$favorite=$_GET['fav'];
 	switch($favorite) {
 		case "Custom":
-			if(isset($_GET['col'])){
-				$filter['Columns'] = explode (",",$_GET['col']);
-				//var_dump($filter['Columns'] );
-			}
-			if(isset($_GET['sort'])){
-				if($_GET['sort']== "PurchaseDate") {
-					//TODO: Fix all the links to use PurchaseDateTime instead of Purchasedate
-					$filter['Sortby']="AddedDateTime";
-				} else if($_GET['sort']== "LaunchDateValue") {
-					//TODO: Fix all the links to use LaunchDate insted of LaunchDateValue
-					$filter['Sortby']="LaunchDate";
-				} else {
-					$filter['Sortby']=$_GET['sort'];
-				}
-				$filter['SortDir']=SORT_DESC;
-			}
-			if(isset($_GET['dir']) && ($_GET['dir']==3 || $_GET['dir']==1)){
-				$filter['SortDir']=SORT_DESC;
-				//SORT_DESC = 3 (also accept 1)
-			}elseif (isset($_GET['dir']) && ($_GET['dir']==4 || $_GET['dir']==0)){
-				$filter['SortDir']=SORT_ASC;
-				//SORT_ASC = 4 (also accept 0)
-			}
-			if(isset($_GET['hide'])){
-				$filter['HideRows']=array();
-				$hideData = explode (",",$_GET['hide']);
-				$index2=1;
-				foreach($hideData as $data){
-					if($index2==1){
-						$tempdata=array();
-						$tempdata['field']=$data;
-						$index2++;
-					}elseif($index2==2){
-						
-						$tempdata['operator']=$data;
-						$index2++;
-					}elseif($index2==3){
-						
-						$tempdata['value']=$data;
-						$index2=1;
-						$filter['HideRows'][]=$tempdata;
-					}
-					
-				}
-			}
+			$filter = $this->customFilter($_GET);
 			break;
 
 		case "Default":
 		default:
-			$filter=array(
-				'Columns' => array(
-					"Title",
-					"Type",
-					"Playable",
-					"ParentGame",
-					"All Bundles",
-					"Platforms",
-					"Series",
-					"Keywords",
-					"LaunchDate",
-					"PurchaseDate",
-					"BundlePrice",
-					"LaunchPrice",
-					"MSRP",
-					"CurrentMSRP",
-					"HistoricLow",
-					"Paid",
-					"SalePrice",
-					"AltSalePrice",
-					"Want",
-					"Achievements",
-					"Cards",
-					"TimeToBeat",
-					"TimeLeftToBeat",
-					"Metascore",
-					"MetaUser",
-					"Hours",
-					"GrandTotal",
-					"AchievementsEarned",
-					"AchievementsLeft",
-					"Status",
-					"CountGame",
-					"Active",
-					"lastplay",
-					"LastPlayORPurchase",
-					"firstplay",
-					"LastBeat",
-					"DateUpdated",
-					"Launchperhr",
-					"MSRPperhr",
-					"Currentperhr",
-					"Historicperhr",
-					"Paidperhr",
-					"Saleperhr",
-					"Altperhr",
-					"LaunchLess1",
-					"MSRPLess1",
-					"CurrentLess1",
-					"HistoricLess1",
-					"PaidLess1",
-					"SaleLess1",
-					"AltLess1",
-					"LaunchLess2",
-					"MSRPLess2",
-					"CurrentLess2",
-					"HistoricLess2",
-					"PaidLess2",
-					"SaleLess2",
-					"AltLess2",
-					"LaunchHrsNext1",
-					"MSRPHrsNext1",
-					"CurrentHrsNext1",
-					"HistoricHrsNext1",
-					"PaidHrsNext1",
-					"SaleHrsNext1",
-					"AltHrsNext1",
-					"LaunchHrsNext2",
-					"MSRPHrsNext2",
-					"CurrentHrsNext2",
-					"HistoricHrsNext2",
-					"PaidHrsNext2",
-					"SaleHrsNext2",
-					"AltHrsNext2"
-				),
-				'Sortby' => "lastplaySort",
-				'SortDir' => SORT_DESC,
-				'HideRows' => array()
-			);
-
+			$filter=$this->allColumnsFilter();
 	}
 }
-
-//var_dump($filter);
 
 $output .= '<div class="flex-item" style="order: 4">
 <details>
@@ -556,7 +861,7 @@ $output .= '<th class="hidden">Debug</th>
 </tr>
 </thead>
 <tbody>';
-$calculations=getCalculations("",$conn);
+$calculations=$this->data()->getCalculations();
 
 $counters['timetobeat']=0;
 $counters['metascore']=0;
@@ -583,214 +888,12 @@ $counters['min1']=
 $counters['min2']=time();	
 $counters['data']=array();
 
-//DONE: Calculations Sort field sorts dates as text
-
-switch($filter['Sortby']){
-	case "PurchaseDate": 
-		foreach ($calculations as $key => $row) {
-			$Sortby1[$key] = $row['AddedDateTime']->getTimestamp();
-		}
-		break;
-	case "LaunchDate":
-		foreach ($calculations as $key => $row) {
-			$Sortby1[$key] = $row[$filter['Sortby']]->getTimestamp();
-		}
-		break;
-	case "lastplay":
-	case "firstplay":
-	case "LastBeat":
-	case "DateUpdated":
-	case "LastPlayORPurchase":
-		foreach ($calculations as $key => $row) {
-			$Sortby1[$key]  = strtotime($row[$filter['Sortby']]);
-			//$output .= "<br>sort " . $row[$filter['Sortby']] . " as " . $Sortby1[$key];  //Debug sorting issues
-		}
-		break;
-	default:
-		foreach ($calculations as $key => $row) {
-			//TODO: use date object instead on 'LaunchDateValue'
-			//Warning: Undefined array key "AddedDateTime" in D:\xampp\htdocs\Game-Library\server\calculations.php on line 599
-			$Sortby1[$key]  = $row[$filter['Sortby']];
-		}
-		break;
-}
-array_multisort($Sortby1, $filter['SortDir'], $calculations);
+$calculations = $this->sortCalculations($calculations,$filter['Sortby'],$filter['SortDir']);
 
 foreach ($calculations as $game) {
-	$showgame=true;
-	
-	foreach ($filter['HideRows'] as $hide) {
-		switch($hide['operator']){
-			case "gt": //Greater Than
-				if($game[$hide['field']]>$hide['value']){$showgame=false; }
-				break;
-			case "gte": //Greater Than or Equal
-				if($game[$hide['field']]>=$hide['value']){$showgame=false; }
-				break;
-			case "eq": // Equal
-				if($game[$hide['field']]==$hide['value']){$showgame=false; }
-				break;
-			case "lte": //Less Than or Equal
-				if($game[$hide['field']]<=$hide['value']){$showgame=false; }
-				break;
-			case "lt": //Less Than
-				if($game[$hide['field']]<$hide['value']){$showgame=false; }
-				break;
-			case "ne": //Not Equal
-				if($game[$hide['field']]<>$hide['value']){$showgame=false; }
-				break;
-		}
-	}
-	
-	if($showgame==true){
+	if($this->showgame($filter,$game)==true){
 	//if(true==true){
-		$output .= '<tr class="'. $game['Status'].'">';
-		foreach ($filter['Columns'] as $key => $row) {
-			$game[$row] = $game[$row] ?? "";
-			switch($row){
-				case "Game_ID":
-					$output .= '<td>'. $game['Game_ID'].'</td>';
-					break;
-				case "Title":
-					$output .= '<td class="text"><a href="viewgame.php?id='. $game['Game_ID'].'" target="_blank">'.$game[$row].'</a></td>';
-					break;
-				case "TitleEdit":
-					$output .= '<td class="text"><a href="viewgame.php?id='. $game['Game_ID'].'&edit=1" target="_blank">'. $game['Title'].'</a></td>';
-					break;
-				case "Type":
-				case "Series":
-				default:
-					$output .= '<td class="text">'. $game[$row].'</td>';
-					break;
-				case "Playable":
-				case "CountGame":
-				case "Active":
-				case "Inactive":
-				case "DrmFree":
-				case "OtherLibrary":
-					$output .= '<td class="text">'. boolText($game[$row]).'</td>';
-					break;
-				case "ParentGame":
-					$output .= '<td class="text"><a href="viewgame.php?id='. $game['ParentGameID'].'" target="_blank">'. $game[$row].'</a></td>';
-					break;
-				case "All Bundles":
-					//$output .= "<td class=\"text\">" . $game['PrintBundles'] . "</td>"; // Bundles  //print_r($game['TopBundleIDs'],true) .
-					$output .= '<td class="text">'. str_replace("|&nbsp;", "</br>", str_replace(" ", "&nbsp;", $game['PrintBundles'])).'</td>'; // Bundles
-					//print_r($game['TopBundleIDs'],true) .
-					break;
-				case "Platforms":
-					$output .= '<td class="text">'. nl2br($game[$row]).'</td>'; // Platforms
-					break;
-				case "Keywords":
-					$output .= '<td class="text">'. nl2br($game['allKeywords']).'</td>'; // Keywords
-					break;
-				case "LaunchDate":
-					$output .= '<td class="numeric">'. $game[$row]->format("n/d/Y").'</td>';
-					break;
-				case "Want":
-				case "AchievementsLeft":
-				case "DateUpdated":
-				case "DrmFreeSize":
-				case "Review":
-					$output .= '<td class="numeric">'. $game[$row].'</td>';
-					break;
-				case "BundlePrice":
-				case "LaunchPrice":
-				case "MSRP":
-				case "CurrentMSRP":
-				case "HistoricLow":
-				case "Paid":
-				case "SalePrice":
-				case "AltSalePrice":
-
-				case "Launchperhr":
-				case "MSRPperhr":
-				case "Currentperhr":
-				case "Historicperhr":
-				case "Paidperhr":
-				case "Saleperhr":
-				case "Altperhr":
-				
-				case "LaunchLess1":
-				case "MSRPLess1":
-				case "CurrentLess1":
-				case "HistoricLess1":
-				case "PaidLess1":
-				case "SaleLess1":
-				case "AltLess1":
-					$output .= '<td class="numeric">$'.sprintf("%.2f",$game[$row]).'</td>';
-					break;
-				case "PurchaseDate":
-					$output .= '<td class="numeric">';
-					if(isset($game['AddedDateTime'])) {
-						$output .= str_replace(" ", "&nbsp;", $game['AddedDateTime']->format("n/j/Y g:i:s A"));
-					}
-					$output .= '</td>';
-					break;
-				case "Achievements":
-					$output .= '<td class="numeric">'. $game['SteamAchievements'].'</td>';
-					break;
-				case "Cards":
-					$output .= '<td class="numeric">'. $game['SteamCards'].'</td>';
-					break;
-				case "TimeToBeat":
-					$output .= '<td class="numeric">'.$game['TimeToBeatLink2'].'</td>';
-					break;
-				case "Metascore":
-					$output .= '<td class="numeric">'. $game['MetascoreLinkCritic'].'</td>';
-					break;
-				case "MetaUser":
-					$output .= '<td class="numeric">'. $game['MetascoreLinkUser'].'</td>';
-					break;
-				case "Hours":
-					$output .= '<td class="numeric">'.timeduration($game['totalHrs'],"seconds").'</td>'; // Hours
-					break;
-				case "GrandTotal":
-					$output .= '<td class="numeric">'. timeduration($game[$row],"seconds").'</td>'; // Total Hours
-					break;
-				case "AchievementsEarned":
-					$output .= '<td class="numeric">'. $game['Achievements'].'</td>'; // Achievements Earned
-					break;
-				case "Status":
-					$output .= '<td class="text">'. str_replace(" ", "&nbsp;", $game[$row]).'</td>';
-					break;
-				case "lastplay":
-				case "firstplay":
-				case "LastBeat":
-				case "LastPlayORPurchase":
-					$output .= '<td class="numeric">'. str_replace(" ", "&nbsp;", $game[$row]).'</td>';
-					break;
-				case "MSRPLess2":
-				case "CurrentLess2":
-				case "HistoricLess2":
-				case "PaidLess2":
-				case "SaleLess2":
-				case "AltLess2":
-
-				case "LaunchHrsNext1":
-				case "MSRPHrsNext1":
-				case "CurrentHrsNext1":
-				case "HistoricHrsNext1":
-				case "PaidHrsNext1":
-				case "SaleHrsNext1":
-				case "AltHrsNext1":
-
-				case "LaunchHrsNext2":
-				case "MSRPHrsNext2":
-				case "CurrentHrsNext2":
-				case "HistoricHrsNext2":
-				case "PaidHrsNext2":
-				case "SaleHrsNext2":
-				case "AltHrsNext2":
-				
-				case "TimeLeftToBeat":
-					$output .= '<td class="numeric">'.timeduration($game[$row],"hours").'</td>';
-					break;
-				case "LaunchLess2":
-					$output .= '<td class="numeric">'. $game['LaunchPriceObj']->getHoursTo01LessPerHour(true).'</td>';
-					break;
-			}
-		}
+		$output .= $this->makeGameRow($game,$filter['Columns']);
 
 		$counters['countall']++;
 		if($game['TimeToBeat']==0) {$counters['timetobeat']++;}
@@ -819,91 +922,9 @@ foreach ($calculations as $game) {
 		
 		//$fullstatdata[$game['Game_ID']]['Game_ID']=$row['Game_ID'];
 		//$fullstatdata[$game['Game_ID']]['Title']=$row['Title'];
-		
-		//$output .= '<td class="hidden text">'. $game['Debug'].'</td>';
-		$output .= '</tr>';
-		//$output .= '<tr class="hidden"><td colspan=100>'. $game['Debug'].'</td></tr>';
 	}
 }
-		//needs to be sorted to get Median, Direction is irrelevant.
-		rsort($counters['data']);
-		//array_multisort($counters['data'], $fullstatdata,SORT_ASC);
-		
-		//TODO: errors out if there are no results in the filtered list
-		if(is_numeric($counters['data'][0])) {
-			$counters['Total']=array_sum($counters['data']);
-			
-			if($counters['countall']==0){
-				$counters['Avg']=0;
-			} else {
-				$counters['Avg']=$counters['Total']/$counters['countall'];
-			}
-			
-			$sum=0;
-			for ($i = 0; $i < $counters['countall']; $i++) {
-				
-				//var_dump($sum); $output .= " += 1 / ("; var_dump($counters['data'][$i]); $output .= " +.00001)</br>";
-				//if($counters['data'][$i]=="") {$counters['data'][$i]=0;}
-				$sum += 1 / ($counters['data'][$i]+.00001);
-			}
-			if($sum==0){
-				$counters['Mean']=0;
-			}else {
-				$counters['Mean'] = $counters['countall'] / $sum;
-			}
-			
-			$usearray=$counters['data'];
-			foreach($usearray as $key => &$value){
-				$type = gettype($value);
-				$value =$value * 100;
-				if($type=="double" OR $type=="float"){
-					$value = (int)($value );
-					//$value = " ".$value;
-				} elseif ($type=="boolean") { 
-					//$value=0;
-					unset($usearray[$key]);
-				} elseif ($type<>"string" AND $type<>"integer") {
-					$output .= $type." ";
-				}
-				//$output .= $value . " ";
-				//var_dump($value);
-			}
-			//print_r($usearray)." ";
-			//$counters['Mode']=mmmr($usearray,'mode');
-			$counters['Mode']=$counters['Mode']/100;
-			
-			$usearray=array_unique($usearray);
-			rsort($usearray);
-			
-			//var_dump($counters);
-			
-			$counters['max1']=$usearray[0]/100;
-			if(isset($usearray[1])) {
-				$counters['max2']=$usearray[1]/100;
-			}
-			$counters['min1']=min($usearray)/100;
-			if(isset($usearray[count($usearray)-2])) {
-				$counters['min2']=$usearray[count($usearray)-2]/100;	
-			}
-
-		} else {
-			$counters['Total']="";
-			$counters['Avg']  ="";
-			$counters['Mean'] ="";
-			$counters['max1'] ="";
-			$counters['max2'] ="";
-			$counters['min1'] ="";
-			$counters['min2'] ="";
-		}
-		
-		//TODO: errors out if there are no results in the filtered list
-		$counters['Median']=$counters['data'][round($counters['countall'] / 2)-1];
-		if($counters['Median'] instanceof DateTime) {
-			//$counters['Median']=$counters['Median']->getTimestamp();
-			$counters['Median']=$counters['Median']->format("n/j/Y g:i:s");
-		}
-
-		//print_r($usearray);
+		$counters = $this->totalCounts($counters);
 
 $output .= "</tbody>";
 

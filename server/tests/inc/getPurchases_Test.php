@@ -30,7 +30,137 @@ final class getPurchases_Test extends testprivate
 		$purchasObject=new Purchases();
 		$this->assertisArray($purchasObject->getPurchases());
 	}
+	
+	/**
+	 * @small
+	 * @testdox getSettings()
+	 * @covers Purchases::getSettings
+	 * @uses Purchases
+	 * @uses Games
+	 * @uses dataAccess
+	 * @uses get_db_connection
+	 * @uses getsettings
+	 * @uses getActivityCalculations
+	 * @uses getAllItems
+	 * @uses getCleanStringDate
+	 * @uses getGames
+	 * @uses getHistoryCalculations
+	 * @uses makeIndex
+	 * @uses timeduration
+	 * @uses combinedate
+	 */
+	public function test_getSettings() {
+		$page = new Purchases();
+		
+		$method = $this->getPrivateMethod( 'Purchases', 'getSettings' );
+		$result = $method->invokeArgs( $page,array() );
+		$this->assertisArray($result);
+	}
 
+	/**
+	 * @small
+	 * @testdox getItems()
+	 * @covers Purchases::getItems
+	 * @uses Purchases
+	 * @uses Games
+	 * @uses dataAccess
+	 * @uses get_db_connection
+	 * @uses getsettings
+	 * @uses getActivityCalculations
+	 * @uses getAllItems
+	 * @uses getCleanStringDate
+	 * @uses getGames
+	 * @uses getHistoryCalculations
+	 * @uses makeIndex
+	 * @uses timeduration
+	 * @uses combinedate
+	 */
+	public function test_getItems() {
+		$page = new Purchases();
+		
+		$method = $this->getPrivateMethod( 'Purchases', 'getItems' );
+		$result = $method->invokeArgs( $page,array() );
+		$this->assertisArray($result);
+	}
+
+	/**
+	 * @small
+	 * @testdox getGames()
+	 * @covers Purchases::getGames
+	 * @uses Purchases
+	 * @uses Games
+	 * @uses dataAccess
+	 * @uses get_db_connection
+	 * @uses getsettings
+	 * @uses getActivityCalculations
+	 * @uses getAllItems
+	 * @uses getCleanStringDate
+	 * @uses getGames
+	 * @uses getHistoryCalculations
+	 * @uses makeIndex
+	 * @uses timeduration
+	 * @uses combinedate
+	 */
+	public function test_getGames() {
+		$page = new Purchases();
+		
+		$method = $this->getPrivateMethod( 'Purchases', 'getGames' );
+		$result = $method->invokeArgs( $page,array() );
+		$this->assertisArray($result);
+	}
+	
+	/**
+	 * @small
+	 * @testdox getGameIndex()
+	 * @covers Purchases::getGameIndex
+	 * @uses Purchases
+	 * @uses Games
+	 * @uses dataAccess
+	 * @uses get_db_connection
+	 * @uses getsettings
+	 * @uses getActivityCalculations
+	 * @uses getAllItems
+	 * @uses getCleanStringDate
+	 * @uses getGames
+	 * @uses getHistoryCalculations
+	 * @uses makeIndex
+	 * @uses timeduration
+	 * @uses combinedate
+	 */
+	public function test_getGameIndex() {
+		$page = new Purchases();
+		
+		$method = $this->getPrivateMethod( 'Purchases', 'getGameIndex' );
+		$result = $method->invokeArgs( $page,array() );
+		$this->assertisArray($result);
+	}
+	
+	/**
+	 * @small
+	 * @testdox getActivity()
+	 * @covers Purchases::getActivity
+	 * @uses Purchases
+	 * @uses Games
+	 * @uses dataAccess
+	 * @uses get_db_connection
+	 * @uses getsettings
+	 * @uses getActivityCalculations
+	 * @uses getAllItems
+	 * @uses getCleanStringDate
+	 * @uses getGames
+	 * @uses getHistoryCalculations
+	 * @uses makeIndex
+	 * @uses timeduration
+	 * @uses combinedate
+	 */
+	public function test_getActivity() {
+		$page = new Purchases();
+		
+		$method = $this->getPrivateMethod( 'Purchases', 'getActivity' );
+		$result = $method->invokeArgs( $page,array() );
+		$this->assertisArray($result);
+	}
+	
 	/**
 	 * @medium
 	 * @covers Purchases::__construct
@@ -61,8 +191,8 @@ final class getPurchases_Test extends testprivate
 	public function test_groupItemsByBundle_base() {
 		$purchasObject=new Purchases();
 
-		$property = $this->getPrivateProperty( 'Purchases', 'items' );
-		$items = $property->getValue( $purchasObject );
+		$method1 = $this->getPrivateMethod( 'Purchases', 'getItems' );
+		$items = $method1->invokeArgs($purchasObject, array() );
 		
 		$method = $this->getPrivateMethod( 'Purchases', 'groupItemsByBundle' );
 		$result = $method->invokeArgs($purchasObject, array( $items ) );
@@ -102,9 +232,58 @@ final class getPurchases_Test extends testprivate
 		"TotalMSRPFormula"=>"x"
 		);
 		
-		$property = $this->getPrivateProperty( 'Purchases', 'items' );
-		$items = $property->getValue( $purchasObject );
+		$method1 = $this->getPrivateMethod( 'Purchases', 'getItems' );
+		$items = $method1->invokeArgs($purchasObject, array() );
 		
+		$method = $this->getPrivateMethod( 'Purchases', 'itemRowBundles' );
+		$result = $method->invokeArgs($purchasObject, array( $items[2547],$row ) );
+		
+		$this->assertisArray($result);
+	}
+	
+	/**
+	 * @medium
+	 * @covers Purchases::itemRowBundles
+	 * @testdox itemRowBundles with no Activity
+	 */
+	public function test_itemRowBundles_noActivity() {
+		$GLOBALS["SETTINGS"]=array(
+		"status"=>array(
+			"Done"=>    array("Active"=>"0", "Count"=>"1"),
+			"Active"=>  array("Active"=>"1", "Count"=>"1"),
+			"Inactive"=>array("Active"=>"1", "Count"=>"1"),
+			"Never"=>   array("Active"=>"1", "Count"=>"1"),
+			"On Hold"=> array("Active"=>"1", "Count"=>"1"),
+			"Broken"=>  array("Active"=>"1", "Count"=>"1"),
+			"Unplayed"=>array("Active"=>"1", "Count"=>"1"),
+			),
+		"CountIdle"=>0,
+		"CountCheat"=>0,
+		"CountFarm"=>0,
+		"CountShare"=>0,
+		"MinPlay"=>60,
+		"MinTotal"=>60
+		);
+		$purchasObject=new Purchases();
+		
+		$row=array(
+		"TotalMSRP"=>1,
+		"TotalWant"=>1,
+		"TotalHrs"=>1,
+		"TotalMSRPFormula"=>"x"
+		);
+		
+		$method1 = $this->getPrivateMethod( 'Purchases', 'getItems' );
+		$items = $method1->invokeArgs($purchasObject, array() );
+		
+		$method2 = $this->getPrivateMethod( 'Purchases', 'getActivity' );
+		$activity1 = $method2->invokeArgs($purchasObject, array() );
+		
+		unset($activity1[$items[2547]['ProductID']]);
+		
+		$property = $this->getPrivateProperty( 'Purchases', 'activity' );
+		$activity = $property->SetValue( $purchasObject, $activity1);
+
 		$method = $this->getPrivateMethod( 'Purchases', 'itemRowBundles' );
 		$result = $method->invokeArgs($purchasObject, array( $items[2547],$row ) );
 		
@@ -346,8 +525,8 @@ final class getPurchases_Test extends testprivate
 		"TotalMSRPFormula"=>"x"
 		);
 		
-		$property = $this->getPrivateProperty( 'Purchases', 'items' );
-		$items = $property->getValue( $purchasObject );
+		$method1 = $this->getPrivateMethod( 'Purchases', 'getItems' );
+		$items = $method1->invokeArgs($purchasObject, array() );
 
 		$property = $this->getPrivateProperty( 'Purchases', 'activity' );
 		$activity = $property->getValue( $purchasObject );
@@ -368,12 +547,14 @@ final class getPurchases_Test extends testprivate
 	public function test_calculateSalePrice_base() {
 		$purchasObject=new Purchases();
 		
+		//TODO: add mock data for all parameters (items)
+		
 		$row=array(
 		"TotalMSRP"=>1,
 		"TotalWant"=>1,
 		"TotalHrs"=>1,
 		"GamesinBundle"=>array(
-			1162=>array(
+			1163=>array(
 				"Want"=>1,
 				"MSRP"=>1
 			)
@@ -382,8 +563,8 @@ final class getPurchases_Test extends testprivate
 		"Paid"=>1
 		);
 		
-		$property = $this->getPrivateProperty( 'Purchases', 'items' );
-		$items = $property->getValue( $purchasObject );
+		$method1 = $this->getPrivateMethod( 'Purchases', 'getItems' );
+		$items = $method1->invokeArgs($purchasObject, array() );
 		
 		$method = $this->getPrivateMethod( 'Purchases', 'calculateSalePrice' );
 		$result = $method->invokeArgs($purchasObject, array( $items[2547],$row ) );
@@ -403,7 +584,7 @@ final class getPurchases_Test extends testprivate
 		"TotalWant"=>1,
 		"TotalHrs"=>1,
 		"GamesinBundle"=>array(
-			1162=>array(
+			1163=>array(
 				"Want"=>1,
 				"MSRP"=>1
 			)
@@ -412,8 +593,8 @@ final class getPurchases_Test extends testprivate
 		"Paid"=>1
 		);
 		
-		$property = $this->getPrivateProperty( 'Purchases', 'items' );
-		$items = $property->getValue( $purchasObject );
+		$method1 = $this->getPrivateMethod( 'Purchases', 'getItems' );
+		$items = $method1->invokeArgs($purchasObject, array() );
 		
 		$method = $this->getPrivateMethod( 'Purchases', 'calculateAltSalePrice' );
 		$result = $method->invokeArgs($purchasObject, array( $items[2547],$row ) );
@@ -454,7 +635,7 @@ final class getPurchases_Test extends testprivate
 		"TotalWant"=>1,
 		"TotalHrs"=>1,
 		"GamesinBundle"=>array(
-			1162=>array(
+			1163=>array(
 				"Want"=>1,
 				"MSRP"=>1
 			)
@@ -463,8 +644,8 @@ final class getPurchases_Test extends testprivate
 		"Paid"=>1
 		);
 		
-		$property = $this->getPrivateProperty( 'Purchases', 'items' );
-		$items = $property->getValue( $purchasObject );
+		$method1 = $this->getPrivateMethod( 'Purchases', 'getItems' );
+		$items = $method1->invokeArgs($purchasObject, array() );
 		
 		$method = $this->getPrivateMethod( 'Purchases', 'calculateAltSalePrice' );
 		$result = $method->invokeArgs($purchasObject, array( $items[2547],$row ) );

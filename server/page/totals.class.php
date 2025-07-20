@@ -7,7 +7,6 @@ include_once $GLOBALS['rootpath']."/inc/getPurchases.class.php";
 
 class totalsPage extends Page
 {
-	private $dataAccessObject;
 	public function __construct() {
 		$this->title="Totals";
 	}
@@ -16,12 +15,12 @@ class totalsPage extends Page
 		$output="";
 		
 	$conn=get_db_connection();
-	$settings=getsettings($conn);
-	//$purchases=getPurchases("",$conn);
 	$purchaseobj=new Purchases("",$conn);
 	$purchases=$purchaseobj->getPurchases();
-	$calculations=getCalculations("",$conn);
 	$conn->close();	
+
+	$settings=$this->data()->getSettings();
+	$calculations=$this->data()->getCalculations();
 
 	$Totals['Played']=
 	$Totals['UnPlayed']=

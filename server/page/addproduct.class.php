@@ -12,82 +12,12 @@ class addproductPage extends Page
 	
 	public function buildHtmlBody(){
 		$output = "";
-		
-$conn=get_db_connection();
 
-$settings=getsettings($conn);
-
-if(isset($_POST['Game_ID'])){
-	//if($GLOBALS['Debug_Enabled']) {trigger_error("Post data listed below", E_USER_NOTICE);}
-	//$output .= '<pre>'. print_r($_POST,true) . "</pre>";
-	
-	foreach ($_POST as $key => &$value) {
-		if($value=="") {
-			$value="null";
-		} else {
-			
-			$value="'".$conn->real_escape_string($value)."'";
-		}
+	if(isset($_POST['Game_ID'])){
+		$this->getDataAccessObject()->insertGame($_POST);
 	}
-	unset($value);
-			
-	$insert_SQL  = "INSERT INTO `gl_products` (`Game_ID`, `Title`, `Series`, `LaunchDate`, `LaunchPrice`, `MSRP`, `CurrentMSRP`, `HistoricLow`, `LowDate`, `SteamAchievements`, `SteamCards`, `TimeToBeat`, `Metascore`, 
-	`UserMetascore`, `SteamRating`, `SteamID`, `GOGID`, `isthereanydealID`, `TimeToBeatID`, `MetascoreID`, `DateUpdated`, `Want`, `Playable`, `Type`, `ParentGameID`, `ParentGame`, `Developer`, `Publisher`)";
-	//`DesuraID`,
-	$insert_SQL .= "VALUES (";
-	$insert_SQL .= $_POST['Game_ID'].", ";
-	$insert_SQL .= $_POST['Title'].", ";
-	$insert_SQL .= $_POST['Series'].", ";
-	$insert_SQL .= $_POST['LaunchDate'].", ";
-	$insert_SQL .= $_POST['LaunchPrice'].", ";
-	$insert_SQL .= $_POST['MSRP'].", ";
-	$insert_SQL .= $_POST['CurrentMSRP'].", ";
-	$insert_SQL .= $_POST['HistoricLow'].", ";
-	$insert_SQL .= $_POST['LowDate'].", ";
-	$insert_SQL .= $_POST['SteamAchievements'].", ";
-	$insert_SQL .= $_POST['SteamCards'].", ";
-	$insert_SQL .= $_POST['TimeToBeat'].", ";
-	$insert_SQL .= $_POST['Metascore'].", ";
-	$insert_SQL .= $_POST['UserMetascore'].", ";
-	$insert_SQL .= $_POST['SteamRating'].", ";
-	$insert_SQL .= $_POST['SteamID'].", ";
-	$insert_SQL .= $_POST['GOGID'].", ";
-	$insert_SQL .= $_POST['isthereanydealID'].", ";
-	$insert_SQL .= $_POST['TimeToBeatID'].", ";
-	$insert_SQL .= $_POST['MetascoreID'].", ";
-	$insert_SQL .= $_POST['DateUpdated'].", ";
-	$insert_SQL .= $_POST['Want'].", ";
-	$insert_SQL .= $_POST['Playable'].", ";
-	$insert_SQL .= $_POST['Type'].", ";
-	$insert_SQL .= $_POST['ParentGameID'].", ";
-	//$insert_SQL .= $_POST['DesuraID'].", ";
-	$insert_SQL .= $_POST['ParentGame'].", ";
-	$insert_SQL .= $_POST['Developer'].", ";
-	$insert_SQL .= $_POST['Publisher'].");";
 
-		if(($GLOBALS['Debug_Enabled'] ?? false)) {trigger_error("Running SQL Query to add new Item: ". $insert_SQL, E_USER_NOTICE);}
-		
-		if ($conn->query($insert_SQL) === TRUE) {
-			$output .= "Record " . $_POST['Game_ID'] . " inserted for " . $_POST['Title'];
-			if(($GLOBALS['Debug_Enabled'] ?? false)) { trigger_error("Item record inserted successfully", E_USER_NOTICE);}
-			$output .= "<hr>";
-		} else {
-			trigger_error( "Error inserting record: " . $conn->error ,E_USER_ERROR );
-			$output .= "<hr>";
-		}
-}
-
-/*
-INSERT INTO `gl_products` (`Game_ID`, `Title`, `Series`, `LaunchDate`, `LaunchPrice`, `MSRP`, `CurrentMSRP`, `HistoricLow`, `LowDate`, `SteamAchievements`, `SteamCards`, `TimeToBeat`, `Metascore`, `UserMetascore`, `SteamRating`, `SteamID`, `GOGID`, `isthereanydealID`, `TimeToBeatID`, `MetascoreID`, `DateUpdated`, `Want`, `Playable`, `Type`, `ParentGameID`, `DesuraID`, `ParentGame`, `Developer`, `Publisher`) 
-VALUES('3345', 'THE GREAT GEOMETRIC MULTIVERSE TOUR ', 'THE GREAT GEOMETRIC MULTIVERSE TOUR ', '2018/08/27', '4.99', '4.99', '4.99', '4.99', null, null, null, null, null, null, null, '887400', null, null, '70453', 'pc/the-great-geometric-multiverse-tour', null, '1', '1', 'Game', '3345', null, null, null, null),
-('3346', 'Conarium', 'Conarium', '2017/06/06', '19.99', '19.99', '19.99', '19.99', null, null, null, '5.5', '71', '69', '66', '313780', null, null, '46123', 'pc/conarium', null, '2', '1', 'Game', '3346', null, null, null, null),
-('3347', 'Blackguards', 'Blackguards', '2014/01/22', '9.99', '9.99', '9.99', '9.99', null, null, null, '49', '68', '71', '63', '249650', null, null, '14481', 'pc/blackguards', null, '4', '1', 'Game', '3347', null, null, null, null),
-('3348', 'Broken Sword 4 - The Angel of Death', 'Broken Sword 4 - The Angel of Death', '2006/09/15', '5.99', '5.99', '5.99', '5.99', null, null, null, '12', null, null, '43', '316160', null, null, '1336', null, null, '2', '1', 'Game', '3348', null, null, null, null),
-('3349', 'Merry Glade', 'Merry Glade', '2018/05/11', '3.99', '3.99', '3.99', '3.99', null, null, null, '0.9', null, null, '97', '838390', null, null, '65363', 'pc/merry-glade', null, '3', '1', 'Game', '3349', null, null, null, null),
-('3350', 'Journey of a Roach', 'Journey of a Roach', '2013/11/04', '6.99', '6.99', '6.99', '6.99', null, null, null, '4.5', '65', '69', '88', '255300', null, null, '14435', 'pc/journey-of-a-roach', null, '2', '1', 'Game', '3350', null, null, null, null),
-('3351', 'LEGO® Batman™ 2: DC Super Heroes', 'LEGO® Batman™ 2: DC Super Heroes', '2012/06/22', '19.99', '19.99', '19.99', '19.99', null, null, null, '25', '81', '76', '88', '213330', null, null, '5244', 'pc/lego-batman-2-dc-super-heroes', null, '4', '1', 'Game', '3351', null, null, null, null),
-('3352', 'LEGO® Batman™ 3: Beyond Gotham', 'LEGO® Batman™ 3: Beyond Gotham', '2014/11/11', '19.99', '19.99', '19.99', '19.99', null, null, null, '36', null, '66', '85', '313690', null, null, '21254', 'pc/lego-batman-3-beyond-gotham', null, '4', '1', 'Game', '3352', null, null, null, null);
-*/
+	$nextGame_ID = $this->getDataAccessObject()->getMaxTableId("games");
 
   $output .= '<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
   <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
@@ -106,16 +36,6 @@ VALUES('3345', 'THE GREAT GEOMETRIC MULTIVERSE TOUR ', 'THE GREAT GEOMETRIC MULT
 				//<th>Lookup Prompt</th>
 			$output .= '</tr>
 			</thead>';
-
-$sql="select max(`Game_ID`) maxid from `gl_products`";
-if($result = $conn->query($sql)){
-	while($row = $result->fetch_assoc()) {
-		$nextGame_ID=$row['maxid']+1;
-	}
-}
-
-
-$conn->close();	
 
 $blank="";
 

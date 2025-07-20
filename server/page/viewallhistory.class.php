@@ -7,10 +7,7 @@ include_once $GLOBALS['rootpath']."/inc/getHistoryCalculations.inc.php";
 
 class viewallhistoryPage extends Page
 {
-	
-	private $settings;
 	private $historytable;
-	private $dataAccessObject;
 	
 	public function __construct() {
 		$this->title="View All History";
@@ -21,13 +18,6 @@ class viewallhistoryPage extends Page
 			$this->historytable = getHistoryCalculations();
 		}
 		return $this->historytable;
-	}
-	
-	private function getSettings(){
-		if(!isset($this->settings)){
-			$this->settings = getsettings();
-		}
-		return $this->settings;
 	}
 	
 	private function prompt(){

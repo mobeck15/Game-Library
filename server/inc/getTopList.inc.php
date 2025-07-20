@@ -22,11 +22,12 @@ function getTopList($group,$connection=false,$calc=false,$minGroupSize=2){
 	}
 	
 	if($calc==false){
-		$calculations=getCalculations("",$conn);
+		$data = new dataSet();
+		$calculations = $data->getCalculations();
 	} else {
 		$calculations=$calc;
 	}
-	$calculations=reIndexArray($calculations,"Game_ID");
+	//$calculations=reIndexArray($calculations,"Game_ID");
 	
 	switch($group){
 		default:

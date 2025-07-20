@@ -74,32 +74,19 @@ function read_memory_usage($mem_usage=false) {
 		return round($mem_usage/1048576,2)." mb";
 }
 
+/**
+ * @deprecated 
+ */
 function getAllCpi($connection=false){
-	if($connection==false){
-		$conn=get_db_connection();
-	} else {
-		$conn = $connection;
-	}
-	$sql = "select
-		`gl_cpi`.`year`,
-		`gl_cpi`.`month`,
-		`gl_cpi`.`cpi`
-		from `gl_cpi`
-		where `gl_cpi`.`cpi`<>0
-		order by `gl_cpi`.`Year` ASC, `gl_cpi`.`Month` ASC";
-	if($result = $conn->query($sql)){
-		while($row = $result->fetch_assoc()) {
-			//var_dump($row);
-			$cpi[$row['year']][$row['month']]=$row['cpi'];
-			$cpi['Current']=$row['cpi'];
-		}
-	} 
-	if($connection==false){
-		$conn->close();	
-	}	
+	$dataAccessObject = new dataAccess();
+	$cpi = $dataAccessObject->getAllCPI();
+
 	return $cpi;
 }
 
+/**
+ * @deprecated 
+ */
 function get_db_connection(){
 	require $GLOBALS['rootpath']."/inc/auth.inc.php";
 	
@@ -117,7 +104,6 @@ function get_db_connection(){
 	}
 	
 	return $conn;
-
 }
 
 function makeIndex($array,$indexKey){
