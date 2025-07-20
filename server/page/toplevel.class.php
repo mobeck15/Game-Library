@@ -210,7 +210,7 @@ private function echoRow($top){
 	$output .= "\t<td class=\"numeric\">".$top['ActiveCount']."</td>\r\n";
 	$output .= "\t<td class=\"numeric\">".$top['IncompleteCount']."</td>\r\n";
 	$output .= "\t<td class=\"numeric\">".$top['UnplayedInactiveCount']."</td>\r\n";
-	$output .= "\t<td class=\"numeric\">".round($top['PctPlayed'],2)."%</td>\r\n";
+	$output .= "\t<td class=\"numeric\">".round(($top['PctPlayed'] ?? 0),2)."%</td>\r\n";
 	if($top['ID']=="Total") {
 		$output .= "\t<td class=\"numeric\">".round($top['BeatAvg'],2)."%</td>\r\n";
 		$output .= "\t<td class=\"numeric\">".round($top['BeatAvg2'],2)."%</td>\r\n";

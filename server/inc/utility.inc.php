@@ -170,8 +170,6 @@ function getAllItems($gameID="",$connection=false){
 			if($row['Tier']==0){$row['Tier']="";}
 			if($row['SizeMB']==0){$row['SizeMB']="";}
 			
-			
-			
 			$items[]=$row;
 		}
 		

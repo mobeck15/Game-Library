@@ -691,6 +691,11 @@ final class getPurchases_Test extends testprivate
 	 */
 	public function test_getPurchases_conn() {
 		$conn=get_db_connection();
+		
+		$GLOBALS["SETTINGS"]=array(
+		"CountDupes"=>0,
+		);
+		
 		$purchasObject=new Purchases("6",$conn);
 		$this->assertisArray($purchasObject->getPurchases());
 		$conn->close();

@@ -248,7 +248,7 @@ function getTopList($group,$connection=false,$calc=false,$minGroupSize=2){
 			//$d=0;
 			foreach ($calculations as $key => $row) {
 				foreach ($row[$group] as $setkey => $set) {
-					$GroupID=strtolower($set);
+					$GroupID = isset($set) && $set !== null ? strtolower($set) : "";
 					if(!in_array($GroupID,$GroupList)){
 						$GroupList[]=$GroupID;
 						$top[$GroupID]['ID']=$GroupID;
@@ -572,12 +572,12 @@ function getTopList($group,$connection=false,$calc=false,$minGroupSize=2){
 	}
 
 	$total['PlayVPay']=$total['ModPaid']-$total['TotalHistoricPlayed'];
-	$total['PayHr']=$total['Paid']/($total['TotalHours']/60/60);
-	$total['BeatAvg']=$total['PctPlayed']=(1-$total['UnplayedCount']/$total['GameCount'])*100;
-	$total['BeatAvg2']=array_sum($total['PctiPlayed2source']) / count($total['PctiPlayed2source']);
+	$total['PayHr'] = ($total['TotalHours']==0 ? 0 : $total['Paid']/($total['TotalHours']/60/60));
+	$total['BeatAvg'] = ($total['GameCount']==0 ? 0 : $total['PctPlayed']=(1-$total['UnplayedCount']/$total['GameCount'])*100);
+	$total['BeatAvg2']= (!isset($total['PctiPlayed2source']) ? 0 : array_sum($total['PctiPlayed2source']) / count($total['PctiPlayed2source']));
 	
-	$total['AvgWant']=$GrandTotalWant/$total['GameCount'];
-	$total['AvgCost']=$total['Paid']/$total['GameCount'];
+	$total['AvgWant']=($total['GameCount']==0 ? 0 : $GrandTotalWant/$total['GameCount']);
+	$total['AvgCost']=($total['GameCount']==0 ? 0 : $total['Paid']/$total['GameCount']);
 	
 	foreach ($top as $key => &$row) {
 		//iferror(if('% played'>'BeatAvg',0,roundup('BeatAvg'/(1/'# of Games'))-('# of Games'-'Unplayed Games')))

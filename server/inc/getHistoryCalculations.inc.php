@@ -118,13 +118,26 @@ function getHistoryCalculations($gameID="",$connection=false,$start=false,$end=f
 					$row['finalRating']="";
 				}
 				
-				$row['Count']=$settings['status'][$row['FinalStatus']]['Count'];
+				$row['Count'] = isset($settings['status'][$row['FinalStatus']]['Count'])
+					? $settings['status'][$row['FinalStatus']]['Count']
+					: 0;
 
 				//Need to figure out FREE and WANT somehow (not in current sheet version though)
-				$row['CountIdle'] = !($row['kwIdle']==1 && $settings['CountIdle']==0);
-				$row['CountFarm'] = !($row['kwCardFarming']==1 && $settings['CountFarm']==0);
-				$row['CountCheat'] = !($row['kwCheating']==1 && $settings['CountCheat']==0);
-				$row['CountShare'] = !($row['kwShare']==1 && $settings['CountShare']==0);
+				$row['CountIdle'] = isset($settings['CountIdle']) 
+					? !($row['kwIdle']==1 && $settings['CountIdle']==0) 
+					: 0;
+				
+				$row['CountFarm'] = isset($settings['CountFarm']) 
+					? !($row['kwCardFarming']==1 && $settings['CountFarm']==0) 
+					: 0;
+				
+				$row['CountCheat'] = isset($settings['CountCheat']) 
+					? !($row['kwCheating']==1 && $settings['CountCheat']==0) 
+					: 0;
+				
+				$row['CountShare'] = isset($settings['CountCheat']) 
+					? !($row['kwShare']==1 && $settings['CountShare']==0) 
+					: 0;
 				
 				//if($row['HistoryID']==79){
 				//	echo "CountShare: " . $row['CountShare'] . " = ". ($row['kwShare']==1) . " + " . ($settings['CountShare']==0);

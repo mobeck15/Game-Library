@@ -107,8 +107,8 @@ class totalsPage extends Page
 */
 	
 	$Totals['Count']=$Totals['Played'] + $Totals['UnPlayed'];
-	$Totals['percentPlayed']=$Totals['Played']/$Totals['Count'];
-	$Totals['percentUnPlayed']=$Totals['UnPlayed']/$Totals['Count'];
+	$Totals['percentPlayed'] = ($Totals['Count']==0 ? 0 : $Totals['Played']/$Totals['Count']);
+	$Totals['percentUnPlayed'] = ($Totals['Count']==0 ? 0 : $Totals['UnPlayed']/$Totals['Count']);
 	$output .= '<table><tr><td>
 	<table>
 	<thead>
@@ -162,7 +162,7 @@ class totalsPage extends Page
 	</tr>
 	<tr>
 	<th>% of total play time for most played game</th>
-	<td class="numeric">'. sprintf("%.2f%%", ($Totals['mostplaytime']/$Totals['hours']) * 100).'</td>
+	<td class="numeric">'. sprintf("%.2f%%", ($Totals['hours']==0 ? 0 : $Totals['mostplaytime']/$Totals['hours']) * 100).'</td>
 	</tr>
 	</tbody>
 	</table>
@@ -177,61 +177,61 @@ class totalsPage extends Page
 	<th>Played</th>
 	<th>100% ach</th>
 	<td class="numeric">'. $Totals['100ach'].'</td>
-	<td class="numeric">'. sprintf("%.2f%%", ($Totals['100ach']/$Totals['Count']) * 100).'</td>
+	<td class="numeric">'. sprintf("%.2f%%", ($Totals['100ach']==0 ? 0 : $Totals['100ach']/$Totals['Count']) * 100).'</td>
 	</tr>
 	<tr>
 	<th>Played</th>
 	<th>DONE</th>
 	<td class="numeric">'. $Totals['Played2']['Done'].'</td>
-	<td class="numeric">'. sprintf("%.2f%%", ($Totals['Played2']['Done']/$Totals['Count']) * 100).'</td>
+	<td class="numeric">'. sprintf("%.2f%%", ($Totals['Count']==0 ? 0 : $Totals['Played2']['Done']/$Totals['Count']) * 100).'</td>
 	</tr>
 	<tr>
 	<th>Played</th>
 	<th>Started</th>
 	<td class="numeric">'. $Totals['Played2']['Started'].'</td>
-	<td class="numeric">'. sprintf("%.2f%%", ($Totals['Played2']['Started']/$Totals['Count']) * 100).'</td>
+	<td class="numeric">'. sprintf("%.2f%%", ($Totals['Count']==0 ? 0 : $Totals['Played2']['Started']/$Totals['Count']) * 100).'</td>
 	</tr>
 	<tr>
 	<th>Played</th>
 	<th>BROKEN</th>
 	<td class="numeric">'. $Totals['Played2']['Broken'].'</td>
-	<td class="numeric">'. sprintf("%.2f%%", ($Totals['Played2']['Broken']/$Totals['Count']) * 100).'</td>
+	<td class="numeric">'. sprintf("%.2f%%", ($Totals['Count']==0 ? 0 : $Totals['Played2']['Broken']/$Totals['Count']) * 100).'</td>
 	</tr>
 	<tr>
 	<th>Played</th>
 	<th>NEVER</th>
 	<td class="numeric">'. $Totals['Played2']['Never'].'</td>
-	<td class="numeric">'. sprintf("%.2f%%", ($Totals['Played2']['Never']/$Totals['Count']) * 100).'</td>
+	<td class="numeric">'. sprintf("%.2f%%", ($Totals['Count']==0 ? 0 : $Totals['Played2']['Never']/$Totals['Count']) * 100).'</td>
 	</tr>
 	<tr>
 	<th>Played</th>
 	<th>Free</th>
 	<td class="numeric">'. $Totals['Played2']['free'].'</td>
-	<td class="numeric">'. sprintf("%.2f%%", ($Totals['Played2']['free']/$Totals['Count']) * 100).'</td>
+	<td class="numeric">'. sprintf("%.2f%%", ($Totals['Count']==0 ? 0 : $Totals['Played2']['free']/$Totals['Count']) * 100).'</td>
 	</tr>
 	<tr>
 	<th>UnPlayed</th>
 	<th>Free</th>
 	<td class="numeric">'. $Totals['UnPlayed2']['free'].'</td>
-	<td class="numeric">'. sprintf("%.2f%%", ($Totals['UnPlayed2']['free']/$Totals['Count']) * 100).'</td>
+	<td class="numeric">'. sprintf("%.2f%%", ($Totals['Count']==0 ? 0 : $Totals['UnPlayed2']['free']/$Totals['Count']) * 100).'</td>
 	</tr>
 	<tr>
 	<th>UnPlayed</th>
 	<th>Has Ach</th>
 	<td class="numeric">'. $Totals['UnPlayed2']['ach'].'</td>
-	<td class="numeric">'. sprintf("%.2f%%", ($Totals['UnPlayed2']['ach']/$Totals['Count']) * 100).'</td>
+	<td class="numeric">'. sprintf("%.2f%%", ($Totals['Count']==0 ? 0 : $Totals['UnPlayed2']['ach']/$Totals['Count']) * 100).'</td>
 	</tr>
 	<tr>
 	<th>UnPlayed</th>
 	<th>Steam</th>
 	<td class="numeric">'. $Totals['UnPlayed2']['Steam'].'</td>
-	<td class="numeric">'. sprintf("%.2f%%", ($Totals['UnPlayed2']['Steam']/$Totals['Count']) * 100).'</td>
+	<td class="numeric">'. sprintf("%.2f%%", ($Totals['Count']==0 ? 0 : $Totals['UnPlayed2']['Steam']/$Totals['Count']) * 100).'</td>
 	</tr>
 	<tr>
 	<th>UnPlayed</th>
 	<th>Other</th>
 	<td class="numeric">'. $Totals['UnPlayed2']['Other'].'</td>
-	<td class="numeric">'. sprintf("%.2f%%", ($Totals['UnPlayed2']['Other']/$Totals['Count']) * 100).'</td>
+	<td class="numeric">'. sprintf("%.2f%%", ($Totals['Count']==0 ? 0 : $Totals['UnPlayed2']['Other']/$Totals['Count']) * 100).'</td>
 	</tr>
 	</tbody>
 	</table>
