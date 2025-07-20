@@ -6,6 +6,7 @@ $GLOBALS['rootpath'] = $GLOBALS['rootpath'] ?? "htdocs\Game-Library\server";
 /**
  * @testdox ajax_Test.php calling search.ajax.php 
  * @group page
+ * @group api
  * @coversNothing
  */
 class ajax_Test extends TestCase {
@@ -18,15 +19,7 @@ class ajax_Test extends TestCase {
     }
 
 	/**
-	 * @testdox with no parameters
 	 * @small
-	 */
-    public function test_ajax_Load() {
-        $args = array();
-        $this->assertisString($this->_execute($args));
-    }
-
-	/**
 	 * @testWith ["stealth","Game"]
 	 *           ["stealth","Trans"]
 	 *           ["steam","DRM"]

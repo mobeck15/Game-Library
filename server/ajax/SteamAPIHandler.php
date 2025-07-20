@@ -25,6 +25,7 @@ class SteamAPIHandler
 	{
 		$headers = $this->getHeaders(); // <-- add this line for coverage
 		foreach ($headers as $header) {
+			//TODO: header invalidates test scripts
 			//header($header);
 		}
 	}

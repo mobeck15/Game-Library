@@ -8,6 +8,7 @@ require_once $GLOBALS['rootpath'].'\tests\inc\testprivate.inc.php';
 
 /**
  * @group api
+ * @coversNothing
  */
 class SteamAPIHandlerTest extends testprivate
 {
@@ -16,6 +17,7 @@ class SteamAPIHandlerTest extends testprivate
 	 * @covers SteamAPIHandler::__construct
 	 * @uses CurlRequest
 	 * @uses SteamAPI
+	 * @small
 	 */
     public function testHandleRequestWithApiParam(): void
     {
@@ -38,6 +40,7 @@ class SteamAPIHandlerTest extends testprivate
  	 * @uses SteamAPIHandler
 	 * @uses CurlRequest
 	 * @uses SteamAPI
+	 * @small
      */
     public function testHandleRequestWithoutApiParam(): void
     {
@@ -58,6 +61,7 @@ class SteamAPIHandlerTest extends testprivate
 	 * @uses SteamAPIHandler
 	 * @uses CurlRequest
 	 * @uses SteamAPI
+	 * @small
      */
     public function testSendHeaders(): void
     {
@@ -77,6 +81,7 @@ class SteamAPIHandlerTest extends testprivate
 	 * @uses SteamAPIHandler
 	 * @uses CurlRequest
 	 * @uses SteamAPI
+	 * @small
      */
 	public function testGetHeaders()
 	{

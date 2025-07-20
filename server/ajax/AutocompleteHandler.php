@@ -31,7 +31,9 @@ class AutocompleteHandler
         $sql = $queryMap[$queryType]['sql'];
         $stmt = $this->conn->prepare($sql);
         if (!$stmt) {
+			// @codeCoverageIgnoreStart
             throw new RuntimeException("SQL prepare error: " . $this->conn->error);
+			// @codeCoverageIgnoreEnd
         }
 
         $searchTerm = '%' . $term . '%';
