@@ -2,7 +2,7 @@ https://docs.phpunit.de/en/9.5/textui.html#command-line-options
 
 command> 
 - phpunit --coverage-html .\htdocs\glcoverage --stop-on-defect --testdox
-- phpunit --coverage-html htdocs\glcoverage .\htdocs\Game-Library\server\tests 
+- phpunit --coverage-html .\htdocs\glcoverage .\htdocs\Game-Library\server\tests 
 
 - phpunit .\htdocs\Game-Library\server\tests
 - phpunit --coverage-text .\htdocs\Game-Library\server\tests

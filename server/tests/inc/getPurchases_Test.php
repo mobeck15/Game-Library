@@ -554,7 +554,7 @@ final class getPurchases_Test extends testprivate
 		"TotalWant"=>1,
 		"TotalHrs"=>1,
 		"GamesinBundle"=>array(
-			1163=>array(
+			1160=>array(
 				"Want"=>1,
 				"MSRP"=>1
 			)
@@ -605,7 +605,7 @@ final class getPurchases_Test extends testprivate
 		"TotalWant"=>1,
 		"TotalHrs"=>1,
 		"GamesinBundle"=>array(
-			1163=>array(
+			1160=>array(
 				"Want"=>1,
 				"MSRP"=>1
 			)
@@ -656,7 +656,7 @@ final class getPurchases_Test extends testprivate
 		"TotalWant"=>1,
 		"TotalHrs"=>1,
 		"GamesinBundle"=>array(
-			1163=>array(
+			1160=>array(
 				"Want"=>1,
 				"MSRP"=>1
 			)

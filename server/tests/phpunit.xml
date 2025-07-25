@@ -2,7 +2,7 @@
 <phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.5/phpunit.xsd"
          cacheResultFile=".phpunit.cache/test-results"
-         executionOrder="depends,defects"
+         executionOrder="defects"
          forceCoversAnnotation="false"
          beStrictAboutCoversAnnotation="true"
          beStrictAboutOutputDuringTests="true"
@@ -12,12 +12,12 @@
          failOnWarning="true"
          verbose="true"
 		 
-		backupGlobals="true"
-		timeoutForSmallTests="1"
-		timeoutForMediumTests="5"
-		timeoutForLargeTests="30"
-		colors="true"
-
+		 backupGlobals="true"
+		 timeoutForSmallTests="1"
+		 timeoutForMediumTests="5"
+		 timeoutForLargeTests="30"
+		 colors="true"
+		 columns="67"
 		 >
     <testsuites>
         <testsuite name="default">
