@@ -13,7 +13,7 @@ require_once $GLOBALS['rootpath']."/inc/getPurchases.class.php";
 
 
 
-function makeStatTable($MetaFilter,$filter){
+function makeStatTable($MetaFilter, $filter, $makeStatRowFn = 'makeStatRow', $makeHeaderRowFn = 'makeHeaderRow', $makeGameCountRowFn = 'makeGameCountRow') {
 	$output="";
 	$output .= "<table width=100%>";
 	$output .= "<thead>";
@@ -48,133 +48,133 @@ function makeStatTable($MetaFilter,$filter){
 	//var_dump($filter);
 	//If Base Stats or Both Base and Meta are requested, show Base Stats
 	if($MetaFilter=="base" OR $MetaFilter=="both") {
-		$output .= makeHeaderRow("STATS");
-		$output .= makeGameCountRow($filter,"blue1");
+		$output .= $makeHeaderRowFn("STATS");
+		$output .= $makeGameCountRowFn($filter, "blue1");
 		/* Launch Date */
-		$output .= makeStatRow($filter,"Release"     ,"LaunchDate"       ,"yellow1","Date",5);
-		$output .= makeStatRow($filter,"Purchased"   ,"PurchaseDateTime" ,"yellow2");
-		$output .= makeStatRow($filter,"Date Added"  ,"AddedDateTime"    ,"yellow1");
-		$output .= makeStatRow($filter,"Last Played" ,"lastPlayDateTime" ,"yellow2");
-		$output .= makeStatRow($filter,"First Played","firstPlayDateTime","yellow1");
+		$output .= $makeStatRowFn($filter,"Release"     ,"LaunchDate"       ,"yellow1","Date",5);
+		$output .= $makeStatRowFn($filter,"Purchased"   ,"PurchaseDateTime" ,"yellow2");
+		$output .= $makeStatRowFn($filter,"Date Added"  ,"AddedDateTime"    ,"yellow1");
+		$output .= $makeStatRowFn($filter,"Last Played" ,"lastPlayDateTime" ,"yellow2");
+		$output .= $makeStatRowFn($filter,"First Played","firstPlayDateTime","yellow1");
 
-		$output .= makeStatRow($filter,"Count"           ,"SteamAchievements","blue1","Achievements",4);
-		$output .= makeStatRow($filter,"Earned"          ,"Achievements"     ,"blue2");
-		$output .= makeStatRow($filter,"Percent Complete","AchievementsPct"  ,"blue1");
-		$output .= makeStatRow($filter,"Left"            ,"AchievementsLeft" ,"blue2");
+		$output .= $makeStatRowFn($filter,"Count"           ,"SteamAchievements","blue1","Achievements",4);
+		$output .= $makeStatRowFn($filter,"Earned"          ,"Achievements"     ,"blue2");
+		$output .= $makeStatRowFn($filter,"Percent Complete","AchievementsPct"  ,"blue1");
+		$output .= $makeStatRowFn($filter,"Left"            ,"AchievementsLeft" ,"blue2");
 		
-		$output .= makeStatRow($filter,"Play Time"             ,"totalHrs"      ,"yellow1","Time",4);
-		$output .= makeStatRow($filter,"Total Play Time"       ,"GrandTotal"    ,"yellow2");
-		$output .= makeStatRow($filter,"Time to Beat"          ,"TimeToBeat"    ,"yellow1");
-		$output .= makeStatRow($filter,"Remaining Time to Beat","TimeLeftToBeat","yellow2");
+		$output .= $makeStatRowFn($filter,"Play Time"             ,"totalHrs"      ,"yellow1","Time",4);
+		$output .= $makeStatRowFn($filter,"Total Play Time"       ,"GrandTotal"    ,"yellow2");
+		$output .= $makeStatRowFn($filter,"Time to Beat"          ,"TimeToBeat"    ,"yellow1");
+		$output .= $makeStatRowFn($filter,"Remaining Time to Beat","TimeLeftToBeat","yellow2");
 
-		$output .= makeStatRow($filter,"Metascore"     ,"Metascore"    ,"blue1","Reviews",4);
-		$output .= makeStatRow($filter,"User Metascore","UserMetascore","blue2");
-		$output .= makeStatRow($filter,"Steam Rating"  ,"SteamRating"  ,"blue1");
-		$output .= makeStatRow($filter,"Review"        ,"Review"       ,"blue2");
+		$output .= $makeStatRowFn($filter,"Metascore"     ,"Metascore"    ,"blue1","Reviews",4);
+		$output .= $makeStatRowFn($filter,"User Metascore","UserMetascore","blue2");
+		$output .= $makeStatRowFn($filter,"Steam Rating"  ,"SteamRating"  ,"blue1");
+		$output .= $makeStatRowFn($filter,"Review"        ,"Review"       ,"blue2");
 
-		$output .= makeStatRow($filter,"Price"                 ,"LaunchPrice"      ,"yellow1","Launch",7);
-		$output .= makeStatRow($filter,"Variance from MSRP $"  ,"LaunchVariance"   ,"yellow2");
-		$output .= makeStatRow($filter,"Variance from MSRP %"  ,"LaunchVariancePct","yellow1");
-		$output .= makeStatRow($filter,"$/hr"                  ,"Launchperhr"      ,"yellow2");
-		$output .= makeStatRow($filter,"Hrs to $0.01 Less $/hr","LaunchLess1"      ,"yellow1");
-		$output .= makeStatRow($filter,"1 Hrs Reduces $/hr by" ,"LaunchLess2"      ,"yellow2");
-		$output .= makeStatRow($filter,"$/hr to Beat"          ,"Launchperhrbeat"  ,"yellow1");
+		$output .= $makeStatRowFn($filter,"Price"                 ,"LaunchPrice"      ,"yellow1","Launch",7);
+		$output .= $makeStatRowFn($filter,"Variance from MSRP $"  ,"LaunchVariance"   ,"yellow2");
+		$output .= $makeStatRowFn($filter,"Variance from MSRP %"  ,"LaunchVariancePct","yellow1");
+		$output .= $makeStatRowFn($filter,"$/hr"                  ,"Launchperhr"      ,"yellow2");
+		$output .= $makeStatRowFn($filter,"Hrs to $0.01 Less $/hr","LaunchLess1"      ,"yellow1");
+		$output .= $makeStatRowFn($filter,"1 Hrs Reduces $/hr by" ,"LaunchLess2"      ,"yellow2");
+		$output .= $makeStatRowFn($filter,"$/hr to Beat"          ,"Launchperhrbeat"  ,"yellow1");
 
-		$output .= makeStatRow($filter,"Price"                 ,"MSRP"         ,"blue1","MSRP",5);
-		$output .= makeStatRow($filter,"$/hr"                  ,"MSRPperhr"    ,"blue2");
-		$output .= makeStatRow($filter,"Hrs to $0.01 Less $/hr","MSRPLess1"    ,"blue1");
-		$output .= makeStatRow($filter,"1 Hrs Reduces $/hr by" ,"MSRPLess2"    ,"blue2");
-		$output .= makeStatRow($filter,"$/hr to Beat"          ,"MSRPperhrbeat","blue1");
+		$output .= $makeStatRowFn($filter,"Price"                 ,"MSRP"         ,"blue1","MSRP",5);
+		$output .= $makeStatRowFn($filter,"$/hr"                  ,"MSRPperhr"    ,"blue2");
+		$output .= $makeStatRowFn($filter,"Hrs to $0.01 Less $/hr","MSRPLess1"    ,"blue1");
+		$output .= $makeStatRowFn($filter,"1 Hrs Reduces $/hr by" ,"MSRPLess2"    ,"blue2");
+		$output .= $makeStatRowFn($filter,"$/hr to Beat"          ,"MSRPperhrbeat","blue1");
 
-		$output .= makeStatRow($filter,"Price"                 ,"HistoricLow"        ,"yellow1","Historic Low",7);
-		$output .= makeStatRow($filter,"Variance from MSRP $"  ,"HistoricVariance"   ,"yellow2");
-		$output .= makeStatRow($filter,"Variance from MSRP %"  ,"HistoricVariancePct","yellow1");
-		$output .= makeStatRow($filter,"$/hr"                  ,"Historicperhr"      ,"yellow2");
-		$output .= makeStatRow($filter,"Hrs to $0.01 Less $/hr","HistoricLess1"      ,"yellow1");
-		$output .= makeStatRow($filter,"1 Hrs Reduces $/hr by" ,"HistoricLess2"      ,"yellow2");
-		$output .= makeStatRow($filter,"$/hr to Beat"          ,"Historicperhrbeat"  ,"yellow1");
+		$output .= $makeStatRowFn($filter,"Price"                 ,"HistoricLow"        ,"yellow1","Historic Low",7);
+		$output .= $makeStatRowFn($filter,"Variance from MSRP $"  ,"HistoricVariance"   ,"yellow2");
+		$output .= $makeStatRowFn($filter,"Variance from MSRP %"  ,"HistoricVariancePct","yellow1");
+		$output .= $makeStatRowFn($filter,"$/hr"                  ,"Historicperhr"      ,"yellow2");
+		$output .= $makeStatRowFn($filter,"Hrs to $0.01 Less $/hr","HistoricLess1"      ,"yellow1");
+		$output .= $makeStatRowFn($filter,"1 Hrs Reduces $/hr by" ,"HistoricLess2"      ,"yellow2");
+		$output .= $makeStatRowFn($filter,"$/hr to Beat"          ,"Historicperhrbeat"  ,"yellow1");
 
-		$output .= makeStatRow($filter,"Price"                 ,"Paid"           ,"blue1","Paid",7);
-		$output .= makeStatRow($filter,"Variance from MSRP $"  ,"PaidVariance"   ,"blue2");
-		$output .= makeStatRow($filter,"Variance from MSRP %"  ,"PaidVariancePct","blue1");
-		$output .= makeStatRow($filter,"$/hr"                  ,"Paidperhr"      ,"blue2");
-		$output .= makeStatRow($filter,"Hrs to $0.01 Less $/hr","PaidLess1"      ,"blue1");
-		$output .= makeStatRow($filter,"1 Hrs Reduces $/hr by" ,"PaidLess2"      ,"blue2");
-		$output .= makeStatRow($filter,"$/hr to Beat"          ,"Paidperhrbeat"  ,"blue1");
+		$output .= $makeStatRowFn($filter,"Price"                 ,"Paid"           ,"blue1","Paid",7);
+		$output .= $makeStatRowFn($filter,"Variance from MSRP $"  ,"PaidVariance"   ,"blue2");
+		$output .= $makeStatRowFn($filter,"Variance from MSRP %"  ,"PaidVariancePct","blue1");
+		$output .= $makeStatRowFn($filter,"$/hr"                  ,"Paidperhr"      ,"blue2");
+		$output .= $makeStatRowFn($filter,"Hrs to $0.01 Less $/hr","PaidLess1"      ,"blue1");
+		$output .= $makeStatRowFn($filter,"1 Hrs Reduces $/hr by" ,"PaidLess2"      ,"blue2");
+		$output .= $makeStatRowFn($filter,"$/hr to Beat"          ,"Paidperhrbeat"  ,"blue1");
 
-		$output .= makeStatRow($filter,"Price"                 ,"SalePrice"      ,"yellow1","Sale Price",7);
-		$output .= makeStatRow($filter,"Variance from MSRP $"  ,"SaleVariance"   ,"yellow2");
-		$output .= makeStatRow($filter,"Variance from MSRP %"  ,"SaleVariancePct","yellow1");
-		$output .= makeStatRow($filter,"$/hr"                  ,"Saleperhr"      ,"yellow2");
-		$output .= makeStatRow($filter,"Hrs to $0.01 Less $/hr","SaleLess1"      ,"yellow1");
-		$output .= makeStatRow($filter,"1 Hrs Reduces $/hr by" ,"SaleLess2"      ,"yellow2");
-		$output .= makeStatRow($filter,"$/hr to Beat"          ,"Saleperhrbeat"  ,"yellow1");
+		$output .= $makeStatRowFn($filter,"Price"                 ,"SalePrice"      ,"yellow1","Sale Price",7);
+		$output .= $makeStatRowFn($filter,"Variance from MSRP $"  ,"SaleVariance"   ,"yellow2");
+		$output .= $makeStatRowFn($filter,"Variance from MSRP %"  ,"SaleVariancePct","yellow1");
+		$output .= $makeStatRowFn($filter,"$/hr"                  ,"Saleperhr"      ,"yellow2");
+		$output .= $makeStatRowFn($filter,"Hrs to $0.01 Less $/hr","SaleLess1"      ,"yellow1");
+		$output .= $makeStatRowFn($filter,"1 Hrs Reduces $/hr by" ,"SaleLess2"      ,"yellow2");
+		$output .= $makeStatRowFn($filter,"$/hr to Beat"          ,"Saleperhrbeat"  ,"yellow1");
 
-		$output .= makeStatRow($filter,"Price"                 ,"AltSalePrice"      ,"blue1","Alt Sale",7);
-		$output .= makeStatRow($filter,"Variance from MSRP $"  ,"AltSaleVariance"   ,"blue2");
-		$output .= makeStatRow($filter,"Variance from MSRP %"  ,"AltSaleVariancePct","blue1");
-		$output .= makeStatRow($filter,"$/hr"                  ,"Altperhr"          ,"blue2");
-		$output .= makeStatRow($filter,"Hrs to $0.01 Less $/hr","AltLess1"          ,"blue1");
-		$output .= makeStatRow($filter,"1 Hrs Reduces $/hr by" ,"AltLess2"          ,"blue2");
-		$output .= makeStatRow($filter,"$/hr to Beat"          ,"Altperhrbeat"      ,"blue1");
+		$output .= $makeStatRowFn($filter,"Price"                 ,"AltSalePrice"      ,"blue1","Alt Sale",7);
+		$output .= $makeStatRowFn($filter,"Variance from MSRP $"  ,"AltSaleVariance"   ,"blue2");
+		$output .= $makeStatRowFn($filter,"Variance from MSRP %"  ,"AltSaleVariancePct","blue1");
+		$output .= $makeStatRowFn($filter,"$/hr"                  ,"Altperhr"          ,"blue2");
+		$output .= $makeStatRowFn($filter,"Hrs to $0.01 Less $/hr","AltLess1"          ,"blue1");
+		$output .= $makeStatRowFn($filter,"1 Hrs Reduces $/hr by" ,"AltLess2"          ,"blue2");
+		$output .= $makeStatRowFn($filter,"$/hr to Beat"          ,"Altperhrbeat"      ,"blue1");
 	}
 
 	if($MetaFilter=="meta" OR $MetaFilter=="both") {
-		$output .= makeHeaderRow("METASTATS");
+		$output .= $makeHeaderRowFn("METASTATS");
 		
-		$output .= makeStatRow($filter,"Hrs to next position $/hr","LaunchHrsNext1" ,"yellow1","Launch",6);
-		$output .= makeStatRow($filter,"Hrs to next active $/hr"  ,"LaunchHrsNext2" ,"yellow2");
-		//$output .= makeStatRow($filter,"Hrs to $0.01 Less $/hr"   ,"LaunchLess2"    ,"yellow1"); //Duplicate from above rows.
-		$output .= makeStatRow($filter,"Hrs to $5.00/hr"          ,"LaunchHrs5"     ,"yellow1");
-		$output .= makeStatRow($filter,"Hrs to Avg/hr"            ,"launchhrsavg"   ,"yellow2");
-		//$output .= makeStatRow($filter,"Hrs to Mean/hr"           ,"launchhrsmean"  ,"yellow1"); //Mean not working yet
-		$output .= makeStatRow($filter,"Hrs to Median/hr"         ,"launchhrsmedian","yellow1");
-		$output .= makeStatRow($filter,"Hrs to XgameX $/hr"       ,"launchhrsgame"  ,"yellow2");
+		$output .= $makeStatRowFn($filter,"Hrs to next position $/hr","LaunchHrsNext1" ,"yellow1","Launch",6);
+		$output .= $makeStatRowFn($filter,"Hrs to next active $/hr"  ,"LaunchHrsNext2" ,"yellow2");
+		//$output .= $makeStatRowFn($filter,"Hrs to $0.01 Less $/hr"   ,"LaunchLess2"    ,"yellow1"); //Duplicate from above rows.
+		$output .= $makeStatRowFn($filter,"Hrs to $5.00/hr"          ,"LaunchHrs5"     ,"yellow1");
+		$output .= $makeStatRowFn($filter,"Hrs to Avg/hr"            ,"launchhrsavg"   ,"yellow2");
+		//$output .= $makeStatRowFn($filter,"Hrs to Mean/hr"           ,"launchhrsmean"  ,"yellow1"); //Mean not working yet
+		$output .= $makeStatRowFn($filter,"Hrs to Median/hr"         ,"launchhrsmedian","yellow1");
+		$output .= $makeStatRowFn($filter,"Hrs to XgameX $/hr"       ,"launchhrsgame"  ,"yellow2");
 
-		$output .= makeStatRow($filter,"Hrs to next position $/hr","MSRPHrsNext1" ,"blue1","MSRP",6);
-		$output .= makeStatRow($filter,"Hrs to next active $/hr"  ,"MSRPHrsNext2" ,"blue2");
-		//$output .= makeStatRow($filter,"Hrs to $0.01 Less $/hr"   ,"MSRPLess2"    ,"blue1"); //Duplicate from above rows.
-		$output .= makeStatRow($filter,"Hrs to $3.00/hr"          ,"MSRPHrs3"     ,"blue1");
-		$output .= makeStatRow($filter,"Hrs to Avg/hr"            ,"msrphrsavg"   ,"blue2");
-		//$output .= makeStatRow($filter,"Hrs to Mean/hr"           ,"msrphrsmean"  ,"blue1"); //Mean not working yet
-		$output .= makeStatRow($filter,"Hrs to Median/hr"         ,"msrphrsmedian","blue1");
-		$output .= makeStatRow($filter,"Hrs to XgameX $/hr"       ,"msrphrsgame"  ,"blue2");
+		$output .= $makeStatRowFn($filter,"Hrs to next position $/hr","MSRPHrsNext1" ,"blue1","MSRP",6);
+		$output .= $makeStatRowFn($filter,"Hrs to next active $/hr"  ,"MSRPHrsNext2" ,"blue2");
+		//$output .= $makeStatRowFn($filter,"Hrs to $0.01 Less $/hr"   ,"MSRPLess2"    ,"blue1"); //Duplicate from above rows.
+		$output .= $makeStatRowFn($filter,"Hrs to $3.00/hr"          ,"MSRPHrs3"     ,"blue1");
+		$output .= $makeStatRowFn($filter,"Hrs to Avg/hr"            ,"msrphrsavg"   ,"blue2");
+		//$output .= $makeStatRowFn($filter,"Hrs to Mean/hr"           ,"msrphrsmean"  ,"blue1"); //Mean not working yet
+		$output .= $makeStatRowFn($filter,"Hrs to Median/hr"         ,"msrphrsmedian","blue1");
+		$output .= $makeStatRowFn($filter,"Hrs to XgameX $/hr"       ,"msrphrsgame"  ,"blue2");
 
-		$output .= makeStatRow($filter,"Hrs to next position $/hr","HistoricHrsNext1" ,"yellow1","Historic Low",6);
-		$output .= makeStatRow($filter,"Hrs to next active $/hr"  ,"HistoricHrsNext2" ,"yellow2");
-		//$output .= makeStatRow($filter,"Hrs to $0.01 Less $/hr"   ,"HistoricLess2"    ,"yellow1"); //Duplicate from above rows.
-		$output .= makeStatRow($filter,"Hrs to $3.00/hr"          ,"HistoricHrs3"     ,"yellow1");
-		$output .= makeStatRow($filter,"Hrs to Avg/hr"            ,"histhrsavg"   ,"yellow2");
-		//$output .= makeStatRow($filter,"Hrs to Mean/hr"           ,"histhrsmean"  ,"yellow1"); //Mean not working yet
-		$output .= makeStatRow($filter,"Hrs to Median/hr"         ,"histhrsmedian","yellow1");
-		$output .= makeStatRow($filter,"Hrs to XgameX $/hr"       ,"histhrsgame"  ,"yellow2");
+		$output .= $makeStatRowFn($filter,"Hrs to next position $/hr","HistoricHrsNext1" ,"yellow1","Historic Low",6);
+		$output .= $makeStatRowFn($filter,"Hrs to next active $/hr"  ,"HistoricHrsNext2" ,"yellow2");
+		//$output .= $makeStatRowFn($filter,"Hrs to $0.01 Less $/hr"   ,"HistoricLess2"    ,"yellow1"); //Duplicate from above rows.
+		$output .= $makeStatRowFn($filter,"Hrs to $3.00/hr"          ,"HistoricHrs3"     ,"yellow1");
+		$output .= $makeStatRowFn($filter,"Hrs to Avg/hr"            ,"histhrsavg"   ,"yellow2");
+		//$output .= $makeStatRowFn($filter,"Hrs to Mean/hr"           ,"histhrsmean"  ,"yellow1"); //Mean not working yet
+		$output .= $makeStatRowFn($filter,"Hrs to Median/hr"         ,"histhrsmedian","yellow1");
+		$output .= $makeStatRowFn($filter,"Hrs to XgameX $/hr"       ,"histhrsgame"  ,"yellow2");
 
-		$output .= makeStatRow($filter,"Hrs to next position $/hr","PaidHrsNext1" ,"blue1","Paid",6);
-		$output .= makeStatRow($filter,"Hrs to next active $/hr"  ,"PaidHrsNext2" ,"blue2");
-		//$output .= makeStatRow($filter,"Hrs to $0.01 Less $/hr"   ,"PaidLess2"    ,"blue1"); //Duplicate from above rows.
-		$output .= makeStatRow($filter,"Hrs to $3.00/hr"          ,"PaidHrs3"     ,"blue1");
-		$output .= makeStatRow($filter,"Hrs to Avg/hr"            ,"paidhrsavg"   ,"blue2");
-		//$output .= makeStatRow($filter,"Hrs to Mean/hr"           ,"paidhrsmean"  ,"blue1"); //Mean not working yet
-		$output .= makeStatRow($filter,"Hrs to Median/hr"         ,"paidhrsmedian","blue1");
-		$output .= makeStatRow($filter,"Hrs to XgameX $/hr"       ,"paidhrsgame"  ,"blue2");
+		$output .= $makeStatRowFn($filter,"Hrs to next position $/hr","PaidHrsNext1" ,"blue1","Paid",6);
+		$output .= $makeStatRowFn($filter,"Hrs to next active $/hr"  ,"PaidHrsNext2" ,"blue2");
+		//$output .= $makeStatRowFn($filter,"Hrs to $0.01 Less $/hr"   ,"PaidLess2"    ,"blue1"); //Duplicate from above rows.
+		$output .= $makeStatRowFn($filter,"Hrs to $3.00/hr"          ,"PaidHrs3"     ,"blue1");
+		$output .= $makeStatRowFn($filter,"Hrs to Avg/hr"            ,"paidhrsavg"   ,"blue2");
+		//$output .= $makeStatRowFn($filter,"Hrs to Mean/hr"           ,"paidhrsmean"  ,"blue1"); //Mean not working yet
+		$output .= $makeStatRowFn($filter,"Hrs to Median/hr"         ,"paidhrsmedian","blue1");
+		$output .= $makeStatRowFn($filter,"Hrs to XgameX $/hr"       ,"paidhrsgame"  ,"blue2");
 
-		$output .= makeStatRow($filter,"Hrs to next position $/hr","SaleHrsNext1" ,"yellow1","Sale",6);
-		$output .= makeStatRow($filter,"Hrs to next active $/hr"  ,"SaleHrsNext2" ,"yellow2");
-		//$output .= makeStatRow($filter,"Hrs to $0.01 Less $/hr"   ,"SaleLess2"    ,"yellow1"); //Duplicate from above rows.
-		$output .= makeStatRow($filter,"Hrs to $3.00/hr"          ,"SaleHrs3"     ,"yellow1");
-		$output .= makeStatRow($filter,"Hrs to Avg/hr"            ,"salehrsavg"   ,"yellow2");
-		//$output .= makeStatRow($filter,"Hrs to Mean/hr"           ,"salehrsmean"  ,"yellow1"); //Mean not working yet
-		$output .= makeStatRow($filter,"Hrs to Median/hr"         ,"salehrsmedian","yellow1");
-		$output .= makeStatRow($filter,"Hrs to XgameX $/hr"       ,"salehrsgame"  ,"yellow2");
+		$output .= $makeStatRowFn($filter,"Hrs to next position $/hr","SaleHrsNext1" ,"yellow1","Sale",6);
+		$output .= $makeStatRowFn($filter,"Hrs to next active $/hr"  ,"SaleHrsNext2" ,"yellow2");
+		//$output .= $makeStatRowFn($filter,"Hrs to $0.01 Less $/hr"   ,"SaleLess2"    ,"yellow1"); //Duplicate from above rows.
+		$output .= $makeStatRowFn($filter,"Hrs to $3.00/hr"          ,"SaleHrs3"     ,"yellow1");
+		$output .= $makeStatRowFn($filter,"Hrs to Avg/hr"            ,"salehrsavg"   ,"yellow2");
+		//$output .= $makeStatRowFn($filter,"Hrs to Mean/hr"           ,"salehrsmean"  ,"yellow1"); //Mean not working yet
+		$output .= $makeStatRowFn($filter,"Hrs to Median/hr"         ,"salehrsmedian","yellow1");
+		$output .= $makeStatRowFn($filter,"Hrs to XgameX $/hr"       ,"salehrsgame"  ,"yellow2");
 
-		$output .= makeStatRow($filter,"Hrs to next position $/hr","AltHrsNext1" ,"blue1","Alt Sale",6);
-		$output .= makeStatRow($filter,"Hrs to next active $/hr"  ,"AltHrsNext2" ,"blue2");
-		//$output .= makeStatRow($filter,"Hrs to $0.01 Less $/hr"   ,"AltLess2"    ,"blue1"); //Duplicate from above rows.
-		$output .= makeStatRow($filter,"Hrs to $3.00/hr"          ,"AltHrs3"     ,"blue1");
-		$output .= makeStatRow($filter,"Hrs to Avg/hr"            ,"althrsavg"   ,"blue2");
-		//$output .= makeStatRow($filter,"Hrs to Mean/hr"           ,"althrsmean"  ,"blue1"); //Mean not working yet
-		$output .= makeStatRow($filter,"Hrs to Median/hr"         ,"althrsmedian","blue1");
-		$output .= makeStatRow($filter,"Hrs to XgameX $/hr"       ,"althrsgame"  ,"blue2");
+		$output .= $makeStatRowFn($filter,"Hrs to next position $/hr","AltHrsNext1" ,"blue1","Alt Sale",6);
+		$output .= $makeStatRowFn($filter,"Hrs to next active $/hr"  ,"AltHrsNext2" ,"blue2");
+		//$output .= $makeStatRowFn($filter,"Hrs to $0.01 Less $/hr"   ,"AltLess2"    ,"blue1"); //Duplicate from above rows.
+		$output .= $makeStatRowFn($filter,"Hrs to $3.00/hr"          ,"AltHrs3"     ,"blue1");
+		$output .= $makeStatRowFn($filter,"Hrs to Avg/hr"            ,"althrsavg"   ,"blue2");
+		//$output .= $makeStatRowFn($filter,"Hrs to Mean/hr"           ,"althrsmean"  ,"blue1"); //Mean not working yet
+		$output .= $makeStatRowFn($filter,"Hrs to Median/hr"         ,"althrsmedian","blue1");
+		$output .= $makeStatRowFn($filter,"Hrs to XgameX $/hr"       ,"althrsgame"  ,"blue2");
 	}
 	
 	return $output;
@@ -190,22 +190,23 @@ function makeGameCountRow($filter,$color) {
 	return $output;
 }
 
-function makeStatRow($filter,$rowname,$datakey,$color,$Heading="", $height=1) {
-	$printDetailLinks=true;
-	//var_dump($filter);
-	$stats=getmetastats($filter);
-	
-	$output = "<tr class='$color'>";
-	if($Heading<>"") {
-		$output .= "<th rowspan=$height class='$color'>$Heading</th>";
-	}
-	$output .= "<th>$rowname";
-	if($printDetailLinks){ $output .= " (<a href='?filter=".$_GET['filter']."&meta=".$_GET['meta']."&stat=".$stats[$datakey]['Title']."#detail'>?</a>)"; }
-	$output .= "</th>";
-	$output .= printStatRow2($stats[$datakey]);
-	$output .= "</tr>";
-	
-	return $output;
+function makeStatRow($filter, $rowname, $datakey, $color, $Heading = "", $height = 1, $getMetaStatsFn = 'getmetastats', $printStatFn = 'printStatRow2') {
+    $printDetailLinks = true;
+    $stats = $getMetaStatsFn($filter);
+
+    $output = "<tr class='$color'>";
+    if ($Heading != "") {
+        $output .= "<th rowspan=$height class='$color'>$Heading</th>";
+    }
+    $output .= "<th>$rowname";
+    if ($printDetailLinks) {
+        $output .= " (<a href='?filter=" . $_GET['filter'] . "&meta=" . $_GET['meta'] . "&stat=" . $stats[$datakey]['Title'] . "#detail'>?</a>)";
+    }
+    $output .= "</th>";
+    $output .= $printStatFn($stats[$datakey]);
+    $output .= "</tr>";
+
+    return $output;
 }
 
 function countgames($filter) {
@@ -575,7 +576,7 @@ function makeDetailTable($filter,$statname){
 	
 }
 
-function getStatRow($filter,$statname){
+function getStatRow($filter,$statname, $makeStatDataSetFn = 'makeStatDataSet', $getOnlyValuesFn = 'getOnlyValues'){
 	//STUB to support metastats overhaul
 	if (isset($GLOBALS["METASTATS"][$statname]))
 	{
@@ -586,8 +587,8 @@ function getStatRow($filter,$statname){
 		
 		//Always true?
 		if($statname<>null) {
-			$dataset=makeStatDataSet($filter,$statname);
-			$val=getOnlyValues($dataset,$statname);
+			$dataset=$makeStatDataSetFn($filter,$statname);
+			$val=$getOnlyValuesFn($dataset,$statname);
 			
 			$onlydata=$val['basedata'];
 			$onlydatamode=$val['modedata'];
@@ -733,6 +734,7 @@ function getStatRow($filter,$statname){
 			$row['Min2']=$onlydata[$row['Total']-2];
 			$row['Min2GameID']=$dataset[$row['Total']-2]['Game_ID'];
 			
+			var_dump($row);
 		}
 		
 		switch ($statname) {
