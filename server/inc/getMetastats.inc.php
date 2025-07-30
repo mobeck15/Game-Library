@@ -11,8 +11,6 @@ require_once $GLOBALS['rootpath']."/inc/getHistoryCalculations.inc.php";
 require_once $GLOBALS['rootpath']."/inc/getActivityCalculations.inc.php";
 require_once $GLOBALS['rootpath']."/inc/getPurchases.class.php";
 
-
-
 function makeStatTable($MetaFilter, $filter, $makeStatRowFn = 'makeStatRow', $makeHeaderRowFn = 'makeHeaderRow', $makeGameCountRowFn = 'makeGameCountRow') {
 	$output="";
 	$output .= "<table width=100%>";
@@ -726,15 +724,25 @@ function getStatRow($filter,$statname, $makeStatDataSetFn = 'makeStatDataSet', $
 			}
 			
 			$row['Max1']=$onlydata[0];
+			
+			//var_dump('dataset count', count($dataset), $dataset);
 			$row['Max1GameID']=$dataset[0]['Game_ID'];
 			$row['Max2']=$onlydata[1];
 			$row['Max2GameID']=$dataset[1]['Game_ID'];
 			$row['Min1']=$onlydata[$row['Total']-1];
+			
+			//var_dump([
+			//	'dataset count' => count($dataset),
+			//	'onlydata count' => count($onlydata),
+			//	'dataset keys' => array_keys($dataset),
+			//]);
+			
 			$row['Min1GameID']=$dataset[$row['Total']-1]['Game_ID'];
+			
 			$row['Min2']=$onlydata[$row['Total']-2];
 			$row['Min2GameID']=$dataset[$row['Total']-2]['Game_ID'];
 			
-			var_dump($row);
+			//var_dump($row);
 		}
 		
 		switch ($statname) {
@@ -1142,6 +1150,4 @@ function getOnlyValues($dataset,$statname) {
 	
 	return $return;
 }
-
-
 ?>
