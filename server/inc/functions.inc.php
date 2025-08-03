@@ -21,7 +21,7 @@ if(!isset($GLOBALS['rootpath'])) {$GLOBALS['rootpath']=".";}
 include_once $GLOBALS['rootpath']."/inc/template.inc.php";
 include_once $GLOBALS['rootpath']."/inc/utility.inc.php";
 include_once $GLOBALS['rootpath']."/inc/getSettings.inc.php";
-include_once $GLOBALS['rootpath']."/inc/getGames.inc.php";
+include_once $GLOBALS['rootpath']."/inc/getGames.class.php";
 //include_once $GLOBALS['rootpath']."/inc/getPurchases.inc.php";
 include_once $GLOBALS['rootpath']."/inc/getActivityCalculations.inc.php";
 include_once $GLOBALS['rootpath']."/inc/getHistoryCalculations.inc.php";

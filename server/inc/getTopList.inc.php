@@ -7,7 +7,7 @@ $GLOBALS[__FILE__]=1;
 
 $GLOBALS['rootpath']=$GLOBALS['rootpath'] ?? "..";
 require_once $GLOBALS['rootpath']."/inc/getCalculations.inc.php";
-require_once $GLOBALS['rootpath']."/inc/getGames.inc.php";
+require_once $GLOBALS['rootpath']."/inc/getGames.class.php";
 require_once $GLOBALS['rootpath']."/inc/utility.inc.php";
 require_once $GLOBALS['rootpath']."/inc/getSettings.inc.php";
 require_once $GLOBALS['rootpath']."/inc/getHistoryCalculations.inc.php";

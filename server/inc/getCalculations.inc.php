@@ -3,7 +3,7 @@
 //TODO: Re-evaluate how parent game is calculated
 $GLOBALS['rootpath'] = $GLOBALS['rootpath'] ?? "..";
 require_once $GLOBALS['rootpath']."/inc/PriceCalculation.class.php";
-include_once $GLOBALS['rootpath']."/inc/getGames.inc.php";
+include_once $GLOBALS['rootpath']."/inc/getGames.class.php";
 
 function getCalculations($gameID="",$connection=false,$start=false,$end=false){
 	

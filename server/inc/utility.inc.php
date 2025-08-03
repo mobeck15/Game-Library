@@ -291,7 +291,7 @@ function getGameDetail($gameID,$connection=false){
 		$conn = $connection;
 	}
 	
-	require_once $GLOBALS['rootpath']."/inc/getGames.inc.php";
+	require_once $GLOBALS['rootpath']."/inc/getGames.class.php";
 	$games=getGames($gameID,$conn);
 	
 	foreach ($games as $row) {
