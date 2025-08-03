@@ -151,6 +151,15 @@ final class getGames_Test extends testprivate
 		
 		$result = $method->invokeArgs( $GameListObject, array($gamerow) );
 		$this->assertisArray($result);
+		
+		$gamerow["LaunchDate"]="";
+
+		$this->expectWarning();
+		$this->expectWarningMessage("<a href=''>1 - gametitle</a> has no launch date set.");
+		
+		$result = $method->invokeArgs( $GameListObject, array($gamerow) );
+		$this->assertisArray($result);
+		
 	}
 	/* */
 }

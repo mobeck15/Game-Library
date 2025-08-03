@@ -11,12 +11,6 @@ require_once $GLOBALS['rootpath']."/inc/dataAccess.class.php";
 
 class Games {
 	public function getGames($gameID="",$connection=false){
-		/* if($connection==false){
-			$conn = get_db_connection();
-		} else {
-			$conn = $connection;
-		} */
-		
 		$dataobject= new dataAccess();
 		$statement=$dataobject->getGames($gameID);
 		while($row = $statement->fetch(PDO::FETCH_ASSOC)) {
@@ -31,7 +25,7 @@ class Games {
 		if($row['LaunchDate'] == null OR $row['LaunchDate']=="0000-00-00") 
 		{
 			$row['LaunchDate']="0000-00-00";
-			trigger_error("<a href=''>".$row['Game_ID'] ." - ". $row['Title'] . "</a> has no launch date set.");
+			trigger_error("<a href=''>".$row['Game_ID'] ." - ". $row['Title'] . "</a> has no launch date set.",E_USER_WARNING);
 		}
 
 		$row['LaunchDate'] = new DateTime($row['LaunchDate']);

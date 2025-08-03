@@ -24,6 +24,16 @@ Getting PHPunit to work in XAMPP:
    2. Copy it to php/ext
    3. Add the [XDEBUG] section to php.ini
    4. Add xdebug.mode=coverage at the end
+   ```
+[XDEBUG]
+xdebug.mode=coverage
+zend_extension = "php_xdebug-3.4.5-8.4-ts-vs17-x86_64.dll"
+   ```
 6. Copy the phpuni.xml file to the XAMPP root folder.
+
+
+Other Notes:
+Sometimes XAMPP needs to run as administrator to avoid crashes and corrupton of the mysql database
+
 
 ---

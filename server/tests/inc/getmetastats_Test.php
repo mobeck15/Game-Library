@@ -210,6 +210,7 @@ final class getmetastats_Test extends TestCase
 	/**
 	 * @small
 	 * @covers getStatRow
+	 * @uses timeduration
 	 * @testWith ["firstPlayDateTime"]
 	 *           ["AltHrs3"]
 	 *           ["Review"]
@@ -218,28 +219,33 @@ final class getmetastats_Test extends TestCase
 	 *           ["TimeLeftToBeat"]
 	 */
     public function test_getStatRow_main($stat) {
-		
-		$mockDataset = [
-			[
-				'Game_ID' => 3608,
-				'firstPlayDateTime' => new DateTime('2010-06-27 10:32:34', new DateTimeZone('Europe/Berlin')),
+		$mockDataSet = array_values([
+			3599 => ['Game_ID' => 3599, 'firstPlayDateTime' => new DateTime('@1373752800'),
 				'AltHrs3' => 980.5833333333334,
 				'Review' => 1,
 				'Altperhrbeat' => 0,
 				'AchievementsPct' => 0.1221001221001221,
-				'TimeLeftToBeat' => 0.061111111111111116
-			],
-			[
-				'Game_ID' => 262,
-				'firstPlayDateTime' => new DateTime('2010-05-12 00:00:00', new DateTimeZone('Europe/Berlin')),
+				'TimeLeftToBeat' => 0.061111111111111116],
+			3600 => ['Game_ID' => 3600, 'firstPlayDateTime' => new DateTime('@1373580000'),
 				'AltHrs3' => 5136.233333333334,
 				'Review' => 2,
 				'Altperhrbeat' => 0,
 				'AchievementsPct' => 0.6493506493506493,
-				'TimeLeftToBeat' => 0.01666666666666672
-			],
-		];
-
+				'TimeLeftToBeat' => 0.01666666666666672],
+			3601 => ['Game_ID' => 3601, 'firstPlayDateTime' => new DateTime('@1373580000'),
+				'AltHrs3' => 5136.233333333334,
+				'Review' => 2,
+				'Altperhrbeat' => 0,
+				'AchievementsPct' => 0.6493506493506493,
+				'TimeLeftToBeat' => 0.01666666666666672],
+			3602 => ['Game_ID' => 3602, 'firstPlayDateTime' => new DateTime('@1373580000'),
+				'AltHrs3' => 5136.233333333334,
+				'Review' => 2,
+				'Altperhrbeat' => 0,
+				'AchievementsPct' => 0.6493506493506493,
+				'TimeLeftToBeat' => 0.01666666666666672]
+		]);
+		
 		$mockVal = [
 			'basedata' => [
 				1373752800,
@@ -255,30 +261,12 @@ final class getmetastats_Test extends TestCase
 			],
 		];
 
-		$makeMock = fn($filter, $statname) => $mockDataset;
+		$makeMock = fn($filter, $statname) => $mockDataSet;
 		$getMock = fn($dataset, $statname) => $mockVal;
 
 		$result = getStatRow("All", $stat, $makeMock, $getMock);
 		$this->assertIsArray($result);
-		
 	}
-	/*
-	 *           ["firstPlayDateTime"]
-	 *           ["AltHrs3"]
-	 *           ["Review"]
-	 *           ["Altperhrbeat"]
-	 *           ["AchievementsPct"]
-	 *           ["TimeLeftToBeat"]
-
-	*/
-	
-	/**
-	 * @testWith ["firstPlayDateTime"]
-	 */
-    public function test_getStatRow_main_old($stat) {
-        $this->assertisArray(getStatRow("All",$stat));
-	}
-	
 	
 	/**
 	 * @small
