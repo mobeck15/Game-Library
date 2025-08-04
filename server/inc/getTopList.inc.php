@@ -13,6 +13,7 @@ require_once $GLOBALS['rootpath']."/inc/getSettings.inc.php";
 require_once $GLOBALS['rootpath']."/inc/getHistoryCalculations.inc.php";
 require_once $GLOBALS['rootpath']."/inc/getActivityCalculations.inc.php";
 require_once $GLOBALS['rootpath']."/inc/getPurchases.class.php";
+include_once $GLOBALS['rootpath']."/inc/dataSet.class.php";
 
 function getTopList($group,$connection=false,$calc=false,$minGroupSize=2){
 	if($connection==false){
