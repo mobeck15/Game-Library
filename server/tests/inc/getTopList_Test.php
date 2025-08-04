@@ -7,6 +7,7 @@ require_once $GLOBALS['rootpath']."\inc\getTopList.inc.php";
 
 /**
  * @group include
+ * @group topList
  */
 final class getTopList_Test extends TestCase
 {

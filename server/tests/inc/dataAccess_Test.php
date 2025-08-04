@@ -616,6 +616,30 @@ final class dataAccess_Test extends testprivate
 	
 	/**
 	 * @small
+	 * @covers dataAccess::updateKeywords
+	 * @uses dataAccess
+	 * @testdox updateKeywords() no data
+	 */
+	public function test_updateKeywords_nodata() {
+		$dataobject= new dataAccess();
+
+		$insertrow['Genre'] = "";
+		$insertrow['GameType'] = "";
+		$insertrow['StoryMode'] = "";
+		$insertrow['GameFeature'] = "";
+		$insertrow['GameMode'] = "";
+		$insertrow['ID'] = 1;
+		
+		$dataobject->updateKeywords($insertrow);
+
+		$statement = $dataobject->getKeywords(1);
+		$allrows2=$dataobject->getAllRows($statement);
+		
+		$this->assertEquals($allrows2[6]['Keyword'],"seven");
+	}
+	
+	/**
+	 * @small
 	 * @covers dataAccess::updateAllSettings
 	 * @uses dataAccess
 	 * @uses get_db_connection

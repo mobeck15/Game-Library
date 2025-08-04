@@ -37,5 +37,4 @@ abstract class testprivate extends TestCase
 
 		return $method;
 	}
-	
 }
