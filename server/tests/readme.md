@@ -1,10 +1,12 @@
 https://docs.phpunit.de/en/9.5/textui.html#command-line-options
 
 command> 
+- phpunit --coverage-html .\htdocs\glcoverage --stop-on-defect --testdox
+- phpunit --coverage-html htdocs\glcoverage .\htdocs\Game-Library\server\tests 
+
 - phpunit .\htdocs\Game-Library\server\tests
 - phpunit --coverage-text .\htdocs\Game-Library\server\tests
-- phpunit --coverage-html .\htdocs\glcoverage.htm
-- phpunit --coverage-text .\htdocs\Game-Library\server\tests --coverage-html glcoverage.htm
+- phpunit --coverage-text .\htdocs\Game-Library\server\tests --coverage-html glcoverage
 
 ---
 Getting PHPunit to work in XAMPP:
@@ -22,5 +24,6 @@ Getting PHPunit to work in XAMPP:
    2. Copy it to php/ext
    3. Add the [XDEBUG] section to php.ini
    4. Add xdebug.mode=coverage at the end
+6. Copy the phpuni.xml file to the XAMPP root folder.
 
 ---

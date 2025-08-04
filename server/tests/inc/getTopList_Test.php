@@ -92,6 +92,7 @@ final class getTopList_Test extends TestCase
 	 * @uses timeduration
 	 * @uses getGames
 	 * @uses get_db_connection
+	 * @uses dataSet
 	 */
     public function test_getTopList_Alt() {
 		$conn=get_db_connection();

@@ -153,6 +153,7 @@ class viewgame_Test extends testprivate
 	 * @uses reIndexArray
 	 * @uses regroupArray
 	 * @uses timeduration
+	 * @uses dataSet
 	 */
 	public function test_outputHtml_post() {
 		$page = new viewgamePage();

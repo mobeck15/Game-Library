@@ -2,7 +2,7 @@
 declare(strict_types=1);
 use PHPUnit\Framework\TestCase;
 
-class testprivate extends TestCase
+abstract class testprivate extends TestCase
 {
 	/**
  	 * getPrivateProperty
