@@ -6,6 +6,7 @@ include_once $GLOBALS['rootpath']."/inc/getTopList.inc.php";
 class dataSet {
 	private $calculations;
 	private $topBundles;
+	private $purchases;
 	private $settings;
 	private $history;
 	private $items;
@@ -17,6 +18,14 @@ class dataSet {
 		return $this->calculations;
 	}
 
+	public function getPurchases(){
+		if(!isset($this->purchases)){
+			$data = new Purchases();
+			$this->purchases = $data->getPurchases();
+		}
+		return $this->purchases;
+	}
+	
 	public function getHistory(){
 		if(!isset($this->history)){
 			$this->history = getHistoryCalculations();
@@ -44,5 +53,4 @@ class dataSet {
 		}
 		return $this->items;
 	}
-
 }
