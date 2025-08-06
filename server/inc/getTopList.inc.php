@@ -29,14 +29,11 @@ class TopList {
 	}
 	
 	function buildTopListArray($group,$connection=false,$calc=false,$minGroupSize=2){
-		if($connection==false){
-			$conn = get_db_connection();
-		} else {
-			$conn = $connection;
-		}
+		$top = [];
 		
 		switch($group){
 			default:
+				//Group by bundle if group parameter is not recognized
 			case "Bundle":
 				$top = $this->buildBundleTopList();
 				break;
@@ -44,178 +41,27 @@ class TopList {
 				$top = $this->buildKeywordTopList();
 				break;
 			case "Series":
-				$SeriesList=array();
-				foreach ($this->dataSet->getCalculations() as $key => $row) {
-					$keyID=strtolower($row['Series']);
-					if(!in_array($keyID,$SeriesList)){
-						$SeriesList[$keyID]=$keyID;
-						$top[$keyID]['ID']=$keyID;
-						$top[$keyID]['Title']=$row['Series'];
-						//$top[$keyID]['numGames']=0;
-						//$top[$keyID]['Debug']="";
-					}
-					//TODO: Something is wrong with the date value in Series
-					if(!isset($top[$keyID]['PurchaseDate'])){
-						$top[$keyID]['PurchaseDate']=time();
-						$top[$keyID]['PurchaseTime']=0;
-						$top[$keyID]['PurchaseSequence']=0;
-						$top[$keyID]['Paid']=0;
-					}
-					if(isset($row['PurchaseDateTime'])){
-						$getPurchaseTime=$row['PurchaseDateTime']->getTimestamp();
-					} else {
-						$getPurchaseTime=0; //@codeCoverageIgnore
-					}
-					if($getPurchaseTime<$top[$keyID]['PurchaseDate']){
-						$top[$keyID]['PurchaseDate']=$getPurchaseTime;
-					}
-					
-					$top[$keyID]['Paid']+=$row['AltSalePrice'];
-					$top[$keyID]['Products'][$row['Game_ID']]=$row['Game_ID'];
-					
-					if(!isset($top[$keyID]['numGames'])){
-						$top[$keyID]['numGames']=0;
-					}
-					if ($row['CountGame']==true && $row['Playable']==true){
-					//if ($row['Playable']==true){
-						$top[$keyID]['numGames']++;
-						//$top[$keyID]['Debug'].="<br> Count " . $row['Title'] . " = " . $top[$keyID]['numGames'] . "<br>";
-					
-					}
-					
-					//$top[$keyID]['RawData'][]=$row;
-				}
-				
-				/* Don't Include Series with only one game */
-				foreach ($top as $key => $row) {
-					//if(count($row['Products'])>1) {
-					if($row['numGames']>$minGroupSize-1) {
-						$Sortby1[$key]  = strtolower($row['ID']);
-					} else {
-						unset($top[$key]);
-						unset($SeriesList[$keyID]);
-					}
-				}
-				array_multisort($Sortby1, SORT_ASC, $top);
-				/* */
-				
-				/* Create a recored for all Single Games */
-				foreach ($this->dataSet->getCalculations() as $key => $row) {
-					if(!in_array($keyID,$SeriesList)){
-						$top['None']['ID']="None";
-						$top['None']['Title']="Single Game";
-						if(!isset($top['None']['PurchaseDate'])){
-							$top['None']['PurchaseDate']=time();
-							$top['None']['PurchaseTime']=0;
-							$top['None']['PurchaseSequence']=0;
-							$top['None']['Paid']=0;
-						}
-						if(isset($row['PurchaseDateTime'])){
-							$getPurchaseTime=$row['PurchaseDateTime']->getTimestamp();
-						} else {
-							$getPurchaseTime=0; //@codeCoverageIgnore
-						}
-						if($getPurchaseTime<$top['None']['PurchaseDate']){
-							$top['None']['PurchaseDate']=$getPurchaseTime;
-						}
-						
-						$top['None']['Paid']+=$row['AltSalePrice'];
-						$top['None']['Products'][$row['Game_ID']]=$row['Game_ID'];
-					}
-					if(isset($top['None'])){
-						$top['None']['RawData']="";
-					}
-				}
-				/* */
-				
+				$top = $this->buildSeriesTopList($minGroupSize);
 				break;
 			case "Store":
-				$storeList=array();
-				foreach($this->dataSet->getPurchases() as $row) {
-					$StoreID=strtolower($row['Store']);
-					if($row['TransID']==$row['BundleID'] && isset($row['ProductsinBunde'])){
-						if(!in_array($StoreID,$storeList)){
-							$storeList[]=$StoreID;
-							$top[$StoreID]['ID']=$StoreID;
-							$top[$StoreID]['Title']=$row['Store'];
-							$top[$StoreID]['PurchaseDate']=$row['PurchaseDate'];
-							$top[$StoreID]['PurchaseTime']=$row['PurchaseTime'];
-							$top[$StoreID]['PurchaseSequence']=$row['Sequence'];
-							$top[$StoreID]['Paid']=0;
-							$top[$StoreID]['Products']=array();
-							
-							//$top[$StoreID]['RawData']=$row;
-						} 
-						
-						$top[$StoreID]['Paid']+=$row['Paid'];
-						$top[$StoreID]['Products']=array_merge((array)$top[$StoreID]['Products'],(array)$row['ProductsinBunde']);
-					}
-					/* Singles */
-					/* */
-				}
+				$top = $this->buildStoreTopList();
 				break;
 			case "DRM":
 			case "OS":
 			case "Library":
-				$GroupList=array();
-				//$d=0;
-				foreach ($this->dataSet->getCalculations() as $key => $row) {
-					foreach ($row[$group] as $setkey => $set) {
-						$GroupID = isset($set) && $set !== null ? strtolower($set) : "";
-						if(!in_array($GroupID,$GroupList)){
-							$GroupList[]=$GroupID;
-							$top[$GroupID]['ID']=$GroupID;
-							$top[$GroupID]['Title']=$set;
-							$top[$GroupID]['PurchaseDate']=0;
-							$top[$GroupID]['PurchaseTime']=0;
-							$top[$GroupID]['PurchaseSequence']=0;
-						}
-						if (!isset($top[$GroupID]['Paid'])) {
-							$top[$GroupID]['Paid']=0;
-							$top[$GroupID]['Products']=array();
-						}
-						
-						$top[$GroupID]['Paid']+=$row['Paid'];
-						$top[$GroupID]['Products'][$row['Game_ID']]=$row['Game_ID'];
-					}
-				}
+				$top = $this->buildSimpleTopList($group);
 				break;
 			case "Meta10": //Metascore (1-10)
 			case "UMeta10": //User Metascore (1-10)
 			case "SteamR10": //Steam Rating (1-10)
-				$factor=10;
+				$top = $this->buildRatingTopList($group,10);
+				break;
 			case "Review":
 			case "Want":
 			case "Meta": //Metascore
 			case "UMeta": //User Metascore
 			case "SteamR": //Steam Rating
-				if(!isset($factor)){
-					$factor=100;
-				}
-				if($group=="Meta" OR $group=="Meta10"){$group="Metascore";}
-				if($group=="UMeta" OR $group=="UMeta10"){$group="UserMetascore";}
-				if($group=="SteamR" OR $group=="SteamR10"){$group="SteamRating";}
-				$GroupList=array();
-				//$d=0;
-				foreach ($this->dataSet->getCalculations() as $key => $row) {
-					$set=ceil(((double)$row[$group]/100)*$factor);
-					$GroupID=strtolower($set);
-					if(!in_array($GroupID,$GroupList)){
-						$GroupList[]=$GroupID;
-						$top[$GroupID]['ID']=$GroupID;
-						$top[$GroupID]['Title']=$set;
-						$top[$GroupID]['PurchaseDate']=0;
-						$top[$GroupID]['PurchaseTime']=0;
-						$top[$GroupID]['PurchaseSequence']=0;
-					}
-					if (!isset($top[$GroupID]['Paid'])) {
-						$top[$GroupID]['Paid']=0;
-						$top[$GroupID]['Products']=array();
-					}
-					
-					$top[$GroupID]['Paid']+=$row['Paid'];
-					$top[$GroupID]['Products'][$row['Game_ID']]=$row['Game_ID'];
-				}
+				$top = $this->buildRatingTopList($group,100);
 				break;
 			case "PYear": //Purchase Year
 			case "LYear": //Launch Year
@@ -223,47 +69,9 @@ class TopList {
 			case "LMonth": //Launch Month
 			case "PMonthNum": //Purchase Month Number
 			case "LMonthNum": //Launch Month Number
-				if($group=="PYear"     OR $group=="LYear") {$dateformat="Y";}
-				if($group=="PMonthNum" OR $group=="LMonthNum") {$dateformat="m";}
-				if($group=="PMonth"    OR $group=="LMonth") {$dateformat="Y-m";}
-				
-				if($group=="PYear" OR $group=="PMonth" OR $group=="PMonthNum"){$group="PurchaseDateTime";}
-				if($group=="LYear" OR $group=="LMonth" OR $group=="LMonthNum"){$group="LaunchDate";}
-				
-				$BundleList=array();
-				$GroupList=array();
-				foreach ($this->dataSet->getCalculations() as $key => $row) {
-					if($group=="LaunchDate") {
-						//$usedate=strtotime( $row[$group]);
-						$GroupID=date($dateformat,$row[$group]->getTimestamp());
-					} elseif ($group=="PurchaseDateTime") {
-						$GroupID=date($dateformat,$row[$group]->getTimestamp());
-					} else {
-						//$usedate=$row[$group];
-						//Unreachable
-						$GroupID=date($dateformat,0+$row[$group]); //@codeCoverageIgnore
-					}
-					if(!in_array($GroupID,$GroupList)){
-						$GroupList[]=$GroupID;
-						$top[$GroupID]['ID']=$GroupID;
-						$top[$GroupID]['Title']=$GroupID;
-						$top[$GroupID]['PurchaseDate']=0;
-						$top[$GroupID]['PurchaseTime']=0;
-						$top[$GroupID]['PurchaseSequence']=0;
-					}
-					if (!isset($top[$GroupID]['Paid'])) {
-						$top[$GroupID]['Paid']=0;
-						$top[$GroupID]['Products']=array();
-					}
-					//TODO: Add logic to check if the bundle game was included in has already been counted.
-					//if(!in_array(xxx,$BundleList)){}
-					
-					$top[$GroupID]['Paid']+=$row['Paid'];
-					$top[$GroupID]['Products'][$row['Game_ID']]=$row['Game_ID'];
-				}
+				$top = $this->buildDateTopList($group);
 				break;
-			
-
+				
 			//case "PWeek": //Purchase Week
 			//case "PWeekNum": //Purchase Week Number
 			//case "LWeek": //Launch Week
@@ -272,13 +80,16 @@ class TopList {
 			//case "Developer": 
 			//case "Publisher": 
 			//case "AlphaSort": //First Letter
-				break;
+			//	break;
 		}
-		
-		if($connection==false){
-			$conn->close();	
-		}
-		
+
+		$top = $this->calculateStatistics($top);
+
+        return $top;
+	}	
+	
+	private function calculateStatistics($top): array
+	{
 		$GrandTotalWant=0;
 		//$TotalLaunch=0;
 		//$TotalMSRP=0;
@@ -450,11 +261,9 @@ class TopList {
 
 			if(!isset($total['leastPlay']['ID'])){
 				if($row['leastPlay']['ID']==""){
-					//@codeCoverageIgnoreStart
 					$total['leastPlay']['ID']=null;	
 					$total['leastPlay']['Name']=null;
 					$total['leastPlay']['hours']=null;
-					//@codeCoverageIgnoreEnd
 				} else {
 					$total['leastPlay']['ID']=$row['leastPlay']['ID'];
 					$total['leastPlay']['Name']=$row['leastPlay']['Name'];
@@ -467,11 +276,9 @@ class TopList {
 			}
 			if(!isset($total['mostPlay']['ID'])){
 				if($row['mostPlay']['ID']=="") {
-					//@codeCoverageIgnoreStart
 					$total['mostPlay']['ID']=null;
 					$total['mostPlay']['Name']=null;
 					$total['mostPlay']['hours']=null;
-					//@codeCoverageIgnoreEnd
 				} else {
 					$total['mostPlay']['ID']=$row['mostPlay']['ID'];
 					$total['mostPlay']['Name']=$row['mostPlay']['Name'];
@@ -516,7 +323,7 @@ class TopList {
 		return $top;
 	}
 
-	private function buildBundleTopList()
+	private function buildBundleTopList(): array
 	{
 		foreach($this->dataSet->getPurchases() as $row) {
 			if($row['TransID']==$row['BundleID'] && isset($row['ProductsinBunde'])){
@@ -535,7 +342,7 @@ class TopList {
 		return $top;
 	}
 	
-	private function buildKeywordTopList()
+	private function buildKeywordTopList(): array
 	{
 		$conn = get_db_connection();
 		$sql="SELECT * FROM `gl_keywords`";
@@ -558,7 +365,7 @@ class TopList {
 				}
 				$getPurchaseTime=$this->dataSet->getCalculations()[$row['ProductID']]['PurchaseDateTime']->getTimestamp();
 				if($getPurchaseTime<$top[$keyID]['PurchaseDate']){
-					$top[$keyID]['PurchaseDate']=$getPurchaseTime; //@codeCoverageIgnore
+					$top[$keyID]['PurchaseDate']=$getPurchaseTime;
 				}
 				
 				$top[$keyID]['Paid']+=$this->dataSet->getCalculations()[$row['ProductID']]['AltSalePrice'];
@@ -573,41 +380,261 @@ class TopList {
 			}
 			array_multisort($Sortby1, SORT_ASC, $top);
 			
-			/* Ceate Row for NO KEYWRODS */
-			foreach ($this->dataSet->getCalculations() as $key => $row) {
-				if(!isset($this->dataSet->getCalculations()['allKeywords']) OR $this->dataSet->getCalculations()['allKeywords']==""){
-					$top['None']['ID']="None";
-					$top['None']['Title']="No Keywords";
-					if(!isset($top['None']['PurchaseDate'])){
-						$top['None']['PurchaseDate']=0;
-						$top['None']['PurchaseTime']=0;
-						$top['None']['PurchaseSequence']=0;
-						$top['None']['Paid']=0;
-					}
-					if(isset($row['PurchaseDateTime'])){
-						$getPurchaseTime=$row['PurchaseDateTime']->getTimestamp();
-					} else {
-						$getPurchaseTime=0; //@codeCoverageIgnore
-					}
-					if($getPurchaseTime<$top['None']['PurchaseDate']){
-						$top['None']['PurchaseDate']=$getPurchaseTime; //@codeCoverageIgnore
-					}
-					
-					
-					$top['None']['Paid']+=$row['AltSalePrice'];
-					$top['None']['Products'][$row['Game_ID']]=$row['Game_ID'];
-				}
-				if(isset($top['None'])){
-					$top['None']['RawData']="";
-				}
-			}
-			/* */
+			$top = $this->addNoneKeyword($top);
+			
+			
 		} else {
-			//@codeCoverageIgnoreStart
 			$keywords=false;
 			trigger_error("SQL Query Failed: " . mysqli_error($conn) . "</br>Query: ". $sql);
-			//@codeCoverageIgnoreEnd
 		}
+		return $top;
+	}
+	
+	private function addNoneKeyword(array $top): array
+	{
+		/* Ceate Row for NO KEYWRODS */
+		foreach ($this->dataSet->getCalculations() as $key => $row) {
+			if(!isset($this->dataSet->getCalculations()['allKeywords']) OR $this->dataSet->getCalculations()['allKeywords']==""){
+				$top['None']['ID']="None";
+				$top['None']['Title']="No Keywords";
+				if(!isset($top['None']['PurchaseDate'])){
+					$top['None']['PurchaseDate']=0;
+					$top['None']['PurchaseTime']=0;
+					$top['None']['PurchaseSequence']=0;
+					$top['None']['Paid']=0;
+				}
+				if(isset($row['PurchaseDateTime'])){
+					$getPurchaseTime=$row['PurchaseDateTime']->getTimestamp();
+				} else {
+					$getPurchaseTime=0;
+				}
+				if($getPurchaseTime<$top['None']['PurchaseDate']){
+					$top['None']['PurchaseDate']=$getPurchaseTime;
+				}
+				
+				$top['None']['Paid']+=$row['AltSalePrice'];
+				$top['None']['Products'][$row['Game_ID']]=$row['Game_ID'];
+			}
+			if(isset($top['None'])){
+				$top['None']['RawData']="";
+			}
+		}
+		return $top;
+	}
+	
+	private function buildSeriesTopList($minGroupSize): array
+	{
+		$SeriesList=array();
+		foreach ($this->dataSet->getCalculations() as $key => $row) {
+			$keyID=strtolower($row['Series']);
+			if(!in_array($keyID,$SeriesList)){
+				$SeriesList[$keyID]=$keyID;
+				$top[$keyID]['ID']=$keyID;
+				$top[$keyID]['Title']=$row['Series'];
+				//$top[$keyID]['numGames']=0;
+				//$top[$keyID]['Debug']="";
+			}
+			//TODO: Something is wrong with the date value in Series
+			if(!isset($top[$keyID]['PurchaseDate'])){
+				$top[$keyID]['PurchaseDate']=time();
+				$top[$keyID]['PurchaseTime']=0;
+				$top[$keyID]['PurchaseSequence']=0;
+				$top[$keyID]['Paid']=0;
+			}
+			if(isset($row['PurchaseDateTime'])){
+				$getPurchaseTime=$row['PurchaseDateTime']->getTimestamp();
+			} else {
+				$getPurchaseTime=0; 
+			}
+			if($getPurchaseTime<$top[$keyID]['PurchaseDate']){
+				$top[$keyID]['PurchaseDate']=$getPurchaseTime;
+			}
+			
+			$top[$keyID]['Paid']+=$row['AltSalePrice'];
+			$top[$keyID]['Products'][$row['Game_ID']]=$row['Game_ID'];
+			
+			if(!isset($top[$keyID]['numGames'])){
+				$top[$keyID]['numGames']=0;
+			}
+			if ($row['CountGame']==true && $row['Playable']==true){
+			//if ($row['Playable']==true){
+				$top[$keyID]['numGames']++;
+				//$top[$keyID]['Debug'].="<br> Count " . $row['Title'] . " = " . $top[$keyID]['numGames'] . "<br>";
+			
+			}
+			
+			//$top[$keyID]['RawData'][]=$row;
+		}
+		
+		/* Don't Include Series with only one game */
+		foreach ($top as $key => $row) {
+			//if(count($row['Products'])>1) {
+			if($row['numGames']>$minGroupSize-1) {
+				$Sortby1[$key]  = strtolower($row['ID']);
+			} else {
+				unset($top[$key]);
+				unset($SeriesList[$keyID]);
+			}
+		}
+		array_multisort($Sortby1, SORT_ASC, $top);
+		/* */
+		
+		/* Create a recored for all Single Games */
+		foreach ($this->dataSet->getCalculations() as $key => $row) {
+			if(!in_array($keyID,$SeriesList)){
+				$top['None']['ID']="None";
+				$top['None']['Title']="Single Game";
+				if(!isset($top['None']['PurchaseDate'])){
+					$top['None']['PurchaseDate']=time();
+					$top['None']['PurchaseTime']=0;
+					$top['None']['PurchaseSequence']=0;
+					$top['None']['Paid']=0;
+				}
+				if(isset($row['PurchaseDateTime'])){
+					$getPurchaseTime=$row['PurchaseDateTime']->getTimestamp();
+				} else {
+					$getPurchaseTime=0;
+				}
+				if($getPurchaseTime<$top['None']['PurchaseDate']){
+					$top['None']['PurchaseDate']=$getPurchaseTime;
+				}
+				
+				$top['None']['Paid']+=$row['AltSalePrice'];
+				$top['None']['Products'][$row['Game_ID']]=$row['Game_ID'];
+			}
+			if(isset($top['None'])){
+				$top['None']['RawData']="";
+			}
+		}
+		
+		return $top;
+	}
+	
+	private function buildStoreTopList(): array
+	{
+		$storeList=array();
+		foreach($this->dataSet->getPurchases() as $row) {
+			$StoreID=strtolower($row['Store']);
+			if($row['TransID']==$row['BundleID'] && isset($row['ProductsinBunde'])){
+				if(!in_array($StoreID,$storeList)){
+					$storeList[]=$StoreID;
+					$top[$StoreID]['ID']=$StoreID;
+					$top[$StoreID]['Title']=$row['Store'];
+					$top[$StoreID]['PurchaseDate']=$row['PurchaseDate'];
+					$top[$StoreID]['PurchaseTime']=$row['PurchaseTime'];
+					$top[$StoreID]['PurchaseSequence']=$row['Sequence'];
+					$top[$StoreID]['Paid']=0;
+					$top[$StoreID]['Products']=array();
+					
+					//$top[$StoreID]['RawData']=$row;
+				} 
+				
+				$top[$StoreID]['Paid']+=$row['Paid'];
+				$top[$StoreID]['Products']=array_merge((array)$top[$StoreID]['Products'],(array)$row['ProductsinBunde']);
+			}
+		}
+		
+		return $top;
+	}
+	
+	private function buildSimpleTopList($group): array
+	{
+		$GroupList=array();
+		foreach ($this->dataSet->getCalculations() as $key => $row) {
+			foreach ($row[$group] as $setkey => $set) {
+				$GroupID = isset($set) && $set !== null ? strtolower($set) : "";
+				if(!in_array($GroupID,$GroupList)){
+					$GroupList[]=$GroupID;
+					$top[$GroupID]['ID']=$GroupID;
+					$top[$GroupID]['Title']=$set;
+					$top[$GroupID]['PurchaseDate']=0;
+					$top[$GroupID]['PurchaseTime']=0;
+					$top[$GroupID]['PurchaseSequence']=0;
+				}
+				if (!isset($top[$GroupID]['Paid'])) {
+					$top[$GroupID]['Paid']=0;
+					$top[$GroupID]['Products']=array();
+				}
+				
+				$top[$GroupID]['Paid']+=$row['Paid'];
+				$top[$GroupID]['Products'][$row['Game_ID']]=$row['Game_ID'];
+			}
+		}
+		
+		return $top;
+	}
+	
+	private function buildRatingTopList($group,$factor): array
+	{
+		if($group=="Meta" OR $group=="Meta10"){$group="Metascore";}
+		if($group=="UMeta" OR $group=="UMeta10"){$group="UserMetascore";}
+		if($group=="SteamR" OR $group=="SteamR10"){$group="SteamRating";}
+		$GroupList=array();
+		//$d=0;
+		foreach ($this->dataSet->getCalculations() as $key => $row) {
+			$set=ceil(((double)$row[$group]/100)*$factor);
+			$GroupID=strtolower($set);
+			if(!in_array($GroupID,$GroupList)){
+				$GroupList[]=$GroupID;
+				$top[$GroupID]['ID']=$GroupID;
+				$top[$GroupID]['Title']=$set;
+				$top[$GroupID]['PurchaseDate']=0;
+				$top[$GroupID]['PurchaseTime']=0;
+				$top[$GroupID]['PurchaseSequence']=0;
+			}
+			if (!isset($top[$GroupID]['Paid'])) {
+				$top[$GroupID]['Paid']=0;
+				$top[$GroupID]['Products']=array();
+			}
+			
+			$top[$GroupID]['Paid']+=$row['Paid'];
+			$top[$GroupID]['Products'][$row['Game_ID']]=$row['Game_ID'];
+		}
+		
+		return $top;
+	}
+	
+	private function buildDateTopList($group): array
+	{
+		if($group=="PYear"     OR $group=="LYear") {$dateformat="Y";}
+		if($group=="PMonthNum" OR $group=="LMonthNum") {$dateformat="m";}
+		if($group=="PMonth"    OR $group=="LMonth") {$dateformat="Y-m";}
+		
+		if($group=="PYear" OR $group=="PMonth" OR $group=="PMonthNum"){$group="PurchaseDateTime";}
+		if($group=="LYear" OR $group=="LMonth" OR $group=="LMonthNum"){$group="LaunchDate";}
+		
+		$BundleList=array();
+		$GroupList=array();
+		foreach ($this->dataSet->getCalculations() as $key => $row) {
+			if($group=="LaunchDate") {
+				//$usedate=strtotime( $row[$group]);
+				$GroupID=date($dateformat,$row[$group]->getTimestamp());
+			} elseif ($group=="PurchaseDateTime") {
+				$GroupID=date($dateformat,$row[$group]->getTimestamp());
+			} else {
+				//$usedate=$row[$group];
+				//Unreachable
+				$GroupID=date($dateformat,0+$row[$group]);
+			}
+			if(!in_array($GroupID,$GroupList)){
+				$GroupList[]=$GroupID;
+				$top[$GroupID]['ID']=$GroupID;
+				$top[$GroupID]['Title']=$GroupID;
+				$top[$GroupID]['PurchaseDate']=0;
+				$top[$GroupID]['PurchaseTime']=0;
+				$top[$GroupID]['PurchaseSequence']=0;
+			}
+			if (!isset($top[$GroupID]['Paid'])) {
+				$top[$GroupID]['Paid']=0;
+				$top[$GroupID]['Products']=array();
+			}
+			//TODO: Add logic to check if the bundle game was included in has already been counted.
+			//if(!in_array(xxx,$BundleList)){}
+			
+			$top[$GroupID]['Paid']+=$row['Paid'];
+			$top[$GroupID]['Products'][$row['Game_ID']]=$row['Game_ID'];
+		}
+		
 		return $top;
 	}
 }
