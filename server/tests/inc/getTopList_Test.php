@@ -13,91 +13,26 @@ final class getTopList_Test extends TestCase
 {
 	private $Connection;
 	
-    /**
-     * @beforeClass
-     */
-	protected function makeconnection(): void
-    {
-		$this->Connection=get_db_connection();
-    }	
-	
-    /**
-     * @afterClass
-     */
-    protected function closeconnection(): void
-    {
-        $this->Connection->close;
-    }
-	
-	/**
+ 	/**
 	 * @large
-	 * @covers getTopList
-	 * @uses PriceCalculation
-	 * @uses combinedate
-	 * @uses daysSinceDate
-	 * @uses getActivityCalculations
-	 * @uses getAllCpi
-	 * @uses getAllItems
-	 * @uses getCalculations
-	 * @uses getCleanStringDate
-	 * @uses getHistoryCalculations
-	 * @uses getHrsNextPosition
-	 * @uses getHrsToTarget
-	 * @uses getKeywords
-	 * @uses getNextPosition
-	 * @uses getPriceSort
-	 * @uses getPriceperhour
-	 * @uses getTimeLeft
-	 * @uses getsettings
-	 * @uses makeIndex
-	 * @uses reIndexArray
-	 * @uses regroupArray
-	 * @uses timeduration
-	 * @uses getGames
-	 * @uses get_db_connection
-	 */
+	 * @CoversNothing
+	 * /
     public function test_getTopList_base() {
 		$output=getTopList("");
         $this->assertisArray($output);
         $this->assertisArray($output[57]);
 
 		$conn=get_db_connection();
-		//$conn=$this->Connection;
         $this->assertisArray(getTopList("",$conn));
 		$conn->close();
 	}
 
 	/**
 	 * @large
-	 * @covers getTopList
-	 * @uses PriceCalculation
-	 * @uses combinedate
-	 * @uses daysSinceDate
-	 * @uses getActivityCalculations
-	 * @uses getAllCpi
-	 * @uses getAllItems
-	 * @uses getCalculations
-	 * @uses getCleanStringDate
-	 * @uses getHistoryCalculations
-	 * @uses getHrsNextPosition
-	 * @uses getHrsToTarget
-	 * @uses getKeywords
-	 * @uses getNextPosition
-	 * @uses getPriceSort
-	 * @uses getPriceperhour
-	 * @uses getTimeLeft
-	 * @uses getsettings
-	 * @uses makeIndex
-	 * @uses reIndexArray
-	 * @uses regroupArray
-	 * @uses timeduration
-	 * @uses getGames
-	 * @uses get_db_connection
-	 * @uses dataSet
-	 */
+	 * @CoversNothing
+	 * /
     public function test_getTopList_Alt() {
 		$conn=get_db_connection();
-		//$conn=$this->Connection;
 		$data = new dataSet();
 		$calculations=$data->getCalculations();
         $this->assertisArray(getTopList("",$conn,$calculations));
@@ -112,6 +47,72 @@ final class getTopList_Test extends TestCase
         $this->assertisArray(getTopList("LYear",$conn,$calculations));
 		$conn->close();
 	}
+	
+	 /**
+	 * @small
+	 * @covers TopList::buildTopListArray
+	 * @uses TopList
+	 * @uses dataSet
+	 * @testWith [""]
+	 *           ["Series"]
+	 *           ["Store"]
+	 *           ["Library"]
+	 *           ["SteamR10"]
+	 *           ["SteamR"]
+	 *           ["PYear"]
+	 *           ["Keyword"]
+	 */
+	public function test_getTopList_new($listType) {
+		$purchases[0] = array(
+				"Title" => "FirstTitle",
+				"TransID" => 1,
+				"BundleID" => 1,
+				"PurchaseDate" => 1,
+				"PurchaseTime" => 1,
+				"Sequence" => 1,
+				"Paid" => 1,
+				"Store" => "Steam",
+				"ProductsinBunde" => array(
+					"0", "1"
+				)
+			);
+		$purchases[1] = $purchases[0];
+		$purchases[1]["Title"] = "SecondTitle";
+		$purchases[1]["TransID"] = 2;
+		$purchases[1]["BundleID"] = 2;
+
+		$calculations[]=array(
+				"Title" => "FirstGame",
+				"Series" => "FirstSeries",
+				"AltSalePrice" => 1,
+				"Game_ID" => 0,
+				"CountGame" => 1,
+				"Playable" => true,
+				"Active" => true,
+				"LaunchPrice" => 1,
+				"MSRP" => 1,
+				"HistoricLow" => 1,
+				"GrandTotal" => 1,
+				"Want" => 1,
+				"Paid" => 1,
+				"PurchaseDateTime" => new DateTime(),
+				"SteamRating" => 1,
+				"Status" => "Active",
+				"Library" => array("Steam","GOG")
+		);
+		$calculations[1] = $calculations[0];
+		$calculations[1]["Game_ID"] = 1;
+		$calculations[1]["Series"] = "FirstSeries";
+		
+		$data = new dataSet(purchases: $purchases, calculations: $calculations);
+		$topListObject=new TopList($data);
+		
+		$calculations=array();
+		$this->assertisArray($topListObject->buildTopListArray($listType,false,$calculations));
+	}
+	
+	/*
+	 */	 
 	
 	/* *
 	 * @large

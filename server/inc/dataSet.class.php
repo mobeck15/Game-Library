@@ -11,6 +11,22 @@ class dataSet {
 	private $history;
 	private $items;
 	
+	public function __construct(
+		$calculations = null,
+		$topBundles = null,
+		$purchases = null,
+		$settings = null,
+		$history = null,
+		$items = null
+	) {
+		$this->calculations = $calculations;
+		$this->topBundles = $topBundles;
+		$this->purchases = $purchases;
+		$this->settings = $settings;
+		$this->history = $history;
+		$this->items = $items;
+	}
+	
 	public function getCalculations(){
 		if(!isset($this->calculations)){
 			$this->calculations = reIndexArray(getCalculations(),"Game_ID");

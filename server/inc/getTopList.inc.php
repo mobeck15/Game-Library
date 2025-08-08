@@ -20,15 +20,11 @@ class TopList {
 	private $dataSet;
 	
 	public function __construct(dataSet $ds = null) {
-		if(!isset($ds))
-		{
-			$this->dataSet = new dataSet();
-		} else {
-			$this->dataSet = $ds;
-		}
+		$this->dataSet = $ds ?? new dataSet();
 	}
 	
-	function buildTopListArray($group,$connection=false,$calc=false,$minGroupSize=2){
+	function buildTopListArray($group,$connection=false,$calc=false,$minGroupSize=2)
+	{
 		$top = [];
 		
 		switch($group){
@@ -83,10 +79,11 @@ class TopList {
 			//	break;
 		}
 
+		//var_dump($top);
 		$top = $this->calculateStatistics($top);
 
         return $top;
-	}	
+	}
 	
 	private function calculateStatistics($top): array
 	{
@@ -115,7 +112,6 @@ class TopList {
 			$row['ActiveCount']=0;
 			$row['IncompleteCount']=0;
 			$row['UnplayedInactiveCount']=0;
-			
 			
 			foreach($row['Products'] as $product) {
 				if ($this->dataSet->getCalculations()[$product]['CountGame']==true){
@@ -325,6 +321,8 @@ class TopList {
 
 	private function buildBundleTopList(): array
 	{
+		$top = [];
+		
 		foreach($this->dataSet->getPurchases() as $row) {
 			if($row['TransID']==$row['BundleID'] && isset($row['ProductsinBunde'])){
 				$top[$row['TransID']]['ID']=$row['TransID'];
@@ -334,7 +332,6 @@ class TopList {
 				$top[$row['TransID']]['PurchaseSequence']=$row['Sequence'];
 				$top[$row['TransID']]['Paid']=$row['Paid'];
 				$top[$row['TransID']]['Products']=$row['ProductsinBunde'];
-				
 				
 				$top[$row['TransID']]['RawData']=$row;
 			}
@@ -476,6 +473,7 @@ class TopList {
 				unset($SeriesList[$keyID]);
 			}
 		}
+		
 		array_multisort($Sortby1, SORT_ASC, $top);
 		/* */
 		
@@ -638,9 +636,22 @@ class TopList {
 		return $top;
 	}
 }
-function getTopList($group,$connection=false,$calc=false,$minGroupSize=2){
-	$listObj=new TopList();
-	return $listObj->buildTopListArray($group,$connection,$calc,$minGroupSize);
+
+/**
+ * Build a top list using optional legacy parameters.
+ *
+ * @param string $group            Group type (e.g., 'Bundle')
+ * @param mixed  $connection       Unused legacy DB connection parameter
+ * @param array|false $calc        Calculations array or false
+ * @param int    $minGroupSize     Minimum size to include group
+ * @return array                   Top list array
+ */
+function getTopList(string $group, $connection=false, $calc=false, int $minGroupSize=2) : array
+{
+	$data = $calc === false ? new dataSet() : new dataSet(calculations: $calc);
+	
+	$listObj=new TopList($data);
+	return $listObj->buildTopListArray($group,$minGroupSize);
 }
 
 if (basename($_SERVER["SCRIPT_NAME"], '.php') == "getTopList.inc") {
