@@ -79,244 +79,225 @@ class TopList {
 			//	break;
 		}
 
-		//var_dump($top);
 		$top = $this->calculateStatistics($top);
 
         return $top;
 	}
 	
-	private function calculateStatistics($top): array
+	private function calculateStatistics(array $top): array
 	{
-		$GrandTotalWant=0;
-		//$TotalLaunch=0;
-		//$TotalMSRP=0;
-		//$TotalHistoric=0;
-		//$TotalHours=0;
-		
+		$GrandTotalWant = 0;
+		$total = $this->initializeTotalRow();
+
 		foreach ($top as $key => &$row) {
-			//TODO: Need to acually calulate ModPaid
-			$row['ModPaid']=$row['Paid']; 
-			$row['ItemCount']=0;
-			$row['GameCount']=0;
-			$totalWant=0;
-			$row['Active']=false;
-			$row['TotalLaunch']=0;
-			$row['TotalMSRP']=0;
-			$row['TotalHistoric']=0;
-			$row['TotalHours']=0;
-			$row['TotalLaunchPlayed']=0;
-			$row['TotalMSRPPlayed']=0;
-			$row['TotalHistoricPlayed']=0;
-			$row['InactiveCount']=0;
-			$row['UnplayedCount']=0;
-			$row['ActiveCount']=0;
-			$row['IncompleteCount']=0;
-			$row['UnplayedInactiveCount']=0;
+			$this->initializeRowStats($row);
 			
-			foreach($row['Products'] as $product) {
-				if ($this->dataSet->getCalculations()[$product]['CountGame']==true){
-					$row['ItemCount']++;
-
-					$row['TotalLaunch']+=$this->dataSet->getCalculations()[$product]['LaunchPrice'];
-					$row['TotalMSRP']+=$this->dataSet->getCalculations()[$product]['MSRP'];
-					$row['TotalHistoric']+=$this->dataSet->getCalculations()[$product]['HistoricLow'];
-					$row['TotalHours']+=$this->dataSet->getCalculations()[$product]['GrandTotal'];
-
-					//$TotalLaunch+=$this->dataSet->getCalculations()[$product]['LaunchPrice'];
-					//$TotalMSRP+=$this->dataSet->getCalculations()[$product]['MSRP'];
-					//$TotalHistoric+=$this->dataSet->getCalculations()[$product]['HistoricLow'];
-					//$TotalHours+=$this->dataSet->getCalculations()[$product]['GrandTotal'];
-					
-					if($this->dataSet->getCalculations()[$product]['GrandTotal']>0){
-						$row['TotalLaunchPlayed']+=$this->dataSet->getCalculations()[$product]['LaunchPrice'];
-						$row['TotalMSRPPlayed']+=$this->dataSet->getCalculations()[$product]['MSRP'];
-						$row['TotalHistoricPlayed']+=$this->dataSet->getCalculations()[$product]['HistoricLow'];
-					}
-					
-					//if($this->dataSet->getCalculations()[$product]['Type']=="Game"){
-					if($this->dataSet->getCalculations()[$product]['Playable']==true){
-						if(!isset($row['leastPlay']['ID'])){
-							$row['leastPlay']['ID']=$product;
-							$row['leastPlay']['Name']=$this->dataSet->getCalculations()[$product]['Title'];
-							$row['leastPlay']['hours']=$this->dataSet->getCalculations()[$product]['GrandTotal'];
-						} elseif($this->dataSet->getCalculations()[$product]['GrandTotal']<$row['leastPlay']['hours']){
-							$row['leastPlay']['ID']=$product;
-							$row['leastPlay']['Name']=$this->dataSet->getCalculations()[$product]['Title'];
-							$row['leastPlay']['hours']=$this->dataSet->getCalculations()[$product]['GrandTotal'];
-						}
-						if(!isset($row['mostPlay']['ID'])){
-							$row['mostPlay']['ID']=$product;
-							$row['mostPlay']['Name']=$this->dataSet->getCalculations()[$product]['Title'];
-							$row['mostPlay']['hours']=$this->dataSet->getCalculations()[$product]['GrandTotal'];
-						} elseif($this->dataSet->getCalculations()[$product]['GrandTotal']>$row['mostPlay']['hours']){
-							$row['mostPlay']['ID']=$product;
-							$row['mostPlay']['Name']=$this->dataSet->getCalculations()[$product]['Title'];
-							$row['mostPlay']['hours']=$this->dataSet->getCalculations()[$product]['GrandTotal'];
-						}
-						$row['GameCount']++;
-						$totalWant+=$this->dataSet->getCalculations()[$product]['Want'];
-						$GrandTotalWant+=$this->dataSet->getCalculations()[$product]['Want'];
-						
-						if($this->dataSet->getCalculations()[$product]['Active']==true){
-							$row['Active']=true;
-							$row['ActiveCount']++;
-						} else {
-							$row['InactiveCount']++;
-							if($this->dataSet->getCalculations()[$product]['GrandTotal']==0){
-								$row['UnplayedInactiveCount']++;
-							}
-						}
-						
-						if($this->dataSet->getCalculations()[$product]['GrandTotal']==0){
-							$row['UnplayedCount']++;
-						}
-						
-						if($this->dataSet->getCalculations()[$product]['Status']<>"Done"){
-							$row['IncompleteCount']++;
-						}
-					}
+			$totalWant = 0;
+			foreach ($row['Products'] as $product) {
+				if ($this->isCountableGame($product)) {
+					$this->updateRowWithProductStats($row, $product, $totalWant, $GrandTotalWant);
 				}
 			}
-			
-			if(!isset($row['leastPlay']['ID'])){
-				$row['leastPlay']['ID']="";
-				$row['leastPlay']['Name']="";
-				$row['leastPlay']['hours']="";
-			}
-			if(!isset($row['mostPlay']['ID'])){
-				$row['mostPlay']['ID']="";
-				$row['mostPlay']['Name']="";
-				$row['mostPlay']['hours']="";
-			}
 
-			if($row['TotalHours']<>0){
-				$row['PayHr']=$row['Paid']/($row['TotalHours']/60/60);
-			} else {
-				$row['PayHr']=0;
-			}
-			
-			if(!isset($total)){
-				$total['ID']="Total";
-				$total['Title']="Total";
-				$total['PurchaseDate']=0;
-				$total['PurchaseTime']=0;
-				$total['PurchaseSequence']=0;
-				$total['Paid']=0;
-				$total['ModPaid']=0;
-				$total['Products']=array();
-				$total['GameCount']=0;
-				$total['ItemCount']=0;
-				$total['Active']=0;
-				$total['TotalLaunch']=0;
-				$total['TotalMSRP']=0;
-				$total['TotalHistoric']=0;
-				$total['TotalHours']=0;
-				$total['TotalLaunchPlayed']=0;
-				$total['TotalMSRPPlayed']=0;
-				$total['TotalHistoricPlayed']=0;
-				$total['InactiveCount']=0;
-				$total['UnplayedCount']=0;
-				$total['ActiveCount']=0;
-				$total['IncompleteCount']=0;
-				$total['UnplayedInactiveCount']=0;
-				$total['Filter']=0;
-			}
-
-			$row['PlayVPay']=$row['ModPaid']-$row['TotalHistoricPlayed'];
-			if($row['GameCount']<>0){
-				$row['AvgWant']=$totalWant/$row['GameCount'];
-				$row['AvgCost']=$row['Paid']/$row['GameCount'];
-				$row['PctPlayed']=(1-$row['UnplayedCount']/$row['GameCount'])*100;
-				$total['PctiPlayed2source'][]=$row['PctPlayed'];
-			} else {
-				$row['AvgWant']=0;
-				$row['AvgCost']=0;
-				$row['PctPlayed']=100;
-			}
-			
-			if($row['Active']==1){
-				$total['Active']=1;
-			}
-
-			$total['Paid']+=$row['Paid'];
-			$total['ModPaid']+=$row['ModPaid'];
-			$total['ItemCount']+=$row['ItemCount'];
-			$total['GameCount']+=$row['GameCount'];
-			$total['TotalLaunch']+=$row['TotalLaunch'];
-			$total['TotalMSRP']+=$row['TotalMSRP'];
-			$total['TotalHistoric']+=$row['TotalHistoric'];
-			$total['TotalHours']+=$row['TotalHours'];
-			$total['TotalLaunchPlayed']+=$row['TotalLaunchPlayed'];
-			$total['TotalMSRPPlayed']+=$row['TotalMSRPPlayed'];
-			$total['TotalHistoricPlayed']+=$row['TotalHistoricPlayed'];
-			$total['InactiveCount']+=$row['InactiveCount'];
-			$total['UnplayedCount']+=$row['UnplayedCount'];
-			$total['ActiveCount']+=$row['ActiveCount'];
-			$total['IncompleteCount']+=$row['IncompleteCount'];
-			$total['UnplayedInactiveCount']+=$row['UnplayedInactiveCount'];
-
-			if(!isset($total['leastPlay']['ID'])){
-				if($row['leastPlay']['ID']==""){
-					$total['leastPlay']['ID']=null;	
-					$total['leastPlay']['Name']=null;
-					$total['leastPlay']['hours']=null;
-				} else {
-					$total['leastPlay']['ID']=$row['leastPlay']['ID'];
-					$total['leastPlay']['Name']=$row['leastPlay']['Name'];
-					$total['leastPlay']['hours']=$row['leastPlay']['hours'];
-				}
-			} elseif($row['leastPlay']['hours']<$total['leastPlay']['hours'] && $row['leastPlay']['ID']<>""){
-				$total['leastPlay']['ID']=$row['leastPlay']['ID'];
-				$total['leastPlay']['Name']=$row['leastPlay']['Name'];
-				$total['leastPlay']['hours']=$row['leastPlay']['hours'];
-			}
-			if(!isset($total['mostPlay']['ID'])){
-				if($row['mostPlay']['ID']=="") {
-					$total['mostPlay']['ID']=null;
-					$total['mostPlay']['Name']=null;
-					$total['mostPlay']['hours']=null;
-				} else {
-					$total['mostPlay']['ID']=$row['mostPlay']['ID'];
-					$total['mostPlay']['Name']=$row['mostPlay']['Name'];
-					$total['mostPlay']['hours']=$row['mostPlay']['hours'];
-				}
-			} elseif($row['mostPlay']['hours']>$total['mostPlay']['hours'] && $row['mostPlay']['ID']<>""){
-				$total['mostPlay']['ID']=$row['mostPlay']['ID'];
-				$total['mostPlay']['Name']=$row['mostPlay']['Name'];
-				$total['mostPlay']['hours']=$row['mostPlay']['hours'];
-			}
+			$this->finalizeRowStats($row, $totalWant);
+			$this->updateTotalWithRow($total, $row);
 		}
 
-		$total['PlayVPay']=$total['ModPaid']-$total['TotalHistoricPlayed'];
-		$total['PayHr'] = ($total['TotalHours']==0 ? 0 : $total['Paid']/($total['TotalHours']/60/60));
-		$total['BeatAvg'] = ($total['GameCount']==0 ? 0 : $total['PctPlayed']=(1-$total['UnplayedCount']/$total['GameCount'])*100);
-		$total['BeatAvg2']= (!isset($total['PctiPlayed2source']) ? 0 : array_sum($total['PctiPlayed2source']) / count($total['PctiPlayed2source']));
-		
-		$total['AvgWant']=($total['GameCount']==0 ? 0 : $GrandTotalWant/$total['GameCount']);
-		$total['AvgCost']=($total['GameCount']==0 ? 0 : $total['Paid']/$total['GameCount']);
-		
-		foreach ($top as $key => &$row) {
-			//iferror(if('% played'>'BeatAvg',0,roundup('BeatAvg'/(1/'# of Games'))-('# of Games'-'Unplayed Games')))
-			if($row['PctPlayed']>$total['BeatAvg']){
-				$row['BeatAvg']=0;
-			} else {
-				$row['BeatAvg']=ceil(($total['BeatAvg']/100)/(1/$row['GameCount']))-($row['GameCount']-$row['UnplayedCount']);
-			}
-			if($row['PctPlayed']>$total['BeatAvg2']){
-				$row['BeatAvg2']=0;
-			} else {
-				$row['BeatAvg2']=ceil(($total['BeatAvg2']/100)/(1/$row['GameCount']))-($row['GameCount']-$row['UnplayedCount']);
-			}
-			if($row['BeatAvg']==1 OR $row['BeatAvg2']==1){
-				$row['Filter']=1;
-			} else {
-				$row['Filter']=0;
-			}
-		}
-		
-		$top['Total']=$total;
-			
+		$this->finalizeTotalStats($total, $GrandTotalWant);
+		$this->updateBeatAverageStats($top, $total);
+
+		$top['Total'] = $total;
 		return $top;
+	}
+
+	private function initializeTotalRow(): array
+	{
+		return [
+			'ID' => 'Total',
+			'Title' => 'Total',
+			'PurchaseDate' => 0,
+			'PurchaseTime' => 0,
+			'PurchaseSequence' => 0,
+			'Paid' => 0,
+			'ModPaid' => 0,
+			'Products' => [],
+			'GameCount' => 0,
+			'ItemCount' => 0,
+			'Active' => 0,
+			'TotalLaunch' => 0,
+			'TotalMSRP' => 0,
+			'TotalHistoric' => 0,
+			'TotalHours' => 0,
+			'TotalLaunchPlayed' => 0,
+			'TotalMSRPPlayed' => 0,
+			'TotalHistoricPlayed' => 0,
+			'InactiveCount' => 0,
+			'UnplayedCount' => 0,
+			'ActiveCount' => 0,
+			'IncompleteCount' => 0,
+			'UnplayedInactiveCount' => 0,
+			'Filter' => 0,
+		];
+	}
+
+	private function initializeRowStats(array &$row): void
+	{
+		$row['ModPaid'] = $row['Paid'];
+		$row['ItemCount'] = 0;
+		$row['GameCount'] = 0;
+		$row['Active'] = false;
+		$row['TotalLaunch'] = 0;
+		$row['TotalMSRP'] = 0;
+		$row['TotalHistoric'] = 0;
+		$row['TotalHours'] = 0;
+		$row['TotalLaunchPlayed'] = 0;
+		$row['TotalMSRPPlayed'] = 0;
+		$row['TotalHistoricPlayed'] = 0;
+		$row['InactiveCount'] = 0;
+		$row['UnplayedCount'] = 0;
+		$row['ActiveCount'] = 0;
+		$row['IncompleteCount'] = 0;
+		$row['UnplayedInactiveCount'] = 0;
+	}
+
+	private function isCountableGame(string $productId): bool
+	{
+		return $this->dataSet->getCalculations()[$productId]['CountGame'] === true;
+	}
+
+	private function updateRowWithProductStats(array &$row, string $productId, int &$totalWant, int &$GrandTotalWant): void
+	{
+		$calc = $this->dataSet->getCalculations()[$productId];
+		$row['ItemCount']++;
+
+		$row['TotalLaunch'] += $calc['LaunchPrice'];
+		$row['TotalMSRP'] += $calc['MSRP'];
+		$row['TotalHistoric'] += $calc['HistoricLow'];
+		$row['TotalHours'] += $calc['GrandTotal'];
+
+		if ($calc['GrandTotal'] > 0) {
+			$row['TotalLaunchPlayed'] += $calc['LaunchPrice'];
+			$row['TotalMSRPPlayed'] += $calc['MSRP'];
+			$row['TotalHistoricPlayed'] += $calc['HistoricLow'];
+		}
+
+		if ($calc['Playable'] === true) {
+			$this->updatePlayTracking($row, $productId, $calc);
+			$row['GameCount']++;
+			$totalWant += $calc['Want'];
+			$GrandTotalWant += $calc['Want'];
+
+			if ($calc['Active'] === true) {
+				$row['Active'] = true;
+				$row['ActiveCount']++;
+			} else {
+				$row['InactiveCount']++;
+				if ($calc['GrandTotal'] == 0) {
+					$row['UnplayedInactiveCount']++;
+				}
+			}
+
+			if ($calc['GrandTotal'] == 0) {
+				$row['UnplayedCount']++;
+			}
+
+			if ($calc['Status'] !== 'Done') {
+				$row['IncompleteCount']++;
+			}
+		}
+	}
+
+	private function updatePlayTracking(array &$row, string $productId, array $calc): void
+	{
+		// Least play
+		if (!isset($row['leastPlay']['ID']) || $calc['GrandTotal'] < $row['leastPlay']['hours']) {
+			$row['leastPlay'] = [
+				'ID' => $productId,
+				'Name' => $calc['Title'],
+				'hours' => $calc['GrandTotal'],
+			];
+		}
+
+		// Most play
+		if (!isset($row['mostPlay']['ID']) || $calc['GrandTotal'] > $row['mostPlay']['hours']) {
+			$row['mostPlay'] = [
+				'ID' => $productId,
+				'Name' => $calc['Title'],
+				'hours' => $calc['GrandTotal'],
+			];
+		}
+	}
+
+	private function finalizeRowStats(array &$row, int $totalWant): void
+	{
+		if (!isset($row['leastPlay']['ID'])) {
+			$row['leastPlay'] = ['ID' => '', 'Name' => '', 'hours' => ''];
+		}
+		if (!isset($row['mostPlay']['ID'])) {
+			$row['mostPlay'] = ['ID' => '', 'Name' => '', 'hours' => ''];
+		}
+
+		$row['PayHr'] = ($row['TotalHours'] == 0 ? 0 : $row['Paid'] / ($row['TotalHours'] / 3600));
+		$row['PlayVPay'] = $row['ModPaid'] - $row['TotalHistoricPlayed'];
+
+		if ($row['GameCount'] > 0) {
+			$row['AvgWant'] = $totalWant / $row['GameCount'];
+			$row['AvgCost'] = $row['Paid'] / $row['GameCount'];
+			$row['PctPlayed'] = (1 - $row['UnplayedCount'] / $row['GameCount']) * 100;
+		} else {
+			$row['AvgWant'] = 0;
+			$row['AvgCost'] = 0;
+			$row['PctPlayed'] = 100;
+		}
+	}
+
+	private function updateTotalWithRow(array &$total, array $row): void
+	{
+		foreach ([
+			'Paid', 'ModPaid', 'ItemCount', 'GameCount',
+			'TotalLaunch', 'TotalMSRP', 'TotalHistoric', 'TotalHours',
+			'TotalLaunchPlayed', 'TotalMSRPPlayed', 'TotalHistoricPlayed',
+			'InactiveCount', 'UnplayedCount', 'ActiveCount',
+			'IncompleteCount', 'UnplayedInactiveCount'
+		] as $field) {
+			$total[$field] += $row[$field];
+		}
+
+		if ($row['Active'] == 1) {
+			$total['Active'] = 1;
+		}
+	}
+
+	private function finalizeTotalStats(array &$total, int $GrandTotalWant): void
+	{
+		$total['PlayVPay'] = $total['ModPaid'] - $total['TotalHistoricPlayed'];
+		$total['PayHr'] = ($total['TotalHours'] == 0 ? 0 : $total['Paid'] / ($total['TotalHours'] / 3600));
+		$total['BeatAvg'] = ($total['GameCount'] == 0 ? 0 : (1 - $total['UnplayedCount'] / $total['GameCount']) * 100);
+		$total['AvgWant'] = ($total['GameCount'] == 0 ? 0 : $GrandTotalWant / $total['GameCount']);
+		$total['AvgCost'] = ($total['GameCount'] == 0 ? 0 : $total['Paid'] / $total['GameCount']);
+	}
+
+	private function updateBeatAverageStats(array &$top, array $total): void
+	{
+		foreach ($top as $key => &$row) {
+			if ($row['PctPlayed'] > $total['BeatAvg']) {
+				$row['BeatAvg'] = 0;
+			} else {
+				$row['BeatAvg'] = ceil(($total['BeatAvg'] / 100) / (1 / $row['GameCount'])) - ($row['GameCount'] - $row['UnplayedCount']);
+			}
+
+			if ($row['PctPlayed'] > ($total['BeatAvg2'] ?? 0)) {
+				$row['BeatAvg2'] = 0;
+			} else {
+				$row['BeatAvg2'] = ceil(($total['BeatAvg2'] / 100) / (1 / $row['GameCount'])) - ($row['GameCount'] - $row['UnplayedCount']);
+			}
+
+			if ($row['BeatAvg'] == 1 || $row['BeatAvg2'] == 1) {
+				$row['Filter'] = 1;
+			} else {
+				$row['Filter'] = 0;
+			}
+		}
 	}
 
 	private function buildBundleTopList(): array
@@ -604,15 +585,13 @@ class TopList {
 		$BundleList=array();
 		$GroupList=array();
 		foreach ($this->dataSet->getCalculations() as $key => $row) {
+			
+			//$GroupID=date($dateformat,$row[$group]);
+			
 			if($group=="LaunchDate") {
-				//$usedate=strtotime( $row[$group]);
 				$GroupID=date($dateformat,$row[$group]->getTimestamp());
 			} elseif ($group=="PurchaseDateTime") {
 				$GroupID=date($dateformat,$row[$group]->getTimestamp());
-			} else {
-				//$usedate=$row[$group];
-				//Unreachable
-				$GroupID=date($dateformat,0+$row[$group]);
 			}
 			if(!in_array($GroupID,$GroupList)){
 				$GroupList[]=$GroupID;

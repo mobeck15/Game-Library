@@ -27,6 +27,27 @@ class dataSet {
 		$this->items = $items;
 	}
 	
+	public static function merge(self $first, self $second): self {
+		$merged = new self();
+		$refClass = new \ReflectionClass(self::class);
+
+		foreach ($refClass->getProperties() as $prop) {
+			$prop->setAccessible(true);
+
+			$value = $prop->getValue($first); // take from first
+			$secondValue = $prop->getValue($second);
+
+			// Override if $second has a non-null value
+			if ($secondValue !== null) {
+				$value = $secondValue;
+			}
+
+			$prop->setValue($merged, $value);
+		}
+
+		return $merged;
+	}
+	
 	public function getCalculations(){
 		if(!isset($this->calculations)){
 			$this->calculations = reIndexArray(getCalculations(),"Game_ID");
