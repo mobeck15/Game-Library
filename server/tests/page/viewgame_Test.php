@@ -119,6 +119,7 @@ class viewgame_Test extends testprivate
 	 * @small
 	 * @testdox buildHtmlBody with POST
 	 * @covers viewgamePage::buildHtmlBody
+	 * @uses Keywords
 	 * @uses viewgamePage
 	 * @uses Page
 	 * @uses CurlRequest

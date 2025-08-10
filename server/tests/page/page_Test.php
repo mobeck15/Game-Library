@@ -77,6 +77,7 @@ class page_Test extends testprivate {
 	 * @small
 	 * @testdox data()
 	 * @covers Page::data
+	 * @uses dataSet
 	 * @uses Page
 	 */
 	public function test_data() {
