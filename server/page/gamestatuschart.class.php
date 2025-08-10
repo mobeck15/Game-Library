@@ -6,7 +6,7 @@ include_once $GLOBALS['rootpath']."/inc/getSettings.inc.php";
 include_once $GLOBALS['rootpath']."/inc/getHistoryCalculations.inc.php";
 include_once $GLOBALS['rootpath']."/inc/getActivityCalculations.inc.php";
 include_once $GLOBALS['rootpath']."/inc/getCalculations.inc.php";
-include_once $GLOBALS['rootpath']."/inc/getGames.inc.php";
+include_once $GLOBALS['rootpath']."/inc/getGames.class.php";
 
 class gamestatuschartPage extends Page
 {

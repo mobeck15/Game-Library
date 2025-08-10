@@ -208,33 +208,8 @@ final class getmetastats_Test extends TestCase
 	}
 
 	/**
-	 * @large
+	 * @small
 	 * @covers getStatRow
-	 * @uses PriceCalculation
-	 * @uses combinedate
-	 * @uses countrow
-	 * @uses daysSinceDate
-	 * @uses getActivityCalculations
-	 * @uses getAllCpi
-	 * @uses getAllItems
-	 * @uses getCalculations
-	 * @uses getCleanStringDate
-	 * @uses getGames
-	 * @uses getHistoryCalculations
-	 * @uses getHrsNextPosition
-	 * @uses getHrsToTarget
-	 * @uses getKeywords
-	 * @uses getNextPosition
-	 * @uses getOnlyValues
-	 * @uses getPriceSort
-	 * @uses getPriceperhour
-	 * @uses getTimeLeft
-	 * @uses getsettings
-	 * @uses makeIndex
-	 * @uses makeStatDataSet
-	 * @uses methodTranslator
-	 * @uses objectTranslator
-	 * @uses regroupArray
 	 * @uses timeduration
 	 * @testWith ["firstPlayDateTime"]
 	 *           ["AltHrs3"]
@@ -244,7 +219,53 @@ final class getmetastats_Test extends TestCase
 	 *           ["TimeLeftToBeat"]
 	 */
     public function test_getStatRow_main($stat) {
-        $this->assertisArray(getStatRow("All",$stat));
+		$mockDataSet = array_values([
+			3599 => ['Game_ID' => 3599, 'firstPlayDateTime' => new DateTime('@1373752800'),
+				'AltHrs3' => 980.5833333333334,
+				'Review' => 1,
+				'Altperhrbeat' => 0,
+				'AchievementsPct' => 0.1221001221001221,
+				'TimeLeftToBeat' => 0.061111111111111116],
+			3600 => ['Game_ID' => 3600, 'firstPlayDateTime' => new DateTime('@1373580000'),
+				'AltHrs3' => 5136.233333333334,
+				'Review' => 2,
+				'Altperhrbeat' => 0,
+				'AchievementsPct' => 0.6493506493506493,
+				'TimeLeftToBeat' => 0.01666666666666672],
+			3601 => ['Game_ID' => 3601, 'firstPlayDateTime' => new DateTime('@1373580000'),
+				'AltHrs3' => 5136.233333333334,
+				'Review' => 2,
+				'Altperhrbeat' => 0,
+				'AchievementsPct' => 0.6493506493506493,
+				'TimeLeftToBeat' => 0.01666666666666672],
+			3602 => ['Game_ID' => 3602, 'firstPlayDateTime' => new DateTime('@1373580000'),
+				'AltHrs3' => 5136.233333333334,
+				'Review' => 2,
+				'Altperhrbeat' => 0,
+				'AchievementsPct' => 0.6493506493506493,
+				'TimeLeftToBeat' => 0.01666666666666672]
+		]);
+		
+		$mockVal = [
+			'basedata' => [
+				1373752800,
+				1373580000,
+				1277627554,
+				1273615200,
+			],
+			'modedata' => [
+				1373752800,
+				1373580000,
+				1277627554,
+				1273615200,
+			],
+		];
+
+		$makeMock = fn($filter, $statname) => $mockDataSet;
+		$getMock = fn($dataset, $statname) => $mockVal;
+
+		$result = getStatRow("All", $stat, $makeMock, $getMock);
+		$this->assertIsArray($result);
 	}
 	
 	/**
@@ -263,7 +284,6 @@ final class getmetastats_Test extends TestCase
 	 * @uses getHistoryCalculations
 	 * @uses getHrsNextPosition
 	 * @uses getHrsToTarget
-	 * @uses getKeywords
 	 * @uses getNextPosition
 	 * @uses getOnlyValues
 	 * @uses getPriceSort
@@ -300,7 +320,6 @@ final class getmetastats_Test extends TestCase
 	 * @uses getHistoryCalculations
 	 * @uses getHrsNextPosition
 	 * @uses getHrsToTarget
-	 * @uses getKeywords
 	 * @uses getNextPosition
 	 * @uses getOnlyValues
 	 * @uses getPriceSort
@@ -319,11 +338,6 @@ final class getmetastats_Test extends TestCase
         $this->assertisArray($output);
 	}
 	
-	
-	
-	
-	
-	
 	/**
 	 * @small
 	 * @covers getStatRow
@@ -340,7 +354,6 @@ final class getmetastats_Test extends TestCase
 	 * @uses getHistoryCalculations
 	 * @uses getHrsNextPosition
 	 * @uses getHrsToTarget
-	 * @uses getKeywords
 	 * @uses getNextPosition
 	 * @uses getOnlyValues
 	 * @uses getPriceSort
@@ -354,6 +367,15 @@ final class getmetastats_Test extends TestCase
 	 * @uses regroupArray
 	 * @uses timeduration
 	 * @uses dataSet
+	 * @uses reIndexArray
+	 * @uses countrow
+	 * @uses dataSet
+	 * @uses getCalculations
+	 * @uses getOnlyValues
+	 * @uses getsettings
+	 * @uses makeStatDataSet
+	 * @uses methodTranslator
+	 * @uses objectTranslator
 	 * @uses reIndexArray
 	 * @doesNotPerformAssertions
 	 */
@@ -409,7 +431,6 @@ final class getmetastats_Test extends TestCase
 	 * @uses getHistoryCalculations
 	 * @uses getHrsNextPosition
 	 * @uses getHrsToTarget
-	 * @uses getKeywords
 	 * @uses getNextPosition
 	 * @uses getPriceSort
 	 * @uses getPriceperhour
@@ -424,48 +445,36 @@ final class getmetastats_Test extends TestCase
 	}	
 	
 	/**
-	 * @large
+	 * @small
 	 * @covers makeStatTable
-	 * @uses PriceCalculation
-	 * @uses combinedate
-	 * @uses countgames
-	 * @uses countrow
-	 * @uses daysSinceDate
-	 * @uses getActivityCalculations
-	 * @uses getAllCpi
-	 * @uses getAllItems
-	 * @uses getCalculations
-	 * @uses getCleanStringDate
-	 * @uses getGames
-	 * @uses getHistoryCalculations
-	 * @uses getHrsNextPosition
-	 * @uses getHrsToTarget
-	 * @uses getKeywords
-	 * @uses getNextPosition
-	 * @uses getOnlyValues
-	 * @uses getPriceSort
-	 * @uses getPriceperhour
-	 * @uses getStatRow
-	 * @uses getTimeLeft
-	 * @uses getmetastats
-	 * @uses getsettings
-	 * @uses makeGameCountRow
-	 * @uses makeHeaderRow
-	 * @uses makeIndex
-	 * @uses makeStatDataSet
-	 * @uses makeStatRow
-	 * @uses methodTranslator
-	 * @uses objectTranslator
-	 * @uses printStatRow2
-	 * @uses reIndexArray
-	 * @uses regroupArray
-	 * @uses timeduration
 	 */
-    public function test_makeStatTable() {
-		$_GET['filter']="All";
-		$_GET['meta']="both";
-        $this->assertisString(makeStatTable("both","All"));
+	public function test_makeStatTable() {
+		$_GET['filter'] = 'All';
+		$_GET['meta'] = 'both';
+
+		// mock makeStatRow just returns a string
+		$fakeStatRowFn = function ($filter, $rowname, $datakey, $color, $Heading = "", $height = 1) {
+			return "<tr><td>$rowname</td><td>$datakey</td></tr>";
+		};
+
+		// mock header row
+		$fakeHeaderRowFn = function ($label) {
+			return "<tr class='header'><th colspan=2>$label</th></tr>";
+		};
+
+		// mock game count row
+		$fakeGameCountRowFn = function ($filter, $color) {
+			return "<tr class='$color'><td>Game Count</td></tr>";
+		};
+
+		$html = makeStatTable("both", "All", $fakeStatRowFn, $fakeHeaderRowFn, $fakeGameCountRowFn);
+
+		$this->assertIsString($html);
+		$this->assertStringContainsString("<table", $html);
+		$this->assertStringContainsString("Release", $html);
+		$this->assertStringContainsString("LaunchDate", $html);
 	}
+
 	
 	/**
 	 * @large
@@ -484,7 +493,6 @@ final class getmetastats_Test extends TestCase
 	 * @uses getHistoryCalculations
 	 * @uses getHrsNextPosition
 	 * @uses getHrsToTarget
-	 * @uses getKeywords
 	 * @uses getNextPosition
 	 * @uses getPriceSort
 	 * @uses getPriceperhour
@@ -499,44 +507,32 @@ final class getmetastats_Test extends TestCase
 	}
 	
 	/**
-	 * @large
+	 * @small
 	 * @covers makeStatRow
-	 * @uses PriceCalculation
-	 * @uses combinedate
-	 * @uses countrow
-	 * @uses daysSinceDate
-	 * @uses getActivityCalculations
-	 * @uses getAllCpi
-	 * @uses getAllItems
-	 * @uses getCalculations
-	 * @uses getCleanStringDate
-	 * @uses getGames
-	 * @uses getHistoryCalculations
-	 * @uses getHrsNextPosition
-	 * @uses getHrsToTarget
-	 * @uses getKeywords
-	 * @uses getNextPosition
-	 * @uses getOnlyValues
-	 * @uses getPriceSort
-	 * @uses getPriceperhour
-	 * @uses getStatRow
-	 * @uses getTimeLeft
-	 * @uses getmetastats
-	 * @uses getsettings
-	 * @uses makeIndex
-	 * @uses makeStatDataSet
-	 * @uses methodTranslator
-	 * @uses objectTranslator
-	 * @uses printStatRow2
-	 * @uses reIndexArray
-	 * @uses regroupArray
-	 * @uses timeduration
 	 */
-    public function test_makeStatRow() {
-		$_GET['filter']="All";
-		$_GET['meta']="both";
-        $this->assertisString(makeStatRow("All","Price","SalePrice","yellow1","Sale Price",7));
-	}	
+	public function test_makeStatRow() {
+		$_GET['filter'] = "All";
+		$_GET['meta'] = "both";
+
+		$fakeStats = [
+			'SalePrice' => ['Title' => 'SalePrice', 'Value' => 123]
+		];
+
+		$getMetaStatsMock = function ($filter) use ($fakeStats) {
+			return $fakeStats;
+		};
+
+		$printStatRow2Mock = function ($row) {
+			return "<td>" . $row['Value'] . "</td>";
+		};
+
+		$result = makeStatRow("All", "Price", "SalePrice", "yellow1", "Sale Price", 7, $getMetaStatsMock, $printStatRow2Mock);
+
+		$this->assertIsString($result);
+		$this->assertStringContainsString('<tr class=\'yellow1\'>', $result);
+		$this->assertStringContainsString('<th rowspan=7 class=\'yellow1\'>Sale Price</th>', $result);
+		$this->assertStringContainsString('<td>123</td>', $result);
+	}
 
 	/**
 	 * @small
@@ -562,7 +558,6 @@ final class getmetastats_Test extends TestCase
 	 * @uses getHistoryCalculations
 	 * @uses getHrsNextPosition
 	 * @uses getHrsToTarget
-	 * @uses getKeywords
 	 * @uses getNextPosition
 	 * @uses getPriceSort
 	 * @uses getPriceperhour
@@ -608,7 +603,6 @@ final class getmetastats_Test extends TestCase
 	 * @uses getHistoryCalculations
 	 * @uses getHrsNextPosition
 	 * @uses getHrsToTarget
-	 * @uses getKeywords
 	 * @uses getNextPosition
 	 * @uses getOnlyValues
 	 * @uses getPriceSort
@@ -645,7 +639,6 @@ final class getmetastats_Test extends TestCase
 	 * @uses getHistoryCalculations
 	 * @uses getHrsNextPosition
 	 * @uses getHrsToTarget
-	 * @uses getKeywords
 	 * @uses getNextPosition
 	 * @uses getOnlyValues
 	 * @uses getPriceSort
@@ -686,7 +679,6 @@ final class getmetastats_Test extends TestCase
 	 * @uses getHistoryCalculations
 	 * @uses getHrsNextPosition
 	 * @uses getHrsToTarget
-	 * @uses getKeywords
 	 * @uses getNextPosition
 	 * @uses getPriceSort
 	 * @uses getPriceperhour

@@ -3,218 +3,195 @@ declare(strict_types=1);
 use PHPUnit\Framework\TestCase;
 
 $GLOBALS['rootpath'] = $GLOBALS['rootpath'] ?? "htdocs\Game-Library\server";
-require_once $GLOBALS['rootpath']."\inc\getTopList.inc.php";
+require_once $GLOBALS['rootpath']."\inc\getTopList.class.php";
 
 /**
  * @group include
+ * @group topList
  */
-final class getTopList_Test extends TestCase
+final class getTopList_Test extends testprivate
 {
-	private $Connection;
-	
-    /**
-     * @beforeClass
-     */
-	protected function makeconnection(): void
-    {
-		$this->Connection=get_db_connection();
-    }	
-	
-    /**
-     * @afterClass
-     */
-    protected function closeconnection(): void
-    {
-        $this->Connection->close;
-    }
+	/**
+	 * @small
+	 * @covers TopList
+	 * @uses TopList
+	 * @uses dataSet
+	 * @uses Keywords
+	 * @uses dataAccess
+	 * @testWith [""]
+	 *           ["Series"]
+	 *           ["Store"]
+	 *           ["Library"]
+	 *           ["SteamR10"]
+	 *           ["SteamR"]
+	 *           ["PYear"]
+	 *           ["LYear"]
+	 *           ["Keyword"]
+	 */
+	public function test_getTopList($listType) {
+		$data = $this->getTestDataSet();
+		$topListObject=new TopList($data);
+		
+		$result = $topListObject->buildTopListArray($listType);
+		$this->assertisArray($result);
+		$this->assertArrayHasKey('leastPlay', current($result));
+	}
 	
 	/**
-	 * @large
-	 * @covers getTopList
-	 * @uses PriceCalculation
-	 * @uses combinedate
-	 * @uses daysSinceDate
-	 * @uses getActivityCalculations
-	 * @uses getAllCpi
-	 * @uses getAllItems
-	 * @uses getCalculations
-	 * @uses getCleanStringDate
-	 * @uses getHistoryCalculations
-	 * @uses getHrsNextPosition
-	 * @uses getHrsToTarget
-	 * @uses getKeywords
-	 * @uses getNextPosition
-	 * @uses getPriceSort
-	 * @uses getPriceperhour
-	 * @uses getTimeLeft
-	 * @uses getsettings
-	 * @uses makeIndex
-	 * @uses reIndexArray
-	 * @uses regroupArray
-	 * @uses timeduration
-	 * @uses getGames
-	 * @uses get_db_connection
+	 * @small
+	 * @covers TopList::buildSeriesTopList
+	 * @uses TopList
+	 * @uses dataSet
+	 * @uses Keywords
+	 * @uses dataAccess
 	 */
-    public function test_getTopList_base() {
-		$output=getTopList("");
-        $this->assertisArray($output);
-        $this->assertisArray($output[57]);
+	public function test_SeriesTopListWithNoPurchaseDate()
+	{
+		$listType="Series";
+		$data = $this->getTestDataSet();
+		
+		$calculations = $data->getCalculations();
+		$index=count($calculations);
+		$calculations[$index] = $calculations[0];
+		$calculations[$index]["Series"] = "One of a Kind";
+		unset($calculations[$index]["PurchaseDateTime"]);
+		
+		$data2 = new dataSet(purchases: $data->getPurchases(), calculations: $calculations);
+		
+		$topListObject=new TopList($data2);
+		$this->assertisArray($topListObject->buildTopListArray($listType));	
+	}
+	
+	/**
+	 * @small
+	 * @covers TopList::updateBeatAverageStats
+	 * @uses TopList
+	 * @uses dataSet
+	 * @uses Keywords
+	 * @uses dataAccess
+	 */
+	public function testUpdateBeatAverageStats()
+	{
+		$data = $this->getTestDataSet();
+		$topListObject=new TopList($data);
 
-		$conn=get_db_connection();
-		//$conn=$this->Connection;
-        $this->assertisArray(getTopList("",$conn));
-		$conn->close();
+		$total = [
+				'BeatAvg' => 1,
+				'BeatAvg2' => 1,
+			];
+		
+		$top = [
+			'row1' => [
+				'Products' => [2],
+				'PctPlayed' => 1,
+				'GameCount' => 1,
+				'UnplayedCount' => 1,
+				'Paid' => 0
+			],
+			'row2' => [
+				'Products' => [2],
+				'PctPlayed' => 2,
+				'GameCount' => 1,
+				'UnplayedCount' => 1,
+				'Paid' => 0
+			]
+		];
+
+		// Access private method
+		$method = $this->getPrivateMethod(TopList::class, 'updateBeatAverageStats');
+
+		// Invoke method
+		$method->invokeArgs($topListObject, [&$top, $total]);
+
+		// Assert returned value contains 'BeatAvg' key (added by updateBeatAverageStats)
+		$this->assertIsArray($top);
+		$this->assertArrayHasKey('BeatAvg', $top['row1']);
 	}
 
 	/**
-	 * @large
-	 * @covers getTopList
-	 * @uses PriceCalculation
-	 * @uses combinedate
-	 * @uses daysSinceDate
-	 * @uses getActivityCalculations
-	 * @uses getAllCpi
-	 * @uses getAllItems
-	 * @uses getCalculations
-	 * @uses getCleanStringDate
-	 * @uses getHistoryCalculations
-	 * @uses getHrsNextPosition
-	 * @uses getHrsToTarget
-	 * @uses getKeywords
-	 * @uses getNextPosition
-	 * @uses getPriceSort
-	 * @uses getPriceperhour
-	 * @uses getTimeLeft
-	 * @uses getsettings
-	 * @uses makeIndex
-	 * @uses reIndexArray
-	 * @uses regroupArray
-	 * @uses timeduration
-	 * @uses getGames
-	 * @uses get_db_connection
+	 * @small
+	 * @covers TopList::updateRowWithProductStats
+	 * @uses TopList
+	 * @uses Keywords
+	 * @uses dataAccess
 	 * @uses dataSet
 	 */
-    public function test_getTopList_Alt() {
-		$conn=get_db_connection();
-		//$conn=$this->Connection;
-		$data = new dataSet();
-		$calculations=$data->getCalculations();
-        $this->assertisArray(getTopList("",$conn,$calculations));
-        $this->assertisArray(getTopList("Keyword",$conn,$calculations));
-        $this->assertisArray(getTopList("Series",$conn,$calculations));
-        $this->assertisArray(getTopList("Series",$conn,$calculations,1));
-        $this->assertisArray(getTopList("Store",$conn,$calculations));
-        $this->assertisArray(getTopList("Library",$conn,$calculations));
-        $this->assertisArray(getTopList("SteamR10",$conn,$calculations));
-        $this->assertisArray(getTopList("SteamR",$conn,$calculations));
-        $this->assertisArray(getTopList("PYear",$conn,$calculations));
-        $this->assertisArray(getTopList("LYear",$conn,$calculations));
-		$conn->close();
+	public function testUpdateRowWithProductStats()
+	{
+		$data = $this->getTestDataSet();
+		$topListObject=new TopList($data);
+
+		$totalWant=0;
+		$GrandTotalWant=0;
+		$productId = 1;
+		$row = [
+			'ItemCount' => 0,
+			'TotalLaunch' => 0,
+			'TotalMSRP' => 0,
+			'TotalHistoric' => 0,
+			'TotalHours' => 0,
+			'GameCount' => 0,
+			'InactiveCount' => 0,
+			'UnplayedInactiveCount' => 0,
+			'UnplayedCount' => 0,
+			'IncompleteCount' => 0
+		];
+
+		// Access private method
+		$method = $this->getPrivateMethod(TopList::class, 'updateRowWithProductStats');
+
+		// Invoke method
+		$method->invokeArgs($topListObject, [&$row, $productId, &$totalWant, &$GrandTotalWant]);
+
+		$this->assertIsArray($row);
 	}
 	
-	/* *
-	 * @large
-	 * @covers getTopList
-	 * @uses PriceCalculation
-	 * @uses combinedate
-	 * @uses daysSinceDate
-	 * @uses getActivityCalculations
-	 * @uses getAllCpi
-	 * @uses getAllItems
-	 * @uses getCalculations
-	 * @uses getCleanStringDate
-	 * @uses getHistoryCalculations
-	 * @uses getHrsNextPosition
-	 * @uses getHrsToTarget
-	 * @uses getKeywords
-	 * @uses getNextPosition
-	 * @uses getPriceSort
-	 * @uses getPriceperhour
-	 * @uses getTimeLeft
-	 * @uses getsettings
-	 * @uses makeIndex
-	 * @uses reIndexArray
-	 * @uses regroupArray
-	 * @uses timeduration
-	 * @uses getGames
-	 * @uses get_db_connection
-	 * @testWith ["",2]
-	 *           ["Keyword", 2]
-	 *           ["Series", 2]
-	 *           ["Series", 1]
-	 *           ["Store", 2]
-	 *           ["Library", 2]
-	 *           ["SteamR10", 2]
-	 *           ["SteamR", 2]
-	 *           ["PYear", 2]
-	 *           ["LYear", 2]
-	 * /
-    public function test_getTopList_keywords($group,$size) {
-		//ARRANGE
-		$conn=get_db_connection();
-		$calculations=array(
-			array(
-				'Game_ID'=>1,
-				'Title'=>'TestGame1',
-				'Playable'=>true,
-				'Paid'=>1,
-				'Status'=>"Active",
-				'Review'=>1,
-				'PurchaseDateTime'=>new DateTime("2021/01/01"),
-				'AltSalePrice'=>1,
-				'allKeywords'=>"kewords, all of them...",
-				'Series'=>"X",
-				'DRM'=>"DRM",
-				'OS'=>"Windows",
-				'Library'=>"TestLib",
-				'Review'=>1,
-				'Want'=>1,
-				'Metascore'=>1,
-				'UserMetascore'=>1,
-				'SteamRating'=>1,
-				'LaunchDate'=>new DateTime("2021/01/01"),
-				'CountGame'=>true,
-				'LaunchPrice'=>1,
-				'MSRP'=>1,
-				'HistoricLow'=>1,
-				'GrandTotal'=>1,
-				'Type'=>"Game",
-				'Active'=>true
-			),
-			array(
-				'Game_ID'=>2,
-				'Title'=>'TestGame2',
-				'Playable'=>true,
-				'Paid'=>1,
-				'Status'=>"Active",
-				'Review'=>1,
-				'PurchaseDateTime'=>new DateTime("2021/01/01"),
-				'AltSalePrice'=>1,
-				'allKeywords'=>"kewords, all of them...",
-				'Series'=>"X",
-				'DRM'=>"DRM",
-				'OS'=>"Windows",
-				'Library'=>array("TestLib"),
-				'Review'=>1,
-				'Want'=>1,
-				'Metascore'=>1,
-				'UserMetascore'=>1,
-				'SteamRating'=>1,
-				'LaunchDate'=>new DateTime("2021/01/01"),
-				'CountGame'=>true,
-				'LaunchPrice'=>1,
-				'MSRP'=>1,
-				'HistoricLow'=>1,
-				'GrandTotal'=>1,
-				'Type'=>"Game",
-				'Active'=>true
-			),
-		);
-		$calculations=getCalculations("",$conn);
+	/**
+	 * @small
+	 * @covers TopList::toTimestamp
+	 * @uses TopList
+	 * @uses dataSet
+	 */
+	public function test_toTimestamp()
+	{	
+		$topListObject=new TopList();
 		
-		//ACT
-		//ASSERT
-        $this->assertisArray(getTopList($group,$conn,$calculations,$size));
-		$conn->close();
-	}	/* */	
+		// Access private method
+		$method = $this->getPrivateMethod(TopList::class, 'toTimestamp');
+
+		// Invoke method
+		$result = $method->invokeArgs($topListObject, [1]);
+
+		$this->assertEquals($result, 1);
+	}
+	
+	
+	/**
+	 * @small
+	 * @covers TopList::addNoneKeyword
+	 * @uses TopList
+	 * @uses dataSet
+	 */
+	public function test_addNoneKeyword()
+	{	
+		$data = $this->getTestDataSet();
+		
+		$calculations = $data->getCalculations();
+		$index=count($calculations);
+		$calculations[$index] = $calculations[0];
+		$calculations[$index]["Series"] = "One of a Kind";
+		unset($calculations[$index]["PurchaseDateTime"]);
+		
+		$data2 = new dataSet(purchases: $data->getPurchases(), calculations: $calculations);
+		
+		$topListObject=new TopList($data2);
+		
+		// Access private method
+		$method = $this->getPrivateMethod(TopList::class, 'addNoneKeyword');
+
+		// Invoke method
+		$result = $method->invokeArgs($topListObject, [1]);
+
+		$this->assertIsArray($result);
+	}
 }

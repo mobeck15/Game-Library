@@ -30,7 +30,6 @@ class steamapi_ownedgames_Test extends TestCase {
 	 * @uses getHistoryCalculations
 	 * @uses getHrsNextPosition
 	 * @uses getHrsToTarget
-	 * @uses getKeywords
 	 * @uses getNextPosition
 	 * @uses getPriceSort
 	 * @uses getPriceperhour

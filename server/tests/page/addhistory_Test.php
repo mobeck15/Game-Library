@@ -572,7 +572,6 @@ class addhistory_Test extends testprivate {
 	 * @uses getHistoryCalculations
 	 * @uses getHrsNextPosition
 	 * @uses getHrsToTarget
-	 * @uses getKeywords
 	 * @uses getNextPosition
 	 * @uses getPriceSort
 	 * @uses getPriceperhour

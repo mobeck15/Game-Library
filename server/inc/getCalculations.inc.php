@@ -3,7 +3,8 @@
 //TODO: Re-evaluate how parent game is calculated
 $GLOBALS['rootpath'] = $GLOBALS['rootpath'] ?? "..";
 require_once $GLOBALS['rootpath']."/inc/PriceCalculation.class.php";
-include_once $GLOBALS['rootpath']."/inc/getGames.inc.php";
+include_once $GLOBALS['rootpath']."/inc/getGames.class.php";
+include_once $GLOBALS['rootpath']."/inc/keywords.class.php";
 
 function getCalculations($gameID="",$connection=false,$start=false,$end=false){
 	
@@ -23,7 +24,8 @@ function getCalculations($gameID="",$connection=false,$start=false,$end=false){
 		$settings=getsettings($conn);
 		$history=getHistoryCalculations($gameID,$conn);
 		$activity=getActivityCalculations($gameID,$history,$conn);
-		$keywords=getKeywords($gameID,$conn);
+		//$keywords=getKeywords($gameID,$conn);
+		$keywords = Keywords::legacyGet($gameID,$conn);
 		//$purchases=getPurchases("",$conn,$items,$games);
 		$purchaseobj=new Purchases("",$conn,$items,$games);
 		$purchases=$purchaseobj->getPurchases();

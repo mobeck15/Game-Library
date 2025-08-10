@@ -3,14 +3,19 @@ $GLOBALS['rootpath']= $GLOBALS['rootpath'] ?? "..";
 
 class dataAccess {
 	//TODO: Split into dataAccess.class and dataProcess.class
-	private $dbConnection;
+	private ?PDO $dbConnection = null;
 
 	function __construct($conn=null) {
-		
+		//Cannot assign mysqli to property dataAccess::$dbConnection of type ?PDO
+		//So $conn just gets discarded here.
+		//if($conn !== null)
+		//{
+		//	$this->dbConnection = $conn;
+		//}
 	}
 	
-	public function getConnection(){
-		if(isset($this->dbConnection)) {
+	public function getConnection(): PDO {
+		if($this->dbConnection instanceof PDO) {
 			return $this->dbConnection;
 		}
 		
@@ -572,9 +577,14 @@ class dataAccess {
 	}
 	
 	public function getKeywords($gameID) {
-		$sql="SELECT * FROM `gl_keywords` WHERE `ProductID` = :gameID";
+		$sql = "SELECT * FROM `gl_keywords`";
+        if ($gameID !== null) {
+            $sql .= " WHERE `ProductID` = :gameID";
+        }
 		$query = $this->getConnection()->prepare($sql);
-		$query->bindvalue(':gameID', $gameID);
+		if ($gameID !== null) {
+			$query->bindvalue(':gameID', $gameID);
+		}
 		$query->execute();
 		return $query;
 	}

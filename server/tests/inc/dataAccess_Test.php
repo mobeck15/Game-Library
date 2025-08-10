@@ -124,8 +124,8 @@ final class dataAccess_Test extends testprivate
 	 * @group additem
 	 */
 	public function test_getKeywords() {
-		$dataobject= new dataAccess();
-		$statement=$dataobject->getKeywords(2);
+		$dataobject = new dataAccess();
+		$statement = $dataobject->getKeywords(2);
 		$this->assertisObject($statement);
 		$this->assertInstanceOf(PDOStatement::class, $statement);
 	}
@@ -605,6 +605,30 @@ final class dataAccess_Test extends testprivate
 		$expected[] = array("ProductID"=> 1, "kwType" => "GameFeature","Keyword" => "eight");
 		$expected[] = array("ProductID"=> 1, "kwType" => "GameMode","Keyword" => "nine");
 		$expected[] = array("ProductID"=> 1, "kwType" => "GameMode","Keyword" => "ten");
+		
+		$dataobject->updateKeywords($insertrow);
+
+		$statement = $dataobject->getKeywords(1);
+		$allrows2=$dataobject->getAllRows($statement);
+		
+		$this->assertEquals($allrows2[6]['Keyword'],"seven");
+	}
+	
+	/**
+	 * @small
+	 * @covers dataAccess::updateKeywords
+	 * @uses dataAccess
+	 * @testdox updateKeywords() no data
+	 */
+	public function test_updateKeywords_nodata() {
+		$dataobject= new dataAccess();
+
+		$insertrow['Genre'] = "";
+		$insertrow['GameType'] = "";
+		$insertrow['StoryMode'] = "";
+		$insertrow['GameFeature'] = "";
+		$insertrow['GameMode'] = "";
+		$insertrow['ID'] = 1;
 		
 		$dataobject->updateKeywords($insertrow);
 

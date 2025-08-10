@@ -230,16 +230,16 @@ final class Utility_Test extends TestCase
 
 	/**
 	 * @small
-	 * @covers getKeywords
+	 * @covers getKeywords_old
 	 * @uses get_db_connection
 	 */
 	public function test_getKeywords_base() {
 		//TODO: Add more functional tests for getKeywords
-		$this->assertIsArray(getKeywords());
-		$this->assertIsArray(getKeywords(1));
+		$this->assertIsArray(getKeywords_old());
+		$this->assertIsArray(getKeywords_old(1));
 		
 		$conn=get_db_connection();
-		$this->assertIsArray(getKeywords("",$conn));
+		$this->assertIsArray(getKeywords_old("",$conn));
 		$conn->close();
 	}
 

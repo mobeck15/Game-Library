@@ -97,13 +97,13 @@ function get_navmenu($dropbar=true){
 			$navmenu .= "\t\t<li><a href=\"".$GLOBALS['rootpath']."/prototype/test.php\"><img src=\"".$GLOBALS['rootpath']."/img/favicon.ico\" height=15 />Tests <img src=\"".$GLOBALS['rootpath']."/img/caret-right.png\" height=15 /></a>\r\n";
 			//$navmenu .= "\t\t<li><a >Tests <img src=\"".$GLOBALS['rootpath']."/img/caret-right.png\" height=15 /></a>\r\n";
 			$navmenu .= "\t<ul>\r\n";
-			$navmenu .= "\t\t<li><a href=\"".$GLOBALS['rootpath']."/inc/getGames.inc.php\">Get Games</a></li>\r\n";
+			$navmenu .= "\t\t<li><a href=\"".$GLOBALS['rootpath']."/inc/getGames.class.php\">Get Games</a></li>\r\n";
 			$navmenu .= "\t\t<li><a href=\"".$GLOBALS['rootpath']."/inc/getCalculations.inc.php\">Get Calculations</a></li>\r\n";
 			$navmenu .= "\t\t<li><a href=\"".$GLOBALS['rootpath']."/inc/getPurchases.class.php\">Get Purchases</a></li>\r\n";
 			$navmenu .= "\t\t<li><a href=\"".$GLOBALS['rootpath']."/inc/getActivityCalculations.inc.php\">Get Activity Calculations</a></li>\r\n";
 			$navmenu .= "\t\t<li><a href=\"".$GLOBALS['rootpath']."/inc/getHistoryCalculations.inc.php\">Get History Calculations</a></li>\r\n";
-			$navmenu .= "\t\t<li><a href=\"".$GLOBALS['rootpath']."/inc/getTopList.inc.php\">Get Top List</a></li>\r\n";
-			$navmenu .= "\t\t<li><a href=\"".$GLOBALS['rootpath']."/inc/getsettings.inc.php\">Get Settings</a></li>\r\n";
+			$navmenu .= "\t\t<li><a href=\"".$GLOBALS['rootpath']."/inc/getTopList.class.php\">Get Top List</a></li>\r\n";
+			$navmenu .= "\t\t<li><a href=\"".$GLOBALS['rootpath']."/inc/getSettings.inc.php\">Get Settings</a></li>\r\n";
 			$navmenu .= "\t</ul>\r\n";
 			$navmenu .= "</li>\r\n";
 		$navmenu .= "\t</ul></li>\r\n";
