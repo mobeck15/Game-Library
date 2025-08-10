@@ -89,7 +89,20 @@ abstract class testprivate extends TestCase
 		$calculations[2]["GrandTotal"] = 2;
 		$calculations[2]["CountGame"] = true;
 		
-		$data = new dataSet(purchases: $purchases, calculations: $calculations);
+		$kwobject = new Keywords();
+		$kwData[0]["keyLevel"] = array(
+			"one", "two"
+		);
+		
+		$property = $this->getPrivateProperty( 'Keywords', 'data' );
+		$data = $property->SetValue( $kwobject, $kwData);
+		
+		$data = new dataSet(
+			calculations: $calculations, 
+			purchases: $purchases, 
+			keywords: $kwobject
+		);
+		
 		return $data;
 	}
 	

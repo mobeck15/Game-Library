@@ -201,7 +201,7 @@ function getAllItems($gameID="",$connection=false){
 	return $items;
 }
 
-function getKeywords($gameID="",$connection=false){
+function getKeywords_old($gameID="",$connection=false){
 	if($connection==false){
 		$conn = get_db_connection();
 	} else {

@@ -284,7 +284,6 @@ final class getmetastats_Test extends TestCase
 	 * @uses getHistoryCalculations
 	 * @uses getHrsNextPosition
 	 * @uses getHrsToTarget
-	 * @uses getKeywords
 	 * @uses getNextPosition
 	 * @uses getOnlyValues
 	 * @uses getPriceSort
@@ -321,7 +320,6 @@ final class getmetastats_Test extends TestCase
 	 * @uses getHistoryCalculations
 	 * @uses getHrsNextPosition
 	 * @uses getHrsToTarget
-	 * @uses getKeywords
 	 * @uses getNextPosition
 	 * @uses getOnlyValues
 	 * @uses getPriceSort
@@ -356,7 +354,6 @@ final class getmetastats_Test extends TestCase
 	 * @uses getHistoryCalculations
 	 * @uses getHrsNextPosition
 	 * @uses getHrsToTarget
-	 * @uses getKeywords
 	 * @uses getNextPosition
 	 * @uses getOnlyValues
 	 * @uses getPriceSort
@@ -370,6 +367,15 @@ final class getmetastats_Test extends TestCase
 	 * @uses regroupArray
 	 * @uses timeduration
 	 * @uses dataSet
+	 * @uses reIndexArray
+	 * @uses countrow
+	 * @uses dataSet
+	 * @uses getCalculations
+	 * @uses getOnlyValues
+	 * @uses getsettings
+	 * @uses makeStatDataSet
+	 * @uses methodTranslator
+	 * @uses objectTranslator
 	 * @uses reIndexArray
 	 * @doesNotPerformAssertions
 	 */
@@ -425,7 +431,6 @@ final class getmetastats_Test extends TestCase
 	 * @uses getHistoryCalculations
 	 * @uses getHrsNextPosition
 	 * @uses getHrsToTarget
-	 * @uses getKeywords
 	 * @uses getNextPosition
 	 * @uses getPriceSort
 	 * @uses getPriceperhour
@@ -488,7 +493,6 @@ final class getmetastats_Test extends TestCase
 	 * @uses getHistoryCalculations
 	 * @uses getHrsNextPosition
 	 * @uses getHrsToTarget
-	 * @uses getKeywords
 	 * @uses getNextPosition
 	 * @uses getPriceSort
 	 * @uses getPriceperhour
@@ -554,7 +558,6 @@ final class getmetastats_Test extends TestCase
 	 * @uses getHistoryCalculations
 	 * @uses getHrsNextPosition
 	 * @uses getHrsToTarget
-	 * @uses getKeywords
 	 * @uses getNextPosition
 	 * @uses getPriceSort
 	 * @uses getPriceperhour
@@ -600,7 +603,6 @@ final class getmetastats_Test extends TestCase
 	 * @uses getHistoryCalculations
 	 * @uses getHrsNextPosition
 	 * @uses getHrsToTarget
-	 * @uses getKeywords
 	 * @uses getNextPosition
 	 * @uses getOnlyValues
 	 * @uses getPriceSort
@@ -637,7 +639,6 @@ final class getmetastats_Test extends TestCase
 	 * @uses getHistoryCalculations
 	 * @uses getHrsNextPosition
 	 * @uses getHrsToTarget
-	 * @uses getKeywords
 	 * @uses getNextPosition
 	 * @uses getOnlyValues
 	 * @uses getPriceSort
@@ -678,7 +679,6 @@ final class getmetastats_Test extends TestCase
 	 * @uses getHistoryCalculations
 	 * @uses getHrsNextPosition
 	 * @uses getHrsToTarget
-	 * @uses getKeywords
 	 * @uses getNextPosition
 	 * @uses getPriceSort
 	 * @uses getPriceperhour

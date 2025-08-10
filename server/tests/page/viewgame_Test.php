@@ -17,6 +17,41 @@ class viewgame_Test extends testprivate
 	 * @testdox __construct & buildHtmlBody
 	 * @uses get_db_connection
 	 * @uses lookupTextBox
+	 * @uses CurlRequest
+	 * @uses Games
+	 * @uses Keywords
+	 * @uses Page
+	 * @uses PriceCalculation
+	 * @uses Purchases
+	 * @uses SteamAPI
+	 * @uses SteamFormat
+	 * @uses SteamScrape
+	 * @uses boolText
+	 * @uses combinedate
+	 * @uses dataAccess
+	 * @uses dataSet
+	 * @uses daysSinceDate
+	 * @uses getActivityCalculations
+	 * @uses getAllItems
+	 * @uses getCalculations
+	 * @uses getCleanStringDate
+	 * @uses getGameDetail
+	 * @uses getGames
+	 * @uses getHistoryCalculations
+	 * @uses getHrsNextPosition
+	 * @uses getHrsToTarget
+	 * @uses getNextPosition
+	 * @uses getPriceSort
+	 * @uses getPriceperhour
+	 * @uses getTimeLeft
+	 * @uses get_db_connection
+	 * @uses getsettings
+	 * @uses lookupTextBox
+	 * @uses makeIndex
+	 * @uses reIndexArray
+	 * @uses regroupArray
+	 * @uses timeduration
+	 * @uses viewgamePage
 	 */
 	public function test_outputHtml() {
 		$page = new viewgamePage();
@@ -50,7 +85,6 @@ class viewgame_Test extends testprivate
 	 * @uses getHistoryCalculations
 	 * @uses getHrsNextPosition
 	 * @uses getHrsToTarget
-	 * @uses getKeywords
 	 * @uses getNextPosition
 	 * @uses getPriceSort
 	 * @uses getPriceperhour
@@ -95,7 +129,6 @@ class viewgame_Test extends testprivate
 	 * @uses getHistoryCalculations
 	 * @uses getHrsNextPosition
 	 * @uses getHrsToTarget
-	 * @uses getKeywords
 	 * @uses getNextPosition
 	 * @uses getPriceSort
 	 * @uses getPriceperhour
@@ -142,7 +175,6 @@ class viewgame_Test extends testprivate
 	 * @uses getHistoryCalculations
 	 * @uses getHrsNextPosition
 	 * @uses getHrsToTarget
-	 * @uses getKeywords
 	 * @uses getNextPosition
 	 * @uses getPriceSort
 	 * @uses getPriceperhour

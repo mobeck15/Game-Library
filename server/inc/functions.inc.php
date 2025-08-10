@@ -27,7 +27,7 @@ include_once $GLOBALS['rootpath']."/inc/getActivityCalculations.inc.php";
 include_once $GLOBALS['rootpath']."/inc/getHistoryCalculations.inc.php";
 include_once $GLOBALS['rootpath']."/inc/getCalculations.inc.php";
 //include_once $GLOBALS['rootpath']."/inc/scraper.inc.php";
-include_once $GLOBALS['rootpath']."/inc/getTopList.inc.php";
+include_once $GLOBALS['rootpath']."/inc/getTopList.class.php";
 
 //DONE: add control function to prevent loading multiple times.
 if(isset($GLOBALS[__FILE__])){

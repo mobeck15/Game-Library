@@ -23,7 +23,7 @@ class TopList {
 		$this->dataSet = $ds ?? new dataSet();
 	}
 	
-	function buildTopListArray($group,$connection=false,$calc=false,$minGroupSize=2)
+	public function buildTopListArray($group,$minGroupSize=2)
 	{
 		$top = [];
 		
@@ -298,15 +298,6 @@ class TopList {
 		}
 	}
 
-	private function finalizeTotalStats(array &$total, int $GrandTotalWant): void
-	{
-		$total['PlayVPay'] = $total['ModPaid'] - $total['TotalHistoricPlayed'];
-		$total['PayHr'] = ($total['TotalHours'] == 0 ? 0 : $total['Paid'] / ($total['TotalHours'] / 3600));
-		$total['BeatAvg'] = ($total['GameCount'] == 0 ? 0 : (1 - $total['UnplayedCount'] / $total['GameCount']) * 100);
-		$total['AvgWant'] = ($total['GameCount'] == 0 ? 0 : $GrandTotalWant / $total['GameCount']);
-		$total['AvgCost'] = ($total['GameCount'] == 0 ? 0 : $total['Paid'] / $total['GameCount']);
-	}
-
 	private function updateBeatAverageStats(array &$top, array $total): void
 	{
 		foreach ($top as $key => &$row) {
@@ -354,9 +345,9 @@ class TopList {
 	{
 		// Use Keywords class to fetch all keywords
 		$keywords = $this->dataSet->getKeywords();
-
+		
 		$top = [];
-		$keywordSeen = []; // was $KeywordList before
+		$keywordSeen = [];
 
 		foreach ($keywords as $productId => $types) {
 			foreach ($types as $type => $keywordList) {
@@ -430,7 +421,7 @@ class TopList {
 				} else {
 					$getPurchaseTime=0;
 				}
-				if($getPurchaseTime<$top['None']['PurchaseDate']){
+				if($getPurchaseTime < $top['None']['PurchaseDate']){
 					$top['None']['PurchaseDate']=$getPurchaseTime;
 				}
 				
@@ -671,24 +662,7 @@ class TopList {
 	}
 }
 
-/**
- * Build a top list using optional legacy parameters.
- *
- * @param string $group            Group type (e.g., 'Bundle')
- * @param mixed  $connection       Unused legacy DB connection parameter
- * @param array|false $calc        Calculations array or false
- * @param int    $minGroupSize     Minimum size to include group
- * @return array                   Top list array
- */
-function getTopList(string $group, $connection=false, $calc=false, int $minGroupSize=2) : array
-{
-	$data = $calc === false ? new dataSet() : new dataSet(calculations: $calc);
-	
-	$listObj=new TopList($data);
-	return $listObj->buildTopListArray($group,$minGroupSize);
-}
-
-if (basename($_SERVER["SCRIPT_NAME"], '.php') == "getTopList.inc") {
+if (basename($_SERVER["SCRIPT_NAME"], '.php') == "getTopList.class") {
 	$GLOBALS['rootpath']=$GLOBALS['rootpath'] ?? "..";
 	require_once $GLOBALS['rootpath']."/inc/php.ini.inc.php";
 	require_once $GLOBALS['rootpath']."/inc/functions.inc.php";
@@ -709,9 +683,9 @@ if (basename($_SERVER["SCRIPT_NAME"], '.php') == "getTopList.inc") {
 
 		<?php
 		echo $lookupgame["lookupBox"];
-	} else {	
-		//$actcalculations=reIndexArray(getTopList(""),"GameID");
-		$toplist=getTopList("");
+	} else {
+		$listObj=new TopList();
+		$toplist=$listObj->buildTopListArray("");
 		echo arrayTable($toplist[$_GET['id']]);
 	}
 	echo Get_Footer();

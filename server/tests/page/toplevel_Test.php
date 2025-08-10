@@ -30,12 +30,10 @@ class toplevel_Test extends TestCase {
 	 * @uses getHistoryCalculations
 	 * @uses getHrsNextPosition
 	 * @uses getHrsToTarget
-	 * @uses getKeywords
 	 * @uses getNextPosition
 	 * @uses getPriceSort
 	 * @uses getPriceperhour
 	 * @uses getTimeLeft
-	 * @uses getTopList
 	 * @uses get_db_connection
 	 * @uses getsettings
 	 * @uses makeIndex

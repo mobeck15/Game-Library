@@ -102,7 +102,7 @@ function get_navmenu($dropbar=true){
 			$navmenu .= "\t\t<li><a href=\"".$GLOBALS['rootpath']."/inc/getPurchases.class.php\">Get Purchases</a></li>\r\n";
 			$navmenu .= "\t\t<li><a href=\"".$GLOBALS['rootpath']."/inc/getActivityCalculations.inc.php\">Get Activity Calculations</a></li>\r\n";
 			$navmenu .= "\t\t<li><a href=\"".$GLOBALS['rootpath']."/inc/getHistoryCalculations.inc.php\">Get History Calculations</a></li>\r\n";
-			$navmenu .= "\t\t<li><a href=\"".$GLOBALS['rootpath']."/inc/getTopList.inc.php\">Get Top List</a></li>\r\n";
+			$navmenu .= "\t\t<li><a href=\"".$GLOBALS['rootpath']."/inc/getTopList.class.php\">Get Top List</a></li>\r\n";
 			$navmenu .= "\t\t<li><a href=\"".$GLOBALS['rootpath']."/inc/getSettings.inc.php\">Get Settings</a></li>\r\n";
 			$navmenu .= "\t</ul>\r\n";
 			$navmenu .= "</li>\r\n";

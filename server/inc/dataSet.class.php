@@ -1,7 +1,7 @@
 <?php
 $GLOBALS['rootpath']= $GLOBALS['rootpath'] ?? "..";
 include_once $GLOBALS['rootpath']."/inc/getCalculations.inc.php";
-include_once $GLOBALS['rootpath']."/inc/getTopList.inc.php";
+include_once $GLOBALS['rootpath']."/inc/getTopList.class.php";
 include_once $GLOBALS['rootpath']."/inc/keywords.class.php";
 
 class dataSet {
@@ -18,6 +18,7 @@ class dataSet {
 		$topBundles = null,
 		$purchases = null,
 		$settings = null,
+		$keywords = null,
 		$history = null,
 		$items = null
 	) {
@@ -25,29 +26,9 @@ class dataSet {
 		$this->topBundles = $topBundles;
 		$this->purchases = $purchases;
 		$this->settings = $settings;
+		$this->keywords = $keywords;
 		$this->history = $history;
 		$this->items = $items;
-	}
-	
-	public static function merge(self $first, self $second): self {
-		$merged = new self();
-		$refClass = new \ReflectionClass(self::class);
-
-		foreach ($refClass->getProperties() as $prop) {
-			$prop->setAccessible(true);
-
-			$value = $prop->getValue($first); // take from first
-			$secondValue = $prop->getValue($second);
-
-			// Override if $second has a non-null value
-			if ($secondValue !== null) {
-				$value = $secondValue;
-			}
-
-			$prop->setValue($merged, $value);
-		}
-
-		return $merged;
 	}
 	
 	public function getCalculations(){
@@ -59,10 +40,15 @@ class dataSet {
 
 	public function getPurchases(){
 		if(!isset($this->purchases)){
-			$data = new Purchases();
+			$data = $this->createPurchasesInstance();
 			$this->purchases = $data->getPurchases();
 		}
 		return $this->purchases;
+	}
+	
+	protected function createPurchasesInstance()
+	{
+		return new Purchases();
 	}
 	
 	public function getHistory(){
@@ -74,9 +60,15 @@ class dataSet {
 
 	public function getTopBundles(){
 		if(!isset($this->topBundles)){
-			$this->topBundles = getTopList('Bundle',null,$this->getCalculations());
+			$data = $this->createTopBundlesInstance();
+			$this->topBundles = $data->buildTopListArray('Bundle');
 		}
 		return $this->topBundles;
+	}
+	
+	protected function createTopBundlesInstance()
+	{
+		return new TopList($this);
 	}
 
 	public function getSettings(){

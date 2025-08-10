@@ -3,7 +3,7 @@ declare(strict_types=1);
 use PHPUnit\Framework\TestCase;
 
 $GLOBALS['rootpath'] = $GLOBALS['rootpath'] ?? "htdocs\Game-Library\server";
-require_once $GLOBALS['rootpath']."\inc\getTopList.inc.php";
+require_once $GLOBALS['rootpath']."\inc\getTopList.class.php";
 
 /**
  * @group include
@@ -16,6 +16,8 @@ final class getTopList_Test extends testprivate
 	 * @covers TopList
 	 * @uses TopList
 	 * @uses dataSet
+	 * @uses Keywords
+	 * @uses dataAccess
 	 * @testWith [""]
 	 *           ["Series"]
 	 *           ["Store"]
@@ -24,14 +26,13 @@ final class getTopList_Test extends testprivate
 	 *           ["SteamR"]
 	 *           ["PYear"]
 	 *           ["LYear"]
+	 *           ["Keyword"]
 	 */
 	public function test_getTopList($listType) {
-		//	 *           ["Keyword"]
-
 		$data = $this->getTestDataSet();
 		$topListObject=new TopList($data);
 		
-		$result = $topListObject->buildTopListArray($listType,false,$data->getCalculations());
+		$result = $topListObject->buildTopListArray($listType);
 		$this->assertisArray($result);
 		$this->assertArrayHasKey('leastPlay', current($result));
 	}
@@ -41,6 +42,8 @@ final class getTopList_Test extends testprivate
 	 * @covers TopList::buildSeriesTopList
 	 * @uses TopList
 	 * @uses dataSet
+	 * @uses Keywords
+	 * @uses dataAccess
 	 */
 	public function test_SeriesTopListWithNoPurchaseDate()
 	{
@@ -56,9 +59,7 @@ final class getTopList_Test extends testprivate
 		$data2 = new dataSet(purchases: $data->getPurchases(), calculations: $calculations);
 		
 		$topListObject=new TopList($data2);
-		
-		$calculations=array();
-		$this->assertisArray($topListObject->buildTopListArray($listType,false,$calculations));	
+		$this->assertisArray($topListObject->buildTopListArray($listType));	
 	}
 	
 	/**
@@ -66,6 +67,8 @@ final class getTopList_Test extends testprivate
 	 * @covers TopList::updateBeatAverageStats
 	 * @uses TopList
 	 * @uses dataSet
+	 * @uses Keywords
+	 * @uses dataAccess
 	 */
 	public function testUpdateBeatAverageStats()
 	{
@@ -109,6 +112,8 @@ final class getTopList_Test extends testprivate
 	 * @small
 	 * @covers TopList::updateRowWithProductStats
 	 * @uses TopList
+	 * @uses Keywords
+	 * @uses dataAccess
 	 * @uses dataSet
 	 */
 	public function testUpdateRowWithProductStats()
@@ -141,4 +146,52 @@ final class getTopList_Test extends testprivate
 		$this->assertIsArray($row);
 	}
 	
+	/**
+	 * @small
+	 * @covers TopList::toTimestamp
+	 * @uses TopList
+	 * @uses dataSet
+	 */
+	public function test_toTimestamp()
+	{	
+		$topListObject=new TopList();
+		
+		// Access private method
+		$method = $this->getPrivateMethod(TopList::class, 'toTimestamp');
+
+		// Invoke method
+		$result = $method->invokeArgs($topListObject, [1]);
+
+		$this->assertEquals($result, 1);
+	}
+	
+	
+	/**
+	 * @small
+	 * @covers TopList::addNoneKeyword
+	 * @uses TopList
+	 * @uses dataSet
+	 */
+	public function test_addNoneKeyword()
+	{	
+		$data = $this->getTestDataSet();
+		
+		$calculations = $data->getCalculations();
+		$index=count($calculations);
+		$calculations[$index] = $calculations[0];
+		$calculations[$index]["Series"] = "One of a Kind";
+		unset($calculations[$index]["PurchaseDateTime"]);
+		
+		$data2 = new dataSet(purchases: $data->getPurchases(), calculations: $calculations);
+		
+		$topListObject=new TopList($data2);
+		
+		// Access private method
+		$method = $this->getPrivateMethod(TopList::class, 'addNoneKeyword');
+
+		// Invoke method
+		$result = $method->invokeArgs($topListObject, [1]);
+
+		$this->assertIsArray($result);
+	}
 }
