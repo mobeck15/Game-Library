@@ -31,8 +31,9 @@ final class getTopList_Test extends testprivate
 		$data = $this->getTestDataSet();
 		$topListObject=new TopList($data);
 		
-		$calculations=array();
-		$this->assertisArray($topListObject->buildTopListArray($listType,false,$calculations));
+		$result = $topListObject->buildTopListArray($listType,false,$data->getCalculations());
+		$this->assertisArray($result);
+		$this->assertArrayHasKey('leastPlay', current($result));
 	}
 	
 	/**

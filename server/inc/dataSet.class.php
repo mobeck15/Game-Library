@@ -2,12 +2,14 @@
 $GLOBALS['rootpath']= $GLOBALS['rootpath'] ?? "..";
 include_once $GLOBALS['rootpath']."/inc/getCalculations.inc.php";
 include_once $GLOBALS['rootpath']."/inc/getTopList.inc.php";
+include_once $GLOBALS['rootpath']."/inc/keywords.class.php";
 
 class dataSet {
 	private $calculations;
 	private $topBundles;
 	private $purchases;
 	private $settings;
+	private $keywords;
 	private $history;
 	private $items;
 	
@@ -89,5 +91,12 @@ class dataSet {
 			$this->items = getAllItems();
 		}
 		return $this->items;
+	}
+
+	public function getKeywords(){
+		if(!isset($this->keywords)){
+			$this->keywords = new Keywords();
+		}
+		return $this->keywords;
 	}
 }

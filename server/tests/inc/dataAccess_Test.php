@@ -124,8 +124,8 @@ final class dataAccess_Test extends testprivate
 	 * @group additem
 	 */
 	public function test_getKeywords() {
-		$dataobject= new dataAccess();
-		$statement=$dataobject->getKeywords(2);
+		$dataobject = new dataAccess();
+		$statement = $dataobject->getKeywords(2);
 		$this->assertisObject($statement);
 		$this->assertInstanceOf(PDOStatement::class, $statement);
 	}

@@ -88,14 +88,20 @@ class TopList {
 	{
 		$GrandTotalWant = 0;
 		$total = $this->initializeTotalRow();
+		
+		// Collect all products for the Total row
+		$allProducts = [];
 
 		foreach ($top as $key => &$row) {
 			$this->initializeRowStats($row);
 			
 			$totalWant = 0;
-			foreach ($row['Products'] as $product) {
+			$products = is_array($row['Products']) ? array_values($row['Products']) : [];
+			foreach ($products as $product) {
 				if ($this->isCountableGame($product)) {
 					$this->updateRowWithProductStats($row, $product, $totalWant, $GrandTotalWant);
+					// Add to the total products list
+					$allProducts[$product] = $product;
 				}
 			}
 
@@ -103,7 +109,18 @@ class TopList {
 			$this->updateTotalWithRow($total, $row);
 		}
 
-		$this->finalizeTotalStats($total, $GrandTotalWant);
+		// Now treat Total like any other row - add all products and process them
+		$total['Products'] = $allProducts;
+		$this->initializeRowStats($total);
+		
+		$totalWant = 0;
+		foreach ($allProducts as $product) {
+			if ($this->isCountableGame($product)) {
+				$this->updateRowWithProductStats($total, $product, $totalWant, $GrandTotalWant);
+			}
+		}
+		
+		$this->finalizeRowStats($total, $totalWant);
 		$this->updateBeatAverageStats($top, $total);
 
 		$top['Total'] = $total;
@@ -137,6 +154,8 @@ class TopList {
 			'IncompleteCount' => 0,
 			'UnplayedInactiveCount' => 0,
 			'Filter' => 0,
+			'leastPlay' => ['ID' => '', 'Name' => '', 'hours' => PHP_INT_MAX],
+			'mostPlay' => ['ID' => '', 'Name' => '', 'hours' => 0]
 		];
 	}
 
@@ -162,12 +181,23 @@ class TopList {
 
 	private function isCountableGame(string $productId): bool
 	{
-		return $this->dataSet->getCalculations()[$productId]['CountGame'] === true;
+		$calcs = $this->dataSet->getCalculations();
+		if (!isset($calcs[$productId])) {
+			return false;
+		}
+		// Accept 1, "1", true, etc.
+		return (bool) ($calcs[$productId]['CountGame'] ?? false);
 	}
 
 	private function updateRowWithProductStats(array &$row, string $productId, int &$totalWant, int &$GrandTotalWant): void
 	{
-		$calc = $this->dataSet->getCalculations()[$productId];
+		$calcs = $this->dataSet->getCalculations();
+		if (!isset($calcs[$productId])) {
+			// optionally log/debug here
+			return;
+		}
+		$calc = $calcs[$productId];
+
 		$row['ItemCount']++;
 
 		$row['TotalLaunch'] += $calc['LaunchPrice'];
@@ -181,13 +211,13 @@ class TopList {
 			$row['TotalHistoricPlayed'] += $calc['HistoricLow'];
 		}
 
-		if ($calc['Playable'] === true) {
+		if (!empty($calc['Playable'])) {
 			$this->updatePlayTracking($row, $productId, $calc);
 			$row['GameCount']++;
 			$totalWant += $calc['Want'];
 			$GrandTotalWant += $calc['Want'];
 
-			if ($calc['Active'] === true) {
+			if ($calc['Active'] == true) {
 				$row['Active'] = true;
 				$row['ActiveCount']++;
 			} else {
@@ -280,16 +310,16 @@ class TopList {
 	private function updateBeatAverageStats(array &$top, array $total): void
 	{
 		foreach ($top as $key => &$row) {
-			if ($row['PctPlayed'] > $total['BeatAvg']) {
+			if ($row['PctPlayed'] > ($total['BeatAvg'] ?? 0)) {
 				$row['BeatAvg'] = 0;
 			} else {
-				$row['BeatAvg'] = ceil(($total['BeatAvg'] / 100) / (1 / $row['GameCount'])) - ($row['GameCount'] - $row['UnplayedCount']);
+				$row['BeatAvg'] = ceil((($total['BeatAvg'] ?? 0) / 100) / (1 / $row['GameCount'])) - ($row['GameCount'] - $row['UnplayedCount']);
 			}
 
 			if ($row['PctPlayed'] > ($total['BeatAvg2'] ?? 0)) {
 				$row['BeatAvg2'] = 0;
 			} else {
-				$row['BeatAvg2'] = ceil(($total['BeatAvg2'] / 100) / (1 / $row['GameCount'])) - ($row['GameCount'] - $row['UnplayedCount']);
+				$row['BeatAvg2'] = ceil((($total['BeatAvg2'] ?? 0) / 100) / (1 / $row['GameCount'])) - ($row['GameCount'] - $row['UnplayedCount']);
 			}
 
 			if ($row['BeatAvg'] == 1 || $row['BeatAvg2'] == 1) {
@@ -322,49 +352,63 @@ class TopList {
 	
 	private function buildKeywordTopList(): array
 	{
-		$conn = get_db_connection();
-		$sql="SELECT * FROM `gl_keywords`";
-		if($result = $conn->query($sql)) {
-			$KeywordList=array();
-			while($row = $result->fetch_assoc()) {
-				$keyID=strtolower($row['Keyword']);
-				if(!in_array($keyID,$KeywordList)){
-					$KeywordList[]=$keyID;
-					//$keywords[$row2['ProductID']][$row2['KwType']]=$row2['Keyword'] ;
-					$top[$keyID]['ID']=$keyID;
-					$top[$keyID]['Title']=$row['Keyword'];
-				}
+		// Use Keywords class to fetch all keywords
+		$keywords = $this->dataSet->getKeywords();
 
-				if(!isset($top[$keyID]['PurchaseDate'])){
-					$top[$keyID]['PurchaseDate']=0;
-					$top[$keyID]['PurchaseTime']=0;
-					$top[$keyID]['PurchaseSequence']=0;
-					$top[$keyID]['Paid']=0;
+		$top = [];
+		$keywordSeen = []; // was $KeywordList before
+
+		foreach ($keywords as $productId => $types) {
+			foreach ($types as $type => $keywordList) {
+				foreach ($keywordList as $keyword) {
+					$keyID = strtolower($keyword);
+
+					// First time seeing this keyword? Initialize
+					if (!in_array($keyID, $keywordSeen, true)) {
+						$keywordSeen[] = $keyID;
+						$top[$keyID]['ID']    = $keyID;
+						$top[$keyID]['Title'] = $keyword;
+					}
+
+					// Initialize purchase fields if missing
+					if (!isset($top[$keyID]['PurchaseDate'])) {
+						$top[$keyID]['PurchaseDate']    = 0;
+						$top[$keyID]['PurchaseTime']    = 0;
+						$top[$keyID]['PurchaseSequence'] = 0;
+						$top[$keyID]['Paid']            = 0;
+					}
+
+					// Get purchase date/time from calculations
+					$purchaseTime = $this->toTimestamp($this->dataSet->getCalculations()[$productId]['PurchaseDateTime'] ?? null);
+
+					if ($purchaseTime < $top[$keyID]['PurchaseDate']) {
+						$top[$keyID]['PurchaseDate'] = $purchaseTime;
+					}
+
+					// Add paid amount
+					$top[$keyID]['Paid'] += $this->dataSet
+						->getCalculations()[$productId]['AltSalePrice'];
+
+					// Track which products had this keyword
+					$top[$keyID]['Products'][$productId] = $productId;
+
+					// Keep raw data for now
+					$top[$keyID]['RawData'] = [
+						'ProductID' => $productId,
+						'KwType'    => $type,
+						'Keyword'   => $keyword
+					];
 				}
-				$getPurchaseTime=$this->dataSet->getCalculations()[$row['ProductID']]['PurchaseDateTime']->getTimestamp();
-				if($getPurchaseTime<$top[$keyID]['PurchaseDate']){
-					$top[$keyID]['PurchaseDate']=$getPurchaseTime;
-				}
-				
-				$top[$keyID]['Paid']+=$this->dataSet->getCalculations()[$row['ProductID']]['AltSalePrice'];
-				$top[$keyID]['Products'][$row['ProductID']]=$row['ProductID'];
-				
-				$top[$keyID]['RawData']=$row;
-				
-			} 
-			
-			foreach ($top as $key => $row) {
-				$Sortby1[$key]  = strtolower($row['ID']);
 			}
-			array_multisort($Sortby1, SORT_ASC, $top);
-			
-			$top = $this->addNoneKeyword($top);
-			
-			
-		} else {
-			$keywords=false;
-			trigger_error("SQL Query Failed: " . mysqli_error($conn) . "</br>Query: ". $sql);
 		}
+
+		// Sort by keyword ID
+		$sortKeys = array_map('strtolower', array_column($top, 'ID'));
+		array_multisort($sortKeys, SORT_ASC, $top);
+
+		// Add "None" keyword
+		$top = $this->addNoneKeyword($top);
+
 		return $top;
 	}
 	
@@ -382,7 +426,7 @@ class TopList {
 					$top['None']['Paid']=0;
 				}
 				if(isset($row['PurchaseDateTime'])){
-					$getPurchaseTime=$row['PurchaseDateTime']->getTimestamp();
+					$getPurchaseTime = $this->toTimestamp($row['PurchaseDateTime'] ?? null);
 				} else {
 					$getPurchaseTime=0;
 				}
@@ -420,7 +464,7 @@ class TopList {
 				$top[$keyID]['Paid']=0;
 			}
 			if(isset($row['PurchaseDateTime'])){
-				$getPurchaseTime=$row['PurchaseDateTime']->getTimestamp();
+				$getPurchaseTime = $this->toTimestamp($row['PurchaseDateTime'] ?? null);
 			} else {
 				$getPurchaseTime=0; 
 			}
@@ -470,7 +514,7 @@ class TopList {
 					$top['None']['Paid']=0;
 				}
 				if(isset($row['PurchaseDateTime'])){
-					$getPurchaseTime=$row['PurchaseDateTime']->getTimestamp();
+					$getPurchaseTime = $this->toTimestamp($row['PurchaseDateTime'] ?? null);
 				} else {
 					$getPurchaseTime=0;
 				}
@@ -613,6 +657,17 @@ class TopList {
 		}
 		
 		return $top;
+	}
+
+	private function toTimestamp($value): int
+	{
+		if ($value instanceof \DateTimeInterface) {
+			return $value->getTimestamp();
+		}
+		if (is_numeric($value)) {
+			return (int) $value;
+		}
+		return 0;
 	}
 }
 

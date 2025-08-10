@@ -9,7 +9,7 @@ include_once $GLOBALS['rootpath']."/inc/getTopList.inc.php";
 class toplevelPage extends Page
 {
 	public function __construct() {
-		$this->title="CPI";
+		$this->title="Group By";
 	}
 	
 	public function buildHtmlBody(){
@@ -212,8 +212,8 @@ private function echoRow($top){
 	$output .= "\t<td class=\"numeric\">".$top['UnplayedInactiveCount']."</td>\r\n";
 	$output .= "\t<td class=\"numeric\">".round(($top['PctPlayed'] ?? 0),2)."%</td>\r\n";
 	if($top['ID']=="Total") {
-		$output .= "\t<td class=\"numeric\">".round($top['BeatAvg'],2)."%</td>\r\n";
-		$output .= "\t<td class=\"numeric\">".round($top['BeatAvg2'],2)."%</td>\r\n";
+		$output .= "\t<td class=\"numeric\">".round(($top['BeatAvg'] ?? 0),2)."%</td>\r\n";
+		$output .= "\t<td class=\"numeric\">".round($top['BeatAvg2'] ?? 0,2)."%</td>\r\n";
 	} else {
 		$output .= "\t<td class=\"numeric\">". $top['BeatAvg'] ."</td>\r\n"; //Beat Avg
 		$output .= "\t<td class=\"numeric\">". $top['BeatAvg2'] ."</td>\r\n"; //Beat Avg2
