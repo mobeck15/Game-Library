@@ -2,34 +2,29 @@
 declare(strict_types=1);
 require_once $GLOBALS['rootpath']."/page/_page.class.php";
 include_once $GLOBALS['rootpath']."/inc/utility.inc.php";
-include_once $GLOBALS['rootpath']."/inc/getsettings.inc.php";
+include_once $GLOBALS['rootpath']."/inc/getSettings.inc.php";
 include_once $GLOBALS['rootpath']."/inc/getCalculations.inc.php";
-include_once $GLOBALS['rootpath']."/inc/getTopList.inc.php";
+include_once $GLOBALS['rootpath']."/inc/getTopList.class.php";
 
 class toplevelPage extends Page
 {
 	public function __construct() {
-		$this->title="CPI";
+		$this->title="Group By";
 	}
 	
 	public function buildHtmlBody(){
 		$output="";
 		
+		$settings = $this->data()->getSettings();
+		$calculations = $this->data()->getCalculations();
 
-$settings = $this->data()->getSettings();
-$calculations = $this->data()->getCalculations();
+		if(!isset($_GET['Group'])){
+			$_GET['Group']="Bundle";
+		}
+		$dataSet = new dataSet(settings: $settings, calculations: $calculations);
+		$listObj=new TopList($dataSet);
+		$topList=$listObj->buildTopListArray("");
 
-$conn=get_db_connection();
-
-if(isset($_GET['Group'])){
-	$topList=getTopList($_GET['Group'],$conn,$calculations);
-} else {
-	$_GET['Group']="Bundle";
-	$topList=getTopList("",$conn,$calculations);
-}
-$conn->close();	
-
-//$calculations=reIndexArray($calculations,"Game_ID");
 //TODO: Trading cards are showing up in top level bundles. Why?
 $output .= "<ul>
 	<li><a href='". $_SERVER['SCRIPT_NAME']."?Group=Bundle'>Bundles</a></li>
@@ -210,10 +205,10 @@ private function echoRow($top){
 	$output .= "\t<td class=\"numeric\">".$top['ActiveCount']."</td>\r\n";
 	$output .= "\t<td class=\"numeric\">".$top['IncompleteCount']."</td>\r\n";
 	$output .= "\t<td class=\"numeric\">".$top['UnplayedInactiveCount']."</td>\r\n";
-	$output .= "\t<td class=\"numeric\">".round($top['PctPlayed'],2)."%</td>\r\n";
+	$output .= "\t<td class=\"numeric\">".round(($top['PctPlayed'] ?? 0),2)."%</td>\r\n";
 	if($top['ID']=="Total") {
-		$output .= "\t<td class=\"numeric\">".round($top['BeatAvg'],2)."%</td>\r\n";
-		$output .= "\t<td class=\"numeric\">".round($top['BeatAvg2'],2)."%</td>\r\n";
+		$output .= "\t<td class=\"numeric\">".round(($top['BeatAvg'] ?? 0),2)."%</td>\r\n";
+		$output .= "\t<td class=\"numeric\">".round($top['BeatAvg2'] ?? 0,2)."%</td>\r\n";
 	} else {
 		$output .= "\t<td class=\"numeric\">". $top['BeatAvg'] ."</td>\r\n"; //Beat Avg
 		$output .= "\t<td class=\"numeric\">". $top['BeatAvg2'] ."</td>\r\n"; //Beat Avg2

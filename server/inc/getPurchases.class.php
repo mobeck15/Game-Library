@@ -1,9 +1,9 @@
 <?php
 $GLOBALS['rootpath']= $GLOBALS['rootpath'] ?? "..";
 require_once $GLOBALS['rootpath']."/inc/utility.inc.php";
-require_once $GLOBALS['rootpath']."/inc/getGames.inc.php";
+require_once $GLOBALS['rootpath']."/inc/getGames.class.php";
 require_once $GLOBALS['rootpath']."/inc/getActivityCalculations.inc.php";
-require_once $GLOBALS['rootpath']."/inc/getsettings.inc.php";
+require_once $GLOBALS['rootpath']."/inc/getSettings.inc.php";
 require_once $GLOBALS['rootpath']."/inc/dataAccess.class.php";
 
 class Purchases
@@ -143,7 +143,8 @@ class Purchases
 			$row['GamesinBundle'][$item['ProductID']]['Want']        = $this->getGames()[$this->getGameIndex()[$item['ProductID']]]['Want'];
 			$row['GamesinBundle'][$item['ProductID']]['HistoricLow'] = $this->getGames()[$this->getGameIndex()[$item['ProductID']]]['HistoricLow'];
 			
-			if(isset($this->getActivity()[$item['ProductID']]) && $this->getSettings()['status'][$this->getActivity()[$item['ProductID']]['Status']]['Count']==1){
+			if(isset($this->getActivity()[$item['ProductID']]['Status']) && isset($this->getSettings()['status'])
+			  && $this->getSettings()['status'][$this->getActivity()[$item['ProductID']]['Status']]['Count']==1){
 				$row['TotalMSRP'] += $this->getGames()[$this->getGameIndex()[$item['ProductID']]]['MSRP'];
 				$row['TotalWant'] += $this->getGames()[$this->getGameIndex()[$item['ProductID']]]['Want'];
 				$row['TotalMSRPFormula'] .= " + " . $this->getGames()[$this->getGameIndex()[$item['ProductID']]]['MSRP'];
@@ -173,13 +174,15 @@ class Purchases
 	}
 	
 	private function calculateAltSalePrice($item, $row){
-		$totalWeight=$this->getSettings()['WeightWant']+$this->getSettings()['WeightPlay']+$this->getSettings()['WeightMSRP'];
+		$totalWeight = ($this->getSettings()['WeightWant'] ?? 0)
+					 + ($this->getSettings()['WeightPlay'] ?? 0)
+					 + ($this->getSettings()['WeightMSRP'] ?? 0);
 		if($totalWeight==0) {
 			$totalWeight = 1;
 		}
-		$useWeightMSRP=$this->getSettings()['WeightMSRP']/$totalWeight;
-		$useWeightPlay=$this->getSettings()['WeightPlay']/$totalWeight;
-		$useWeightWant=$this->getSettings()['WeightWant']/$totalWeight;
+		$useWeightMSRP=($this->getSettings()['WeightMSRP'] ?? 0)/$totalWeight;
+		$useWeightPlay=($this->getSettings()['WeightPlay'] ?? 0)/$totalWeight;
+		$useWeightWant=($this->getSettings()['WeightWant'] ?? 0)/$totalWeight;
 		
 		$payRatio=$this->divzero($row['GamesinBundle'][$item['ProductID']]['MSRP'],$row['TotalMSRP']);
 		$wantRatio=$this->divzero($row['GamesinBundle'][$item['ProductID']]['Want'],$row['TotalWant']);
@@ -240,7 +243,7 @@ class Purchases
 	
 	public function getPurchases(){
 		$itemsbyBundle=$this->groupItemsByBundle($this->getItems());
-		
+
 		foreach ($this->purchases as &$row) {
 			$row['Bundle']=$this->purchases[$this->ParentBundleIndex[$row['BundleID']]]['Title'];
 			

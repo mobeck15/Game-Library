@@ -31,6 +31,11 @@ class viewitem_Test extends testprivate
 	 */
 	public function test_outputHtml() {
 		$page = new viewitemPage();
+		
+		$GLOBALS["SETTINGS"]=array(
+		"CountDupes"=>0,
+		);
+
 		$result = $page->buildHtmlBody();
 		$this->assertisString($result);
 	}
@@ -42,6 +47,11 @@ class viewitem_Test extends testprivate
 	 */
 	public function test_outputHtmlItem() {
 		$page = new viewitemPage();
+		
+		$GLOBALS["SETTINGS"]=array(
+		"CountDupes"=>0,
+		);
+
 		$_GET["id"]=11;
 		$result = $page->buildHtmlBody();
 		$this->assertisString($result);
@@ -54,6 +64,11 @@ class viewitem_Test extends testprivate
 	 */
 	public function test_outputHtmlEdit() {
 		$page = new viewitemPage();
+		
+		$GLOBALS["SETTINGS"]=array(
+		"CountDupes"=>0,
+		);
+		
 		$_GET["id"]=11;
 		$_GET["edit"]=1;
 		$result = $page->buildHtmlBody();
@@ -82,6 +97,10 @@ class viewitem_Test extends testprivate
 	 */
 	public function test_outputHtml_post() {
 		$page = new viewitemPage();
+
+		$GLOBALS["SETTINGS"]=array(
+		"CountDupes"=>0,
+		);
 
 		$_POST = Array ( 
 		"ItemID"          => 513 ,

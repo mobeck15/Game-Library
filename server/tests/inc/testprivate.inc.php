@@ -2,7 +2,7 @@
 declare(strict_types=1);
 use PHPUnit\Framework\TestCase;
 
-class testprivate extends TestCase
+abstract class testprivate extends TestCase
 {
 	/**
  	 * getPrivateProperty
@@ -13,7 +13,7 @@ class testprivate extends TestCase
  	 * @return	ReflectionProperty
 	 * Source: https://www.webtipblog.com/unit-testing-private-methods-and-properties-with-phpunit/
  	 */
-	public function getPrivateProperty( $className, $propertyName ) {
+	protected function getPrivateProperty( $className, $propertyName ) {
 		$reflector = new ReflectionClass( $className );
 		$property = $reflector->getProperty( $propertyName );
 		$property->setAccessible( true );
@@ -30,12 +30,80 @@ class testprivate extends TestCase
  	 * @return	ReflectionMethod
 	 * Source: https://www.webtipblog.com/unit-testing-private-methods-and-properties-with-phpunit/
  	 */
-	public function getPrivateMethod( $className, $methodName ) {
+	protected function getPrivateMethod( $className, $methodName ) {
 		$reflector = new ReflectionClass( $className );
 		$method = $reflector->getMethod( $methodName );
 		$method->setAccessible( true );
 
 		return $method;
+	}
+	
+	protected function getTestDataSet()
+	{
+		$purchases[0] = array(
+				"Title" => "FirstTitle",
+				"TransID" => 1,
+				"BundleID" => 1,
+				"PurchaseDate" => 1,
+				"PurchaseTime" => 1,
+				"Sequence" => 1,
+				"Paid" => 1,
+				"Store" => "Steam",
+				"ProductsinBunde" => array(
+					"0", "1"
+				)
+			);
+		$purchases[1] = $purchases[0];
+		$purchases[1]["Title"] = "SecondTitle";
+		$purchases[1]["TransID"] = 2;
+		$purchases[1]["BundleID"] = 2;
+
+		$calculations[0]=array(
+				"Title" => "FirstGame",
+				"Series" => "FirstSeries",
+				"AltSalePrice" => 1,
+				"Game_ID" => 0,
+				"CountGame" => 1,
+				"Playable" => true,
+				"Active" => true,
+				"LaunchPrice" => 1,
+				"MSRP" => 1,
+				"HistoricLow" => 1,
+				"GrandTotal" => 1,
+				"Want" => 1,
+				"Paid" => 1,
+				"PurchaseDateTime" => new DateTime(),
+				"SteamRating" => 1,
+				"LaunchDate" => new DateTime(),
+				"Status" => "Active",
+				"Library" => array("Steam","GOG")
+		);
+		$calculations[1] = $calculations[0];
+		$calculations[1]["Game_ID"] = 1;
+		$calculations[1]["GrandTotal"] = 0;
+		$calculations[1]["Active"] = false;
+		$calculations[1]["Series"] = "FirstSeries";
+
+		$calculations[2] = $calculations[0];
+		$calculations[2]["Game_ID"] = 2;
+		$calculations[2]["GrandTotal"] = 2;
+		$calculations[2]["CountGame"] = true;
+		
+		$kwobject = new Keywords();
+		$kwData[0]["keyLevel"] = array(
+			"one", "two"
+		);
+		
+		$property = $this->getPrivateProperty( 'Keywords', 'data' );
+		$data = $property->SetValue( $kwobject, $kwData);
+		
+		$data = new dataSet(
+			calculations: $calculations, 
+			purchases: $purchases, 
+			keywords: $kwobject
+		);
+		
+		return $data;
 	}
 	
 }

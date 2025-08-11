@@ -30,12 +30,10 @@ class toplevel_Test extends TestCase {
 	 * @uses getHistoryCalculations
 	 * @uses getHrsNextPosition
 	 * @uses getHrsToTarget
-	 * @uses getKeywords
 	 * @uses getNextPosition
 	 * @uses getPriceSort
 	 * @uses getPriceperhour
 	 * @uses getTimeLeft
-	 * @uses getTopList
 	 * @uses get_db_connection
 	 * @uses getsettings
 	 * @uses makeIndex
@@ -46,6 +44,11 @@ class toplevel_Test extends TestCase {
 	 */
 	public function test_outputHtml() {
 		$page = new toplevelPage();
+		
+		$GLOBALS["SETTINGS"]=array(
+		"CountDupes"=>0,
+		);
+		
 		$result = $page->buildHtmlBody();
 		$this->assertisString($result);
 	}
@@ -58,6 +61,11 @@ class toplevel_Test extends TestCase {
 	public function test_outputHtml_detail() {
 		$_GET['Group']="Bundle";
 		$_GET['Detail']="88";
+		
+		$GLOBALS["SETTINGS"]=array(
+		"CountDupes"=>0,
+		);
+		
 		$page = new toplevelPage();
 		$result = $page->buildHtmlBody();
 		$this->assertisString($result);

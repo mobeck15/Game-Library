@@ -124,8 +124,8 @@ final class dataAccess_Test extends testprivate
 	 * @group additem
 	 */
 	public function test_getKeywords() {
-		$dataobject= new dataAccess();
-		$statement=$dataobject->getKeywords(2);
+		$dataobject = new dataAccess();
+		$statement = $dataobject->getKeywords(2);
 		$this->assertisObject($statement);
 		$this->assertInstanceOf(PDOStatement::class, $statement);
 	}
@@ -537,6 +537,8 @@ final class dataAccess_Test extends testprivate
 	 * @small
 	 * @covers dataAccess::updateGame
 	 * @uses dataAccess
+	 * @uses CurlRequest
+	 * @uses SteamAPI
 	 * @testdox updateGame()
 	 */
 	public function test_updateGame() {
@@ -603,6 +605,30 @@ final class dataAccess_Test extends testprivate
 		$expected[] = array("ProductID"=> 1, "kwType" => "GameFeature","Keyword" => "eight");
 		$expected[] = array("ProductID"=> 1, "kwType" => "GameMode","Keyword" => "nine");
 		$expected[] = array("ProductID"=> 1, "kwType" => "GameMode","Keyword" => "ten");
+		
+		$dataobject->updateKeywords($insertrow);
+
+		$statement = $dataobject->getKeywords(1);
+		$allrows2=$dataobject->getAllRows($statement);
+		
+		$this->assertEquals($allrows2[6]['Keyword'],"seven");
+	}
+	
+	/**
+	 * @small
+	 * @covers dataAccess::updateKeywords
+	 * @uses dataAccess
+	 * @testdox updateKeywords() no data
+	 */
+	public function test_updateKeywords_nodata() {
+		$dataobject= new dataAccess();
+
+		$insertrow['Genre'] = "";
+		$insertrow['GameType'] = "";
+		$insertrow['StoryMode'] = "";
+		$insertrow['GameFeature'] = "";
+		$insertrow['GameMode'] = "";
+		$insertrow['ID'] = 1;
 		
 		$dataobject->updateKeywords($insertrow);
 
@@ -1072,6 +1098,8 @@ final class dataAccess_Test extends testprivate
 	 * @small
 	 * @covers dataAccess::getAllCPI
 	 * @uses dataAccess
+	 * @uses CurlRequest
+	 * @uses SteamAPI
 	 * @testdox getAllCPI()
 	 */
 	public function test_getAllCPI(){
@@ -1084,6 +1112,8 @@ final class dataAccess_Test extends testprivate
 	 * @small
 	 * @covers dataAccess::addCPI
 	 * @uses dataAccess
+	 * @uses CurlRequest
+	 * @uses SteamAPI
 	 * @testdox addCPI() - $type
 	 * @testWith [3050,12,345,"Insert"]
 	 *           [3050,12,346,"Update"]
@@ -1116,6 +1146,8 @@ final class dataAccess_Test extends testprivate
 	 * @small
 	 * @covers dataAccess::getStatusList
 	 * @uses dataAccess
+	 * @uses CurlRequest
+	 * @uses SteamAPI
 	 * @testdox getStatusList()
 	 */
 	public function test_getStatusList(){
@@ -1128,6 +1160,8 @@ final class dataAccess_Test extends testprivate
 	 * @small
 	 * @covers dataAccess::getProductTitle
 	 * @uses dataAccess
+	 * @uses CurlRequest
+	 * @uses SteamAPI
 	 * @testdox getProductTitle()
 	 */
 	public function test_getProductTitle(){
@@ -1140,6 +1174,8 @@ final class dataAccess_Test extends testprivate
 	 * @small
 	 * @covers dataAccess::getHistoryRecrod
 	 * @uses dataAccess
+	 * @uses CurlRequest
+	 * @uses SteamAPI
 	 * @testdox getHistoryRecrod()
 	 */
 	public function test_getHistoryRecrod(){

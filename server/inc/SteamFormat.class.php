@@ -372,7 +372,7 @@ class SteamFormat
 			return "";
 		} else {
 			$output  = $this->formatStat("Type",$appdetails['data']['type']);
-			$output .= $this->formatStat("Name",$appdetails['data']['required_age']);
+			$output .= $this->formatStat("Name",$appdetails['data']['name']);
 			$output .= $this->formatStat("Required Age",$appdetails['data']['required_age']);
 			$output .= $this->formatStat("Free Game",boolText($appdetails['data']['is_free']));
 			$output .= $this->formatStat("Controller Support",($appdetails['data']['controller_support'] ?? null));

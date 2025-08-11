@@ -554,7 +554,7 @@ final class getPurchases_Test extends testprivate
 		"TotalWant"=>1,
 		"TotalHrs"=>1,
 		"GamesinBundle"=>array(
-			1163=>array(
+			1161=>array(
 				"Want"=>1,
 				"MSRP"=>1
 			)
@@ -579,12 +579,33 @@ final class getPurchases_Test extends testprivate
 	public function test_calculateAltSalePrice_base() {
 		$purchasObject=new Purchases();
 		
+		$GLOBALS["SETTINGS"]=array(
+		"status"=>array(
+			"Done"=>    array( "Active"=>"0", "Count"=>"1" ),
+			"Active"=>  array( "Active"=>"0", "Count"=>"1" ),
+			"Inactive"=>array( "Active"=>"0", "Count"=>"1" ),
+			"Never"=>   array( "Active"=>"0", "Count"=>"1" ),
+			"On Hold"=> array( "Active"=>"0", "Count"=>"1" ),
+			"Broken"=>  array( "Active"=>"0", "Count"=>"1" ),
+			"Unplayed"=>array( "Active"=>"0", "Count"=>"1" ),
+			),
+		"CountIdle"=>0,
+		"CountShare"=>0,
+		"CountCheat"=>0,
+		"CountFarm"=>0,
+		"MinPlay"=>60,
+		"MinTotal"=>60,
+		"WeightWant"=>0,
+		"WeightPlay"=>0,
+		"WeightMSRP"=>0,
+		);
+		
 		$row=array(
 		"TotalMSRP"=>1,
 		"TotalWant"=>1,
 		"TotalHrs"=>1,
 		"GamesinBundle"=>array(
-			1163=>array(
+			1161=>array(
 				"Want"=>1,
 				"MSRP"=>1
 			)
@@ -635,7 +656,7 @@ final class getPurchases_Test extends testprivate
 		"TotalWant"=>1,
 		"TotalHrs"=>1,
 		"GamesinBundle"=>array(
-			1163=>array(
+			1161=>array(
 				"Want"=>1,
 				"MSRP"=>1
 			)
@@ -670,6 +691,11 @@ final class getPurchases_Test extends testprivate
 	 */
 	public function test_getPurchases_conn() {
 		$conn=get_db_connection();
+		
+		$GLOBALS["SETTINGS"]=array(
+		"CountDupes"=>0,
+		);
+		
 		$purchasObject=new Purchases("6",$conn);
 		$this->assertisArray($purchasObject->getPurchases());
 		$conn->close();

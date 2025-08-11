@@ -28,7 +28,6 @@ class totals_Test extends TestCase {
 	 * @uses getHistoryCalculations
 	 * @uses getHrsNextPosition
 	 * @uses getHrsToTarget
-	 * @uses getKeywords
 	 * @uses getNextPosition
 	 * @uses getPriceSort
 	 * @uses getPriceperhour
@@ -41,6 +40,11 @@ class totals_Test extends TestCase {
 	 */
 	public function test_outputHtml() {
 		$page = new totalsPage();
+		
+		$GLOBALS["SETTINGS"]=array(
+		"CountDupes"=>0,
+		);
+		
 		$result = $page->buildHtmlBody();
 		$this->assertisString($result);
 	}

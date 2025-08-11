@@ -2,7 +2,7 @@
 declare(strict_types=1);
 require_once $GLOBALS['rootpath']."/page/_page.class.php";
 include_once $GLOBALS['rootpath']."/inc/utility.inc.php";
-require_once $GLOBALS['rootpath']."/inc/getmetastats.inc.php";
+require_once $GLOBALS['rootpath']."/inc/getMetastats.inc.php";
 
 class statisticsPage extends Page
 {

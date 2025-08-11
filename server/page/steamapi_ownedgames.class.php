@@ -19,43 +19,43 @@ class steamapi_ownedgamesPage extends Page
 		$games=$this->data()->getCalculations();
 		$steamindex=makeIndex($games,"SteamID");
 		
-//$conn=get_db_connection();
-//$hitory=getHistoryCalculations("",$conn);
-//$games=getCalculations("",$conn);
-//$conn->close();
+	//$conn=get_db_connection();
+	//$hitory=getHistoryCalculations("",$conn);
+	//$games=getCalculations("",$conn);
+	//$conn->close();
 
-foreach($hitory as $historyrow){
-	if($historyrow['System']=="Steam"){
-		$lastrecord[$historyrow['GameID']]=$historyrow;
-		if ($historyrow['BaseGame']==1){
-			$lastrecord[$historyrow['ParentGameID']]=$historyrow;
+	foreach($hitory as $historyrow){
+		if($historyrow['System']=="Steam"){
+			$lastrecord[$historyrow['GameID']]=$historyrow;
+			if ($historyrow['BaseGame']==1){
+				$lastrecord[$historyrow['ParentGameID']]=$historyrow;
+			}
 		}
 	}
-}
 
-$steamAPI = new SteamAPI();
-$resultarray=$steamAPI->GetSteamAPI("GetOwnedGames");
+	$steamAPI = new SteamAPI();
+	$resultarray=$steamAPI->GetSteamAPI("GetOwnedGames");
 	$output .= "<table>
-	<thead>
-	<tr>
-	<th rowspan=2>Title</th>
-	<th colspan=2>Playtime Forever</th>
-	<th colspan=2>Playtime two weeks</th>
-	<th rowspan=2>Total Time</th>
-	<th colspan=4>Last Time Entry</th>
-	</tr>
-	<tr>
-	<th style='top:77px;'>Minutes</th>
-	<th style='top:77px;'>Hours</th>
-	<th style='top:77px;'>Minutes</th>
-	<th style='top:77px;'>Hours</th>
-	<th style='top:77px;'>Minutes</th>
-	<th style='top:77px;'>Hours</th>
-	<th style='top:77px;'>Time</th>
-	<th style='top:77px;'>Keywords</th>
-	</tr>
-	</thead>
-	<tbody>";
+		<thead>
+		<tr>
+		<th rowspan=2>Title</th>
+		<th colspan=2>Playtime Forever</th>
+		<th colspan=2>Playtime two weeks</th>
+		<th rowspan=2>Total Time</th>
+		<th colspan=4>Last Time Entry</th>
+		</tr>
+		<tr>
+		<th style='top:77px;'>Minutes</th>
+		<th style='top:77px;'>Hours</th>
+		<th style='top:77px;'>Minutes</th>
+		<th style='top:77px;'>Hours</th>
+		<th style='top:77px;'>Minutes</th>
+		<th style='top:77px;'>Hours</th>
+		<th style='top:77px;'>Time</th>
+		<th style='top:77px;'>Keywords</th>
+		</tr>
+		</thead>
+		<tbody>";
 
 	$missing_count=0;
 	$missing_ids=array();
