@@ -1128,6 +1128,8 @@ final class dataAccess_Test extends testprivate
 			
 			if($type == "Insert") {
 				$CleanupQuery->execute();
+			} else {
+				$dataobject->addCPI($year,$month,$value);
 			}
 			
 			$result=$dataobject->addCPI($year,$month,$value);
@@ -1136,9 +1138,7 @@ final class dataAccess_Test extends testprivate
 			
 			$this->assertEquals($cpi[$year][$month],$value);
 		} finally {
-			if($type == "Update") {
-				$CleanupQuery->execute();
-			}
+			$CleanupQuery->execute();
 		}
 	}
 	

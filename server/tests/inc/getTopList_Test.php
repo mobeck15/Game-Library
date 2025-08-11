@@ -190,7 +190,7 @@ final class getTopList_Test extends testprivate
 		$method = $this->getPrivateMethod(TopList::class, 'addNoneKeyword');
 
 		// Invoke method
-		$result = $method->invokeArgs($topListObject, [1]);
+		$result = $method->invokeArgs($topListObject, [[1]]);
 
 		$this->assertIsArray($result);
 	}
