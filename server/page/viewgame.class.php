@@ -332,9 +332,9 @@ class viewgamePage extends Page
 		if ($edit_mode === true) {
 		$output .= '<input type="date" name="LaunchDate" value="';
 			//$output .= date("Y-m-d",strtotime($game['LaunchDate'])); 
-			$output .= $game['LaunchDate']->format("Y-m-d");
+			$output .= $game['LaunchDate']?->format("Y-m-d") ?? '';
 			$output .= '">';
-		} else { $output .= $game['LaunchDate']->format("n/j/Y"); }
+		} else { $output .= $game['LaunchDate']?->format("n/j/Y") ?? ''; }
 		
 		if(isset($PubDate)){
 			$output .= "<br>".trim($PubDate);
